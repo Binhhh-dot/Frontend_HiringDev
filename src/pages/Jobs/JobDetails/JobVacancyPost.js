@@ -133,12 +133,12 @@ const JobVacancyPost = () => {
                         jobVacancyPostDetails.fullTime === true
                           ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
                           : jobVacancyPostDetails.partTime === true
-                          ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                          : jobVacancyPostDetails.freeLance === true
-                          ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                          : jobVacancyPostDetails.internship === true
-                          ? "badge bg-blue-subtle text-blue fs-13 mt-1"
-                          : ""
+                            ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                            : jobVacancyPostDetails.freeLance === true
+                              ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                              : jobVacancyPostDetails.internship === true
+                                ? "badge bg-blue-subtle text-blue fs-13 mt-1"
+                                : ""
                       }
                     >
                       {jobVacancyPostDetails.timing}
