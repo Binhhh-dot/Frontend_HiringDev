@@ -73,8 +73,8 @@ const NavBar = (props) => {
     if (matchingMenuItem) {
       activateParentDropdown(matchingMenuItem);
     }
-  },[props.router.location.pathname]);
-  
+  }, [props.router.location.pathname]);
+
   const removeActivation = (items) => {
     for (var i = 0; i < items.length; ++i) {
       var item = items[i];
@@ -242,6 +242,9 @@ const NavBar = (props) => {
                     <Col lg={4}>
                       <span className="dropdown-header">Jobs</span>
                       <div>
+                        <Link className="dropdown-item" to="/createhiringrequest">
+                          Create hiring request
+                        </Link>
                         <Link className="dropdown-item" to="/joblist">
                           Job List
                         </Link>
@@ -267,6 +270,12 @@ const NavBar = (props) => {
                         Candidates / Companys
                       </span>
                       <div>
+                        <Link className="dropdown-item" to="/createstaffaccount">
+                          Create Staff Account
+                        </Link>
+                        <Link className="dropdown-item" to="/createdeveloperaccount">
+                          Create Developer Account
+                        </Link>
                         <Link className="dropdown-item" to="/candidatelist">
                           Candidate List
                         </Link>
