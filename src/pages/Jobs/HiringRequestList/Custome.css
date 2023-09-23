@@ -1,0 +1,20 @@
+input[type="date"] {
+    padding: 7px 10px;
+    width: 265px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  /* Tùy chỉnh màu nền khi trỏ chuột vào trường nhập */
+  input[type="date"]:hover {
+    background-color: #D9F3EA;
+  }
+  
+  /* Tùy chỉnh màu nền khi trường nhập được chọn */
+  input[type="date"]:focus {
+    background-color: #ffff;
+    border: 1px solid #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }

@@ -32,9 +32,9 @@ const JobListing = () => {
         {
           id: 1,
           badgeclassName: "bg-warning-subtle text-warning",
-          badgeName: "Urgent"
-        }
-      ]
+          badgeName: "Urgent",
+        },
+      ],
     },
     {
       id: 2,
@@ -50,9 +50,9 @@ const JobListing = () => {
         {
           id: 1,
           badgeclassName: "bg-info-subtle text-info",
-          badgeName: "Private"
-        }
-      ]
+          badgeName: "Private",
+        },
+      ],
     },
     {
       id: 3,
@@ -68,9 +68,9 @@ const JobListing = () => {
         {
           id: 1,
           badgeclassName: "bg-blue-subtle text-blue",
-          badgeName: "Internship"
-        }
-      ]
+          badgeName: "Internship",
+        },
+      ],
     },
     {
       id: 4,
@@ -86,9 +86,9 @@ const JobListing = () => {
         {
           id: 1,
           badgeclassName: "bg-info-subtle text-info",
-          badgeName: "Private"
-        }
-      ]
+          badgeName: "Private",
+        },
+      ],
     },
     {
       id: 5,
@@ -100,7 +100,7 @@ const JobListing = () => {
       salary: "$250 - $800 / month",
       internship: true,
       timing: "Internship",
-      badges: []
+      badges: [],
     },
     {
       id: 6,
@@ -116,15 +116,15 @@ const JobListing = () => {
         {
           id: 1,
           badgeclassName: "bg-warning-subtle text-warning",
-          badgeName: "Urgent"
+          badgeName: "Urgent",
         },
         {
           id: 2,
           badgeclassName: "bg-info-subtle text-info",
-          badgeName: "Private"
-        }
-      ]
-    }
+          badgeName: "Private",
+        },
+      ],
+    },
   ];
   return (
     <React.Fragment>
