@@ -9,12 +9,12 @@ import {
   NavLink,
   Dropdown,
   DropdownToggle,
-  DropdownMenu
+  DropdownMenu,
 } from "reactstrap";
 
 import { Link } from "react-router-dom";
 import classname from "classnames";
-import withRouter from "../../components/withRouter"
+import withRouter from "../../components/withRouter";
 
 import darkLogo from "../../assets/images/logo-dark.png";
 import lightLogo from "../../assets/images/logo-light.png";
@@ -73,8 +73,8 @@ const NavBar = (props) => {
     if (matchingMenuItem) {
       activateParentDropdown(matchingMenuItem);
     }
-  },[props.router.location.pathname]);
-  
+  }, [props.router.location.pathname]);
+
   const removeActivation = (items) => {
     for (var i = 0; i < items.length; ++i) {
       var item = items[i];
@@ -155,7 +155,7 @@ const NavBar = (props) => {
                 </NavLink>
                 <ul
                   className={classname("dropdown-menu dropdown-menu-center", {
-                    show: home
+                    show: home,
                   })}
                   aria-labelledby="homedrop"
                 >
@@ -187,7 +187,7 @@ const NavBar = (props) => {
                 </NavLink>
                 <ul
                   className={classname("dropdown-menu dropdown-menu-center", {
-                    show: company
+                    show: company,
                   })}
                   aria-labelledby="jobsdropdown"
                 >
@@ -242,6 +242,9 @@ const NavBar = (props) => {
                     <Col lg={4}>
                       <span className="dropdown-header">Jobs</span>
                       <div>
+                        <Link className="dropdown-item" to="/hiringrequestlist">
+                          Hiring RequestList
+                        </Link>
                         <Link className="dropdown-item" to="/joblist">
                           Job List
                         </Link>
@@ -257,6 +260,12 @@ const NavBar = (props) => {
                         <Link className="dropdown-item" to="/jobdetails">
                           Job Details
                         </Link>
+                        <Link
+                          className="dropdown-item"
+                          to="/hiringrequestdetails"
+                        >
+                          Hiring Request Details
+                        </Link>
                         <Link className="dropdown-item" to="/jobscategories">
                           Jobs Categories
                         </Link>
@@ -267,6 +276,12 @@ const NavBar = (props) => {
                         Candidates / Companys
                       </span>
                       <div>
+                        <Link className="dropdown-item" to="/developerlist">
+                          Developer List
+                        </Link>
+                        <Link className="dropdown-item" to="/developerinfo">
+                          Developer Info
+                        </Link>
                         <Link className="dropdown-item" to="/candidatelist">
                           Candidate List
                         </Link>
@@ -326,7 +341,7 @@ const NavBar = (props) => {
                 </NavLink>
                 <ul
                   className={classname("dropdown-menu dropdown-menu-center", {
-                    show: blog
+                    show: blog,
                   })}
                   aria-labelledby="productdropdown"
                 >

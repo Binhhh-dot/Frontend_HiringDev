@@ -9,50 +9,50 @@ const Jobcatogaries = () => {
       id: 1,
       icon: "uim-layers-alt",
       name: "IT & Software",
-      job: 2024
+      job: 2024,
     },
     {
       id: 2,
       icon: "uim-airplay",
       name: "Technology",
-      job: 1250
+      job: 1250,
     },
     {
       id: 3,
       icon: "uim-bag",
       name: "Government",
-      job: 802
+      job: 802,
     },
     {
       id: 4,
       icon: "uim-user-md",
       name: "Accounting / Finance",
-      job: 577
+      job: 577,
     },
     {
       id: 5,
       icon: "uim-hospital",
       name: "Construction / Facilities",
-      job: 285
+      job: 285,
     },
     {
       id: 6,
       icon: "uim-telegram-alt",
       name: "Tele-communications",
-      job: 495
+      job: 495,
     },
     {
       id: 7,
       icon: "uim-scenery",
       name: "Design & Multimedia",
-      job: 1045
+      job: 1045,
     },
     {
       id: 8,
       icon: "uim-android-alt",
       name: "Human Resource",
-      job: 1516
-    }
+      job: 1516,
+    },
   ];
   return (
     <React.Fragment>
