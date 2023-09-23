@@ -14,6 +14,7 @@ import Faqs from "../pages/Company/Faqs/Faqs";
 
 //Jobs Section
 import HiringRequestList from "../pages/Jobs/HiringRequestList/HiringRequestList";
+import CreateHiringRequest from "../pages/Jobs/CreateHiringRequest/CreateHiringRequest";
 import JobList from "../pages/Jobs/JobList/JobList";
 import JobList2 from "../pages/Jobs/JobList2/JobList2";
 import JobGrid from "../pages/Jobs/JobGrid/JobGrid";
@@ -22,6 +23,8 @@ import JobDetails from "../pages/Jobs/JobDetails/JobDetails";
 import JobsCategories from "../pages/Jobs/JobsCategories/JobsCategories";
 
 //Candidate and Company Section
+import CreateStaffAccount from "../pages/CandidateAndCompany/CreateStaffAccount/CreateStaffAcount";
+import CreateDeveloperAccount from "../pages/CandidateAndCompany/CreateDeveloperAccount/CreateDeveloperAcount";
 import CandidateList from "../pages/CandidateAndCompany/CandidateList/CandidateList";
 import CandidateGrid from "../pages/CandidateAndCompany/CandidateGrid/CandidateGrid";
 import CandidateDetails from "../pages/CandidateAndCompany/CandidateDetails/CandidateDetails";
@@ -102,8 +105,11 @@ const userRoutes = [
   { path: "/joblist", component: <JobList /> },
   { path: "/hiringrequestlist", component: <HiringRequestList /> },
   { path: "/hiringrequestdetails", component: <HiringRequestDetails /> },
+  { path: "/createhiringrequest", component: <CreateHiringRequest /> },
 
   //Company Section
+  { path: "/createstaffaccount", component: <CreateStaffAccount /> },
+  { path: "/createdeveloperaccount", component: <CreateDeveloperAccount /> },
   { path: "/faqs", component: <Faqs /> },
   { path: "/privacyandpolicy", component: <PrivacyAndPolicy /> },
   { path: "/pricing", component: <Pricing /> },

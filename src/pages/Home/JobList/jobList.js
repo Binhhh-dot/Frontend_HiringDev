@@ -43,7 +43,7 @@ const JobList = () => {
             <Col lg={8}>
               <Nav
                 tabs
-                className="job-list-menu  nav-pills nav-justified flex-column flex-sm-row mb-4"
+                className="job-list-menu nav-pills nav-justified flex-column flex-sm-row mb-4"
                 id="pills-tab"
                 role="tablist"
               >
