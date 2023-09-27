@@ -2,15 +2,16 @@
 //authentication.scss
 //
 
-.bg-auth{
+.bg-auth {
     padding: 40px 0;
-    background-color: rgba(var(--#{$prefix}primary-rgb),0.1);
+    background-color: rgba(var(--#{$prefix}primary-rgb), 0.1);
     align-items: center;
     display: flex;
     min-height: 100vh;
-    @media (max-width: 991.98px) { 
+
+    @media (max-width: 991.98px) {
         padding: 60px 0;
-     }
+    }
 }
 
 .auth-box {
@@ -18,7 +19,8 @@
     box-shadow: var(--#{$prefix}box-shadow);
     border-radius: 10px;
     overflow: hidden;
-    .auth-content{
+
+    .auth-content {
         background-color: var(--#{$prefix}primary-text);
         display: flex;
         flex-direction: column;
@@ -26,43 +28,58 @@
         justify-content: center;
         height: 100%;
     }
+
     .logo-dark {
         display: inline-block;
     }
+
     .logo-light {
         display: none;
     }
-    .auth-form{
+
+    .auth-form {
         .form-control {
             color: $white;
-            border-color: rgba($white,0.10);
-            background-color: rgba($white,0.10);
-            &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-            color: rgba($white,0.45);
+            border-color: rgba($white, 0.10);
+            background-color: rgba($white, 0.10);
+
+            &::-webkit-input-placeholder {
+                /* Chrome/Opera/Safari */
+                color: rgba($white, 0.45);
             }
-            &::-moz-placeholder { /* Firefox 19+ */
-            color: rgba($white,0.45);
+
+            &::-moz-placeholder {
+                /* Firefox 19+ */
+                color: rgba($white, 0.45);
             }
-            &:-ms-input-placeholder { /* IE 10+ */
-            color: rgba($white,0.45);
+
+            &:-ms-input-placeholder {
+                /* IE 10+ */
+                color: rgba($white, 0.45);
             }
-            &:-moz-placeholder { /* Firefox 18- */
-            color: rgba($white,0.45);
+
+            &:-moz-placeholder {
+                /* Firefox 18- */
+                color: rgba($white, 0.45);
             }
         }
     }
 }
 
+
+
 /*****************dark-mode******************/
 
-body[data-bs-theme='dark'] {  
-    .bg-auth{ 
+body[data-bs-theme='dark'] {
+    .bg-auth {
         background-color: $gray-900;
     }
-    .auth-box { 
+
+    .auth-box {
         .logo-light {
             display: inline-block;
         }
+
         .logo-dark {
             display: none;
         }

@@ -9,7 +9,7 @@ const CreateDeveloperAccount = () => {
 
     // Khai báo danh sách tùy chọn
     const options = [
-        { value: "1", label: "cc-1" },
+        { value: "0", label: "cc-1" },
         { value: "2", label: "dd-2" },
         { value: "3", label: "Skill-3" },
         { value: "4", label: "ff-4" },
@@ -30,6 +30,14 @@ const CreateDeveloperAccount = () => {
         { value: "4", label: "Type-4" },
     ];
 
+    const options3 = [
+        { value: "1", label: "Type-1" },
+        { value: "2", label: "Type-2" },
+        { value: "3", label: "Type-3" },
+        { value: "4", label: "Type-4" },
+    ];
+
+
 
     const imageUrl = "https://firebasestorage.googleapis.com/v0/b/capstone-project-wehire.appspot.com/o/cv%2Ffront-end-engineer-.png?alt=media&token=ce6da673-0bcd-415b-84cf-edb5fb4c7fc2";
 
@@ -37,6 +45,9 @@ const CreateDeveloperAccount = () => {
     const [selectedOptions, setSelectedOptions] = useState([]);
 
     const [selectedOptions2, setSelectedOptions2] = useState([]);
+
+    const [selectedOptions3, setSelectedOptions3] = useState([]);
+
 
 
 
@@ -47,6 +58,10 @@ const CreateDeveloperAccount = () => {
     const handleChange2 = (selected2) => {
         setSelectedOptions2(selected2);
     };
+    const handleChange3 = (selected3) => {
+        setSelectedOptions3(selected3);
+    };
+
 
 
     return (
@@ -100,7 +115,7 @@ const CreateDeveloperAccount = () => {
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Date of birth</label>
-                                                    <input id="email-address" type="date" class="form-control resume"></input>
+                                                    <input id="email-address" type="date" class="custom-date resume"></input>
                                                 </div>
                                             </div>
 
@@ -145,12 +160,14 @@ const CreateDeveloperAccount = () => {
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Level requirement</label>
                                                     <div class="form-button">
-                                                        <select class="nice-select rounded">
-                                                            <option data-display="Experience">Level requirement</option>
-                                                            <option value="1">Level 1</option>
-                                                            <option value="2">Level 2</option>
-                                                            <option value="3">Level 3</option>
-                                                        </select>
+                                                        <div className="form-button">
+                                                            <Select
+
+                                                                options={options3}
+                                                                value={selectedOptions3}
+                                                                onChange={handleChange3}
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
