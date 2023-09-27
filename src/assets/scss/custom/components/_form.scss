@@ -33,9 +33,25 @@
   }
 }
 
+.custom-date {
+  padding: 10px;
+  font-size: 14px;
+  border-color: var(--#{$prefix}border-color);
+  font-weight: 500;
+  display: block;
+  width: 100%;
+  line-height: 1.5;
+  color: var(--bs-secondary-color);
+  background-color: var(--bs-secondary-bg);
+  background-clip: padding-box;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  appearance: none;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
 [type="search"]::-webkit-search-cancel-button,
 .form-check-label,
 .form-check-input {
   cursor: pointer;
 }
-
