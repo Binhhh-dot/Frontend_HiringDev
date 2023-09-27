@@ -12,7 +12,7 @@ import userImage7 from "../../../assets/images/user/img-07.jpg";
 import userImage8 from "../../../assets/images/user/img-08.jpg";
 import userImage9 from "../../../assets/images/user/img-09.jpg";
 
-const CandidateGridDetails = () => {
+const DeveloperListInCompanyPartnerDetail = () => {
   //Apply Now Model
   const [modal, setModal] = useState(false);
   const openModal = () => setModal(!modal);
@@ -25,8 +25,8 @@ const CandidateGridDetails = () => {
       candidateStatusClassName:
         "profile-active position-absolute badge rounded-circle bg-success",
       experience: "0-3 Years",
-      jobType: "Freelancers",
-      salary: "$800 / hours",
+      jobType: "BE Developer",
+      salary: "Average salary $800",
       addclassNameBookmark: true,
       label: true,
       statuslabel: "FEATURED",
@@ -190,13 +190,13 @@ const CandidateGridDetails = () => {
                 }
               >
                 <CardBody className="p-4">
-                  {candidategridDetailsNew.label && (
+                  {/* {candidategridDetailsNew.label && (
                     <div className="featured-label">
                       <span className="featured">
                         {candidategridDetailsNew.statuslabel}
                       </span>
                     </div>
-                  )}
+                  )} */}
 
                   <div className="d-flex mb-4">
                     <div className="flex-shrink-0 position-relative">
@@ -205,13 +205,13 @@ const CandidateGridDetails = () => {
                         alt=""
                         className="avatar-md rounded"
                       />
-                      <span
+                      {/* <span
                         className={
                           candidategridDetailsNew.candidateStatusClassName
                         }
                       >
                         <span className="visually-hidden">active</span>
-                      </span>
+                      </span> */}
                     </div>
                     <div className="ms-3">
                       <Link to="/candidatedetails" className="primary-link">
@@ -225,20 +225,20 @@ const CandidateGridDetails = () => {
                     </div>
                   </div>
                   <ul className="list-inline d-flex justify-content-between align-items-center">
-                    <li className="list-inline-item text-warning fs-17">
+                    {/* <li className="list-inline-item text-warning fs-17">
                       <i className="mdi mdi-star"></i>
                       <i className="mdi mdi-star"></i>
                       <i className="mdi mdi-star"></i>
                       <i className="mdi mdi-star"></i>
                       <i className="mdi mdi-star-half-full"></i>
-                    </li>
-                    <li className="list-inline-item">
+                    </li> */}
+                    {/* <li className="list-inline-item">
                       <div className="favorite-icon">
                         <Link to="#">
                           <i className="uil uil-heart-alt fs-18"></i>
                         </Link>
                       </div>
-                    </li>
+                    </li> */}
                   </ul>
                   <div className="border rounded mb-4">
                     <div className="row g-0">
@@ -258,10 +258,7 @@ const CandidateGridDetails = () => {
                       </Col>
                     </div>
                   </div>
-                  <p className="text-muted">
-                    Some quick example text to build on the card title and bulk
-                    the card's content Moltin gives you platform.
-                  </p>
+                  <p className="text-muted">SKILL DEVELOPER</p>
                   <div className="mt-3">
                     <Link
                       to="#hireNow"
@@ -269,7 +266,7 @@ const CandidateGridDetails = () => {
                       data-bs-toggle="modal"
                       className="btn btn-primary btn-hover w-100 mt-2"
                     >
-                      <i className="mdi mdi-account-check"></i> Hire Now
+                      <i className="mdi mdi-account-check"></i> Accept Interview
                     </Link>
                     <Link
                       to="/candidatedetails"
@@ -296,7 +293,7 @@ const CandidateGridDetails = () => {
               <ModalBody className="p-5">
                 <div className="text-center mb-4">
                   <h5 className="modal-title" id="staticBackdropLabel">
-                    Hire Now
+                    Accept Interview
                   </h5>
                 </div>
                 <div className="position-absolute end-0 top-0 p-3">
@@ -356,4 +353,4 @@ const CandidateGridDetails = () => {
   );
 };
 
-export default CandidateGridDetails;
+export default DeveloperListInCompanyPartnerDetail;

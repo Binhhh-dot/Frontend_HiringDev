@@ -315,6 +315,13 @@ const NavBar = (props) => {
                         <Link className="dropdown-item" to="/companydetails">
                           Company Details
                         </Link>
+
+                        <Link
+                          className="dropdown-item"
+                          to="/developerlistincompanypartner"
+                        >
+                          Developer List In Company
+                        </Link>
                       </div>
                     </Col>
                     <Col lg={4}>
