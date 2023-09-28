@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Col, Collapse, Input, Label } from "reactstrap";
-import "./Custome.css";
+import "./custome.css";
 
 const Sidebar = () => {
   const [toggleFirst, setToggleFirst] = useState(true);
@@ -327,7 +327,7 @@ const Sidebar = () => {
                 </Button>
               </h2>
             </div>
-            <div className="mt-3">
+            <div className="mt-3 date-hiring-request">
               <input type="date" id="datepicker" />
               <p id="selectedDate"></p>
             </div>

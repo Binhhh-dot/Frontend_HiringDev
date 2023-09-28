@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { CardBody, Col, Row } from "reactstrap";
+import "./custome.css";
 
 //Import images
 import userImage1 from "../../../assets/images/user/img-01.jpg";
@@ -27,19 +28,19 @@ const DeveloperDetails = () => {
       badges: [
         {
           id: 1,
-          badgeName: "Active",
+          badgeName: "Manage",
           classname: "success",
         },
-        {
-          id: 2,
-          badgeName: "Working On Project",
-          classname: "warning",
-        },
-        {
-          id: 2,
-          badgeName: "Unavailable",
-          classname: "danger",
-        },
+        // {
+        //   id: 2,
+        //   badgeName: "Working On Project",
+        //   classname: "warning",
+        // },
+        // {
+        //   id: 2,
+        //   badgeName: "Unavailable",
+        //   classname: "danger",
+        // },
       ],
     },
     {
@@ -274,7 +275,7 @@ const DeveloperDetails = () => {
                     </Link>
                   </div>
                 </div>
-                <Col lg={7}>
+                <Col lg={6}>
                   <div className="candidate-list-content mt-3 mt-lg-0">
                     <h5 className="fs-19 mb-0">
                       <Link to="/developerinfo" className="primary-link">
@@ -304,7 +305,7 @@ const DeveloperDetails = () => {
                   </div>
                 </Col>
 
-                <Col lg={4}>
+                <Col lg={2}>
                   <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
                     {(candidateDetailsNew.badges || []).map(
                       (badgesInner, key) => (
@@ -316,6 +317,24 @@ const DeveloperDetails = () => {
                         </span>
                       )
                     )}
+                  </div>
+                </Col>
+
+                <Col lg={3} className="border-start border-3">
+                  <div className="left-side-matching ">
+                    <div>
+                      <div className="matching-rate-dev">
+                        <h3 style={{ color: "#02AF74" }}>90%</h3>
+                        <span>Matching with requirement</span>
+                      </div>
+                    </div>
+                    <div className="send-matching-dev">
+                      <button class="button-82-pushable" role="button">
+                        <span class="button-82-shadow"></span>
+                        <span class="button-82-edge"></span>
+                        <span class="button-82-front text">Send Dev</span>
+                      </button>
+                    </div>
                   </div>
                 </Col>
               </Row>

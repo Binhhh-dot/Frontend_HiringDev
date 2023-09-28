@@ -243,8 +243,16 @@ const NavBar = (props) => {
                       <span className="dropdown-header">Jobs</span>
                       <div>
                         <Link className="dropdown-item" to="/hiringrequestlist">
-                          Hiring RequestList
+                          Hiring Request List
                         </Link>
+
+                        <Link
+                          className="dropdown-item"
+                          to="/developerlistincompanypartner"
+                        >
+                          HiringRequestL In Company
+                        </Link>
+
                         <Link
                           className="dropdown-item"
                           to="/createhiringrequest"
@@ -314,6 +322,13 @@ const NavBar = (props) => {
                         </Link>
                         <Link className="dropdown-item" to="/companydetails">
                           Company Details
+                        </Link>
+
+                        <Link
+                          className="dropdown-item"
+                          to="/developerlistincompanypartner"
+                        >
+                          Developer List In Company
                         </Link>
                       </div>
                     </Col>

@@ -5,7 +5,6 @@ import JobSearchOptions from "./JobSearchOptions";
 import JobVacancyList from "./JobVacancyList";
 import Popular from "./Popular";
 import Sidebar from "./Sidebar";
-import "./Custome.css";
 
 const HiringRequestList = () => {
   document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
