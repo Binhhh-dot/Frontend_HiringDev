@@ -63,6 +63,7 @@ import DeveloperDetails from "../pages/CandidateAndCompany/DeveloperList/Develop
 import DeveloperInfo from "../pages/CandidateAndCompany/DeveloperInfo/DeveloperInfo";
 import DeveloperListInCompanyPartner from "../pages/CandidateAndCompany/DeveloperListInCompanyPartner/DeveloperListInCompanyPartner";
 import DeveloperListInCompanyPartnerDetail from "../pages/CandidateAndCompany/DeveloperListInCompanyPartner/DeveloperListInCompanyPartnerDetail";
+import CreateCompanyAccount from "../pages/CandidateAndCompany/CreateCompanyAccount/CreateCompanyAcount";
 
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
@@ -121,6 +122,7 @@ const userRoutes = [
   //Company Section
   { path: "/createstaffaccount", component: <CreateStaffAccount /> },
   { path: "/createdeveloperaccount", component: <CreateDeveloperAccount /> },
+  { path: "/createcompanyaccount", component: <CreateCompanyAccount /> },
   { path: "/faqs", component: <Faqs /> },
   { path: "/privacyandpolicy", component: <PrivacyAndPolicy /> },
   { path: "/pricing", component: <Pricing /> },
