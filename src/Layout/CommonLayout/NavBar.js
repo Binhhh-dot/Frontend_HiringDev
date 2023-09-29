@@ -308,6 +308,14 @@ const NavBar = (props) => {
                         >
                           Create Developer Account
                         </Link>
+
+                        <Link
+                          className="dropdown-item"
+                          to="/createcompanyaccount"
+                        >
+                          Create Company Account
+                        </Link>
+
                         <Link className="dropdown-item" to="/candidatelist">
                           Candidate List
                         </Link>
