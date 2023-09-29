@@ -1,8 +1,84 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Section from "../CreateHiringRequest/Section";
+import Select from "react-select";
 
 const CreateHiringRequest = () => {
     document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
+    const [options, setOptions] = useState([]);
+    const [options2, setOptions2] = useState([]);
+    const [options3, setOptions3] = useState([]);
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [selectedOptions2, setSelectedOptions2] = useState([]);
+    const [selectedOptions3, setSelectedOptions3] = useState([]);
+
+    const handleChange = (selected) => {
+        setSelectedOptions(selected);
+    };
+    const handleChange2 = (selected) => {
+        setSelectedOptions2(selected);
+    };
+    const handleChange3 = (selected) => {
+        setSelectedOptions3(selected);
+    };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch("https://wehireapi.azurewebsites.net/api/Skill/GetAll");
+                const data = await response.json();
+
+                // Filter skills with statusString === "Active"
+                const activeSkills = data.filter(skill => skill.statusString === "Active");
+
+                // Map skills to the format expected by react-select
+                const formattedSkills = activeSkills.map(skill => ({
+                    value: skill.skillId.toString(),
+                    label: skill.skillName
+                }));
+
+                setOptions(formattedSkills);
+            } catch (error) {
+                console.error("Error fetching skills:", error);
+            }
+            try {
+                const response2 = await fetch("https://wehireapi.azurewebsites.net/api/Type/GetAll");
+                const data2 = await response2.json();
+    
+                // Filter types with statusString === "Active"
+                const activeTypes = data2.filter(type => type.statusString === "Active");
+    
+                // Map types to the format expected by react-select
+                const formattedTypes = activeTypes.map(type => ({
+                    value: type.typeId.toString(),
+                    label: type.typeName
+                }));
+    
+                setOptions2(formattedTypes);
+            } catch (error) {
+                console.error("Error fetching types:", error);
+            }
+            try {
+                const response3 = await fetch("https://wehireapi.azurewebsites.net/api/Level/GetAll");
+                const data3 = await response3.json();
+    
+                // Filter types with statusString === "Active"
+                const activeLevels = data3.filter(level => level.statusString === "Active");
+    
+                // Map types to the format expected by react-select
+                const formattedLevels = activeLevels.map(level => ({
+                    value: level.levelId.toString(),
+                    label: level.levelName
+                }));
+    
+                setOptions3(formattedLevels);
+            } catch (error) {
+                console.error("Error fetching types:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    
+
     return (
         <React.Fragment>
             <Section />
@@ -28,27 +104,20 @@ const CreateHiringRequest = () => {
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Number of developer</label>
-                                                    <div class="form-button">
-                                                        <select class="nice-select rounded">
-                                                            <option data-display="Job Type">Number of developer</option>
-                                                            <option value="1">Full Time</option>
-                                                            <option value="2">Part Time</option>
-                                                        </select>
-                                                    </div>
+                                                    <input id="email-address" type="number" class="form-control resume" placeholder="2"></input>
+                                                
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Type of developer</label>
-                                                    <div class="form-button">
-                                                        <select class="nice-select rounded">
-                                                            <option data-display="Category">Type of developer</option>
-                                                            <option value="1">Web Developer</option>
-                                                            <option value="2">PHP Developer</option>
-                                                            <option value="3">Web Designer</option>
-                                                            <option value="4">Graphic Designer</option>
-                                                        </select>
-                                                    </div>
+                                                    <div className="form-button">
+                                                    <Select
+                                                        options={options2}
+                                                        value={selectedOptions2}
+                                                        onChange={handleChange2}
+                                                    />
+                                                </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -56,28 +125,26 @@ const CreateHiringRequest = () => {
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Level requirement</label>
-                                                    <div class="form-button">
-                                                        <select class="nice-select rounded">
-                                                            <option data-display="Level">Level requirement</option>
-                                                            <option value="1">Level-1</option>
-                                                            <option value="2">Level-2</option>
-                                                            <option value="3">Level-3</option>
-                                                            <option value="4">Level-4</option>
-                                                        </select>
-                                                    </div>
+                                                    <div className="form-button">
+                                                    <Select
+                                                        options={options3}
+                                                        value={selectedOptions3}
+                                                        onChange={handleChange3}
+                                                    />
+                                                </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Skill requirement</label>
-                                                    <div class="form-button">
-                                                        <select class="nice-select rounded">
-                                                            <option data-display="Experience">Skill requirement</option>
-                                                            <option value="1">1 Year</option>
-                                                            <option value="2">2 Year</option>
-                                                            <option value="3">3 Year</option>
-                                                        </select>
+                                                    <div className="form-button">
+                                                        <Select
+                                                            isMulti
+                                                            options={options}
+                                                            value={selectedOptions}
+                                                            onChange={handleChange}
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>

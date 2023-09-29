@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Section from "../CreateDeveloperAccount/Section";
 import Select from "react-select";
 
@@ -8,59 +8,85 @@ const CreateDeveloperAccount = () => {
     document.title = "Create Developer Account";
 
     // Khai báo danh sách tùy chọn
-    const options = [
-        { value: "0", label: "cc-1" },
-        { value: "2", label: "dd-2" },
-        { value: "3", label: "Skill-3" },
-        { value: "4", label: "ff-4" },
-        { value: "5", label: "Skill-1" },
-        { value: "6", label: "Skgill-2" },
-        { value: "7", label: "ww-3" },
-        { value: "8", label: "Skill-4" },
-        { value: "9", label: "Skill-1" },
-        { value: "10", label: "Skill-2" },
-        { value: "11", label: "Skill-3" },
-        { value: "12", label: "Skill-4" },
-    ];
-
-    const options2 = [
-        { value: "1", label: "Type-1" },
-        { value: "2", label: "Type-2" },
-        { value: "3", label: "Type-3" },
-        { value: "4", label: "Type-4" },
-    ];
-
-    const options3 = [
-        { value: "1", label: "Type-1" },
-        { value: "2", label: "Type-2" },
-        { value: "3", label: "Type-3" },
-        { value: "4", label: "Type-4" },
-    ];
-
+    
 
 
     const imageUrl = "https://firebasestorage.googleapis.com/v0/b/capstone-project-wehire.appspot.com/o/cv%2Ffront-end-engineer-.png?alt=media&token=ce6da673-0bcd-415b-84cf-edb5fb4c7fc2";
 
 
+    const [options, setOptions] = useState([]);
+    const [options2, setOptions2] = useState([]);
+    const [options3, setOptions3] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState([]);
-
     const [selectedOptions2, setSelectedOptions2] = useState([]);
-
     const [selectedOptions3, setSelectedOptions3] = useState([]);
-
-
-
-
 
     const handleChange = (selected) => {
         setSelectedOptions(selected);
     };
-    const handleChange2 = (selected2) => {
-        setSelectedOptions2(selected2);
+    const handleChange2 = (selected) => {
+        setSelectedOptions2(selected);
     };
-    const handleChange3 = (selected3) => {
-        setSelectedOptions3(selected3);
+    const handleChange3 = (selected) => {
+        setSelectedOptions3(selected);
     };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch("https://wehireapi.azurewebsites.net/api/Skill/GetAll");
+                const data = await response.json();
+
+                // Filter skills with statusString === "Active"
+                const activeSkills = data.filter(skill => skill.statusString === "Active");
+
+                // Map skills to the format expected by react-select
+                const formattedSkills = activeSkills.map(skill => ({
+                    value: skill.skillId.toString(),
+                    label: skill.skillName
+                }));
+
+                setOptions(formattedSkills);
+            } catch (error) {
+                console.error("Error fetching skills:", error);
+            }
+            try {
+                const response2 = await fetch("https://wehireapi.azurewebsites.net/api/Type/GetAll");
+                const data2 = await response2.json();
+    
+                // Filter types with statusString === "Active"
+                const activeTypes = data2.filter(type => type.statusString === "Active");
+    
+                // Map types to the format expected by react-select
+                const formattedTypes = activeTypes.map(type => ({
+                    value: type.typeId.toString(),
+                    label: type.typeName
+                }));
+    
+                setOptions2(formattedTypes);
+            } catch (error) {
+                console.error("Error fetching types:", error);
+            }
+            try {
+                const response3 = await fetch("https://wehireapi.azurewebsites.net/api/Level/GetAll");
+                const data3 = await response3.json();
+    
+                // Filter types with statusString === "Active"
+                const activeLevels = data3.filter(level => level.statusString === "Active");
+    
+                // Map types to the format expected by react-select
+                const formattedLevels = activeLevels.map(level => ({
+                    value: level.levelId.toString(),
+                    label: level.levelName
+                }));
+    
+                setOptions3(formattedLevels);
+            } catch (error) {
+                console.error("Error fetching types:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
 
 
@@ -177,7 +203,6 @@ const CreateDeveloperAccount = () => {
                                                 <label className="text-muted">Type requirement</label>
                                                 <div className="form-button">
                                                     <Select
-                                                        isMulti
                                                         options={options2}
                                                         value={selectedOptions2}
                                                         onChange={handleChange2}
