@@ -23,11 +23,11 @@ const CreateHiringRequest = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://wehireapi.azurewebsites.net/api/Skill/GetAll");
+        const response = await fetch("https://wehireapi.azurewebsites.net/api/Skill");
         const data = await response.json();
 
         // Filter skills with statusString === "Active"
-        const activeSkills = data.filter(skill => skill.statusString === "Active");
+        const activeSkills = data.data.filter(skill => skill.statusString === "Active");
 
         // Map skills to the format expected by react-select
         const formattedSkills = activeSkills.map(skill => ({
@@ -40,11 +40,11 @@ const CreateHiringRequest = () => {
         console.error("Error fetching skills:", error);
       }
       try {
-        const response2 = await fetch("https://wehireapi.azurewebsites.net/api/Type/GetAll");
+        const response2 = await fetch("https://wehireapi.azurewebsites.net/api/Type");
         const data2 = await response2.json();
 
         // Filter types with statusString === "Active"
-        const activeTypes = data2.filter(type => type.statusString === "Active");
+        const activeTypes = data2.data.filter(type => type.statusString === "Active");
 
         // Map types to the format expected by react-select
         const formattedTypes = activeTypes.map(type => ({
@@ -57,11 +57,11 @@ const CreateHiringRequest = () => {
         console.error("Error fetching types:", error);
       }
       try {
-        const response3 = await fetch("https://wehireapi.azurewebsites.net/api/Level/GetAll");
+        const response3 = await fetch("https://wehireapi.azurewebsites.net/api/Level");
         const data3 = await response3.json();
 
         // Filter types with statusString === "Active"
-        const activeLevels = data3.filter(level => level.statusString === "Active");
+        const activeLevels = data3.data.filter(level => level.statusString === "Active");
 
         // Map types to the format expected by react-select
         const formattedLevels = activeLevels.map(level => ({
