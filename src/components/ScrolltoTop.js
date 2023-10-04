@@ -1,22 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "reactstrap";
 
 const ScrolltoTop = () => {
-  window.onscroll = function () {
-    scrollFunction();
-  };
+  useEffect(() => {
+    const scrollFunction = () => {
+      const mybutton = document.getElementById("back-to-top");
+      if (
+        document.body.scrollTop > 20 ||
+        document.documentElement.scrollTop > 20
+      ) {
+        mybutton.style.display = "block";
+      } else {
+        mybutton.style.display = "none";
+      }
+    };
 
-  function scrollFunction() {
-    const mybutton = document.getElementById("back-to-top");
-    if (
-      document.body.scrollTop > 20 ||
-      document.documentElement.scrollTop > 20
-    ) {
-      mybutton.style.display = "block";
-    } else {
-      mybutton.style.display = "none";
-    }
-  }
+    window.onscroll = scrollFunction;
+
+    return () => {
+      // Cleanup the event listener when the component is unmounted
+      window.onscroll = null;
+    };
+  }, []);
+
   const scrollTop = () => {
     window.scrollTo({
       top: 0,
@@ -30,5 +36,6 @@ const ScrolltoTop = () => {
     </Button>
   );
 };
+
 
 export default ScrolltoTop;

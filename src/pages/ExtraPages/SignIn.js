@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardBody, Col, Container, Input, Row } from "reactstrap";
 
 //Import Image
@@ -7,10 +7,61 @@ import darkLogo from "../../assets/images/logo-dark.png";
 
 import signInImage from "../../assets/images/auth/sign-in.png";
 import { Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import jwtDecode from 'jwt-decode';
 
 const SignIn = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
   document.title = "Sign In | Jobcy - Job Listing Template | Themesdesign";
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+
+    let response;
+
+    try {
+      response = await axios.post(
+        "https://wehireapi.azurewebsites.net/api/Account/Login",
+        {
+          email,
+          password,
+        }
+      );
+
+      // Check if the API call was successful
+      if (response.data.code === 200) {
+        const token = response.data.data;
+
+        // Decode the token
+        const decodedToken = jwtDecode(token);
+
+        // Extract user ID from the decoded token
+        const userId = decodedToken ? decodedToken.Id : null;
+
+        if (userId) {
+          // Save user ID to local storage
+          localStorage.setItem('userId', userId);
+
+          // Navigate to "/layout3"
+          navigate("/layout3");
+        }
+      }
+    } catch (error) {
+      console.log("Error during login:", error.response.data.message);
+      setError(error.response.data.message);
+    }
+  };
+
+  const saveTokenToLocalStorage = (token) => {
+    // Implement your logic to save the token to local storage
+    // For example:
+    localStorage.setItem("accessToken", token);
+  };
   return (
     <React.Fragment>
       <div>
@@ -54,35 +105,37 @@ const SignIn = () => {
                                   Sign in to continue to Jobcy.
                                 </p>
                               </div>
-                              <Form action="/" className="auth-form">
+                              <Form action="/" className="auth-form" onSubmit={handleSignIn}>
                                 <div className="mb-3">
-                                  <label
-                                    htmlFor="usernameInput"
-                                    className="form-label"
-                                  >
-                                    Username
+                                  <label htmlFor="GmailInput" className="form-label">
+                                    Gmail
                                   </label>
                                   <Input
                                     type="text"
                                     className="form-control"
-                                    id="usernameInput"
-                                    placeholder="Enter your username"
+                                    id="GmailInput"
+                                    placeholder="Enter your email"
+                                    value={email}  // <-- Đã thêm dòng này
+                                    onChange={(e) => setEmail(e.target.value)}  // <-- Đã thêm dòng này
                                     required
+                                    onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
+                                    onInvalid={(e) => e.target.setCustomValidity("Please enter your email")}
                                   />
                                 </div>
                                 <div className="mb-3">
-                                  <label
-                                    htmlFor="passwordInput"
-                                    className="form-label"
-                                  >
-                                    Password
+                                  <label htmlFor="passwordInput" className="form-label">
+                                    Mật khẩu
                                   </label>
                                   <Input
                                     type="password"
                                     className="form-control"
                                     id="passwordInput"
                                     placeholder="Enter your password"
+                                    value={password}  // <-- Đã thêm dòng này
+                                    onChange={(e) => setPassword(e.target.value)}  // <-- Đã thêm dòng này
                                     required
+                                    onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
+                                    onInvalid={(e) => e.target.setCustomValidity("Please enter your password")}
                                   />
                                 </div>
                                 <div className="mb-4">
@@ -107,12 +160,10 @@ const SignIn = () => {
                                   </div>
                                 </div>
                                 <div className="text-center">
-                                  <button
-                                    type="submit"
-                                    className="btn btn-white btn-hover w-100"
-                                  >
+                                  <button type="submit" className="btn btn-white btn-hover w-100">
                                     Sign In
                                   </button>
+                                  {error && <p className="text-danger mt-2">{error}</p>}
                                 </div>
                               </Form>
                               <div className="mt-4 text-center">

@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Container, Card, Col, Input, Row, CardBody } from "reactstrap";
 
 import lightLogo from "../../assets/images/logo-light.png";
@@ -7,9 +7,62 @@ import darkLogo from "../../assets/images/logo-dark.png";
 
 import signUpImage from "../../assets/images/auth/sign-up.png";
 import { Form } from "react-bootstrap";
+import axios from "axios"; // Import Axios
+
 
 const SignUp = () => {
   document.title = "Sign Up | Jobcy - Job Listing Template | Themesdesign";
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+  });
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "https://wehireapi.azurewebsites.net/api/Account/SignUp",
+        formData
+      );
+
+      if (response.status === 201) {
+        // Đăng ký thành công, chuyển hướng đến trang đăng nhập
+        navigate("/signin")
+      }
+    } catch (error) {
+      console.error("Lỗi khi đăng ký:", error);
+      // Xử lý lỗi tại đây nếu cần thiết
+      setError(error.response.data.message);
+    }
+  };
+
+  const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
+
+    // Thực hiện cập nhật state formData
+    setFormData({ ...formData, email: newEmail });
+
+    // Thực hiện xử lý kiểm tra email
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
+
+    if (newEmail.trim() === '') {
+      e.target.setCustomValidity('Please enter your email');
+      return; // Không cần kiểm tra tiếp nếu trống
+    }
+
+    if (!isValidEmail) {
+      e.target.setCustomValidity('Please enter a valid email address.');
+    } else {
+      e.target.setCustomValidity('');
+    }
+  };
+
   return (
     <React.Fragment>
       <div>
@@ -54,20 +107,62 @@ const SignUp = () => {
                                   Jobcy
                                 </p>
                               </div>
-                              <Form action="/" className="auth-form">
+                              <Form action="/" className="auth-form" onSubmit={handleSignUp} lang="en">
                                 <div className="mb-3">
                                   <label
-                                    htmlFor="usernameInput"
+                                    htmlFor="firstnameInput"
                                     className="form-label"
                                   >
-                                    Username
+                                    First Name
+                                  </label>
+                                  <Input lang="en"
+                                    type="text"
+                                    className="form-control"
+                                    required
+                                    id="firstnameInput"
+                                    placeholder="Enter your first name"
+                                    value={formData.firstName}
+                                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                                    onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
+                                    onInvalid={(e) => e.target.setCustomValidity("Please enter your first name")}
+                                  />
+                                </div>
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="lastnameInput"
+                                    className="form-label"
+                                  >
+                                    Last Name
                                   </label>
                                   <Input
                                     type="text"
                                     className="form-control"
                                     required
-                                    id="usernameInput"
-                                    placeholder="Enter your username"
+                                    id="lastnameInput"
+                                    placeholder="Enter your last name"
+                                    value={formData.lastName}
+                                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                    onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
+                                    onInvalid={(e) => e.target.setCustomValidity("Please enter your last name")}
+                                  />
+                                </div>
+                                <div className="mb-3">
+                                  <label
+                                    htmlFor="phonenumberInput"
+                                    className="form-label"
+                                  >
+                                    Phone Number
+                                  </label>
+                                  <Input
+                                    type="number"
+                                    className="form-control"
+                                    required
+                                    id="phonenumberInput"
+                                    placeholder="Enter your phone number"
+                                    value={formData.phoneNumber}
+                                    onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                                    onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
+                                    onInvalid={(e) => e.target.setCustomValidity("Please enter your phone number")}
                                   />
                                 </div>
                                 <div className="mb-3">
@@ -78,11 +173,15 @@ const SignUp = () => {
                                     Email
                                   </label>
                                   <Input
+                                    lang="en"
                                     type="email"
                                     className="form-control"
-                                    required
                                     id="emailInput"
                                     placeholder="Enter your email"
+                                    value={formData.email}
+                                    onChange={handleEmailChange}
+                                    required
+                                    onInvalid={(e) => e.target.setCustomValidity("Please enter your email")}
                                   />
                                 </div>
                                 <div className="mb-3">
@@ -97,6 +196,11 @@ const SignUp = () => {
                                     className="form-control"
                                     id="passwordInput"
                                     placeholder="Enter your password"
+                                    value={formData.password}
+                                    required
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
+                                    onInvalid={(e) => e.target.setCustomValidity("Please enter your password")}
                                   />
                                 </div>
                                 <div className="mb-4">
@@ -121,6 +225,7 @@ const SignUp = () => {
                                   </div>
                                 </div>
                                 <div className="text-center">
+                                  {error && <p className="text-danger mt-2">{error}</p>}
                                   <button
                                     type="submit"
                                     className="btn btn-white btn-hover w-100"
