@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Section from "../CreateCompanyAccount/Section";
 import Select from "react-select";
+import axios from "axios";
 
 const CreateCompanyAccount = () => {
   document.title = "Create Company Account";
@@ -24,6 +25,38 @@ const CreateCompanyAccount = () => {
         console.error("Error fetching data", error);
       });
   }, []);
+
+  const handleCreateCompany = async () => {
+    const companyName = document.getElementById('company-name').value;
+    const companyEmail = document.getElementById('email-address').value;
+    const phoneNumber = document.getElementById('number').value;
+    const companyImage = document.getElementById('company-image').value; // You may need to handle file uploads differently
+    const country = selectedCountry ? selectedCountry.value : '';
+
+    // Get userId from localStorage
+    const userId = localStorage.getItem('userId');
+
+    const data = {
+      companyName,
+      companyEmail,
+      phoneNumber,
+      companyImage,
+      country,
+      userId
+    };
+
+    try {
+      // Make API request
+      const response = await axios.post('https://wehireapi.azurewebsites.net/api/CompanyPartner', data);
+
+      // Handle the response (you can show a success message or redirect to another page)
+      console.log('API Response:', response.data);
+    } catch (error) {
+      // Handle errors (show an error message or log the error)
+      console.error('Error creating company:', error);
+    }
+  };
+
 
   return (
     <React.Fragment>
@@ -82,17 +115,6 @@ const CreateCompanyAccount = () => {
                         </div>
                       </div>
 
-                      <div class="col-md-6">
-                        <div class="form-group app-label mt-2">
-                          <label class="text-muted">Password</label>
-                          <input
-                            id="number"
-                            type="text"
-                            class="form-control resume"
-                            placeholder="123456@abcxzy"
-                          ></input>
-                        </div>
-                      </div>
                     </div>
                     <div class="row">
                       <div class="col-md-6">
@@ -121,7 +143,9 @@ const CreateCompanyAccount = () => {
                       </div>
                     </div>
                     <div class="col-lg-12 mt-2">
-                      <div class="btn btn-primary">Create </div>
+                      <button type="button" className="btn btn-primary" onClick={handleCreateCompany}>
+                        Create
+                      </button>
                     </div>
                   </form>
                 </div>
