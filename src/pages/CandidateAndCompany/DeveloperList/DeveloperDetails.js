@@ -20,27 +20,18 @@ const DeveloperDetails = () => {
       userImg: userImage1,
       candidateName: "Charles Dickens",
       candidateDesignation: "Project Manager",
-      location: "Oakridge Lane Richardson",
+      location: "Senior Javascript/Nodejs",
       salary: "Average Salary: $650",
       rating: 4,
-      ratingClass: "badge bg-dark bg-gradient ms-1",
+      ratingClass: "badge bg-secondary bg-gradient ms-1",
       addclassNameBookmark: false,
+      progress: 100,
       badges: [
         {
           id: 1,
           badgeName: "Manage",
           classname: "success",
         },
-        // {
-        //   id: 2,
-        //   badgeName: "Working On Project",
-        //   classname: "warning",
-        // },
-        // {
-        //   id: 2,
-        //   badgeName: "Unavailable",
-        //   classname: "danger",
-        // },
       ],
     },
     {
@@ -48,11 +39,12 @@ const DeveloperDetails = () => {
       userImg: userImage2,
       candidateName: "Gabriel Palmer",
       candidateDesignation: "HTML Developer",
-      location: "Oakridge Lane California",
+      location: "Junior C#",
       salary: "Average Salary: $250",
       rating: 3,
-      ratingClass: "badge bg-dark bg-gradient ms-1",
+      ratingClass: "badge bg-secondary bg-gradient ms-1",
       addclassNameBookmark: true,
+      progress: 60,
       badges: [
         {
           id: 1,
@@ -71,11 +63,12 @@ const DeveloperDetails = () => {
       userImg: userImage3,
       candidateName: "Rebecca Swartz ",
       candidateDesignation: "Graphic Designer",
-      location: "Oakridge Lane Richardson",
+      location: "Leader Photoshop/Adobe InDesign",
       salary: "Average Salary: $380",
       rating: 4,
-      ratingClass: "badge bg-dark bg-gradient ms-1",
+      ratingClass: "badge bg-secondary bg-gradient ms-1",
       addclassNameBookmark: false,
+      progress: 80,
       badges: [
         {
           id: 1,
@@ -94,20 +87,21 @@ const DeveloperDetails = () => {
       userImg: userImage4,
       candidateName: "Betty Richards",
       candidateDesignation: "Education Training",
-      location: "Oakridge Lane Richardson",
+      location: "Senior Java/Springboot",
       salary: "Average Salary: $650",
       rating: 4,
-      ratingClass: "badge bg-dark bg-gradient ms-1",
+      ratingClass: "badge bg-secondary bg-gradient ms-1",
       addclassNameBookmark: true,
+      progress: 70,
       badges: [
         {
           id: 1,
-          badgeName: "Trainer",
-          classname: "warning",
+          badgeName: "C++",
+          classname: "primary",
         },
         {
           id: 2,
-          badgeName: "Adobe illustrator",
+          badgeName: "UI/UX",
           classname: "info",
         },
       ],
@@ -117,21 +111,22 @@ const DeveloperDetails = () => {
       userImg: userImage5,
       candidateName: "Jeffrey Montgomery",
       candidateDesignation: "Restaurant Team Member",
-      location: "Oakridge Lane Richardson",
+      location: "Fresher Javascript",
       salary: "Average Salary: $125",
       rating: 4,
-      ratingClass: "badge bg-dark bg-gradient ms-1",
+      ratingClass: "badge bg-secondary bg-gradient ms-1",
       addclassNameBookmark: false,
+      progress: 10,
       badges: [
         {
           id: 1,
-          badgeName: "Trainer",
+          badgeName: "Javascript",
           classname: "primary",
         },
         {
           id: 2,
-          badgeName: "Adobe illustrator",
-          classname: "warning",
+          badgeName: "Ruby",
+          classname: "primary",
         },
       ],
     },
@@ -140,20 +135,21 @@ const DeveloperDetails = () => {
       userImg: userImage6,
       candidateName: "Milton Osborn",
       candidateDesignation: "Assistant / Store Keeper",
-      location: "Oakridge Lane Richardson",
+      location: "Senior Machine Leaning",
       salary: "Average Salary: $455",
       rating: 2,
-      ratingClass: "badge bg-dark bg-gradient ms-1",
+      ratingClass: "badge bg-secondary bg-gradient ms-1",
       addclassNameBookmark: false,
+      progress: 80,
       badges: [
         {
           id: 1,
-          badgeName: "Trainer",
-          classname: "info",
+          badgeName: "C#",
+          classname: "primary",
         },
         {
           id: 2,
-          badgeName: "Adobe illustrator",
+          badgeName: "Java",
           classname: "primary",
         },
       ],
@@ -163,20 +159,21 @@ const DeveloperDetails = () => {
       userImg: userImage7,
       candidateName: "Harold Jordan",
       candidateDesignation: "Executive, HR Operations",
-      location: "Oakridge Lane Richardson",
+      location: "Fresher Ruby",
       salary: "Average Salary: $799",
       rating: 4,
-      ratingClass: "badge bg-dark bg-gradient ms-1",
+      ratingClass: "badge bg-secondary bg-gradient ms-1",
       addclassNameBookmark: false,
+      progress: 29,
       badges: [
         {
           id: 1,
-          badgeName: "Trainer",
-          classname: "success",
+          badgeName: "Reactjs",
+          classname: "primary",
         },
         {
           id: 2,
-          badgeName: "Adobe illustrator",
+          badgeName: "Nodejs",
           classname: "primary",
         },
       ],
@@ -186,72 +183,41 @@ const DeveloperDetails = () => {
       userImg: userImage8,
       candidateName: "MichaeL Drake ",
       candidateDesignation: "Full Stack Engineer",
-      location: "Oakridge Lane Richardson",
+      location: "Leader AWS Cloud",
       salary: "Average Salary: $240",
       rating: 3,
-      ratingClass: "badge bg-dark bg-gradient ms-1",
+      ratingClass: "badge bg-secondary bg-gradient ms-1",
       addclassNameBookmark: false,
+      progress: 100,
       badges: [
         {
           id: 1,
-          badgeName: "Trainer",
-          classname: "info",
+          badgeName: "BA",
+          classname: "primary",
         },
         {
           id: 2,
-          badgeName: "Adobe illustrator",
-          classname: "warning",
+          badgeName: "Tester",
+          classname: "primary",
         },
       ],
     },
   ];
+
+  const getBarColor = (progress) => {
+    if (progress <= 30) {
+      return "red";
+    } else if (progress <= 50) {
+      return "#FFD700";
+    } else if (progress <= 80) {
+      return "skyblue";
+    } else {
+      return "green";
+    }
+  };
+
   return (
     <React.Fragment>
-      <Row className="align-items-center">
-        <Col lg={8}>
-          <div className="mb-3 mb-lg-0">
-            <h6 className="fs-16 mb-0"> Showing 1 – 8 of 11 results </h6>
-          </div>
-        </Col>
-
-        <Col lg={4}>
-          <div className="candidate-list-widgets">
-            <Row>
-              <Col lg={6}>
-                <div className="selection-widget">
-                  <select
-                    className="form-select"
-                    data-trigger
-                    name="choices-single-filter-orderby"
-                    id="choices-single-filter-orderby"
-                    aria-label="Default select example"
-                  >
-                    <option value="df">Default</option>
-                    <option value="ne">Available</option>
-                    <option value="od">Unavailable</option>
-                    <option value="rd">Working On Project</option>
-                  </select>
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div className="selection-widget mt-2 mt-lg-0">
-                  <select
-                    className="form-select"
-                    data-trigger
-                    name="choices-candidate-page"
-                    id="choices-candidate-page"
-                    aria-label="Default select example"
-                  >
-                    <option value="df">All</option>
-                    <option value="ne">8 per Page</option>
-                    <option value="ne">12 per Page</option>
-                  </select>
-                </div>
-              </Col>
-            </Row>
-          </div>
-        </Col>
-      </Row>
       <div className="candidate-list">
         {candidateDetails.map((candidateDetailsNew, key) => (
           <div
@@ -294,9 +260,10 @@ const DeveloperDetails = () => {
                     </p>
                     <ul className="list-inline mb-0 text-muted">
                       <li className="list-inline-item">
-                        <i className="mdi mdi-map-marker"></i>{" "}
+                        <i className="uil-keyboard"></i>{" "}
                         {candidateDetailsNew.location}
                       </li>
+                      <br />
                       <li className="list-inline-item">
                         <i className="uil uil-wallet"></i>{" "}
                         {candidateDetailsNew.salary}
@@ -324,15 +291,36 @@ const DeveloperDetails = () => {
                   <div className="left-side-matching ">
                     <div>
                       <div className="matching-rate-dev">
-                        <h3 style={{ color: "#02AF74" }}>90%</h3>
-                        <span>Matching with requirement</span>
+                        <span
+                          className="percent-matching"
+                          style={{
+                            color: getBarColor(candidateDetailsNew.progress),
+                          }}
+                        >
+                          {candidateDetailsNew.progress}%
+                        </span>
+                        <span style={{ fontSize: "80%" }}>
+                          Matching with requirement
+                        </span>
                       </div>
                     </div>
+                    {/* Chèn thanh tiến trình */}
+                    <div className="matching-bar border border-2 ">
+                      <div
+                        className="match-level"
+                        style={{
+                          width: `${candidateDetailsNew.progress}%`,
+                          backgroundColor: getBarColor(
+                            candidateDetailsNew.progress
+                          ),
+                        }}
+                      ></div>
+                    </div>
                     <div className="send-matching-dev">
-                      <button class="button-82-pushable" role="button">
-                        <span class="button-82-shadow"></span>
-                        <span class="button-82-edge"></span>
-                        <span class="button-82-front text">Send Dev</span>
+                      <button className="button-82-pushable" role="button">
+                        <span className="button-82-shadow"></span>
+                        <span className="button-82-edge"></span>
+                        <span className="button-82-front text">Send</span>
                       </button>
                     </div>
                   </div>

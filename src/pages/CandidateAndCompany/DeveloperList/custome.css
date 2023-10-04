@@ -37,10 +37,7 @@
     border-radius: 5px;
     background: linear-gradient(
       to left,
-      /* hsl(340deg 100% 16%) 0%,
-      hsl(340deg 100% 32%) 8%,
-      hsl(340deg 100% 32%) 92%,
-      hsl(340deg 100% 16%) 100% */
+      
       hsl(140, 75%, 30%) 0%,
       hsl(140, 75%, 30%) 8%,
       hsl(140, 75%, 30%) 92%,
@@ -107,12 +104,16 @@
   }
 
 
-  .matching-rate-dev h3{
-    margin-bottom: -5px
+  .percent-matching{
+    color: hsl(140, 75%, 37%);
+    
+    font-size: 220%;
+    font-weight: 900;
   }
 
   .send-matching-dev{
     margin-top: 20px;
+    
   }
 
   .left-side-matching{
@@ -122,3 +123,35 @@
   justify-content: center; 
   height: 100%; 
   }
+
+  
+
+
+  
+
+  .matching-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #e0e0e0;
+    position: relative;
+    overflow: hidden;
+    margin-top: 2px; /* Thêm khoảng cách giữa văn bản và thanh tiến trình */
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    
+  }
+  
+  .match-level {
+    height: 100%;
+    background-color: hsl(140, 75%, 37%);
+    position: relative;
+    overflow: hidden;
+    transition: width 0.5s ease; /* Để có hiệu ứng chuyển động */
+    border-radius: 8px;
+  }
+  
+  
+
+ 
+
+
