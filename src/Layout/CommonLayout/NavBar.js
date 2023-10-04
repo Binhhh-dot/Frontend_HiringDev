@@ -243,14 +243,28 @@ const NavBar = (props) => {
                       <span className="dropdown-header">Jobs</span>
                       <div>
                         <Link className="dropdown-item" to="/hiringrequestlist">
-                          Hiring Request List
+                          HiringRequestL In Manager
                         </Link>
 
                         <Link
                           className="dropdown-item"
-                          to="/developerlistincompanypartner"
+                          to="/hiringrequestdetails"
+                        >
+                          HiringRequestD In Manager
+                        </Link>
+
+                        <Link
+                          className="dropdown-item"
+                          to="/hiringrequestlistincompanypartner"
                         >
                           HiringRequestL In Company
+                        </Link>
+
+                        <Link
+                          className="dropdown-item"
+                          to="/hiringrequestlistincompanypartnerdetail"
+                        >
+                          HiringRequestD In Company
                         </Link>
 
                         <Link
@@ -259,6 +273,7 @@ const NavBar = (props) => {
                         >
                           Create hiring request
                         </Link>
+
                         <Link className="dropdown-item" to="/joblist">
                           Job List
                         </Link>
@@ -274,12 +289,7 @@ const NavBar = (props) => {
                         <Link className="dropdown-item" to="/jobdetails">
                           Job Details
                         </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/hiringrequestdetails"
-                        >
-                          Hiring Request Details
-                        </Link>
+
                         <Link className="dropdown-item" to="/jobscategories">
                           Jobs Categories
                         </Link>
@@ -332,12 +342,12 @@ const NavBar = (props) => {
                           Company Details
                         </Link>
 
-                        <Link
+                        {/* <Link
                           className="dropdown-item"
                           to="/developerlistincompanypartner"
                         >
                           Developer List In Company
-                        </Link>
+                        </Link> */}
                       </div>
                     </Col>
                     <Col lg={4}>

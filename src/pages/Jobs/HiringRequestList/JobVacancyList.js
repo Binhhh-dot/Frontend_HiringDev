@@ -28,6 +28,7 @@ const JobVacancyList = () => {
       lookingForDev: true,
       timing: "Looking For Dev",
       addclassNameBookmark: false,
+      showFullSkills: false,
       badges: [],
       experience: "Management Team",
     },
@@ -43,6 +44,7 @@ const JobVacancyList = () => {
       timing: "Interview",
       // catogary: "Recent Jobs",
       addclassNameBookmark: true,
+      showFullSkills: false,
       badges: [],
       experience: "C++, Embedded, Linux",
     },
@@ -57,6 +59,7 @@ const JobVacancyList = () => {
       done: true,
       timing: "Done",
       addclassNameBookmark: false,
+      showFullSkills: false,
       badges: [],
       experience: "Back-end (C#, .NET Core, WebAPI),  Winform, DevExpress.",
     },
@@ -71,6 +74,7 @@ const JobVacancyList = () => {
       outOfTime: true,
       timing: "Out Of Time",
       addclassNameBookmark: false,
+      showFullSkills: false,
       badges: [],
       experience: "AWS EKS, K8S, CI/CD, Data warehouse, Caching,  Docker.",
     },
@@ -85,6 +89,7 @@ const JobVacancyList = () => {
       cancelled: true,
       timing: "Cancelled",
       addclassNameBookmark: true,
+      showFullSkills: false,
       badges: [],
       experience: "App design, APIs, UX/UI, Native app writing ability",
     },
@@ -99,6 +104,7 @@ const JobVacancyList = () => {
       lookingForDev: true,
       timing: "Looking For Dev",
       addclassNameBookmark: true,
+      showFullSkills: false,
       badges: [],
       experience: "TypeScript, FlowType, etc, REST API, GraphQL",
     },
@@ -113,6 +119,7 @@ const JobVacancyList = () => {
       lookingForDev: true,
       timing: "Looking For Dev",
       addclassNameBookmark: false,
+      showFullSkills: false,
       badges: [],
       experience: "2-3 years",
     },
@@ -127,11 +134,28 @@ const JobVacancyList = () => {
       interview: true,
       timing: "Interview",
       addclassNameBookmark: true,
+      showFullSkills: false,
       badges: [],
       experience:
         "Strong organizational skills, The ability to thrive in fast-paced, high-stress situations, Implement patching on Applications, Systems, Devices",
     },
   ];
+
+  //Set initial state  for showFulSkill using object id
+  const initialSkillsState = jobVacancyList.reduce(
+    (acc, job) => ({ ...acc, [job.id]: false }),
+    {}
+  );
+
+  const [showFullSkills, setShowFullSkills] = useState(initialSkillsState);
+
+  const toggleShowFullSkills = (id) => {
+    setShowFullSkills((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+
   return (
     <React.Fragment>
       <div>
@@ -244,101 +268,45 @@ const JobVacancyList = () => {
               <Row className="justify-content-between">
                 <Col md={9}>
                   <div>
-                    <p className="text-muted mb-0">
-                      <span className="text-dark">Skill Required:</span>
-                      {jobVacancyListDetails.experience}
+                    <p className="text-muted mb-0 ">
+                      {jobVacancyListDetails.experience
+                        .split(",")
+                        .slice(
+                          0,
+                          showFullSkills[jobVacancyListDetails.id]
+                            ? undefined
+                            : 3
+                        )
+                        .map((skill, index) => (
+                          <span
+                            key={index}
+                            className="badge bg-primary-subtle text-primary ms-2"
+                          >
+                            {skill.trim()}
+                          </span>
+                        ))}
+
+                      {jobVacancyListDetails.experience.split(",").length >
+                        3 && (
+                        <Link
+                          to="#"
+                          onClick={() =>
+                            toggleShowFullSkills(jobVacancyListDetails.id)
+                          }
+                        >
+                          {" "}
+                          {showFullSkills[jobVacancyListDetails.id]
+                            ? "less"
+                            : "...more"}
+                        </Link>
+                      )}
                     </p>
-                  </div>
-                </Col>
-                <Col lg={2} md={3}>
-                  <div>
-                    <Link
-                      to="#applyNow"
-                      onClick={openModal}
-                      className="primary-link"
-                    >
-                      More <i className="mdi mdi-chevron-double-right"></i>
-                    </Link>
                   </div>
                 </Col>
               </Row>
             </div>
           </div>
         ))}
-        <div
-          className="modal fade"
-          id="applyNow"
-          tabIndex="-1"
-          aria-labelledby="applyNow"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <Modal isOpen={modal} toggle={openModal} centered>
-              <ModalBody className="modal-body p-5">
-                <div className="text-center mb-4">
-                  <h5 className="modal-title" id="staticBackdropLabel">
-                    Apply For This Job
-                  </h5>
-                </div>
-                <div className="position-absolute end-0 top-0 p-3">
-                  <button
-                    type="button"
-                    onClick={openModal}
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="mb-3">
-                  <Label for="nameControlInput" className="form-label">
-                    Name
-                  </Label>
-                  <Input
-                    type="text"
-                    className="form-control"
-                    id="nameControlInput"
-                    placeholder="Enter your name"
-                  />
-                </div>
-                <div className="mb-3">
-                  <Label for="emailControlInput2" className="form-label">
-                    Email Address
-                  </Label>
-                  <Input
-                    type="email"
-                    className="form-control"
-                    id="emailControlInput2"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                <div className="mb-3">
-                  <Label for="messageControlTextarea" className="form-label">
-                    Message
-                  </Label>
-                  <textarea
-                    className="form-control"
-                    id="messageControlTextarea"
-                    rows="4"
-                    placeholder="Enter your message"
-                  ></textarea>
-                </div>
-                <div className="mb-4">
-                  <Label className="form-label" for="inputGroupFile01">
-                    Resume Upload
-                  </Label>
-                  <Input
-                    type="file"
-                    className="form-control"
-                    id="inputGroupFile01"
-                  />
-                </div>
-                <button type="submit" className="btn btn-primary w-100">
-                  Send Application
-                </button>
-              </ModalBody>
-            </Modal>
-          </div>
-        </div>
       </div>
     </React.Fragment>
   );

@@ -1,18 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Col, Container, Row, Nav } from "reactstrap";
+import { Col, Row } from "reactstrap";
 
 const Section = () => {
   return (
     <React.Fragment>
       <section className="page-title-box">
-        <Container>
+        <div className="container">
           <Row className="justify-content-center">
             <Col md={6}>
               <div className="text-center text-white">
-                <h3 className="mb-4">Hiring Request List In Company Partner</h3>
+                <h3 className="mb-4">
+                  Hiring Request List In Company Partner Detail
+                </h3>
                 <div className="page-next">
-                  <Nav
+                  <nav
                     className="d-inline-block"
                     aria-label="breadcrumb text-center"
                   >
@@ -28,15 +30,15 @@ const Section = () => {
                         aria-current="page"
                       >
                         {" "}
-                        Hiring Request List In Company Partner{" "}
+                        Hiring Request List In Company Partner Detail{" "}
                       </li>
                     </ol>
-                  </Nav>
+                  </nav>
                 </div>
               </div>
             </Col>
           </Row>
-        </Container>
+        </div>
       </section>
       <div className="position-relative" style={{ zIndex: 1 }}>
         <div className="shape">

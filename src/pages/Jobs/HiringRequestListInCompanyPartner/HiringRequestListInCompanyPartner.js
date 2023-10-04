@@ -1,22 +1,28 @@
 import React from "react";
-import { Container, Row } from "reactstrap";
-import JobVacancy2 from "./HiringRequestListInCompanyPartnerDetail";
-import Section from "./Section";
-import Pagination from "../JobList2/Pagination";
-import HiringRequestListInCompanyPartner from "./HiringRequestListInCompanyPartnerDetail";
-import HiringRequestListInCompanyPartnerDetail from "./HiringRequestListInCompanyPartnerDetail";
+import { Col, Container, Row } from "react-bootstrap";
+import Section from "../HiringRequestListInCompanyPartner/Section";
+import JobSearchOptions from "./JobSearchOptions";
+import JobVacancyList from "./JobVacancyList";
+
+import Sidebar from "./Sidebar";
 
 const HiringRequestListInCompanyPartner = () => {
-  document.title = "Job Grid2 | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
   return (
     <React.Fragment>
       <Section />
       <section className="section">
         <Container>
           <Row>
-            <HiringRequestListInCompanyPartnerDetail />
+            <Col lg={9}>
+              <div className="me-lg-5">
+                <JobSearchOptions />
+
+                <JobVacancyList />
+              </div>
+            </Col>
+            <Sidebar />
           </Row>
-          <Pagination />
         </Container>
       </section>
     </React.Fragment>

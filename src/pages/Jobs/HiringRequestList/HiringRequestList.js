@@ -3,8 +3,9 @@ import { Col, Container, Row } from "react-bootstrap";
 import Section from "../HiringRequestList/Section";
 import JobSearchOptions from "./JobSearchOptions";
 import JobVacancyList from "./JobVacancyList";
-import Popular from "./Popular";
+
 import Sidebar from "./Sidebar";
+import Pagination from "./Pagination";
 
 const HiringRequestList = () => {
   document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
@@ -20,37 +21,8 @@ const HiringRequestList = () => {
                 <JobSearchOptions />
 
                 <JobVacancyList />
-                <div className="mt-5">
-                  <nav aria-label="Page navigation example">
-                    <ul className="pagination justify-content-center">
-                      <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">
-                          Previous
-                        </a>
-                      </li>
-                      <li class="page-item">
-                        <a class="page-link" href="#">
-                          1
-                        </a>
-                      </li>
-                      <li class="page-item">
-                        <a class="page-link" href="#">
-                          2
-                        </a>
-                      </li>
-                      <li class="page-item">
-                        <a class="page-link" href="#">
-                          3
-                        </a>
-                      </li>
-                      <li class="page-item">
-                        <a class="page-link" href="#">
-                          Next
-                        </a>
-                      </li>
-                    </ul>
-                  </nav>
-                </div>
+
+                <Pagination />
               </div>
             </Col>
             <Sidebar />
