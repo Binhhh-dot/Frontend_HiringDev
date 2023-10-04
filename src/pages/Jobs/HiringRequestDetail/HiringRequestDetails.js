@@ -1,8 +1,7 @@
 import React from "react";
 import { Col, Container, Row } from "reactstrap";
 import JobDetailsDescription from "./JobDetailsDescription";
-import JobVacancyPost from "./JobVacancyPost";
-import RightSideContent from "./RightSideContent";
+
 import Section from "./Section";
 
 const HiringRequestDetails = () => {
@@ -13,12 +12,8 @@ const HiringRequestDetails = () => {
       <section className="section">
         <Container>
           <Row>
-            <Col lg={8}>
+            <Col lg={12}>
               <JobDetailsDescription />
-              <JobVacancyPost />
-            </Col>
-            <Col lg={4} className="mt-4 mt-lg-0">
-              <RightSideContent />
             </Col>
           </Row>
         </Container>

@@ -35,6 +35,7 @@ const RightSideContent = () => {
               <Link
                 to="/companydetails"
                 className="btn btn-primary btn-hover w-100 rounded"
+                style={{ fontSize: "16px", fontWeight: "600" }}
               >
                 Cancel Request
               </Link>

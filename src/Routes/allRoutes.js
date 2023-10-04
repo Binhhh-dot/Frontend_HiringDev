@@ -59,11 +59,13 @@ import BookMarkJobs from "../pages/Profile/BookMarkJobs/BookMarkJobs";
 import MyProfile from "../pages/Profile/MyProfile/MyProfile";
 import HiringRequestDetails from "../pages/Jobs/HiringRequestDetail/HiringRequestDetails";
 import DeveloperList from "../pages/CandidateAndCompany/DeveloperList/DeveloperList";
-import DeveloperDetails from "../pages/CandidateAndCompany/DeveloperList/DeveloperDetails";
+//import DeveloperDetails from "../pages/CandidateAndCompany/DeveloperList/DeveloperDetails";
 import DeveloperInfo from "../pages/CandidateAndCompany/DeveloperInfo/DeveloperInfo";
-import DeveloperListInCompanyPartner from "../pages/CandidateAndCompany/DeveloperListInCompanyPartner/DeveloperListInCompanyPartner";
-import DeveloperListInCompanyPartnerDetail from "../pages/CandidateAndCompany/DeveloperListInCompanyPartner/DeveloperListInCompanyPartnerDetail";
+// import DeveloperListInCompanyPartner from "../pages/CandidateAndCompany/DeveloperListInCompanyPartner/DeveloperListInCompanyPartner";
+// import DeveloperListInCompanyPartnerDetail from "../pages/CandidateAndCompany/DeveloperListInCompanyPartner/DeveloperListInCompanyPartnerDetail";
 import CreateCompanyAccount from "../pages/CandidateAndCompany/CreateCompanyAccount/CreateCompanyAcount";
+import HiringRequestListInCompanyPartner from "../pages/Jobs/HiringRequestListInCompanyPartner/HiringRequestListInCompanyPartner";
+import HiringRequestListInCompanyPartnerDetail from "../pages/Jobs/HiringRequestListInCompanyPartnerDetail/HiringRequestListInCompanyPartnerDetail";
 
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
@@ -99,14 +101,14 @@ const userRoutes = [
   { path: "/candidatedetails", component: <CandidateDetails /> },
   { path: "/candidategrid", component: <CandidateGrid /> },
   { path: "/candidatelist", component: <CandidateList /> },
-  {
-    path: "/developerlistincompanypartner",
-    component: <DeveloperListInCompanyPartner />,
-  },
-  {
-    path: "/developerlistincompanypartnerdetail",
-    component: <DeveloperListInCompanyPartnerDetail />,
-  },
+  // {
+  //   path: "/developerlistincompanypartner",
+  //   component: <DeveloperListInCompanyPartner />,
+  // },
+  // {
+  //   path: "/developerlistincompanypartnerdetail",
+  //   component: <DeveloperListInCompanyPartnerDetail />,
+  // },
 
   //Jobs Section
   { path: "/jobscategories", component: <JobsCategories /> },
@@ -117,6 +119,15 @@ const userRoutes = [
   { path: "/joblist", component: <JobList /> },
   { path: "/hiringrequestlist", component: <HiringRequestList /> },
   { path: "/hiringrequestdetails", component: <HiringRequestDetails /> },
+  {
+    path: "/hiringrequestlistincompanypartner",
+    component: <HiringRequestListInCompanyPartner />,
+  },
+  {
+    path: "/hiringrequestlistincompanypartnerdetail",
+    component: <HiringRequestListInCompanyPartnerDetail />,
+  },
+
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },
 
   //Company Section
