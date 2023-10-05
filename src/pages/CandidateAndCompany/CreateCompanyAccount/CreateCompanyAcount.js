@@ -30,30 +30,36 @@ const CreateCompanyAccount = () => {
     const companyName = document.getElementById('company-name').value;
     const companyEmail = document.getElementById('email-address').value;
     const phoneNumber = document.getElementById('number').value;
-    const companyImage = document.getElementById('company-image').value; // You may need to handle file uploads differently
     const country = selectedCountry ? selectedCountry.value : '';
 
+    const fileInput = document.getElementById('company-image');
+    const file = fileInput.files[0];
     // Get userId from localStorage
     const userId = localStorage.getItem('userId');
 
-    const data = {
-      companyName,
-      companyEmail,
-      phoneNumber,
-      companyImage,
-      country,
-      userId
-    };
+    const formData = new FormData();
+    formData.append('companyName', companyName);
+    formData.append('companyEmail', companyEmail);
+    formData.append('phoneNumber', phoneNumber);
+    formData.append('country', country);
+    formData.append('userId', userId);
+    formData.append('file', file);
+
 
     try {
       // Make API request
-      const response = await axios.post('https://wehireapi.azurewebsites.net/api/CompanyPartner', data);
+      const response = await axios.post('https://wehireapi.azurewebsites.net/api/CompanyPartner', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       // Handle the response (you can show a success message or redirect to another page)
       console.log('API Response:', response.data);
     } catch (error) {
       // Handle errors (show an error message or log the error)
       console.error('Error creating company:', error);
+      console.log(error.response.data);
     }
   };
 
@@ -119,7 +125,7 @@ const CreateCompanyAccount = () => {
                     <div class="row">
                       <div class="col-md-6">
                         <div class="form-group app-label mt-2">
-                          <label class="text-muted">Company Image</label>
+                          <label class="text-muted">Logo Company</label>
                           {/* Thay đổi thành ô upload file */}
                           <input
                             id="company-image"

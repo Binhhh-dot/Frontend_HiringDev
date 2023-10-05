@@ -22,7 +22,6 @@ const HiringRequestList = () => {
 
                 <JobVacancyList />
 
-                <Pagination />
               </div>
             </Col>
             <Sidebar />
