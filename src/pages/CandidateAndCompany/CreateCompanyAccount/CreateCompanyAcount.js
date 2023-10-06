@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Section from "../CreateCompanyAccount/Section";
 import Select from "react-select";
 import axios from "axios";
+import companyServices from "../../../services/company.services";
 
 const CreateCompanyAccount = () => {
   document.title = "Create Company Account";
@@ -48,11 +49,7 @@ const CreateCompanyAccount = () => {
 
     try {
       // Make API request
-      const response = await axios.post('https://wehireapi.azurewebsites.net/api/CompanyPartner', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await companyServices.createCompany(formData);
 
       // Handle the response (you can show a success message or redirect to another page)
       console.log('API Response:', response.data);

@@ -19,6 +19,10 @@ import Section from "../CreateHiringRequest/Section";
 import Select from "react-select";
 import axios from "axios";
 import { RingLoader } from "react-spinners";
+import skillService from "../../../services/skill.service";
+import typeService from "../../../services/type.service";
+import levelService from "../../../services/level.service";
+import hiringRequestService from "../../../services/hiringrequest.service";
 
 const CreateHiringRequest = () => {
   document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
@@ -62,7 +66,7 @@ const CreateHiringRequest = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://wehireapi.azurewebsites.net/api/Skill");
+        const response = await skillService.getAllSkill();
         const activeSkills = response.data.data.filter(skill => skill.statusString === "Active");
         const formattedSkills = activeSkills.map(skill => ({
           value: skill.skillId.toString(),
@@ -75,7 +79,7 @@ const CreateHiringRequest = () => {
       }
 
       try {
-        const response2 = await axios.get("https://wehireapi.azurewebsites.net/api/Type");
+        const response2 = await typeService.getAllType();
         const activeTypes = response2.data.data.filter(type => type.statusString === "Active");
         const formattedTypes = activeTypes.map(type => ({
           value: type.typeId.toString(),
@@ -87,7 +91,7 @@ const CreateHiringRequest = () => {
       }
 
       try {
-        const response3 = await axios.get("https://wehireapi.azurewebsites.net/api/Level");
+        const response3 = await levelService.getAllLevel();
         const activeLevels = response3.data.data.filter(level => level.statusString === "Active");
         const formattedLevels = activeLevels.map(level => ({
           value: level.levelId.toString(),
@@ -205,27 +209,24 @@ const CreateHiringRequest = () => {
       // Đây có thể là nơi gửi yêu cầu đăng job lên server
       console.log("Posting job...");
       try {
-        const response = await axios.post(
-          "https://wehireapi.azurewebsites.net/api/HiringRequest",
-          {
-            jobTitle: document.getElementById("job-title").value, // replace with the actual job title from your input
-            jobDescription: document.getElementById("description").value, // get job description from the textarea
-            numberOfDev: parseInt(document.getElementById("number-dev").value, 10), // parse as integer
-            salaryPerDev: parseFloat(document.getElementById("budget").value), // parse as float
-            duration: document.getElementById("duration").value, // get duration from the date input
-            companyId: companyId,
-            typeRequireId: selectedOptions2.value, // replace with actual value from the type dropdown
-            levelRequireId: selectedOptions3.value, // replace with actual value from the level dropdown
-            skills: selectedOptions.map((skill) => skill.value), // replace with actual values from the multi-select
-            isSaved: false,
-          }
+        const jobTitle = document.getElementById("job-title").value; // replace with the actual job title from your input
+        const jobDescription = document.getElementById("description").value; // get job description from the textarea
+        const numberOfDev = parseInt(document.getElementById("number-dev").value, 10); // parse as integer
+        const salaryPerDev = parseFloat(document.getElementById("budget").value); // parse as float
+        const duration = document.getElementById("duration").value; // get duration from the date input
+        const typeRequireId = selectedOptions2.value; // replace with actual value from the type dropdown
+        const levelRequireId = selectedOptions3.value; // replace with actual value from the level dropdown
+        const skills = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
+        const isSaved = false;
+        const response = await hiringRequestService.createHiringRequest(
+          jobTitle, jobDescription, numberOfDev, salaryPerDev, duration, typeRequireId, levelRequireId, skills, isSaved, companyId,
         );
         setLoading(false);
         setSuccessMessage("Đăng công việc thành công");
         setErrorMessage(null);
-        console.log("Job posted successfully:", response.data);
+        console.log("Job posted successfully:", response);
       } catch (error) {
-        console.error("Error posting job:");
+        console.error("Error posting job:", error);
         setLoading(false);
         setSuccessMessage(null);
         setErrorMessage("Lỗi khi đăng công việc");
