@@ -18,6 +18,7 @@
   import Section from "../CreateHiringRequest/Section";
   import Select from "react-select";
   import axios from "axios";
+  import { RingLoader } from "react-spinners";
 
   const CreateHiringRequest = () => {
     document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
@@ -38,6 +39,9 @@ const [skillError, setSkillError] = useState(null);
 const [budgetError, setBudgetError] = useState(null);
 const [durationError, setDurationError] = useState(null);
 const [descriptionError, setDescriptionError] = useState(null);
+const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
     const openModal = () => {
       setModal(!modal);
@@ -120,7 +124,7 @@ const [descriptionError, setDescriptionError] = useState(null);
     }, []);
 
     const handlePostJob = async () => {
-
+      setLoading(true);
       // Kiểm tra xem có userID trong localStorage không
       const userId = localStorage.getItem('userId');
       if (!userId) {
@@ -215,9 +219,16 @@ const [descriptionError, setDescriptionError] = useState(null);
               isSaved: false,
             }
           );
+          setLoading(false);
+      setSuccessMessage("Đăng công việc thành công");
+      setErrorMessage(null);
           console.log("Job posted successfully:", response.data);
         } catch (error) {
           console.error("Error posting job:");
+          setLoading(false);
+      setSuccessMessage(null);
+      setErrorMessage("Lỗi khi đăng công việc");
+
           // Handle error, show error message, etc.
         }
       }
@@ -329,10 +340,26 @@ const [descriptionError, setDescriptionError] = useState(null);
                       </div>
                       <div class="row">
                       <div class="col-lg-12 mt-2">
-    <button type="button" className="btn btn-primary" onClick={handlePostJob}>
-      Post a Job
-    </button>
+    <button type="button" className="btn btn-primary" onClick={handlePostJob} disabled={loading}>
+    {loading ? (
+            <RingLoader color="#fff" loading={true} size={20} />
+          ) : (
+            "Post a hiring request"
+          )}
+        </button>
   </div>
+  {successMessage && (
+        <div className="alert alert-success mt-2" role="alert">
+          {successMessage}
+        </div>
+      )}
+
+      {/* Hiển thị thông báo lỗi */}
+      {errorMessage && (
+        <div className="alert alert-danger mt-2" role="alert">
+          {errorMessage}
+        </div>
+      )}
 
   {/* Modal for Sign Up */}
   <Modal
@@ -358,7 +385,7 @@ const [descriptionError, setDescriptionError] = useState(null);
                                 Jobcy
                               </p>
                             </div>
-                            <Form action="#" className="auth-form">
+                            <Form action="#" className="auth-form" onSubmit={handleSignIn}>
                               <FormGroup className="mb-3">
                                 <Label
                                   htmlFor="emailInput"
@@ -462,7 +489,7 @@ const [descriptionError, setDescriptionError] = useState(null);
                                 <Input
                                   type="password"
                                   className="form-control"
-                                  id="passwordInput"
+                                  id="s"
                                   placeholder="Password"
                                 />
                               </FormGroup>

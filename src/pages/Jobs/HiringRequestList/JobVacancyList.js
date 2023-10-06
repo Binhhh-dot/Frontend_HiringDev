@@ -1,80 +1,103 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Col, Row } from "reactstrap";
+import { Col, Row, Input } from "reactstrap";
 import axios from "axios";
-
-const JobVacancyList = () => {
+import JobType from "../../Home/SubSection/JobType";
+import { Form } from "react-bootstrap";
+const JobVacancyList = (a) => {
   //Apply Now Model
   const [jobVacancyList, setJobVacancyList] = useState([]);
+  
   let [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState('');
+  const [skill, setSkill] = useState([]);
+  const pageSize = 5;
   const handlePageClick = (page) => {
     setCurrentPage(page);
   };
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
-
-    for (let i = currentPage; i < currentPage + 4; i++) {
-      pageNumbers.push(
-        <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
-          <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
-            {i}
-          </Link>
-        </li>
-      );
-    }
+    const maxPageButtons = 4;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+  let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+  if (totalPages > maxPageButtons && currentPage <= Math.floor(maxPageButtons / 2) + 1) {
+    endPage = maxPageButtons;
+  }
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(
+      <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
+        <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
+          {i}
+        </Link>
+      </li>
+    );
+  }
 
     return pageNumbers;
   };
 
   const handleNextPage = () => {
-    setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const handlePrevPage = () => {
-    setCurrentPage(currentPage - 1);
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  
+  const fetchJobVacancies = async () => {
+    console.log(skill)
+    try {
+      let link = `https://wehireapi.azurewebsites.net/api/HiringRequest?PageIndex=${currentPage}&PageSize=5`
+      if(search){
+        link += `&JobTitle=${search}`
+      }  
+      const response = await axios.get(
+        link
+      );
+
+      const data = response.data;
+      const formattedJobVacancies = data.data.map((job) => {
+        // Assuming job.typeRequireName and job.levelRequireName are available
+        job.skillRequireStrings.unshift(job.typeRequireName, job.levelRequireName);
+        return {
+          id: job.requestId,
+          companyImg: job.companyImage,
+          jobDescription: job.jobTitle,
+          companyName: job.companyName,
+          location: job.numberOfDev + " Developer",
+          jobPostTime: new Date(job.duration).toLocaleDateString(),
+          cancelled: job.statusString.includes("Cancelled"),
+          done: job.statusString.includes("Done"),
+          outOfTime: job.statusString.includes("Expired"),
+          fullTime: job.statusString.includes("Waiting Approval"),
+          timing: job.statusString,
+          addclassNameBookmark: false,
+          showFullSkills: false,
+          badges: [],
+          experience: job.skillRequireStrings.join(", "),
+        };
+      });
+      console.log(response.data);
+      setJobVacancyList(formattedJobVacancies);
+      setTotalPages(Math.ceil(data.paging.total / pageSize));
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
   };
 
   useEffect(() => {
-    const fetchJobVacancies = async () => {
-      try {
-        const response = await axios.get(
-          `https://wehireapi.azurewebsites.net/api/HiringRequest?PageIndex=${currentPage}&PageSize=5`
-
-        );
-
-        const data = response.data;
-        const formattedJobVacancies = data.data.map((job) => {
-          // Assuming job.typeRequireName and job.levelRequireName are available
-          job.skillRequireStrings.unshift(job.typeRequireName, job.levelRequireName);
-          return {
-            id: job.requestId,
-            companyImg: job.companyImage,
-            jobDescription: job.jobTitle,
-            companyName: job.companyName,
-            location: job.numberOfDev + " Developer",
-            jobPostTime: new Date(job.duration).toLocaleDateString(),
-            cancelled: job.statusString.includes("Cancelled"),
-            done: job.statusString.includes("Done"),
-            outOfTime: job.statusString.includes("Expired"),
-            fullTime: job.statusString.includes("Waiting Approval"),
-            timing: job.statusString,
-            addclassNameBookmark: false,
-            showFullSkills: false,
-            badges: [],
-            experience: job.skillRequireStrings.join(", "),
-          };
-        });
-
-        setJobVacancyList(formattedJobVacancies);
-      } catch (error) {
-        console.error("Error fetching job vacancies:", error);
-      }
-    };
-
     fetchJobVacancies();
   }, [currentPage]);
 
+  const onSearch = () => {
+    fetchJobVacancies()
+  }
 
 
   //Set initial state  for showFulSkill using object id
@@ -94,6 +117,38 @@ const JobVacancyList = () => {
 
   return (
     <React.Fragment>
+      <div className="job-list-header">
+        <Form action="#">
+          <Row className="g-2">
+            <Col lg={4} md={6}>
+              <div className="filler-job-form">
+                <i className="uil uil-briefcase-alt"></i>
+                <Input
+                  type="search"
+                  className="form-control filter-input-box"
+                  id="exampleFormControlInput1"
+                  placeholder="Jobtitle... "
+                  style={{ marginTop: "-10px" }}
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
+            </Col>
+            
+            <Col lg={5} md={6}>
+              <div className="filler-job-form">
+                <i className="uil uil-clipboard-notes"></i>
+                <JobType skill={skill} setSkill={setSkill} />
+              </div>
+            </Col>
+            <Col lg={3} md={6}>
+              <div className="btn btn-primary w-100" onClick={() => onSearch()}>
+                <i className="uil uil-filter"></i> Fliter
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </div>
       <div>
         {jobVacancyList.map((jobVacancyListDetails, key) => (
           <div
@@ -226,7 +281,7 @@ const JobVacancyList = () => {
                         ))}
 
                       {jobVacancyListDetails.experience.split(",").length >
-                        3 && (
+                        6 && (
                           <Link
                             to="#"
                             onClick={() =>
@@ -258,7 +313,7 @@ const JobVacancyList = () => {
                 </Link>
               </li>
               {renderPageNumbers()}
-              <li className="page-item">
+              <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
                 <Link className="page-link" to="#" onClick={handleNextPage}>
                   <i className="mdi mdi-chevron-double-right fs-15"></i>
                 </Link>
