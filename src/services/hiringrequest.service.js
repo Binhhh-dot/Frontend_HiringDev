@@ -13,6 +13,13 @@ const getAllHiringRequest = async () => {
     return response;
 }
 
+const getAllStatusHiringRequest = async () => {
+    const serviceUrl = urlConstant.endpoint.hiringRequest.getAllStatus;
+    const response = await utils.axiosLocalHost.get(serviceUrl);
+    console.log(serviceUrl);
+    return response;
+}
+
 const getHiringRequestAndPaging = async (currentPage, pageSize) => {
     const serviceUrl = urlConstant.endpoint.hiringRequest.getAll + "?";
     const pagingUrl = urlConstant.endpoint.hiringRequest.paging
@@ -57,5 +64,6 @@ export default {
     createHiringRequest,
     getAllHiringRequest,
     getHiringRequestAndPaging,
-    getAllHiringRequestByJobTitleAndSkill
+    getAllHiringRequestByJobTitleAndSkill,
+    getAllStatusHiringRequest
 }

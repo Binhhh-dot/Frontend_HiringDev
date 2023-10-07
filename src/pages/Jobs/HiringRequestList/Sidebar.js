@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button, Col, Collapse, Input, Label } from "reactstrap";
 import "./index.css";
 import levelService from "../../../services/level.service";
+import hiringrequestService from "../../../services/hiringrequest.service";
 
 const Sidebar = () => {
   const [toggleFirst, setToggleFirst] = useState(true);
@@ -14,6 +15,7 @@ const Sidebar = () => {
   //CheckBox
   const [isChecked, setIsChecked] = useState(true);
   const [levels, setLevels] = useState([]);
+  const [statuses, setStatuses] = useState([]);
   const handleOnChange = () => {
     setIsChecked(!isChecked);
   };
@@ -40,6 +42,18 @@ const Sidebar = () => {
     fetchLevels();
   }, []);
 
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      try {
+        const response = await hiringrequestService.getAllStatusHiringRequest();
+        setStatuses(response.data.data);
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      }
+    };
+
+    fetchStatuses();
+  }, []);
   return (
     <React.Fragment>
       <Col lg={3}>
@@ -129,65 +143,25 @@ const Sidebar = () => {
                         className="form-check-label ms-2 text-muted"
                         htmlFor="flexRadioDefault6"
                       >
-                        Looking For Dev
+                        All
                       </label>
                     </div>
-                    <div className="form-check mt-2">
-                      <Input
-                        className="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault2"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexRadioDefault2"
-                      >
-                        Interview
-                      </label>
-                    </div>
-                    <div className="form-check mt-2">
-                      <Input
-                        className="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault3"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexRadioDefault3"
-                      >
-                        Cancelled
-                      </label>
-                    </div>
-                    <div className="form-check mt-2">
-                      <Input
-                        className="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault4"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexRadioDefault4"
-                      >
-                        Out Of Time
-                      </label>
-                    </div>
-                    <div className="form-check mt-2">
-                      <Input
-                        className="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault4"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexRadioDefault4"
-                      >
-                        Done
-                      </label>
-                    </div>
+                    {statuses.map((status) => (
+                      <div className="form-check mt-2" key={status.statusId}>
+                        <Input
+                          className="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id={`flexRadioDefault${status.statusId}`}
+                        />
+                        <label
+                          className="form-check-label ms-2 text-muted"
+                          htmlFor={`flexRadioDefault${status.statusId}`}
+                        >
+                          {status.statusName}
+                        </label>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </Collapse>

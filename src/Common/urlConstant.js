@@ -26,6 +26,7 @@ export default {
             searchStatusHiringRequest: '&Status=${Status}',
             searchSalary: '&LevelRequireId=${LevelRequireId}',
             searchDuration: '&StartSalaryPerDev=${StartSalaryPerDev}&EndSalaryPerDev=${EndSalaryPerDev}',
+            getAllStatus: '/HiringRequest/Status',
         },
         company: {
             createCompany: '/CompanyPartner',
