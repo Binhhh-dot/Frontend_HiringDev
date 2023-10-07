@@ -4,10 +4,11 @@ import { Col, Row, Input } from "reactstrap";
 import axios from "axios";
 import JobType from "../../Home/SubSection/JobType";
 import { Form } from "react-bootstrap";
+import hiringrequestService from "../../../services/hiringrequest.service";
 const JobVacancyList = (a) => {
   //Apply Now Model
   const [jobVacancyList, setJobVacancyList] = useState([]);
-  
+
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
@@ -21,19 +22,19 @@ const JobVacancyList = (a) => {
     const pageNumbers = [];
     const maxPageButtons = 4;
     let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-  let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-  if (totalPages > maxPageButtons && currentPage <= Math.floor(maxPageButtons / 2) + 1) {
-    endPage = maxPageButtons;
-  }
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(
-      <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
-        <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
-          {i}
-        </Link>
-      </li>
-    );
-  }
+    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+    if (totalPages > maxPageButtons && currentPage <= Math.floor(maxPageButtons / 2) + 1) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
+          <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
+            {i}
+          </Link>
+        </li>
+      );
+    }
 
     return pageNumbers;
   };
@@ -49,17 +50,15 @@ const JobVacancyList = (a) => {
       setCurrentPage(currentPage - 1);
     }
   };
-  
+
   const fetchJobVacancies = async () => {
-    console.log(skill)
+    let response;
     try {
-      let link = `https://wehireapi.azurewebsites.net/api/HiringRequest?PageIndex=${currentPage}&PageSize=5`
-      if(search){
-        link += `&JobTitle=${search}`
-      }  
-      const response = await axios.get(
-        link
-      );
+      if (search || skill) {
+        response = await hiringrequestService.getAllHiringRequestByJobTitleAndSkill(currentPage, 5, search, skill);
+      } else {
+        response = await hiringrequestService.getHiringRequestAndPaging(currentPage, 5);
+      }
 
       const data = response.data;
       const formattedJobVacancies = data.data.map((job) => {
@@ -134,7 +133,7 @@ const JobVacancyList = (a) => {
                 />
               </div>
             </Col>
-            
+
             <Col lg={5} md={6}>
               <div className="filler-job-form">
                 <i className="uil uil-clipboard-notes"></i>

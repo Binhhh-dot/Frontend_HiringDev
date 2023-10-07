@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
+import skillService from "../../../services/skill.service";
 
-const JobType = ({skill, setSkill, ...props}) => {
+const JobType = ({ skill, setSkill, ...props }) => {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const response = await axios.get(
-          "https://wehireapi.azurewebsites.net/api/Skill"
-        );
+        const response = await skillService.getAllSkill();
 
         if (response.data && response.data.data) {
           // Transform API data into the format expected by react-select

@@ -19,6 +19,13 @@ export default {
         hiringRequest: {
             getAll: '/HiringRequest',
             createHiringRequest: '/HiringRequest',
+            paging: 'PageIndex=${currentPage}&PageSize=${pageSize}',
+            searchJobTitle: '&JobTitle=${search}',
+            searchLevel: '&LevelRequireId=${LevelRequireId}',
+            searchType: '&TypeRequireId=${TypeRequireId}',
+            searchStatusHiringRequest: '&Status=${Status}',
+            searchSalary: '&LevelRequireId=${LevelRequireId}',
+            searchDuration: '&StartSalaryPerDev=${StartSalaryPerDev}&EndSalaryPerDev=${EndSalaryPerDev}',
         },
         company: {
             createCompany: '/CompanyPartner',
