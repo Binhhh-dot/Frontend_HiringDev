@@ -620,7 +620,7 @@ const JobDetailsDescription = () => {
                       <div className="d-flex">
                         <div
                           className="d-flex align-items-center"
-                          style={{ marginRight: "6px" }}
+                          style={{ marginRight: "30px" }}
                         >
                           <p
                             style={{

@@ -719,7 +719,7 @@ const CandidateGridDetails = () => {
           <Modal isOpen={interviewModal} toggle={closeInterviewModal} size="lg">
             <ModalBody className="p-5">
               <div className="text-center mb-4">
-                <h5 className="modal-title">Create Interview</h5>
+                <h3 className="modal-title">Create Interview</h3>
               </div>
               <div className="position-absolute end-0 top-0 p-3">
                 <button
@@ -731,7 +731,10 @@ const CandidateGridDetails = () => {
                 ></button>
               </div>
               <div className="mb-3">
-                <Label for="interviewTitle">Interview Title</Label>
+                <Label for="interviewTitle">
+                  {" "}
+                  <h5>Interview Title</h5>
+                </Label>
                 <Input
                   type="text"
                   id="interviewTitle"
@@ -745,7 +748,10 @@ const CandidateGridDetails = () => {
                 />
               </div>
               <div className="mb-3">
-                <Label for="interviewDate">Date of Interview</Label>
+                <Label for="interviewDate">
+                  {" "}
+                  <h5>Date of Interview</h5>
+                </Label>
                 <Input
                   type="date"
                   id="interviewDate"
@@ -756,9 +762,12 @@ const CandidateGridDetails = () => {
                 />
               </div>
 
-              <div className="d-flex justify-content-around">
-                <div className="mb-3 " style={{ width: "47%" }}>
-                  <Label for="interviewStartTime">Start Time</Label>
+              <div className="d-flex justify-content-between">
+                <div className="mb-3 " style={{ width: "49%" }}>
+                  <Label for="interviewStartTime">
+                    {" "}
+                    <h5>Start Time</h5>
+                  </Label>
                   <Input
                     type="time"
                     id="interviewStartTime"
@@ -772,8 +781,11 @@ const CandidateGridDetails = () => {
                   />
                 </div>
 
-                <div className="mb-3" style={{ width: "47%" }}>
-                  <Label for="interviewEndTime">End Time</Label>
+                <div className="mb-3" style={{ width: "49%" }}>
+                  <Label for="interviewEndTime">
+                    {" "}
+                    <h5> End Time</h5>
+                  </Label>
                   <Input
                     type="time"
                     id="interviewEndTime"
@@ -796,10 +808,11 @@ const CandidateGridDetails = () => {
                 ></textarea>
               </div>
 
-              <div className="d-flex justify-content-around">
+              <div className="d-flex justify-content-end mt-3">
                 <button
                   type="button"
                   className="btn btn-secondary w-45"
+                  style={{ marginRight: "10px" }}
                   onClick={handleInterviewSubmit}
                 >
                   Cancel
