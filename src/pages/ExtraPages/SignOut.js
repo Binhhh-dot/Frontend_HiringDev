@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 
 import lightLogo from "../../assets/images/logo-light.png";
 import darkLogo from "../../assets/images/logo-dark.png";
@@ -9,12 +9,13 @@ import { Link } from "react-router-dom";
 
 const SignOut = () => {
   document.title = "Sign Out | Jobcy - Job Listing Template | Themesdesign";
+  console.log(process.env.SERVICE_URL);
   useEffect(() => {
     document.title = "Sign Out | Jobcy - Job Listing Template | Themesdesign";
     // Clear all data in local storage
     localStorage.clear();
   }, []);
-  
+
   return (
     <React.Fragment>
       <div>

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Section from "../CreateDeveloperAccount/Section";
 import Select from "react-select";
-
+import axios from "axios";
 
 
 const CreateDeveloperAccount = () => {
     document.title = "Create Developer Account";
 
     // Khai báo danh sách tùy chọn
-    
+
 
 
     const imageUrl = "https://firebasestorage.googleapis.com/v0/b/capstone-project-wehire.appspot.com/o/cv%2Ffront-end-engineer-.png?alt=media&token=ce6da673-0bcd-415b-84cf-edb5fb4c7fc2";
@@ -20,6 +20,8 @@ const CreateDeveloperAccount = () => {
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [selectedOptions2, setSelectedOptions2] = useState([]);
     const [selectedOptions3, setSelectedOptions3] = useState([]);
+
+
 
     const handleChange = (selected) => {
         setSelectedOptions(selected);
@@ -33,60 +35,46 @@ const CreateDeveloperAccount = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("https://wehireapi.azurewebsites.net/api/Skill/GetAll");
-                const data = await response.json();
-
-                // Filter skills with statusString === "Active"
-                const activeSkills = data.filter(skill => skill.statusString === "Active");
-
-                // Map skills to the format expected by react-select
+                const response = await axios.get("https://wehireapi.azurewebsites.net/api/Skill");
+                const activeSkills = response.data.data.filter(skill => skill.statusString === "Active");
                 const formattedSkills = activeSkills.map(skill => ({
                     value: skill.skillId.toString(),
                     label: skill.skillName
                 }));
-
                 setOptions(formattedSkills);
             } catch (error) {
                 console.error("Error fetching skills:", error);
             }
+
             try {
-                const response2 = await fetch("https://wehireapi.azurewebsites.net/api/Type/GetAll");
-                const data2 = await response2.json();
-    
-                // Filter types with statusString === "Active"
-                const activeTypes = data2.filter(type => type.statusString === "Active");
-    
-                // Map types to the format expected by react-select
+                const response2 = await axios.get("https://wehireapi.azurewebsites.net/api/Type");
+                const activeTypes = response2.data.data.filter(type => type.statusString === "Active");
                 const formattedTypes = activeTypes.map(type => ({
                     value: type.typeId.toString(),
                     label: type.typeName
                 }));
-    
                 setOptions2(formattedTypes);
             } catch (error) {
                 console.error("Error fetching types:", error);
             }
+
             try {
-                const response3 = await fetch("https://wehireapi.azurewebsites.net/api/Level/GetAll");
-                const data3 = await response3.json();
-    
-                // Filter types with statusString === "Active"
-                const activeLevels = data3.filter(level => level.statusString === "Active");
-    
-                // Map types to the format expected by react-select
+                const response3 = await axios.get("https://wehireapi.azurewebsites.net/api/Level");
+                const activeLevels = response3.data.data.filter(level => level.statusString === "Active");
                 const formattedLevels = activeLevels.map(level => ({
                     value: level.levelId.toString(),
                     label: level.levelName
                 }));
-    
                 setOptions3(formattedLevels);
             } catch (error) {
-                console.error("Error fetching types:", error);
+                console.error("Error fetching levels:", error);
             }
-        };
 
+        };
         fetchData();
+
     }, []);
+
 
 
 
@@ -107,6 +95,12 @@ const CreateDeveloperAccount = () => {
                                         id="contact-form3"
                                     >
                                         <h4 class="text-dark mb-3">Create new account developer</h4>
+                                        <div class="row">
+                                            <div className="form-group app-label mt-2">
+                                                <label class="text-muted">Choose </label>
+                                                <input id="cv" type="text" class="form-control resume" placeholder=""></input>
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
