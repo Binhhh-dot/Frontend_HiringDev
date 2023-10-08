@@ -342,6 +342,10 @@ const NavBar = (props) => {
                           Company Details
                         </Link>
 
+                        <Link className="dropdown-item" to="/hiringrequestinhr">
+                          HiringRequest Details In HR
+                        </Link>
+
                         {/* <Link
                           className="dropdown-item"
                           to="/developerlistincompanypartner"

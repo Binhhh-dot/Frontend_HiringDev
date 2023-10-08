@@ -9,7 +9,7 @@ import signInImage from "../../assets/images/auth/sign-in.png";
 import { Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import jwtDecode from 'jwt-decode';
+import jwtDecode from "jwt-decode";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -45,7 +45,7 @@ const SignIn = () => {
 
         if (userId) {
           // Save user ID to local storage
-          localStorage.setItem('userId', userId);
+          localStorage.setItem("userId", userId);
 
           // Navigate to "/layout3"
           navigate("/layout3");
@@ -105,9 +105,16 @@ const SignIn = () => {
                                   Sign in to continue to Jobcy.
                                 </p>
                               </div>
-                              <Form action="/" className="auth-form" onSubmit={handleSignIn}>
+                              <Form
+                                action="/"
+                                className="auth-form"
+                                onSubmit={handleSignIn}
+                              >
                                 <div className="mb-3">
-                                  <label htmlFor="GmailInput" className="form-label">
+                                  <label
+                                    htmlFor="GmailInput"
+                                    className="form-label"
+                                  >
                                     Gmail
                                   </label>
                                   <Input
@@ -115,15 +122,24 @@ const SignIn = () => {
                                     className="form-control"
                                     id="GmailInput"
                                     placeholder="Enter your email"
-                                    value={email}  // <-- Đã thêm dòng này
-                                    onChange={(e) => setEmail(e.target.value)}  // <-- Đã thêm dòng này
+                                    value={email} // <-- Đã thêm dòng này
+                                    onChange={(e) => setEmail(e.target.value)} // <-- Đã thêm dòng này
                                     required
-                                    onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
-                                    onInvalid={(e) => e.target.setCustomValidity("Please enter your email")}
+                                    onInput={(e) =>
+                                      e.target.setCustomValidity("")
+                                    } // Clear custom validity on input
+                                    onInvalid={(e) =>
+                                      e.target.setCustomValidity(
+                                        "Please enter your email"
+                                      )
+                                    }
                                   />
                                 </div>
                                 <div className="mb-3">
-                                  <label htmlFor="passwordInput" className="form-label">
+                                  <label
+                                    htmlFor="passwordInput"
+                                    className="form-label"
+                                  >
                                     Mật khẩu
                                   </label>
                                   <Input
@@ -131,11 +147,19 @@ const SignIn = () => {
                                     className="form-control"
                                     id="passwordInput"
                                     placeholder="Enter your password"
-                                    value={password}  // <-- Đã thêm dòng này
-                                    onChange={(e) => setPassword(e.target.value)}  // <-- Đã thêm dòng này
+                                    value={password} // <-- Đã thêm dòng này
+                                    onChange={(e) =>
+                                      setPassword(e.target.value)
+                                    } // <-- Đã thêm dòng này
                                     required
-                                    onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
-                                    onInvalid={(e) => e.target.setCustomValidity("Please enter your password")}
+                                    onInput={(e) =>
+                                      e.target.setCustomValidity("")
+                                    } // Clear custom validity on input
+                                    onInvalid={(e) =>
+                                      e.target.setCustomValidity(
+                                        "Please enter your password"
+                                      )
+                                    }
                                   />
                                 </div>
                                 <div className="mb-4">
@@ -160,10 +184,15 @@ const SignIn = () => {
                                   </div>
                                 </div>
                                 <div className="text-center">
-                                  <button type="submit" className="btn btn-white btn-hover w-100">
+                                  <button
+                                    type="submit"
+                                    className="btn btn-white btn-hover w-100"
+                                  >
                                     Sign In
                                   </button>
-                                  {error && <p className="text-danger mt-2">{error}</p>}
+                                  {error && (
+                                    <p className="text-danger mt-2">{error}</p>
+                                  )}
                                 </div>
                               </Form>
                               <div className="mt-4 text-center">
