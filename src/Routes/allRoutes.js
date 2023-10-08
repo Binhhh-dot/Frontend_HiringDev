@@ -66,6 +66,8 @@ import DeveloperInfo from "../pages/CandidateAndCompany/DeveloperInfo/DeveloperI
 import CreateCompanyAccount from "../pages/CandidateAndCompany/CreateCompanyAccount/CreateCompanyAcount";
 import HiringRequestListInCompanyPartner from "../pages/Jobs/HiringRequestListInCompanyPartner/HiringRequestListInCompanyPartner";
 import HiringRequestListInCompanyPartnerDetail from "../pages/Jobs/HiringRequestListInCompanyPartnerDetail/HiringRequestListInCompanyPartnerDetail";
+import HiringRequestInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestInHR";
+import HiringRequestDetailInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestDetailInHR";
 
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
@@ -101,6 +103,9 @@ const userRoutes = [
   { path: "/candidatedetails", component: <CandidateDetails /> },
   { path: "/candidategrid", component: <CandidateGrid /> },
   { path: "/candidatelist", component: <CandidateList /> },
+  { path: "/hiringrequestinhr", component: <HiringRequestInHR /> },
+  { path: "/hiringrequestdetailinhr", component: <HiringRequestDetailInHR /> },
+
   // {
   //   path: "/developerlistincompanypartner",
   //   component: <DeveloperListInCompanyPartner />,
