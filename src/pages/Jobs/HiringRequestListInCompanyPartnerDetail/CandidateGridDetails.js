@@ -394,6 +394,20 @@ const CandidateGridDetails = () => {
                     Some quick example text to build on the card title and bulk
                     the card's content Moltin gives you platform...
                   </p>
+
+                  <div
+                    className="border border-2 p-3"
+                    style={{ borderRadius: "7px" }}
+                  >
+                    <div className="d-flex justify-content-between">
+                      <p>Matching with request</p>
+                      <p className="text-success fw-bold">80%</p>
+                    </div>
+                    <div className="dev-matching-in-company border border-1">
+                      <div className="dev-matching-level-in-company"></div>
+                    </div>
+                  </div>
+
                   <div className="mt-3">
                     <Link
                       to="#hireNow"

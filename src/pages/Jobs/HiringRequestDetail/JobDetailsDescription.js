@@ -3,7 +3,7 @@ import { Card, CardBody, Col, Row, Modal, ModalBody, Button } from "reactstrap";
 import { Link } from "react-router-dom";
 
 //Import Images
-import JobDetailImage from "../../../assets/images/job-detail.jpg";
+// import JobDetailImage from "../../../assets/images/job-detail.jpg";
 import JobImage10 from "../../../assets/images/featured-job/img-10.png";
 import userImage1 from "../../../assets/images/user/img-01.jpg";
 import userImage2 from "../../../assets/images/user/img-02.jpg";
@@ -108,6 +108,21 @@ const JobDetailsDescription = () => {
         },
         {
           id: 2,
+          badgeName: "Manage",
+          classname: "success",
+        },
+        {
+          id: 3,
+          badgeName: "Manage",
+          classname: "success",
+        },
+        {
+          id: 4,
+          badgeName: "Manage",
+          classname: "success",
+        },
+        {
+          id: 5,
           badgeName: "Manage",
           classname: "success",
         },
@@ -278,7 +293,7 @@ const JobDetailsDescription = () => {
                   style={{ height: `${divHeight}px` }}
                 >
                   <p className="text-muted mb-0 fs-13">Type Of Developer</p>
-                  <p className="fw-medium mb-0 badge bg-secondary text-light">
+                  <p className="fw-medium mb-0 badge bg-purple text-light">
                     BE Developer
                   </p>
                 </div>
@@ -569,7 +584,7 @@ const JobDetailsDescription = () => {
                       </Link>
                     </div>
                   </div>
-                  <Col lg={5}>
+                  <Col lg={4}>
                     <div className="candidate-list-content mt-3 mt-lg-0">
                       <h5 className="fs-19 mb-0">
                         <Link to="/developerinfo" className="primary-link">
@@ -582,8 +597,7 @@ const JobDetailsDescription = () => {
                           {candidateDetailsNew.rating}
                         </span>
                       </h5>
-                      <p className="text-muted mb-2">
-                        {" "}
+                      <p className="text-muted mb-0">
                         {candidateDetailsNew.candidateDesignation}
                       </p>
                       <ul className="list-inline mb-0 text-muted">
@@ -597,11 +611,28 @@ const JobDetailsDescription = () => {
                           {candidateDetailsNew.salary}
                         </li>
                       </ul>
+                      <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                        {(candidateDetailsNew.badges || [])
+                          .slice(0, 4)
+                          .map((badgesInner, key) => (
+                            <span
+                              className={`badge bg-${badgesInner.classname}-subtle text-${badgesInner.classname} fs-14 mt-1`}
+                              key={key}
+                            >
+                              {badgesInner.badgeName}
+                            </span>
+                          ))}
+                        {candidateDetailsNew.badges.length > 4 && (
+                          <span className="badge bg-secondary-subtle text-secondary fs-14 mt-1">
+                            .....
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </Col>
 
-                  <Col lg={2}>
-                    <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                  <Col lg={3}>
+                    {/* <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
                       {(candidateDetailsNew.badges || []).map(
                         (badgesInner, key) => (
                           <span
@@ -612,47 +643,106 @@ const JobDetailsDescription = () => {
                           </span>
                         )
                       )}
+                    </div> */}
+
+                    <div className="d-flex flex-column">
+                      <div className=" d-flex mb-2">
+                        <span className=" fs-14" style={{ width: "38px" }}>
+                          Type{" "}
+                        </span>
+                        <div class="checkbox-wrapper-type ms-2">
+                          <div class="round ms-2">
+                            <input type="checkbox" id="checkbox-type" />
+                            <label for="checkbox-type"></label>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mb-2 d-flex">
+                        <span className=" fs-14" style={{ width: "38px" }}>
+                          Level
+                        </span>
+                        <div class="checkbox-wrapper-level ms-2">
+                          <div class="round ms-2">
+                            <input type="checkbox" id="checkbox-level" />
+                            <label for="checkbox-level"></label>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="d-flex mb-2 align-items-center">
+                        <span className=" fs-14">Salary</span>
+                        <div className="devmatching-bar-salary border border-1 ms-3">
+                          <div
+                            className="devmatch-level-salary"
+                            style={{
+                              width: `${candidateDetailsNew.progress}%`,
+                              backgroundColor: getBarColor(
+                                candidateDetailsNew.progress
+                              ),
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div className="d-flex mb-2 align-items-center">
+                        <span className=" fs-14" style={{ width: "41px" }}>
+                          Skill
+                        </span>
+                        <div className="devmatching-bar-skill border border-1 ms-3">
+                          <div
+                            className="devmatch-level-skill"
+                            style={{
+                              width: `${candidateDetailsNew.progress}%`,
+                              backgroundColor: getBarColor(
+                                candidateDetailsNew.progress
+                              ),
+                            }}
+                          ></div>
+                        </div>
+                      </div>
                     </div>
                   </Col>
 
                   <Col lg={3} className="border-start border-3">
-                    <div className="left-side-matching ">
-                      <div className="d-flex">
-                        <div
-                          className="d-flex align-items-center"
-                          style={{ marginRight: "30px" }}
-                        >
-                          <p
-                            style={{
-                              display: "contents",
-                              fontFamily: "Tahoma",
-                            }}
+                    <div style={{ height: "100px" }}>
+                      <div className="left-side-matching ">
+                        <div className="d-flex">
+                          <div
+                            className="d-flex align-items-center"
+                            style={{ marginRight: "25px" }}
                           >
-                            Matching with request
-                          </p>
+                            <p
+                              style={{
+                                display: "contents",
+                                fontFamily: "Tahoma",
+                              }}
+                            >
+                              Matching with request
+                            </p>
+                          </div>
+                          <div className="matching-rate-dev">
+                            <span
+                              className="percent-matching-dev"
+                              style={{
+                                color: getBarColor(
+                                  candidateDetailsNew.progress
+                                ),
+                              }}
+                            >
+                              {candidateDetailsNew.progress}%
+                            </span>
+                          </div>
                         </div>
-                        <div className="matching-rate-dev">
-                          <span
-                            className="percent-matching-dev"
-                            style={{
-                              color: getBarColor(candidateDetailsNew.progress),
-                            }}
-                          >
-                            {candidateDetailsNew.progress}%
-                          </span>
-                        </div>
-                      </div>
 
-                      <div className="devmatching-bar border border-1">
-                        <div
-                          className="devmatch-level"
-                          style={{
-                            width: `${candidateDetailsNew.progress}%`,
-                            backgroundColor: getBarColor(
-                              candidateDetailsNew.progress
-                            ),
-                          }}
-                        ></div>
+                        <div className="devmatching-bar border border-1">
+                          <div
+                            className="devmatch-level"
+                            style={{
+                              width: `${candidateDetailsNew.progress}%`,
+                              backgroundColor: getBarColor(
+                                candidateDetailsNew.progress
+                              ),
+                            }}
+                          ></div>
+                        </div>
                       </div>
                     </div>
                   </Col>
