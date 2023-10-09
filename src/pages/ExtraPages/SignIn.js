@@ -9,7 +9,9 @@ import signInImage from "../../assets/images/auth/sign-in.png";
 import { Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import jwtDecode from "jwt-decode";
+
+import jwtDecode from 'jwt-decode';
+import loginService from "../../services/login.service";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -22,26 +24,13 @@ const SignIn = () => {
   const handleSignIn = async (e) => {
     e.preventDefault();
 
-    let response;
-
     try {
-      response = await axios.post(
-        "https://wehireapi.azurewebsites.net/api/Account/Login",
-        {
-          email,
-          password,
-        }
-      );
-
+      const response = await loginService.login(email, password);
       // Check if the API call was successful
       if (response.data.code === 200) {
-        const token = response.data.data;
-
-        // Decode the token
-        const decodedToken = jwtDecode(token);
 
         // Extract user ID from the decoded token
-        const userId = decodedToken ? decodedToken.Id : null;
+        const userId = response.data.data.userId;
 
         if (userId) {
           // Save user ID to local storage

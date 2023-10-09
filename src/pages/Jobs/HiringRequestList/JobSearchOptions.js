@@ -11,7 +11,7 @@ const JobSearchOptions = () => {
       <div className="job-list-header">
         <Form action="#">
           <Row className="g-2">
-            <Col lg={3} md={6}>
+            <Col lg={4} md={6}>
               <div className="filler-job-form">
                 <i className="uil uil-briefcase-alt"></i>
                 <Input
@@ -23,14 +23,8 @@ const JobSearchOptions = () => {
                 />
               </div>
             </Col>
-            <Col lg={3} md={6}>
-              <div className="filler-job-form">
-                <i className="uil uil-monitor"></i>
-
-                <CountryOptions />
-              </div>
-            </Col>
-            <Col lg={3} md={6}>
+            
+            <Col lg={5} md={6}>
               <div className="filler-job-form">
                 <i className="uil uil-clipboard-notes"></i>
                 <JobType />

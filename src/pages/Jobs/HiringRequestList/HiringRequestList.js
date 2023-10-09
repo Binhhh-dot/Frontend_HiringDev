@@ -18,11 +18,9 @@ const HiringRequestList = () => {
             <Col lg={9}>
               <div className="me-lg-5">
                 <h3>Hiring Request List</h3>
-                <JobSearchOptions />
 
                 <JobVacancyList />
 
-                <Pagination />
               </div>
             </Col>
             <Sidebar />

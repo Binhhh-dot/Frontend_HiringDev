@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button, Col, Collapse, Input, Label } from "reactstrap";
 import "./index.css";
+import levelService from "../../../services/level.service";
+import hiringrequestService from "../../../services/hiringrequest.service";
 
 const Sidebar = () => {
   const [toggleFirst, setToggleFirst] = useState(true);
@@ -12,6 +14,8 @@ const Sidebar = () => {
   const [value, setValue] = React.useState(50);
   //CheckBox
   const [isChecked, setIsChecked] = useState(true);
+  const [levels, setLevels] = useState([]);
+  const [statuses, setStatuses] = useState([]);
   const handleOnChange = () => {
     setIsChecked(!isChecked);
   };
@@ -20,7 +24,36 @@ const Sidebar = () => {
   const handleDateOnChange = () => {
     setIsDateChecked(!isDateChecked);
   };
+  useEffect(() => {
+    // Hàm để lấy cấp độ từ API\
 
+    const fetchLevels = async () => {
+      try {
+        const response = await levelService.getAllLevel();
+
+        // Giả sử dữ liệu nằm trong response.data.data
+        setLevels(response.data.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy cấp độ:", error);
+      }
+    };
+
+    // Gọi hàm fetchLevels khi thành phần được mount
+    fetchLevels();
+  }, []);
+
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      try {
+        const response = await hiringrequestService.getAllStatusHiringRequest();
+        setStatuses(response.data.data);
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      }
+    };
+
+    fetchStatuses();
+  }, []);
   return (
     <React.Fragment>
       <Col lg={3}>
@@ -43,79 +76,39 @@ const Sidebar = () => {
               <Collapse isOpen={toggleSecond}>
                 <div className="accordion-body">
                   <div className="side-title">
-                    <div className="form-check mt-2">
+                    <div className="form-check mt-2" key="0">
                       <input
                         className="form-check-input"
-                        type="checkbox"
+                        type="radio"
+                        name="flexRadioDefault2"
                         value=""
-                        id="flexCheckChecked1"
+                        id={`flexCheckChecked0`}
+                        defaultChecked
                       />
                       <label
                         className="form-check-label ms-2 text-muted"
-                        htmlFor="flexCheckChecked1"
+                        htmlFor={`flexCheckChecked0`}
                       >
-                        Fresher Developer
+                        All
                       </label>
                     </div>
-                    <div className="form-check mt-2">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value=""
-                        id="flexCheckChecked2"
-                        checked={isChecked}
-                        onChange={handleOnChange}
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexCheckChecked2"
-                      >
-                        Junior Developer
-                      </label>
-                    </div>
-                    <div className="form-check mt-2">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value=""
-                        id="flexCheckChecked3"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexCheckChecked3"
-                      >
-                        Mid-level Developer
-                      </label>
-                    </div>
-                    <div className="form-check mt-2">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value=""
-                        id="flexCheckChecked4"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexCheckChecked4"
-                      >
-                        Senior Developer
-                      </label>
-                    </div>
-
-                    <div className="form-check mt-2">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value=""
-                        id="flexCheckChecked4"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexCheckChecked4"
-                      >
-                        Leader
-                      </label>
-                    </div>
+                    {levels.map((level) => (
+                      <div className="form-check mt-2" key={level.levelId}>
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault2"
+                          value=""
+                          id={`flexCheckChecked${level.levelId}`}
+                        />
+                        <label
+                          className="form-check-label ms-2 text-muted"
+                          htmlFor={`flexCheckChecked${level.levelId}`}
+                        >
+                          {level.levelName}
+                        </label>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </Collapse>
@@ -150,65 +143,25 @@ const Sidebar = () => {
                         className="form-check-label ms-2 text-muted"
                         htmlFor="flexRadioDefault6"
                       >
-                        Looking For Dev
+                        All
                       </label>
                     </div>
-                    <div className="form-check mt-2">
-                      <Input
-                        className="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault2"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexRadioDefault2"
-                      >
-                        Interview
-                      </label>
-                    </div>
-                    <div className="form-check mt-2">
-                      <Input
-                        className="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault3"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexRadioDefault3"
-                      >
-                        Cancelled
-                      </label>
-                    </div>
-                    <div className="form-check mt-2">
-                      <Input
-                        className="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault4"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexRadioDefault4"
-                      >
-                        Out Of Time
-                      </label>
-                    </div>
-                    <div className="form-check mt-2">
-                      <Input
-                        className="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault4"
-                      />
-                      <label
-                        className="form-check-label ms-2 text-muted"
-                        htmlFor="flexRadioDefault4"
-                      >
-                        Done
-                      </label>
-                    </div>
+                    {statuses.map((status) => (
+                      <div className="form-check mt-2" key={status.statusId}>
+                        <Input
+                          className="form-check-input"
+                          type="radio"
+                          name="flexRadioDefault"
+                          id={`flexRadioDefault${status.statusId}`}
+                        />
+                        <label
+                          className="form-check-label ms-2 text-muted"
+                          htmlFor={`flexRadioDefault${status.statusId}`}
+                        >
+                          {status.statusName}
+                        </label>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </Collapse>

@@ -1,145 +1,103 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Col, Input, Label, Row, Modal, ModalBody } from "reactstrap";
-
-//Images Import
-import jobImage1 from "../../../assets/images/featured-job/img-01.png";
-import jobImage2 from "../../../assets/images/featured-job/img-02.png";
-import jobImage3 from "../../../assets/images/featured-job/img-03.png";
-import jobImage4 from "../../../assets/images/featured-job/img-04.png";
-import jobImage5 from "../../../assets/images/featured-job/img-05.png";
-import jobImage6 from "../../../assets/images/featured-job/img-06.png";
-import jobImage7 from "../../../assets/images/featured-job/img-07.png";
-
-const JobVacancyList = () => {
+import { Col, Row, Input } from "reactstrap";
+import axios from "axios";
+import JobType from "../../Home/SubSection/JobType";
+import { Form } from "react-bootstrap";
+import hiringrequestService from "../../../services/hiringrequest.service";
+const JobVacancyList = (a) => {
   //Apply Now Model
-  const [modal, setModal] = useState(false);
-  const openModal = () => setModal(!modal);
+  const [jobVacancyList, setJobVacancyList] = useState([]);
 
-  const jobVacancyList = [
-    {
-      id: 1,
-      companyImg: jobImage1,
-      jobDescription: "Java Project Lead",
-      companyName: "Full-Stack Developer",
-      location: "3 Developer",
-      jobPostTime: "10/1/2023",
-      // fullTime: true,
-      lookingForDev: true,
-      timing: "Looking For Dev",
-      addclassNameBookmark: false,
-      showFullSkills: false,
-      badges: [],
-      experience: "Management Team",
-    },
-    {
-      id: 2,
-      companyImg: jobImage2,
-      jobDescription: "Junior Linux Embedded",
-      companyName: "Embedded Developer ",
-      location: "2 Developer",
-      jobPostTime: "9/29/2023 ",
-      // fullTime: true,
-      interview: true,
-      timing: "Interview",
-      // catogary: "Recent Jobs",
-      addclassNameBookmark: true,
-      showFullSkills: false,
-      badges: [],
-      experience: "C++, Embedded, Linux",
-    },
-    {
-      id: 3,
-      companyImg: jobImage3,
-      jobDescription: "Middle/Senior Backend .NET Devs (C#, SQL)",
-      companyName: "Backend Developer",
-      location: "1 Developer",
-      jobPostTime: "10/10/2023",
-      // fullTime: true,
-      done: true,
-      timing: "Done",
-      addclassNameBookmark: false,
-      showFullSkills: false,
-      badges: [],
-      experience: "Back-end (C#, .NET Core, WebAPI),  Winform, DevExpress.",
-    },
-    {
-      id: 4,
-      companyImg: jobImage4,
-      jobDescription: "Senior Devops Engineer",
-      companyName: "DevOps Developer",
-      location: "2 Developer",
-      jobPostTime: "9/20/2023",
-      //freeLance: true,
-      outOfTime: true,
-      timing: "Out Of Time",
-      addclassNameBookmark: false,
-      showFullSkills: false,
-      badges: [],
-      experience: "AWS EKS, K8S, CI/CD, Data warehouse, Caching,  Docker.",
-    },
-    {
-      id: 5,
-      companyImg: jobImage5,
-      jobDescription: "Mobile Developer (Flutter)",
-      companyName: "Mobile Developer",
-      location: "5 Developer",
-      jobPostTime: "9/25/2023",
-      //partTime: true,
-      cancelled: true,
-      timing: "Cancelled",
-      addclassNameBookmark: true,
-      showFullSkills: false,
-      badges: [],
-      experience: "App design, APIs, UX/UI, Native app writing ability",
-    },
-    {
-      id: 6,
-      companyImg: jobImage6,
-      jobDescription: "Senior Frontend Engineer (VueJs, ReactJs)",
-      companyName: "Front-end Developer",
-      location: "6 Developer",
-      jobPostTime: "9/29/2023",
-      //freeLance: true,
-      lookingForDev: true,
-      timing: "Looking For Dev",
-      addclassNameBookmark: true,
-      showFullSkills: false,
-      badges: [],
-      experience: "TypeScript, FlowType, etc, REST API, GraphQL",
-    },
-    {
-      id: 7,
-      companyImg: jobImage7,
-      jobDescription: "IT Security Engineer (English, Fintech)",
-      companyName: "Security Developer",
-      location: "1 Developer",
-      jobPostTime: "10/15/2023",
-      //partTime: true,
-      lookingForDev: true,
-      timing: "Looking For Dev",
-      addclassNameBookmark: false,
-      showFullSkills: false,
-      badges: [],
-      experience: "2-3 years",
-    },
-    {
-      id: 8,
-      companyImg: jobImage3,
-      jobDescription: "IT Security - Infrastructure Section",
-      companyName: "Security Developer",
-      location: "2 Developer",
-      jobPostTime: "9/23/2023",
-      //internship: true,
-      interview: true,
-      timing: "Interview",
-      addclassNameBookmark: true,
-      showFullSkills: false,
-      badges: [],
-      experience:
-        "Strong organizational skills, The ability to thrive in fast-paced, high-stress situations, Implement patching on Applications, Systems, Devices",
-    },
-  ];
+  let [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState('');
+  const [skill, setSkill] = useState([]);
+  const pageSize = 5;
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+    if (totalPages > maxPageButtons && currentPage <= Math.floor(maxPageButtons / 2) + 1) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
+          <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
+            {i}
+          </Link>
+        </li>
+      );
+    }
+
+    return pageNumbers;
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const fetchJobVacancies = async () => {
+    let response;
+    try {
+      if (search || skill) {
+        response = await hiringrequestService.getAllHiringRequestByJobTitleAndSkill(currentPage, 5, search, skill);
+      } else {
+        response = await hiringrequestService.getHiringRequestAndPaging(currentPage, 5);
+      }
+
+      const data = response.data;
+      const formattedJobVacancies = data.data.map((job) => {
+        // Assuming job.typeRequireName and job.levelRequireName are available
+        job.skillRequireStrings.unshift(job.typeRequireName, job.levelRequireName);
+        return {
+          id: job.requestId,
+          companyImg: job.companyImage,
+          jobDescription: job.jobTitle,
+          companyName: job.companyName,
+          location: job.numberOfDev + " Developer",
+          jobPostTime: new Date(job.duration).toLocaleDateString(),
+          cancelled: job.statusString.includes("Cancelled"),
+          done: job.statusString.includes("Done"),
+          outOfTime: job.statusString.includes("Expired"),
+          fullTime: job.statusString.includes("Waiting Approval"),
+          timing: job.statusString,
+          addclassNameBookmark: false,
+          showFullSkills: false,
+          badges: [],
+          experience: job.skillRequireStrings.join(", "),
+        };
+      });
+      console.log(response.data);
+      setJobVacancyList(formattedJobVacancies);
+      setTotalPages(Math.ceil(data.paging.total / pageSize));
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobVacancies();
+  }, [currentPage]);
+
+  const onSearch = () => {
+    fetchJobVacancies()
+  }
+
 
   //Set initial state  for showFulSkill using object id
   const initialSkillsState = jobVacancyList.reduce(
@@ -158,6 +116,38 @@ const JobVacancyList = () => {
 
   return (
     <React.Fragment>
+      <div className="job-list-header">
+        <Form action="#">
+          <Row className="g-2">
+            <Col lg={4} md={6}>
+              <div className="filler-job-form">
+                <i className="uil uil-briefcase-alt"></i>
+                <Input
+                  type="search"
+                  className="form-control filter-input-box"
+                  id="exampleFormControlInput1"
+                  placeholder="Jobtitle... "
+                  style={{ marginTop: "-10px" }}
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
+            </Col>
+
+            <Col lg={5} md={6}>
+              <div className="filler-job-form">
+                <i className="uil uil-clipboard-notes"></i>
+                <JobType skill={skill} setSkill={setSkill} />
+              </div>
+            </Col>
+            <Col lg={3} md={6}>
+              <div className="btn btn-primary w-100" onClick={() => onSearch()}>
+                <i className="uil uil-filter"></i> Fliter
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </div>
       <div>
         {jobVacancyList.map((jobVacancyListDetails, key) => (
           <div
@@ -230,22 +220,22 @@ const JobVacancyList = () => {
                         jobVacancyListDetails.fullTime === true
                           ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
                           : jobVacancyListDetails.partTime === true
-                          ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                          : jobVacancyListDetails.freeLance === true
-                          ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                          : jobVacancyListDetails.internship === true
-                          ? "badge bg-blue-subtle text-blue fs-13 mt-1"
-                          : jobVacancyListDetails.lookingForDev === true
-                          ? "badge bg-warning-subtle text-warning fs-13 mt-1 mx-1"
-                          : jobVacancyListDetails.interview === true
-                          ? "badge bg-info text-light fs-13 mt-1 mx-1"
-                          : jobVacancyListDetails.done === true
-                          ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
-                          : jobVacancyListDetails.outOfTime === true
-                          ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                          : jobVacancyListDetails.cancelled === true
-                          ? "badge bg-secondary text-light fs-13 mt-1 mx-1"
-                          : ""
+                            ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                            : jobVacancyListDetails.freeLance === true
+                              ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                              : jobVacancyListDetails.internship === true
+                                ? "badge bg-blue-subtle text-blue fs-13 mt-1"
+                                : jobVacancyListDetails.lookingForDev === true
+                                  ? "badge bg-warning-subtle text-warning fs-13 mt-1 mx-1"
+                                  : jobVacancyListDetails.interview === true
+                                    ? "badge bg-info text-light fs-13 mt-1 mx-1"
+                                    : jobVacancyListDetails.done === true
+                                      ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                                      : jobVacancyListDetails.outOfTime === true
+                                        ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                                        : jobVacancyListDetails.cancelled === true
+                                          ? "badge bg-secondary text-light fs-13 mt-1 mx-1"
+                                          : ""
                       }
                     >
                       {jobVacancyListDetails.timing}
@@ -275,31 +265,35 @@ const JobVacancyList = () => {
                           0,
                           showFullSkills[jobVacancyListDetails.id]
                             ? undefined
-                            : 3
+                            : 6
                         )
                         .map((skill, index) => (
                           <span
                             key={index}
-                            className="badge bg-primary-subtle text-primary ms-2"
+                            className={`badge ${index === 0 ? 'bg-info text-light' :
+                              index === 1 ? 'bg-danger-subtle text-danger' :
+                                'bg-primary-subtle text-primary'
+                              }  ms-2`}
                           >
                             {skill.trim()}
                           </span>
                         ))}
 
                       {jobVacancyListDetails.experience.split(",").length >
-                        3 && (
-                        <Link
-                          to="#"
-                          onClick={() =>
-                            toggleShowFullSkills(jobVacancyListDetails.id)
-                          }
-                        >
-                          {" "}
-                          {showFullSkills[jobVacancyListDetails.id]
-                            ? "less"
-                            : "...more"}
-                        </Link>
-                      )}
+                        6 && (
+                          <Link
+                            to="#"
+                            onClick={() =>
+                              toggleShowFullSkills(jobVacancyListDetails.id)
+                            }
+                          >
+                            {" "}
+                            {showFullSkills[jobVacancyListDetails.id]
+                              ? "less"
+                              : "...more"}
+                          </Link>
+                        )}
+
                     </p>
                   </div>
                 </Col>
@@ -308,6 +302,25 @@ const JobVacancyList = () => {
           </div>
         ))}
       </div>
+      <Row>
+        <Col lg={12} className="mt-4 pt-2">
+          <nav aria-label="Page navigation example">
+            <div className="pagination job-pagination mb-0 justify-content-center">
+              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                <Link className="page-link" to="#" tabIndex="-1" onClick={handlePrevPage}>
+                  <i className="mdi mdi-chevron-double-left fs-15"></i>
+                </Link>
+              </li>
+              {renderPageNumbers()}
+              <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                <Link className="page-link" to="#" onClick={handleNextPage}>
+                  <i className="mdi mdi-chevron-double-right fs-15"></i>
+                </Link>
+              </li>
+            </div>
+          </nav>
+        </Col>
+      </Row>
     </React.Fragment>
   );
 };

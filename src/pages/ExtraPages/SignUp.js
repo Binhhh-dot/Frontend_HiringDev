@@ -8,6 +8,7 @@ import darkLogo from "../../assets/images/logo-dark.png";
 import signUpImage from "../../assets/images/auth/sign-up.png";
 import { Form } from "react-bootstrap";
 import axios from "axios"; // Import Axios
+import loginService from "../../services/login.service";
 
 
 const SignUp = () => {
@@ -26,10 +27,7 @@ const SignUp = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "https://wehireapi.azurewebsites.net/api/Account/SignUp",
-        formData
-      );
+      const response = await loginService.signUp(formData);
 
       if (response.status === 201) {
         // Đăng ký thành công, chuyển hướng đến trang đăng nhập
