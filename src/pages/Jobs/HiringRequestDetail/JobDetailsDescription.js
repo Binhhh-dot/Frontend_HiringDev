@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardBody, Col, Row, Modal, ModalBody, Button } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 //Import Images
-import JobDetailImage from "../../../assets/images/job-detail.jpg";
+// import JobDetailImage from "../../../assets/images/job-detail.jpg";
 import JobImage10 from "../../../assets/images/featured-job/img-10.png";
 import userImage1 from "../../../assets/images/user/img-01.jpg";
 import userImage2 from "../../../assets/images/user/img-02.jpg";
@@ -12,25 +12,14 @@ import userImage4 from "../../../assets/images/user/img-04.jpg";
 import userImage5 from "../../../assets/images/user/img-05.jpg";
 //import { Link } from "react-router-dom";
 import "./index.css";
+import hiringrequestService from "../../../services/hiringrequest.service";
 
 const JobDetailsDescription = () => {
-  const [skills, setSkills] = useState([
-    "Strong OOP",
-    "Resfull API",
-    "C++",
-    "C#",
-    "Java",
-    "html",
-  ]);
+  const { state } = useLocation();
 
-  const [divHeight, setDivHeight] = useState(0);
+  const [hiringRequestDetail, setHiringRequestDetail] = useState(null);
 
   const [showCandidateList, setShowCandidateList] = useState(false);
-
-  useEffect(() => {
-    const height = document.getElementById("standard").clientHeight;
-    setDivHeight(height);
-  }, []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCandidateInfo, setSelectedCandidateInfo] = useState(null);
@@ -87,6 +76,28 @@ const JobDetailsDescription = () => {
     }
   };
 
+  const fetchHiringRequestDetailInManager = async () => {
+    let response;
+    // const saveData = localStorage.getItem("myData");
+    try {
+      response = await hiringrequestService.getHiringRequestDetailInManager(
+        state.jobId
+      );
+
+      setHiringRequestDetail(response.data.data);
+
+      console.log(hiringRequestDetail);
+
+      return response;
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchHiringRequestDetailInManager();
+  }, []);
+
   const candidateDetails = [
     {
       id: 1,
@@ -108,6 +119,21 @@ const JobDetailsDescription = () => {
         },
         {
           id: 2,
+          badgeName: "Manage",
+          classname: "success",
+        },
+        {
+          id: 3,
+          badgeName: "Manage",
+          classname: "success",
+        },
+        {
+          id: 4,
+          badgeName: "Manage",
+          classname: "success",
+        },
+        {
+          id: 5,
           badgeName: "Manage",
           classname: "success",
         },
@@ -227,6 +253,10 @@ const JobDetailsDescription = () => {
     }
   };
 
+  //console.log(hiringRequestDetail.skillRequireStrings);
+  // if (!hiringRequestDetail) {
+  //   return null;
+  // }
   return (
     <React.Fragment>
       <Card className="job-detail ">
@@ -245,13 +275,19 @@ const JobDetailsDescription = () => {
           <div>
             <Row>
               <Col md={8}>
-                <h5 className="mb-1">Hiring Request Title</h5>
+                {/* <h5 className="mb-1">Hiring Request Title </h5> */}
+                <h5 className="mb-1">{hiringRequestDetail.jobTitle}</h5>
+
                 <ul className="list-inline text-muted mb-0">
                   <li className="list-inline-item">
-                    <i className="mdi mdi-account"></i> 8 Developer
+                    <i className="mdi mdi-account"></i>
+                    <span>{hiringRequestDetail.numberOfDev} </span>
+                    Developer
                   </li>
                   <li className="list-inline-item text-warning review-rating">
-                    <span className="badge bg-warning">looking Fo Dev</span>{" "}
+                    <span className="badge bg-warning">
+                      {hiringRequestDetail.statusString}
+                    </span>{" "}
                   </li>
                 </ul>
               </Col>
@@ -261,7 +297,14 @@ const JobDetailsDescription = () => {
                     <div>
                       <p>
                         Deadline Request{" "}
-                        <span className="badge bg-secondary">1/10/2023</span>
+                        <span className="badge bg-secondary">
+                          {/* {hiringRequestDetail.duration} */}
+                          {new Intl.DateTimeFormat("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          }).format(new Date(hiringRequestDetail.duration))}
+                        </span>
                       </p>
                     </div>
                   </li>
@@ -271,53 +314,71 @@ const JobDetailsDescription = () => {
           </div>
 
           <div className="mt-4">
-            <Row className="g-2">
-              <Col lg={3}>
+            <Row className="g-2" style={{ columnGap: "3px" }}>
+              <Col
+                lg={3}
+                className="border rounded p-3 "
+                style={{ maxWidth: "266px" }}
+              >
                 <div
-                  className="border rounded-start p-3"
-                  style={{ height: `${divHeight}px` }}
+                // className="border rounded-start p-3"
+                // style={{ height: `${divHeight}px` }}
                 >
                   <p className="text-muted mb-0 fs-13">Type Of Developer</p>
-                  <p className="fw-medium mb-0 badge bg-secondary text-light">
-                    BE Developer
+                  <p className="fw-medium mb-0 badge bg-purple text-light">
+                    {hiringRequestDetail.typeRequireName}
                   </p>
                 </div>
               </Col>
-              <Col lg={3}>
-                <div className="border p-3" id="standard">
+              <Col
+                lg={3}
+                className="border rounded-start p-3"
+                style={{ maxWidth: "266px" }}
+              >
+                <div id="standard">
                   <p className="text-muted fs-13 mb-0">Skill Requirement</p>
                   <p className="fw-medium mb-0 ">
-                    {skills.map((skill, index) => (
-                      <span
-                        key={index}
-                        style={{ marginRight: "3px" }}
-                        className="badge bg-primary text-light"
-                      >
-                        {skill}
-                      </span>
-                    ))}
+                    {hiringRequestDetail.skillRequireStrings.map(
+                      (skill, index) => (
+                        <span
+                          key={index}
+                          style={{ marginRight: "3px" }}
+                          className="badge bg-primary text-light"
+                        >
+                          {skill}
+                        </span>
+                      )
+                    )}
                   </p>
                 </div>
               </Col>
-              <Col lg={3}>
+              <Col
+                lg={3}
+                className="border rounded-start p-3"
+                style={{ maxWidth: "266px" }}
+              >
                 <div
-                  className="border p-3"
-                  style={{ height: `${divHeight}px` }}
+                // className="border p-3"
+                // style={{ height: `${divHeight}px` }}
                 >
                   <p className="text-muted fs-13 mb-0">Level Requirement</p>
                   <p className="fw-medium mb-0 badge bg-info text-light">
-                    Senior
+                    {hiringRequestDetail.levelRequireName}
                   </p>
                 </div>
               </Col>
-              <Col lg={3}>
+              <Col
+                lg={3}
+                className="border rounded-start p-3"
+                style={{ maxWidth: "266px" }}
+              >
                 <div
-                  className="border rounded-end p-3"
-                  style={{ height: `${divHeight}px` }}
+                // className="border rounded-end p-3"
+                // style={{ height: `${divHeight}px` }}
                 >
-                  <p className="text-muted fs-13 mb-0">Budget</p>
+                  <p className="text-muted fs-13 mb-0">Salary of Developer</p>
                   <p className="fw-medium mb-0 badge bg-danger text-light">
-                    $2150
+                    {hiringRequestDetail.salaryPerDev} $
                   </p>
                 </div>
               </Col>
@@ -328,14 +389,7 @@ const JobDetailsDescription = () => {
             <h5 className="mb-3">Job Description</h5>
             <div className="job-detail-desc">
               <p className="text-muted mb-0">
-                As a Product Designer, you will work within a Product Delivery
-                Team fused with UX, engineering, product and data talent. You
-                will help the team design beautiful interfaces that solve
-                business challenges for our clients. We work with a number of
-                Tier 1 banks on building web-based applications for AML, KYC and
-                Sanctions List management workflows. This role is ideal if you
-                are looking to segue your career into the FinTech or Big Data
-                arenas.
+                {hiringRequestDetail.jobDescription}
               </p>
             </div>
           </div>
@@ -569,7 +623,7 @@ const JobDetailsDescription = () => {
                       </Link>
                     </div>
                   </div>
-                  <Col lg={5}>
+                  <Col lg={4}>
                     <div className="candidate-list-content mt-3 mt-lg-0">
                       <h5 className="fs-19 mb-0">
                         <Link to="/developerinfo" className="primary-link">
@@ -582,8 +636,7 @@ const JobDetailsDescription = () => {
                           {candidateDetailsNew.rating}
                         </span>
                       </h5>
-                      <p className="text-muted mb-2">
-                        {" "}
+                      <p className="text-muted mb-0">
                         {candidateDetailsNew.candidateDesignation}
                       </p>
                       <ul className="list-inline mb-0 text-muted">
@@ -597,11 +650,28 @@ const JobDetailsDescription = () => {
                           {candidateDetailsNew.salary}
                         </li>
                       </ul>
+                      <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                        {(candidateDetailsNew.badges || [])
+                          .slice(0, 4)
+                          .map((badgesInner, key) => (
+                            <span
+                              className={`badge bg-${badgesInner.classname}-subtle text-${badgesInner.classname} fs-14 mt-1`}
+                              key={key}
+                            >
+                              {badgesInner.badgeName}
+                            </span>
+                          ))}
+                        {candidateDetailsNew.badges.length > 4 && (
+                          <span className="badge bg-secondary-subtle text-secondary fs-14 mt-1">
+                            .....
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </Col>
 
-                  <Col lg={2}>
-                    <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                  <Col lg={3}>
+                    {/* <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
                       {(candidateDetailsNew.badges || []).map(
                         (badgesInner, key) => (
                           <span
@@ -612,47 +682,106 @@ const JobDetailsDescription = () => {
                           </span>
                         )
                       )}
+                    </div> */}
+
+                    <div className="d-flex flex-column">
+                      <div className=" d-flex mb-2">
+                        <span className=" fs-14" style={{ width: "38px" }}>
+                          Type{" "}
+                        </span>
+                        <div class="checkbox-wrapper-type ms-2">
+                          <div class="round ms-2">
+                            <input type="checkbox" id="checkbox-type" />
+                            <label for="checkbox-type"></label>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mb-2 d-flex">
+                        <span className=" fs-14" style={{ width: "38px" }}>
+                          Level
+                        </span>
+                        <div class="checkbox-wrapper-level ms-2">
+                          <div class="round ms-2">
+                            <input type="checkbox" id="checkbox-level" />
+                            <label for="checkbox-level"></label>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="d-flex mb-2 align-items-center">
+                        <span className=" fs-14">Salary</span>
+                        <div className="devmatching-bar-salary border border-1 ms-3">
+                          <div
+                            className="devmatch-level-salary"
+                            style={{
+                              width: `${candidateDetailsNew.progress}%`,
+                              backgroundColor: getBarColor(
+                                candidateDetailsNew.progress
+                              ),
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div className="d-flex mb-2 align-items-center">
+                        <span className=" fs-14" style={{ width: "41px" }}>
+                          Skill
+                        </span>
+                        <div className="devmatching-bar-skill border border-1 ms-3">
+                          <div
+                            className="devmatch-level-skill"
+                            style={{
+                              width: `${candidateDetailsNew.progress}%`,
+                              backgroundColor: getBarColor(
+                                candidateDetailsNew.progress
+                              ),
+                            }}
+                          ></div>
+                        </div>
+                      </div>
                     </div>
                   </Col>
 
                   <Col lg={3} className="border-start border-3">
-                    <div className="left-side-matching ">
-                      <div className="d-flex">
-                        <div
-                          className="d-flex align-items-center"
-                          style={{ marginRight: "30px" }}
-                        >
-                          <p
-                            style={{
-                              display: "contents",
-                              fontFamily: "Tahoma",
-                            }}
+                    <div style={{ height: "100px" }}>
+                      <div className="left-side-matching ">
+                        <div className="d-flex">
+                          <div
+                            className="d-flex align-items-center"
+                            style={{ marginRight: "25px" }}
                           >
-                            Matching with request
-                          </p>
+                            <p
+                              style={{
+                                display: "contents",
+                                fontFamily: "Tahoma",
+                              }}
+                            >
+                              Matching with request
+                            </p>
+                          </div>
+                          <div className="matching-rate-dev">
+                            <span
+                              className="percent-matching-dev"
+                              style={{
+                                color: getBarColor(
+                                  candidateDetailsNew.progress
+                                ),
+                              }}
+                            >
+                              {candidateDetailsNew.progress}%
+                            </span>
+                          </div>
                         </div>
-                        <div className="matching-rate-dev">
-                          <span
-                            className="percent-matching-dev"
-                            style={{
-                              color: getBarColor(candidateDetailsNew.progress),
-                            }}
-                          >
-                            {candidateDetailsNew.progress}%
-                          </span>
-                        </div>
-                      </div>
 
-                      <div className="devmatching-bar border border-1">
-                        <div
-                          className="devmatch-level"
-                          style={{
-                            width: `${candidateDetailsNew.progress}%`,
-                            backgroundColor: getBarColor(
-                              candidateDetailsNew.progress
-                            ),
-                          }}
-                        ></div>
+                        <div className="devmatching-bar border border-1">
+                          <div
+                            className="devmatch-level"
+                            style={{
+                              width: `${candidateDetailsNew.progress}%`,
+                              backgroundColor: getBarColor(
+                                candidateDetailsNew.progress
+                              ),
+                            }}
+                          ></div>
+                        </div>
                       </div>
                     </div>
                   </Col>
