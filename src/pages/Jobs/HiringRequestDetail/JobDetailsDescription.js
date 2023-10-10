@@ -253,9 +253,6 @@ const JobDetailsDescription = () => {
     }
   };
 
-  if (!hiringRequestDetail) {
-    return null;
-  }
   return (
     <React.Fragment>
       <Card className="job-detail ">
