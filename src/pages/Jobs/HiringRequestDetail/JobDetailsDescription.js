@@ -254,9 +254,7 @@ const JobDetailsDescription = () => {
   };
 
   // console.log(hiringRequestDetail.skillRequireStrings);
-  if (!hiringRequestDetail) {
-    return null;
-  }
+
   return (
     <React.Fragment>
       <Card className="job-detail ">
