@@ -252,6 +252,9 @@ const JobDetailsDescription = () => {
       return "#57f000";
     }
   };
+  if (!hiringRequestDetail) {
+    return null;
+  }
 
   return (
     <React.Fragment>
