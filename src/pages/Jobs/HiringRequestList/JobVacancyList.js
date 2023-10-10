@@ -11,7 +11,7 @@ const JobVacancyList = (a) => {
 
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [skill, setSkill] = useState([]);
   const pageSize = 5;
   const handlePageClick = (page) => {
@@ -23,12 +23,18 @@ const JobVacancyList = (a) => {
     const maxPageButtons = 4;
     let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
     let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-    if (totalPages > maxPageButtons && currentPage <= Math.floor(maxPageButtons / 2) + 1) {
+    if (
+      totalPages > maxPageButtons &&
+      currentPage <= Math.floor(maxPageButtons / 2) + 1
+    ) {
       endPage = maxPageButtons;
     }
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
-        <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
+        <li
+          key={i}
+          className={`page-item ${i === currentPage ? "active" : ""}`}
+        >
           <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
             {i}
           </Link>
@@ -55,15 +61,27 @@ const JobVacancyList = (a) => {
     let response;
     try {
       if (search || skill) {
-        response = await hiringrequestService.getAllHiringRequestByJobTitleAndSkill(currentPage, 5, search, skill);
+        response =
+          await hiringrequestService.getAllHiringRequestByJobTitleAndSkill(
+            currentPage,
+            5,
+            search,
+            skill
+          );
       } else {
-        response = await hiringrequestService.getHiringRequestAndPaging(currentPage, 5);
+        response = await hiringrequestService.getHiringRequestAndPaging(
+          currentPage,
+          5
+        );
       }
 
       const data = response.data;
       const formattedJobVacancies = data.data.map((job) => {
         // Assuming job.typeRequireName and job.levelRequireName are available
-        job.skillRequireStrings.unshift(job.typeRequireName, job.levelRequireName);
+        job.skillRequireStrings.unshift(
+          job.typeRequireName,
+          job.levelRequireName
+        );
         return {
           id: job.requestId,
           companyImg: job.companyImage,
@@ -95,9 +113,8 @@ const JobVacancyList = (a) => {
   }, [currentPage]);
 
   const onSearch = () => {
-    fetchJobVacancies()
-  }
-
+    fetchJobVacancies();
+  };
 
   //Set initial state  for showFulSkill using object id
   const initialSkillsState = jobVacancyList.reduce(
@@ -129,7 +146,7 @@ const JobVacancyList = (a) => {
                   placeholder="Jobtitle... "
                   style={{ marginTop: "-10px" }}
                   value={search}
-                  onChange={e => setSearch(e.target.value)}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
             </Col>
@@ -157,6 +174,7 @@ const JobVacancyList = (a) => {
                 ? "job-box bookmark-post card mt-4"
                 : "job-box card mt-4"
             }
+            // className="job-box card mt-4"
           >
             <div className="bookmark-label text-center">
               <Link to="#" className="align-middle text-white">
@@ -180,7 +198,11 @@ const JobVacancyList = (a) => {
                 <Col md={3}>
                   <div className="mb-2 mb-md-0">
                     <h5 className="fs-18 mb-0">
-                      <Link to="/hiringrequestdetails" className="text-dark">
+                      <Link
+                        to="/hiringrequestdetails"
+                        className="text-dark"
+                        state={{ jobId: jobVacancyListDetails.id }}
+                      >
                         {jobVacancyListDetails.jobDescription}
                       </Link>
                     </h5>
@@ -218,24 +240,24 @@ const JobVacancyList = (a) => {
                     <span
                       className={
                         jobVacancyListDetails.fullTime === true
-                          ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                          ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
                           : jobVacancyListDetails.partTime === true
-                            ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                            : jobVacancyListDetails.freeLance === true
-                              ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                              : jobVacancyListDetails.internship === true
-                                ? "badge bg-blue-subtle text-blue fs-13 mt-1"
-                                : jobVacancyListDetails.lookingForDev === true
-                                  ? "badge bg-warning-subtle text-warning fs-13 mt-1 mx-1"
-                                  : jobVacancyListDetails.interview === true
-                                    ? "badge bg-info text-light fs-13 mt-1 mx-1"
-                                    : jobVacancyListDetails.done === true
-                                      ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
-                                      : jobVacancyListDetails.outOfTime === true
-                                        ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                                        : jobVacancyListDetails.cancelled === true
-                                          ? "badge bg-secondary text-light fs-13 mt-1 mx-1"
-                                          : ""
+                          ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.freeLance === true
+                          ? "badge bg-primary-subtle text-primary fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.internship === true
+                          ? "badge bg-blue-subtle text-blue fs-12 mt-1"
+                          : jobVacancyListDetails.lookingForDev === true
+                          ? "badge bg-warning-subtle text-warning fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.interview === true
+                          ? "badge bg-info text-light fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.done === true
+                          ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.outOfTime === true
+                          ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.cancelled === true
+                          ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
+                          : ""
                       }
                     >
                       {jobVacancyListDetails.timing}
@@ -256,7 +278,7 @@ const JobVacancyList = (a) => {
             </div>
             <div className="p-3 bg-light">
               <Row className="justify-content-between">
-                <Col md={9}>
+                <Col md={12}>
                   <div>
                     <p className="text-muted mb-0 ">
                       {jobVacancyListDetails.experience
@@ -270,10 +292,13 @@ const JobVacancyList = (a) => {
                         .map((skill, index) => (
                           <span
                             key={index}
-                            className={`badge ${index === 0 ? 'bg-info text-light' :
-                              index === 1 ? 'bg-danger-subtle text-danger' :
-                                'bg-primary-subtle text-primary'
-                              }  ms-2`}
+                            className={`badge ${
+                              index === 0
+                                ? "bg-info text-light"
+                                : index === 1
+                                ? "bg-danger-subtle text-danger"
+                                : "bg-primary-subtle text-primary"
+                            }  ms-2`}
                           >
                             {skill.trim()}
                           </span>
@@ -281,19 +306,18 @@ const JobVacancyList = (a) => {
 
                       {jobVacancyListDetails.experience.split(",").length >
                         6 && (
-                          <Link
-                            to="#"
-                            onClick={() =>
-                              toggleShowFullSkills(jobVacancyListDetails.id)
-                            }
-                          >
-                            {" "}
-                            {showFullSkills[jobVacancyListDetails.id]
-                              ? "less"
-                              : "...more"}
-                          </Link>
-                        )}
-
+                        <Link
+                          to="#"
+                          onClick={() =>
+                            toggleShowFullSkills(jobVacancyListDetails.id)
+                          }
+                        >
+                          {" "}
+                          {showFullSkills[jobVacancyListDetails.id]
+                            ? "less"
+                            : "...more"}
+                        </Link>
+                      )}
                     </p>
                   </div>
                 </Col>
@@ -306,13 +330,24 @@ const JobVacancyList = (a) => {
         <Col lg={12} className="mt-4 pt-2">
           <nav aria-label="Page navigation example">
             <div className="pagination job-pagination mb-0 justify-content-center">
-              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                <Link className="page-link" to="#" tabIndex="-1" onClick={handlePrevPage}>
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+              >
+                <Link
+                  className="page-link"
+                  to="#"
+                  tabIndex="-1"
+                  onClick={handlePrevPage}
+                >
                   <i className="mdi mdi-chevron-double-left fs-15"></i>
                 </Link>
               </li>
               {renderPageNumbers()}
-              <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+              <li
+                className={`page-item ${
+                  currentPage === totalPages ? "disabled" : ""
+                }`}
+              >
                 <Link className="page-link" to="#" onClick={handleNextPage}>
                   <i className="mdi mdi-chevron-double-right fs-15"></i>
                 </Link>

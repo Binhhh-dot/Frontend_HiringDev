@@ -251,7 +251,7 @@ const CandidateGridDetails = () => {
               <Col lg={3}>
                 <div className="border rounded-start p-3">
                   <p className="text-muted mb-0 fs-13">Type Of Developer</p>
-                  <p className="fw-medium  badge bg-secondary mb-0">
+                  <p className="fw-medium  badge bg-purple mb-0">
                     BE Developer
                   </p>
                 </div>
