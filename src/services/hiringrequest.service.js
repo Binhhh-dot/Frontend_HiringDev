@@ -98,9 +98,47 @@ const getHiringRequestDetailInManager = async (hiringRequestId) => {
     );
 
   const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
 
-  // localStorage.setItem("myData", hiringRequestId);
+const getDeveloperMatchingInManager = async (devMatchingId) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getDeveloperMatchingInManager.replace(
+      "${devMatching}",
+      devMatchingId
+    );
 
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
+const sendHiringRequestToDevMatching = async (requestId, developerIds) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.sendHiringRequestToDevMatching;
+  const response = await utils.axiosLocalHost.post(serviceUrl, {
+    requestId,
+    developerIds,
+  });
+  return response;
+};
+
+const getDevMatchingHasBeenSent = async (requestId) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getDevMatchingHasBeenSent.replace(
+      "${requestId}",
+      requestId
+    );
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
+const getDeveloperDetailInManager = async (devId) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getDeveloperDetailInManager.replace(
+      "${devId}",
+      devId
+    );
+  const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };
 
@@ -111,4 +149,8 @@ export default {
   getAllHiringRequestByJobTitleAndSkill,
   getAllStatusHiringRequest,
   getHiringRequestDetailInManager,
+  getDeveloperMatchingInManager,
+  sendHiringRequestToDevMatching,
+  getDevMatchingHasBeenSent,
+  getDeveloperDetailInManager,
 };
