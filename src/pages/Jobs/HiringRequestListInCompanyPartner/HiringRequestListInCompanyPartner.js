@@ -16,8 +16,6 @@ const HiringRequestListInCompanyPartner = () => {
           <Row>
             <Col lg={9}>
               <div className="me-lg-5">
-                <JobSearchOptions />
-
                 <JobVacancyList />
               </div>
             </Col>

@@ -23,15 +23,23 @@ import skillService from "../../../services/skill.service";
 import typeService from "../../../services/type.service";
 import levelService from "../../../services/level.service";
 import hiringRequestService from "../../../services/hiringrequest.service";
+import scheduleTypeService from "../../../services/scheduleType";
+import employmentTypeServices from "../../../services/employmentType.services";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const CreateHiringRequest = () => {
   document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
   const [options, setOptions] = useState([]);
   const [options2, setOptions2] = useState([]);
   const [options3, setOptions3] = useState([]);
+  const [options4, setOptions4] = useState([]);
+  const [options5, setOptions5] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedOptions2, setSelectedOptions2] = useState([]);
   const [selectedOptions3, setSelectedOptions3] = useState([]);
+  const [selectedOptions4, setSelectedOptions4] = useState([]);
+  const [selectedOptions5, setSelectedOptions5] = useState([]);
   const [companyId, setCompanyId] = useState(null);
   const [modal, setModal] = useState(false);
   const [modal2, setModal2] = useState(false);
@@ -40,6 +48,8 @@ const CreateHiringRequest = () => {
   const [typeError, setTypeError] = useState(null);
   const [levelError, setLevelError] = useState(null);
   const [skillError, setSkillError] = useState(null);
+  const [scheduleTypeError, setScheduleTypeError] = useState(null);
+  const [employmentTypeError, setEmploymentTypeError] = useState(null);
   const [budgetError, setBudgetError] = useState(null);
   const [durationError, setDurationError] = useState(null);
   const [descriptionError, setDescriptionError] = useState(null);
@@ -62,6 +72,12 @@ const CreateHiringRequest = () => {
   };
   const handleChange3 = (selected) => {
     setSelectedOptions3(selected);
+  };
+  const handleChange4 = (selected) => {
+    setSelectedOptions4(selected);
+  };
+  const handleChange5 = (selected) => {
+    setSelectedOptions5(selected);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -101,6 +117,30 @@ const CreateHiringRequest = () => {
       } catch (error) {
         console.error("Error fetching levels:", error);
       }
+
+      try {
+        const response4 = await scheduleTypeService.getAllScheduleType();
+        const activeScheduleType = response4.data.data.filter(scheduleType => scheduleType.statusString === "Active");
+        const formattedScheduleType = activeScheduleType.map(scheduleType => ({
+          value: scheduleType.scheduleTypeId.toString(),
+          label: scheduleType.scheduleTypeName
+        }));
+        setOptions4(formattedScheduleType);
+      } catch (error) {
+        console.error("Error fetching schedule type:", error);
+      }
+
+      try {
+        const response5 = await employmentTypeServices.getAllEmploymentType();
+        const activeEmploymentType = response5.data.data.filter(employmentType => employmentType.statusString === "Active");
+        const formattedEmploymentType = activeEmploymentType.map(employmentType => ({
+          value: employmentType.employmentTypeId.toString(),
+          label: employmentType.employmentTypeName
+        }));
+        setOptions5(formattedEmploymentType);
+      } catch (error) {
+        console.error("Error fetching employment typeName:", error);
+      }
       try {
         // Lấy userId từ localStorage
         const userId = localStorage.getItem('userId');
@@ -130,6 +170,7 @@ const CreateHiringRequest = () => {
 
   const handlePostJob = async () => {
     setLoading(true);
+    let check = true;
     // Kiểm tra xem có userID trong localStorage không
     const userId = localStorage.getItem('userId');
     if (!userId) {
@@ -141,7 +182,6 @@ const CreateHiringRequest = () => {
       }
       if (!document.getElementById("job-title").value) {
         setJobTitleError("Please enter a job title.");
-
       } else {
         setJobTitleError(null);
       }
@@ -168,6 +208,18 @@ const CreateHiringRequest = () => {
         setLevelError(null);
       }
 
+      if (!selectedOptions4.value) {
+        setScheduleTypeError("Please select the schedule type requirement.");
+
+      } else {
+        setScheduleTypeError(null);
+      } if (!selectedOptions5.value) {
+        setEmploymentTypeError("Please select the employment type requirement.");
+
+      } else {
+        setEmploymentTypeError(null);
+      }
+
       // Kiểm tra lỗi cho Skill requirement
       if (selectedOptions.length === 0) {
         setSkillError("Please select at least one skill.");
@@ -187,12 +239,14 @@ const CreateHiringRequest = () => {
       // Kiểm tra lỗi cho Duration
       if (!document.getElementById("duration").value) {
         setDurationError("Please enter the duration.");
-
       } else {
         const currentDate = new Date();
         const selectedDate = new Date(document.getElementById("duration").value);
-        if (selectedDate <= currentDate) {
-          setDurationError("Please enter a date greater than the current date.");
+        const sevenDaysLater = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000); // Thêm 7 ngày
+
+        if (selectedDate < sevenDaysLater) {
+          setDurationError("Please enter a date that is at least 7 days greater than the current date.");
+          check = false;
         } else {
           setDurationError(null);
         }
@@ -204,34 +258,41 @@ const CreateHiringRequest = () => {
       } else {
         setDescriptionError(null);
       }
-
       // Nếu có, thực hiện logic để đăng job
       // Đây có thể là nơi gửi yêu cầu đăng job lên server
       console.log("Posting job...");
-      try {
-        const jobTitle = document.getElementById("job-title").value; // replace with the actual job title from your input
-        const jobDescription = document.getElementById("description").value; // get job description from the textarea
-        const numberOfDev = parseInt(document.getElementById("number-dev").value, 10); // parse as integer
-        const salaryPerDev = parseFloat(document.getElementById("budget").value); // parse as float
-        const duration = document.getElementById("duration").value; // get duration from the date input
-        const typeRequireId = selectedOptions2.value; // replace with actual value from the type dropdown
-        const levelRequireId = selectedOptions3.value; // replace with actual value from the level dropdown
-        const skills = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
-        const isSaved = false;
-        const response = await hiringRequestService.createHiringRequest(
-          jobTitle, jobDescription, numberOfDev, salaryPerDev, duration, typeRequireId, levelRequireId, skills, isSaved, companyId,
-        );
-        setLoading(false);
-        setSuccessMessage("Đăng công việc thành công");
-        setErrorMessage(null);
-        console.log("Job posted successfully:", response);
-      } catch (error) {
-        console.error("Error posting job:", error);
+      if (check) {
+        try {
+          const jobTitle = document.getElementById("job-title").value; // replace with the actual job title from your input
+          const jobDescription = document.getElementById("description").value; // get job description from the textarea
+          const numberOfDev = parseInt(document.getElementById("number-dev").value, 10); // parse as integer
+          const salaryPerDev = parseFloat(document.getElementById("budget").value); // parse as float
+          const duration = document.getElementById("duration").value; // get duration from the date input
+          const typeRequireId = selectedOptions2.value; // replace with actual value from the type dropdown
+          const levelRequireId = selectedOptions3.value; // replace with actual value from the level dropdown
+          const scheduleTypeId = selectedOptions4.value;
+          const employmentTypeId = selectedOptions5.value;
+          const skills = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
+          const isSaved = false;
+          const response = await hiringRequestService.createHiringRequest(
+            jobTitle, jobDescription, numberOfDev, salaryPerDev, duration, typeRequireId, levelRequireId, skills, isSaved, companyId, scheduleTypeId, employmentTypeId
+          );
+          setLoading(false);
+          setSuccessMessage("Đăng công việc thành công");
+          setErrorMessage(null);
+          console.log("Job posted successfully:", response);
+        } catch (error) {
+          console.error("Error posting job:", error);
+          setLoading(false);
+          setSuccessMessage(null);
+          setErrorMessage("Lỗi khi đăng công việc");
+
+          // Handle error, show error message, etc.
+        }
+      } else {
         setLoading(false);
         setSuccessMessage(null);
         setErrorMessage("Lỗi khi đăng công việc");
-
-        // Handle error, show error message, etc.
       }
     }
   };
@@ -312,7 +373,35 @@ const CreateHiringRequest = () => {
                       </div>
                     </div>
 
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group app-label mt-2">
+                          <label class="text-muted">Schedule type requirement</label>
+                          <div className="form-button">
+                            <Select
+                              options={options4}
+                              value={selectedOptions4}
+                              onChange={handleChange4}
+                            />
+                          </div>
+                          {scheduleTypeError && <p className="text-danger mt-2">{scheduleTypeError}</p>}
+                        </div>
+                      </div>
 
+                      <div class="col-md-6">
+                        <div class="form-group app-label mt-2">
+                          <label class="text-muted">Employment type requirement</label>
+                          <div className="form-button">
+                            <Select
+                              options={options5}
+                              value={selectedOptions5}
+                              onChange={handleChange5}
+                            />
+                          </div>
+                          {employmentTypeError && <p className="text-danger mt-2">{employmentTypeError}</p>}
+                        </div>
+                      </div>
+                    </div>
 
                     <div class="row">
                       <div class="col-md-6">

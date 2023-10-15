@@ -31,6 +31,7 @@ const CreateCompanyAccount = () => {
     const companyName = document.getElementById('company-name').value;
     const companyEmail = document.getElementById('email-address').value;
     const phoneNumber = document.getElementById('number').value;
+    const address = document.getElementById('address').value;
     const country = selectedCountry ? selectedCountry.value : '';
 
     const fileInput = document.getElementById('company-image');
@@ -42,6 +43,7 @@ const CreateCompanyAccount = () => {
     formData.append('companyName', companyName);
     formData.append('companyEmail', companyEmail);
     formData.append('phoneNumber', phoneNumber);
+    formData.append('address', address);
     formData.append('country', country);
     formData.append('userId', userId);
     formData.append('file', file);
@@ -53,11 +55,16 @@ const CreateCompanyAccount = () => {
 
       // Handle the response (you can show a success message or redirect to another page)
       console.log('API Response:', response.data);
+      const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+      const userData = responseUser.data;
+      localStorage.setItem('companyId', userData.data.companyId);
     } catch (error) {
       // Handle errors (show an error message or log the error)
       console.error('Error creating company:', error);
       console.log(error.response.data);
     }
+
+
   };
 
 
@@ -117,7 +124,17 @@ const CreateCompanyAccount = () => {
                           ></input>
                         </div>
                       </div>
-
+                      <div class="col-md-6">
+                        <div class="form-group app-label mt-2">
+                          <label class="text-muted">Address</label>
+                          <input
+                            id="address"
+                            type="address"
+                            class="form-control resume"
+                            placeholder="3 District"
+                          ></input>
+                        </div>
+                      </div>
                     </div>
                     <div class="row">
                       <div class="col-md-6">

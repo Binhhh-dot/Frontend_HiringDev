@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Col, Input, Label, Row, Modal, ModalBody } from "reactstrap";
+import { Col, Row, Input } from "reactstrap";
+import axios from "axios";
+import JobType from "../../Home/SubSection/JobType";
+import { Form } from "react-bootstrap";
+import hiringrequestService from "../../../services/hiringrequest.service";
 
 //Images Import
 import jobImage1 from "../../../assets/images/featured-job/img-01.png";
@@ -13,147 +17,166 @@ import jobImage7 from "../../../assets/images/featured-job/img-07.png";
 
 const JobVacancyList = () => {
   //Apply Now Model
-  const [modal, setModal] = useState(false);
-  const openModal = () => setModal(!modal);
+  const [jobVacancyList, setJobVacancyList] = useState([]);
 
-  const jobVacancyList = [
-    {
-      id: 1,
-      companyImg: jobImage1,
-      jobDescription: "Product Director",
-      companyName: "Creative Agency",
-      location: " Escondido,California",
-      jobPostTime: "3 min ago",
-      fullTime: true,
-      timing: "Full Time",
-      addclassNameBookmark: false,
-      badges: [],
-      experience: "2 - 3 years",
-    },
-    {
-      id: 2,
-      companyImg: jobImage2,
-      jobDescription: "Digital Marketing Manager",
-      companyName: "Jobcy Technology Pvt.Ltd",
-      location: "Phoenix, Arizona",
-      jobPostTime: "15 min ago",
-      fullTime: true,
-      timing: "Full Time",
-      catogary: "Recent Jobs",
-      addclassNameBookmark: true,
-      badges: [
-        {
-          id: 1,
-          badgeclassName: "bg-warning-subtle text-warning",
-          badgeName: "Urgent",
-        },
-        {
-          id: 2,
-          badgeclassName: "bg-primary-subtle text-primary",
-          badgeName: "Freelance",
-        },
-      ],
-      experience: "4+ years",
-    },
-    {
-      id: 3,
-      companyImg: jobImage3,
-      jobDescription: "Product Director",
-      companyName: "Creative Agency",
-      location: " Escondido,California",
-      jobPostTime: "37 min ago",
-      fullTime: true,
-      timing: "Full Time",
-      addclassNameBookmark: false,
-      badges: [],
-      experience: "2 - 3 years",
-    },
-    {
-      id: 4,
-      companyImg: jobImage4,
-      jobDescription: "Product Director",
-      companyName: "Creative Agency",
-      location: " Escondido,California",
-      jobPostTime: "50 min ago",
-      freeLance: true,
-      timing: "Freelance",
-      addclassNameBookmark: false,
-      badges: [],
-      experience: "2 - 3 years",
-    },
-    {
-      id: 5,
-      companyImg: jobImage5,
-      jobDescription: "Product Director",
-      companyName: "Creative Agency",
-      location: " Escondido,California",
-      jobPostTime: "1 month ago",
-      partTime: true,
-      timing: "Part Time",
-      addclassNameBookmark: true,
-      badges: [],
-      experience: "2 - 3 years",
-    },
-    {
-      id: 6,
-      companyImg: jobImage6,
-      jobDescription: "Product Director",
-      companyName: "Creative Agency",
-      location: "Escondido, California",
-      jobPostTime: "2 month ago",
-      freeLance: true,
-      timing: "Freelance",
-      addclassNameBookmark: false,
-      badges: [
-        {
-          id: 1,
-          badgeclassName: "bg-warning-subtle text-warning",
-          badgeName: "Urgent",
-        },
-      ],
-      experience: "2-3 years",
-    },
-    {
-      id: 7,
-      companyImg: jobImage7,
-      jobDescription: "Product Director",
-      companyName: "Creative Agency",
-      location: "Escondido, California",
-      jobPostTime: "2 month ago",
-      partTime: true,
-      timing: "Part Time",
-      addclassNameBookmark: false,
-      badges: [
-        {
-          id: 1,
-          badgeclassName: "bg-warning-subtle text-warning",
-          badgeName: "Urgent",
-        },
-      ],
-      experience: "2-3 years",
-    },
-    {
-      id: 8,
-      companyImg: jobImage3,
-      jobDescription: "Product Director",
-      companyName: "Creative Agency",
-      location: "Escondido, California",
-      jobPostTime: "3 month ago",
-      internship: true,
-      timing: "Internship",
-      addclassNameBookmark: false,
-      badges: [
-        {
-          id: 1,
-          badgeclassName: "bg-warning-subtle text-warning",
-          badgeName: "Private",
-        },
-      ],
-      experience: "2-3 years",
-    },
-  ];
+  let [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [skill, setSkill] = useState([]);
+  const pageSize = 5;
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+  const companyId = localStorage.getItem('companyId');
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+    if (
+      totalPages > maxPageButtons &&
+      currentPage <= Math.floor(maxPageButtons / 2) + 1
+    ) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${i === currentPage ? "active" : ""}`}
+        >
+          <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
+            {i}
+          </Link>
+        </li>
+      );
+    }
+
+    return pageNumbers;
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const fetchJobVacancies = async () => {
+    let response;
+    try {
+      if (search || skill) {
+        response =
+          await hiringrequestService.getAllHiringRequestByIdAndJobTitleAndSkill(
+            companyId,
+            currentPage,
+            5,
+            search,
+            skill
+          );
+      } else {
+        response = await hiringrequestService.getHiringRequestByidAndPaging(
+          companyId,
+          currentPage,
+          5
+        );
+      }
+
+      const data = response.data;
+      const formattedJobVacancies = data.data.map((job) => {
+        // Assuming job.typeRequireName and job.levelRequireName are available
+        job.skillRequireStrings.unshift(
+          job.typeRequireName,
+          job.levelRequireName
+        );
+        return {
+          id: job.requestId,
+          companyImg: job.companyImage,
+          jobDescription: job.jobTitle,
+          companyName: job.companyName,
+          location: job.numberOfDev + " Developer",
+          jobPostTime: new Date(job.duration).toLocaleDateString(),
+          cancelled: job.statusString.includes("Cancelled"),
+          done: job.statusString.includes("Done"),
+          outOfTime: job.statusString.includes("Expired"),
+          fullTime: job.statusString.includes("Waiting Approval"),
+          timing: job.statusString,
+          addclassNameBookmark: false,
+          showFullSkills: false,
+          badges: [],
+          experience: job.skillRequireStrings.join(", "),
+        };
+      });
+      console.log(response.data);
+      setJobVacancyList(formattedJobVacancies);
+      setTotalPages(Math.ceil(data.paging.total / pageSize));
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobVacancies();
+  }, [currentPage]);
+
+  const onSearch = () => {
+    fetchJobVacancies();
+  };
+
+  //Set initial state  for showFulSkill using object id
+  const initialSkillsState = jobVacancyList.reduce(
+    (acc, job) => ({ ...acc, [job.id]: false }),
+    {}
+  );
+
+  const [showFullSkills, setShowFullSkills] = useState(initialSkillsState);
+
+  const toggleShowFullSkills = (id) => {
+    setShowFullSkills((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+
   return (
     <React.Fragment>
+      <div className="job-list-header">
+        <Form action="#">
+          <Row className="g-2">
+            <Col lg={4} md={6}>
+              <div className="filler-job-form">
+                <i className="uil uil-briefcase-alt"></i>
+                <Input
+                  type="search"
+                  className="form-control filter-input-box"
+                  id="exampleFormControlInput1"
+                  placeholder="Jobtitle... "
+                  style={{ marginTop: "-10px" }}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+            </Col>
+
+            <Col lg={5} md={6}>
+              <div className="filler-job-form">
+                <i className="uil uil-clipboard-notes"></i>
+                <JobType skill={skill} setSkill={setSkill} />
+              </div>
+            </Col>
+            <Col lg={3} md={6}>
+              <div className="btn btn-primary w-100" onClick={() => onSearch()}>
+                <i className="uil uil-filter"></i> Fliter
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </div>
       <div>
         {jobVacancyList.map((jobVacancyListDetails, key) => (
           <div
@@ -163,6 +186,7 @@ const JobVacancyList = () => {
                 ? "job-box bookmark-post card mt-4"
                 : "job-box card mt-4"
             }
+          // className="job-box card mt-4"
           >
             <div className="bookmark-label text-center">
               <Link to="#" className="align-middle text-white">
@@ -173,7 +197,7 @@ const JobVacancyList = () => {
               <Row className="align-items-center">
                 <Col md={2}>
                   <div className="text-center mb-4 mb-md-0">
-                    <Link to="/companydetails">
+                    <Link to="/hiringrequestlistincompanypartnerdetail">
                       <img
                         src={jobVacancyListDetails.companyImg}
                         alt=""
@@ -189,6 +213,7 @@ const JobVacancyList = () => {
                       <Link
                         to="/hiringrequestlistincompanypartnerdetail"
                         className="text-dark"
+                        state={{ jobId: jobVacancyListDetails.id }}
                       >
                         {jobVacancyListDetails.jobDescription}
                       </Link>
@@ -202,7 +227,7 @@ const JobVacancyList = () => {
                 <Col md={3}>
                   <div className="d-flex mb-2">
                     <div className="flex-shrink-0">
-                      <i className="mdi mdi-map-marker text-primary me-1"></i>
+                      <i className="uil uil-user-check text-primary me-1"></i>
                     </div>
                     <p className="text-muted mb-0">
                       {jobVacancyListDetails.location}
@@ -227,14 +252,24 @@ const JobVacancyList = () => {
                     <span
                       className={
                         jobVacancyListDetails.fullTime === true
-                          ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                          ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
                           : jobVacancyListDetails.partTime === true
-                          ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                          : jobVacancyListDetails.freeLance === true
-                          ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                          : jobVacancyListDetails.internship === true
-                          ? "badge bg-blue-subtle text-blue fs-13 mt-1"
-                          : ""
+                            ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
+                            : jobVacancyListDetails.freeLance === true
+                              ? "badge bg-primary-subtle text-primary fs-12 mt-1 mx-1"
+                              : jobVacancyListDetails.internship === true
+                                ? "badge bg-blue-subtle text-blue fs-12 mt-1"
+                                : jobVacancyListDetails.lookingForDev === true
+                                  ? "badge bg-warning-subtle text-warning fs-12 mt-1 mx-1"
+                                  : jobVacancyListDetails.interview === true
+                                    ? "badge bg-info text-light fs-12 mt-1 mx-1"
+                                    : jobVacancyListDetails.done === true
+                                      ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
+                                      : jobVacancyListDetails.outOfTime === true
+                                        ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
+                                        : jobVacancyListDetails.cancelled === true
+                                          ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
+                                          : ""
                       }
                     >
                       {jobVacancyListDetails.timing}
@@ -255,104 +290,82 @@ const JobVacancyList = () => {
             </div>
             <div className="p-3 bg-light">
               <Row className="justify-content-between">
-                <Col md={4}>
+                <Col md={12}>
                   <div>
-                    <p className="text-muted mb-0">
-                      <span className="text-dark">Experience :</span>
-                      {jobVacancyListDetails.experience}
+                    <p className="text-muted mb-0 ">
+                      {jobVacancyListDetails.experience
+                        .split(",")
+                        .slice(
+                          0,
+                          showFullSkills[jobVacancyListDetails.id]
+                            ? undefined
+                            : 6
+                        )
+                        .map((skill, index) => (
+                          <span
+                            key={index}
+                            className={`badge ${index === 0
+                              ? "bg-info text-light"
+                              : index === 1
+                                ? "bg-danger-subtle text-danger"
+                                : "bg-primary-subtle text-primary"
+                              }  ms-2`}
+                          >
+                            {skill.trim()}
+                          </span>
+                        ))}
+
+                      {jobVacancyListDetails.experience.split(",").length >
+                        6 && (
+                          <Link
+                            to="#"
+                            onClick={() =>
+                              toggleShowFullSkills(jobVacancyListDetails.id)
+                            }
+                          >
+                            {" "}
+                            {showFullSkills[jobVacancyListDetails.id]
+                              ? "less"
+                              : "...more"}
+                          </Link>
+                        )}
                     </p>
-                  </div>
-                </Col>
-                <Col lg={2} md={3}>
-                  <div>
-                    <Link
-                      to="#applyNow"
-                      onClick={openModal}
-                      className="primary-link"
-                    >
-                      Apply Now <i className="mdi mdi-chevron-double-right"></i>
-                    </Link>
                   </div>
                 </Col>
               </Row>
             </div>
           </div>
         ))}
-        <div
-          className="modal fade"
-          id="applyNow"
-          tabIndex="-1"
-          aria-labelledby="applyNow"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <Modal isOpen={modal} toggle={openModal} centered>
-              <ModalBody className="modal-body p-5">
-                <div className="text-center mb-4">
-                  <h5 className="modal-title" id="staticBackdropLabel">
-                    Apply For This Job
-                  </h5>
-                </div>
-                <div className="position-absolute end-0 top-0 p-3">
-                  <button
-                    type="button"
-                    onClick={openModal}
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="mb-3">
-                  <Label for="nameControlInput" className="form-label">
-                    Name
-                  </Label>
-                  <Input
-                    type="text"
-                    className="form-control"
-                    id="nameControlInput"
-                    placeholder="Enter your name"
-                  />
-                </div>
-                <div className="mb-3">
-                  <Label for="emailControlInput2" className="form-label">
-                    Email Address
-                  </Label>
-                  <Input
-                    type="email"
-                    className="form-control"
-                    id="emailControlInput2"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                <div className="mb-3">
-                  <Label for="messageControlTextarea" className="form-label">
-                    Message
-                  </Label>
-                  <textarea
-                    className="form-control"
-                    id="messageControlTextarea"
-                    rows="4"
-                    placeholder="Enter your message"
-                  ></textarea>
-                </div>
-                <div className="mb-4">
-                  <Label className="form-label" for="inputGroupFile01">
-                    Resume Upload
-                  </Label>
-                  <Input
-                    type="file"
-                    className="form-control"
-                    id="inputGroupFile01"
-                  />
-                </div>
-                <button type="submit" className="btn btn-primary w-100">
-                  Send Application
-                </button>
-              </ModalBody>
-            </Modal>
-          </div>
-        </div>
       </div>
+      <Row>
+        <Col lg={12} className="mt-4 pt-2">
+          <nav aria-label="Page navigation example">
+            <div className="pagination job-pagination mb-0 justify-content-center">
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+              >
+                <Link
+                  className="page-link"
+                  to="#"
+                  tabIndex="-1"
+                  onClick={handlePrevPage}
+                >
+                  <i className="mdi mdi-chevron-double-left fs-15"></i>
+                </Link>
+              </li>
+              {renderPageNumbers()}
+              <li
+                className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                  }`}
+              >
+                <Link className="page-link" to="#" onClick={handleNextPage}>
+                  <i className="mdi mdi-chevron-double-right fs-15"></i>
+                </Link>
+              </li>
+            </div>
+          </nav>
+        </Col>
+      </Row>
     </React.Fragment>
   );
 };

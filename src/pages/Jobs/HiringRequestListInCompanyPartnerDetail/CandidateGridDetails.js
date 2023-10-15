@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Col,
   Row,
@@ -11,17 +11,8 @@ import {
   Button,
 } from "reactstrap";
 
-import { Link } from "react-router-dom";
-
-import userImage1 from "../../../assets/images/user/img-01.jpg";
-import userImage2 from "../../../assets/images/user/img-02.jpg";
-import userImage3 from "../../../assets/images/user/img-03.jpg";
-import userImage4 from "../../../assets/images/user/img-04.jpg";
-import userImage5 from "../../../assets/images/user/img-05.jpg";
-import userImage6 from "../../../assets/images/user/img-06.jpg";
-import userImage7 from "../../../assets/images/user/img-07.jpg";
-import userImage8 from "../../../assets/images/user/img-08.jpg";
-import userImage9 from "../../../assets/images/user/img-09.jpg";
+import { Link, useLocation } from "react-router-dom";
+import hiringrequestService from "../../../services/hiringrequest.service";
 import userImage0 from "../../../assets/images/user/img-00.jpg";
 
 import JobDetailImage from "../../../assets/images/job-detail.jpg";
@@ -29,14 +20,16 @@ import JobImage10 from "../../../assets/images/featured-job/img-10.png";
 import { FaEye } from "react-icons/fa";
 
 import "./index.css";
+import developerServices from "../../../services/developer.services";
 const CandidateGridDetails = () => {
   //Apply Now Model
   const [modal, setModal] = useState(false);
+  const [candidategridDetails, setCandidategridDetails] = useState([]);
   const openModal = () => setModal(!modal);
-
+  const { state } = useLocation();
   const [modalEye, setModalEye] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
-
+  const [hiringRequestDetail, setHiringRequestDetail] = useState(null);
   const openEyeModal = () => {
     setModalEye(!modalEye);
   };
@@ -72,119 +65,62 @@ const CandidateGridDetails = () => {
     closeInterviewModal();
   };
 
-  const candidategridDetails = [
-    {
-      id: 1,
-      userImg: userImage0,
-      candidateName: "Developer 1",
-      candidateStatusClassName:
-        "profile-active position-absolute badge rounded-circle bg-success",
-      experience: "0-3 Years",
-      jobType: "Freelancers",
-      salary: "$800",
-      addclassNameBookmark: true,
-      label: true,
-      statuslabel: "FEATURED",
-    },
-    {
-      id: 2,
-      userImg: userImage0,
-      candidateName: "Developer 2",
-      candidateStatusClassName:
-        "profile-active position-absolute badge rounded-circle bg-success",
-      experience: "3.5 Years",
-      jobType: "Freelancers",
-      salary: "$350",
-      addclassNameBookmark: true,
-      label: false,
-    },
-    {
-      id: 3,
-      userImg: userImage0,
-      candidateName: "Developer 3",
-      candidateStatusClassName:
-        "profile-active position-absolute badge rounded-circle bg-danger",
-      experience: "4 Years",
-      jobType: "Freelancers",
-      salary: "$280",
-      addclassNameBookmark: false,
-      label: true,
-      statuslabel: "URGENT",
-    },
+  const fetchJobVacancies = async () => {
+    try {
+      const response = await developerServices.GetAllSelectedDevByHR(state.jobId)
+      const data = response.data;
+      const candidategridDetails = data.data.map((dev) => {
+        return {
+          id: dev.developerId,
+          userImg: dev.userImage,
+          candidateName: dev.firstName + " " + dev.lastName,
+          candidateStatusClassName:
+            "profile-active position-absolute badge rounded-circle bg-success",
+          experience: dev.yearOfExperience + " Years",
+          jobType: dev.levelRequireName,
+          salary: dev.averageSalary,
+          addclassNameBookmark: false,
+          label: false,
+          skills: dev.skillRequireStrings,
+          averagedPercentage: dev.averagedPercentage,
+        };
+      });
+      setCandidategridDetails(candidategridDetails);
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
 
-    {
-      id: 4,
-      userImg: userImage0,
-      candidateName: "Developer 4",
-      candidateStatusClassName:
-        "profile-active position-absolute badge rounded-circle bg-success",
-      experience: "2 Years",
-      jobType: "Freelancers",
-      salary: "$240",
-      addclassNameBookmark: false,
-      label: false,
-    },
-    {
-      id: 5,
-      userImg: userImage0,
-      candidateName: "Developer 5",
-      candidateStatusClassName:
-        "profile-active position-absolute badge rounded-circle bg-success",
-      experience: "2 Years",
-      jobType: "Freelancers",
-      salary: "$198",
-      addclassNameBookmark: false,
-      label: false,
-    },
-    {
-      id: 6,
-      userImg: userImage0,
-      candidateName: "Developer 6",
-      candidateStatusClassName:
-        "profile-active position-absolute badge rounded-circle bg-success",
-      experience: "7 Years",
-      jobType: "Freelancers",
-      salary: "$299",
-      addclassNameBookmark: true,
-      label: false,
-    },
-    {
-      id: 7,
-      userImg: userImage0,
-      candidateName: "Developer 7",
-      candidateStatusClassName:
-        "profile-active position-absolute badge rounded-circle bg-success",
-      experience: "4 Years",
-      jobType: "Freelancers",
-      salary: "$310",
-      addclassNameBookmark: true,
-      label: false,
-    },
-    {
-      id: 8,
-      userImg: userImage0,
-      candidateName: "Developer 8",
-      candidateStatusClassName:
-        "profile-active position-absolute badge rounded-circle bg-danger",
-      experience: "4.5 Years",
-      jobType: "Freelancers",
-      salary: "$450",
-      addclassNameBookmark: false,
-      label: false,
-    },
-    {
-      id: 9,
-      userImg: userImage0,
-      candidateName: "Developer 9",
-      candidateStatusClassName:
-        "profile-active position-absolute badge rounded-circle bg-success",
-      experience: "7 Years",
-      jobType: "Freelancers",
-      salary: "$300",
-      addclassNameBookmark: false,
-      label: false,
-    },
-  ];
+  useEffect(() => {
+    fetchJobVacancies();
+  });
+
+
+
+  const fetchHiringRequestDetailInCompany = async () => {
+    let response;
+    // const saveData = localStorage.getItem("myData");
+    try {
+      response = await hiringrequestService.getHiringRequestDetailInCompany(
+        state.jobId
+      );
+      console.log(response);
+      setHiringRequestDetail(response.data.data);
+
+      return response;
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+
+  };
+
+  useEffect(() => {
+    fetchHiringRequestDetailInCompany();
+  }, []);
+
+  if (!hiringRequestDetail) {
+    return null;
+  }
   return (
     <React.Fragment>
       <Card className="job-detail overflow-hidden">
@@ -207,13 +143,13 @@ const CandidateGridDetails = () => {
           <div>
             <Row>
               <Col md={8}>
-                <h5 className="mb-1">Hiring Request Title</h5>
+                <h5 className="mb-1">{hiringRequestDetail.jobTitle}</h5>
                 <ul className="list-inline text-muted mb-0">
                   <li className="list-inline-item">
-                    <i className="mdi mdi-account"></i> 8 Developer
+                    <i className="mdi mdi-account"></i> {hiringRequestDetail.numberOfDev} Developer
                   </li>
                   <li className="list-inline-item text-warning review-rating">
-                    <span className="badge bg-warning">looking For Dev</span>{" "}
+                    <span className="badge bg-warning">{hiringRequestDetail.statusString}</span>{" "}
                   </li>
                 </ul>
               </Col>
@@ -224,7 +160,11 @@ const CandidateGridDetails = () => {
                       <p>
                         Deadline Request
                         <span> </span>
-                        <span className="badge bg-secondary">1/10/2023</span>
+                        <span className="badge bg-secondary">{new Intl.DateTimeFormat("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        }).format(new Date(hiringRequestDetail.duration))}</span>
                       </p>
                     </div>
                   </li>
@@ -247,48 +187,41 @@ const CandidateGridDetails = () => {
           </div>
 
           <div className="mt-4">
-            <Row className="g-2">
-              <Col lg={3}>
-                <div className="border rounded-start p-3">
+            <Row className="g-2 " style={{ columnGap: "3px" }}>
+              <Col lg={3} style={{ maxWidth: "266px" }} className="border p-3">
+                <div className="rounded-start ">
                   <p className="text-muted mb-0 fs-13">Type Of Developer</p>
                   <p className="fw-medium  badge bg-purple mb-0">
-                    BE Developer
+                    {hiringRequestDetail.typeRequireName}
                   </p>
                 </div>
               </Col>
-              <Col lg={3}>
-                <div className="border p-3">
+              <Col lg={3} className="border p-3" style={{ maxWidth: "266px" }}>
+                <div >
                   <p className="text-muted fs-13 mb-0">Skill Requirement</p>
-                  <span
-                    className="fw-medium mb-0 badge bg-primary text-light"
-                    style={{ marginRight: "3px" }}
-                  >
-                    Strong OOP
-                  </span>
-                  <span
-                    className="fw-medium mb-0 badge bg-primary text-light"
-                    style={{ marginRight: "3px" }}
-                  >
-                    Resfull API
-                  </span>
-                  <span
-                    className="fw-medium mb-0 badge bg-primary text-light"
-                    style={{ marginRight: "3px" }}
-                  >
-                    JS
-                  </span>
+                  {hiringRequestDetail.skillRequireStrings.map(
+                    (skill, index) => (
+                      <span
+                        key={index}
+                        style={{ marginRight: "3px" }}
+                        className="badge bg-primary text-light"
+                      >
+                        {skill}
+                      </span>
+                    )
+                  )}
                 </div>
               </Col>
-              <Col lg={3}>
-                <div className="border p-3">
+              <Col lg={3} className="border p-3" style={{ maxWidth: "266px" }}>
+                <div >
                   <p className="text-muted fs-13 mb-0">Level Requirement</p>
-                  <p className="fw-medium mb-0 badge bg-info">Senior</p>
+                  <p className="fw-medium mb-0 badge bg-info">{hiringRequestDetail.levelRequireName}</p>
                 </div>
               </Col>
-              <Col lg={3}>
-                <div className="border rounded-end p-3">
+              <Col lg={3} style={{ maxWidth: "266px" }} className="border p-3">
+                <div className="  rounded-end">
                   <p className="text-muted fs-13 mb-0">Budget</p>
-                  <p className="fw-medium mb-0 badge bg-danger">$2150</p>
+                  <p className="fw-medium mb-0 badge bg-danger">${hiringRequestDetail.salaryPerDev}</p>
                 </div>
               </Col>
             </Row>
@@ -298,14 +231,7 @@ const CandidateGridDetails = () => {
             <h5 className="mb-3">Job Description</h5>
             <div className="job-detail-desc">
               <p className="text-muted mb-0">
-                As a Product Designer, you will work within a Product Delivery
-                Team fused with UX, engineering, product and data talent. You
-                will help the team design beautiful interfaces that solve
-                business challenges for our clients. We work with a number of
-                Tier 1 banks on building web-based applications for AML, KYC and
-                Sanctions List management workflows. This role is ideal if you
-                are looking to segue your career into the FinTech or Big Data
-                arenas.
+                {hiringRequestDetail.jobDescription}
               </p>
             </div>
           </div>
@@ -326,7 +252,7 @@ const CandidateGridDetails = () => {
                     <div className="d-flex">
                       <div className="flex-shrink-0 position-relative">
                         <img
-                          src={candidategridDetailsNew.userImg}
+                          src={candidategridDetailsNew.userImg || userImage0}
                           alt=""
                           className="avatar-md rounded"
                         />
@@ -362,12 +288,11 @@ const CandidateGridDetails = () => {
                   <ul className="list-inline d-flex justify-content-between align-items-center">
                     <li>
                       <div className="d-flex flex-wrap align-items-start gap-1">
-                        <span className="badge bg-primary">PHP</span>
-                        <span className="badge bg-primary">JS</span>
-                        <span className="badge bg-primary">JAVA</span>
-                        <span className="badge bg-primary">C#</span>
-                        <span className="badge bg-primary">REACT</span>
-                        <span className="badge bg-primary">NODEJS</span>
+                        {candidategridDetailsNew.skills && Array.isArray(candidategridDetailsNew.skills) && candidategridDetailsNew.skills.map((skill, skillIndex) => (
+                          <span key={skillIndex} className="badge bg-primary">
+                            {skill}
+                          </span>
+                        ))}
                         <p>...</p>
                       </div>
                     </li>
@@ -391,8 +316,7 @@ const CandidateGridDetails = () => {
                     </div>
                   </div>
                   <p className="text-muted">
-                    Some quick example text to build on the card title and bulk
-                    the card's content Moltin gives you platform...
+
                   </p>
 
                   <div
@@ -401,10 +325,11 @@ const CandidateGridDetails = () => {
                   >
                     <div className="d-flex justify-content-between">
                       <p>Matching with request</p>
-                      <p className="text-success fw-bold">80%</p>
+                      <p className="text-success fw-bold">{candidategridDetailsNew.averagedPercentage}%</p>
                     </div>
                     <div className="dev-matching-in-company border border-1">
-                      <div className="dev-matching-level-in-company"></div>
+                      <div className="dev-matching-level-in-company"
+                        style={{ width: `${candidategridDetailsNew.averagedPercentage}%` }}></div>
                     </div>
                   </div>
 

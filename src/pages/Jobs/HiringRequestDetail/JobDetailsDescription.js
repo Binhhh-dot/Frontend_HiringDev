@@ -86,7 +86,7 @@ const JobDetailsDescription = () => {
 
       setHiringRequestDetail(response.data.data);
 
-      console.log(hiringRequestDetail);
+      console.log(response);
 
       return response;
     } catch (error) {
@@ -254,9 +254,9 @@ const JobDetailsDescription = () => {
   };
 
   //console.log(hiringRequestDetail.skillRequireStrings);
-  // if (!hiringRequestDetail) {
-  //   return null;
-  // }
+  if (!hiringRequestDetail) {
+    return null;
+  }
   return (
     <React.Fragment>
       <Card className="job-detail ">
@@ -553,7 +553,7 @@ const JobDetailsDescription = () => {
               <button
                 class="button-send-dev-matching-pushable"
                 role="button"
-                // onClick={handleSendButtonClick}
+              // onClick={handleSendButtonClick}
               >
                 <span className="button-send-dev-matching-shadow"></span>
                 <span className="button-send-dev-matching-edge"></span>
@@ -589,7 +589,7 @@ const JobDetailsDescription = () => {
                   : "candidate-list-box card mt-4"
               }
 
-              // onClick={() => openModal(candidateDetailsNew)}
+            // onClick={() => openModal(candidateDetailsNew)}
             >
               {/* thêm checkbox cho mỗi ứng viên */}
               <CardBody className="p-4">
