@@ -252,11 +252,10 @@ const JobDetailsDescription = () => {
       return "#57f000";
     }
   };
-
-  //console.log(hiringRequestDetail.skillRequireStrings);
   if (!hiringRequestDetail) {
     return null;
   }
+
   return (
     <React.Fragment>
       <Card className="job-detail ">
