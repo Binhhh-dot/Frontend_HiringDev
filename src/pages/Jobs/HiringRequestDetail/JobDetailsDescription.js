@@ -654,7 +654,7 @@ const JobDetailsDescription = () => {
               <button
                 class="button-send-dev-matching-pushable"
                 role="button"
-                onClick={fetchsendHiringRequestToDevMatching}
+                // onClick={handleSendButtonClick}
               >
                 <span className="button-send-dev-matching-shadow"></span>
                 <span className="button-send-dev-matching-edge"></span>
@@ -689,6 +689,8 @@ const JobDetailsDescription = () => {
                   ? "candidate-list-box bookmark-post card mt-4"
                   : "candidate-list-box card mt-4"
               }
+
+              // onClick={() => openModal(candidateDetailsNew)}
             >
               {/* thêm checkbox cho mỗi ứng viên */}
               <CardBody className="p-4">

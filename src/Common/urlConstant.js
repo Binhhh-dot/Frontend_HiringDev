@@ -13,6 +13,12 @@ export default {
     level: {
       getAll: "/Level",
     },
+    scheduleType: {
+      getAll: "/ScheduleType",
+    },
+    employmentType: {
+      getAll: "/EmploymentType",
+    },
     type: {
       getAll: "/Type",
     },
@@ -28,15 +34,22 @@ export default {
       searchDuration:
         "&StartSalaryPerDev=${StartSalaryPerDev}&EndSalaryPerDev=${EndSalaryPerDev}",
       getAllStatus: "/HiringRequest/Status",
-      getHiringRequestDetailInManager: "/HiringRequest/${hiringRequestId}",
+      getHiringRequestDetailInManager: "//HiringRequest/${hiringRequestId}",
+      getHiringRequestDetailInCompany: "/HiringRequest/${hiringRequestId}",
       getDeveloperMatchingInManager: "/Developer/DevMatching/${devMatching}",
       sendHiringRequestToDevMatching: "/SelectingDev",
       getDevMatchingHasBeenSent:
         "/SelectingDev/SelectedDevByManager/${requestId}",
       getDeveloperDetailInManager: "/Developer/${devId}",
+      getAllHiringRequestById:
+        "/HiringRequest/ByCompany?companyId=${companyId}",
+    },
+    developer: {
+      GetAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
     },
     company: {
       createCompany: "/CompanyPartner",
+      getCompanyByCompanyId: "/CompanyPartner/${companyId}",
     },
     country: {
       getAll:

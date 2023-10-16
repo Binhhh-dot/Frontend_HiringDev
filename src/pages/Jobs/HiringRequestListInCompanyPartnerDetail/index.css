@@ -1,26 +1,26 @@
-.dev-accepted{
-    box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+.dev-accepted {
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
 }
 
-.dev-matching-in-company{
-    width: 100%;
-    height: 5px;
-    background-color: #e0e0e0;
-    position: relative;
-    overflow: hidden;
-     /* Thêm khoảng cách giữa văn bản và thanh tiến trình */
-    border-radius: 8px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-   
-}
-
-.dev-matching-level-in-company{
-  height: 100%;
-  background-color: hsl(140, 75%, 37%);
-  width: 80%;
+.dev-matching-in-company {
+  width: 100%;
+  height: 5px;
+  background-color: #e0e0e0;
   position: relative;
   overflow: hidden;
-  transition: width 0.5s ease; /* Để có hiệu ứng chuyển động */
+  /* Thêm khoảng cách giữa văn bản và thanh tiến trình */
   border-radius: 8px;
-  
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+
+}
+
+.dev-matching-level-in-company {
+  height: 100%;
+  background-color: hsl(140, 75%, 37%);
+  position: relative;
+  overflow: hidden;
+  transition: width 0.5s ease;
+  /* Để có hiệu ứng chuyển động */
+  border-radius: 8px;
+
 }

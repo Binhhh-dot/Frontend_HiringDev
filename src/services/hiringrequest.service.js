@@ -11,7 +11,9 @@ const createHiringRequest = async (
   levelRequireId,
   skills,
   isSaved,
-  companyId
+  companyId,
+  employmentTypeId,
+  scheduleTypeId
 ) => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.createHiringRequest;
   const response = await utils.axiosLocalHost.post(serviceUrl, {
@@ -25,6 +27,8 @@ const createHiringRequest = async (
     skills,
     isSaved,
     companyId,
+    scheduleTypeId,
+    employmentTypeId,
   });
   return response;
 };
@@ -92,6 +96,20 @@ const getAllHiringRequestByJobTitleAndSkill = async (
 
 const getHiringRequestDetailInManager = async (hiringRequestId) => {
   const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestDetailInCompany.replace(
+      "${hiringRequestId}",
+      hiringRequestId
+    );
+
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+
+  // localStorage.setItem("myData", hiringRequestId);
+
+  return response;
+};
+
+const getHiringRequestDetailInCompany = async (hiringRequestId) => {
+  const serviceUrl =
     urlConstant.endpoint.hiringRequest.getHiringRequestDetailInManager.replace(
       "${hiringRequestId}",
       hiringRequestId
@@ -142,6 +160,67 @@ const getDeveloperDetailInManager = async (devId) => {
   return response;
 };
 
+const getHiringRequestByidAndPaging = async (
+  companyId,
+  currentPage,
+  pageSize
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace(
+      "${companyId}",
+      companyId
+    ) + "&";
+  const pagingUrl = urlConstant.endpoint.hiringRequest.paging
+    .replace("${currentPage}", currentPage)
+    .replace("${pageSize}", pageSize);
+  const fullUrl = serviceUrl + pagingUrl;
+  const response = await utils.axiosLocalHost.get(fullUrl);
+  return response;
+};
+
+const getAllHiringRequestByIdAndJobTitleAndSkill = async (
+  companyId,
+  currentPage,
+  pageSize,
+  jobTitle,
+  skill,
+  level
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace(
+      "${companyId}",
+      companyId
+    ) + "&";
+  const pagingUrl = urlConstant.endpoint.hiringRequest.paging
+    .replace("${currentPage}", currentPage)
+    .replace("${pageSize}", pageSize);
+  let fullUrl = serviceUrl + pagingUrl;
+
+  if (jobTitle) {
+    const searchUrl = urlConstant.endpoint.hiringRequest.searchJobTitle.replace(
+      "${search}",
+      jobTitle
+    );
+    fullUrl += searchUrl;
+  }
+  if (level) {
+    const levelUrl = urlConstant.endpoint.hiringRequest.searchLevel.replace(
+      "${LevelRequireId}",
+      level
+    );
+    fullUrl += levelUrl;
+  }
+
+  if (skill && skill.length > 0) {
+    const skillUrls = skill.map((item) => "&SkillIds=" + item.value);
+    const fullUrls = skillUrls.join("&");
+    fullUrl += fullUrls;
+  }
+  const response = await utils.axiosLocalHost.get(fullUrl);
+  console.log(fullUrl);
+  return response;
+};
+
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -153,4 +232,7 @@ export default {
   sendHiringRequestToDevMatching,
   getDevMatchingHasBeenSent,
   getDeveloperDetailInManager,
+  getHiringRequestByidAndPaging,
+  getAllHiringRequestByIdAndJobTitleAndSkill,
+  getHiringRequestDetailInCompany,
 };

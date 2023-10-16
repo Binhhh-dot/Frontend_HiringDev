@@ -23,14 +23,14 @@ const SignIn = () => {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-
+    let userId;
     try {
       const response = await loginService.login(email, password);
       // Check if the API call was successful
       if (response.data.code === 200) {
 
         // Extract user ID from the decoded token
-        const userId = response.data.data.userId;
+        userId = response.data.data.userId;
 
         if (userId) {
           // Save user ID to local storage
@@ -44,6 +44,10 @@ const SignIn = () => {
       console.log("Error during login:", error.response.data.message);
       setError(error.response.data.message);
     }
+
+    const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+    const userData = responseUser.data;
+    localStorage.setItem('companyId', userData.data.companyId);
   };
 
   const saveTokenToLocalStorage = (token) => {
