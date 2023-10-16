@@ -43,6 +43,7 @@ export default {
     },
     company: {
       createCompany: "/CompanyPartner",
+      getCompanyByCompanyId: "/CompanyPartner/${companyId}",
     },
     country: {
       getAll:

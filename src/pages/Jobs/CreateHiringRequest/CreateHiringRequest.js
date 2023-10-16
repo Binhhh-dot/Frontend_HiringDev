@@ -58,10 +58,13 @@ const CreateHiringRequest = () => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const openModal = () => {
+  
     setModal(!modal);
+
+  
   };
   const openModal2 = () => {
-    setModal2(!modal2);
+  setModal2(!modal2);
   };
 
   const handleChange = (selected) => {
@@ -81,6 +84,37 @@ const CreateHiringRequest = () => {
   };
   useEffect(() => {
     const fetchData = async () => {
+      try {
+        // Lấy userId từ localStorage
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          openModal();
+        }
+        const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+        const userData = responseUser.data;
+
+        // Lưu companyId vào state và localStorage
+        setCompanyId(userData.data.companyId);
+
+        localStorage.setItem('companyId', userData.data.companyId);
+
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        
+      }
+
+      try {
+        // Lấy userId từ localStorage
+        const userId = localStorage.getItem('userId');
+        const companyId = localStorage.getItem('companyId');
+        if (userId&&!companyId) {
+          openModal2();
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        
+      }
+
       try {
         const response = await skillService.getAllSkill();
         const activeSkills = response.data.data.filter(skill => skill.statusString === "Active");
@@ -140,27 +174,6 @@ const CreateHiringRequest = () => {
         setOptions5(formattedEmploymentType);
       } catch (error) {
         console.error("Error fetching employment typeName:", error);
-      }
-      try {
-        // Lấy userId từ localStorage
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
-          openModal();
-        }
-        const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
-        const userData = responseUser.data;
-
-        // Lưu companyId vào state và localStorage
-        setCompanyId(userData.data.companyId);
-
-        localStorage.setItem('companyId', userData.data.companyId);
-
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        const companyIdErr = localStorage.getItem('companyId');
-        if (!companyIdErr) {
-          openModal2();
-        }
       }
 
     };
@@ -297,6 +310,49 @@ const CreateHiringRequest = () => {
     }
   };
 
+  const handleSavePostJob = async ()=>{
+    // Kiểm tra xem có userID trong localStorage không
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      openModal(); // Nếu không có, mở modal signup
+    } else {
+      const companyIdErr = localStorage.getItem('companyId');
+      if (!companyIdErr) {
+        openModal2();
+      }
+      // Nếu có, thực hiện logic để đăng job
+      // Đây có thể là nơi gửi yêu cầu đăng job lên server
+      console.log("Save job...");
+      
+        try {
+          const jobTitle = document.getElementById("job-title").value; // replace with the actual job title from your input
+          const jobDescription = document.getElementById("description").value; // get job description from the textarea
+          const numberOfDev = parseInt(document.getElementById("number-dev").value, 10); // parse as integer
+          const salaryPerDev = parseFloat(document.getElementById("budget").value); // parse as float
+          const duration = document.getElementById("duration").value; // get duration from the date input
+          const typeRequireId = selectedOptions2.value; // replace with actual value from the type dropdown
+          const levelRequireId = selectedOptions3.value; // replace with actual value from the level dropdown
+          const scheduleTypeId = selectedOptions4.value;
+          const employmentTypeId = selectedOptions5.value;
+          const skills = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
+          const isSaved = true;
+          const response = await hiringRequestService.createHiringRequest(
+            jobTitle, jobDescription, numberOfDev, salaryPerDev, duration, typeRequireId, levelRequireId, skills, isSaved, companyId, scheduleTypeId, employmentTypeId
+          );
+          setSuccessMessage("Save công việc thành công");
+          setErrorMessage(null);
+          console.log("Save posted successfully:", response);
+        } catch (error) {
+          console.error("Error posting job:", error);
+          setLoading(false);
+          setSuccessMessage(null);
+          setErrorMessage("Lỗi khi đăng công việc");
+
+          // Handle error, show error message, etc.
+        }
+      
+    }
+  };
 
   return (
     <React.Fragment>
@@ -439,6 +495,11 @@ const CreateHiringRequest = () => {
                           )}
                         </button>
                       </div>
+                      <div class="col-lg-12 mt-2">
+                        <button type="button" className="btn btn-primary" onClick={handleSavePostJob}>
+                          Save
+                        </button>
+                      </div>
                       {successMessage && (
                         <div className="alert alert-success mt-2" role="alert">
                           {successMessage}
@@ -571,6 +632,62 @@ const CreateHiringRequest = () => {
                                   />
                                 </FormGroup>
                                 <FormGroup className="mb-3">
+                                  <Label
+                                    htmlFor="emailInput"
+                                    className="form-label"
+                                  >
+                                    Company Name
+                                  </Label>
+                                  <Input
+                                    type="email"
+                                    className="form-control"
+                                    id="companyNameInput"
+                                    placeholder="Enter your company name"
+                                  />
+                                </FormGroup>
+                                <FormGroup className="mb-3">
+                                  <Label
+                                    htmlFor="emailInput"
+                                    className="form-label"
+                                  >
+                                    Company Name
+                                  </Label>
+                                  <Input
+                                    type="email"
+                                    className="form-control"
+                                    id="companyNameInput"
+                                    placeholder="Enter your company name"
+                                  />
+                                </FormGroup>
+                                <FormGroup className="mb-3">
+                                  <Label
+                                    htmlFor="emailInput"
+                                    className="form-label"
+                                  >
+                                    Company Name
+                                  </Label>
+                                  <Input
+                                    type="email"
+                                    className="form-control"
+                                    id="companyNameInput"
+                                    placeholder="Enter your company name"
+                                  />
+                                </FormGroup>
+                                <FormGroup className="mb-3">
+                                  <Label
+                                    htmlFor="emailInput"
+                                    className="form-label"
+                                  >
+                                    Company Name
+                                  </Label>
+                                  <Input
+                                    type="email"
+                                    className="form-control"
+                                    id="companyNameInput"
+                                    placeholder="Enter your company name"
+                                  />
+                                </FormGroup>
+                                <FormGroup className="mb-3">
                                   <label
                                     htmlFor="passwordInput"
                                     className="form-label"
@@ -610,6 +727,7 @@ const CreateHiringRequest = () => {
                         </ModalBody>
                       </Modal>
                     </div>
+
                   </form>
                 </div>
               </div>
