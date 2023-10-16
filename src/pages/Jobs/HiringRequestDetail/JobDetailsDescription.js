@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardBody, Col, Row, Modal, ModalBody, Button } from "reactstrap";
 import { Link, useLocation } from "react-router-dom";
+import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
 
 //Import Images
 // import JobDetailImage from "../../../assets/images/job-detail.jpg";
@@ -18,11 +19,15 @@ const JobDetailsDescription = () => {
   const { state } = useLocation();
 
   const [hiringRequestDetail, setHiringRequestDetail] = useState(null);
+  const [devMatching, setDevMatching] = useState([]);
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // const [devHasBeenSent, setDevHasBeenSent] = useState([]);
+  /////////////////////////////////////////////////////////////////////////////////////////
 
   const [showCandidateList, setShowCandidateList] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCandidateInfo, setSelectedCandidateInfo] = useState(null);
+  const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
 
   const openModal = (candidateInfo) => {
     setSelectedCandidateInfo(candidateInfo);
@@ -31,17 +36,26 @@ const JobDetailsDescription = () => {
   };
 
   const closeModal = () => {
-    setSelectedCandidateInfo(null);
+    setSelectedCandidateInfo({});
     setIsModalOpen(false);
   };
 
+  // useEffect(() => {
+  //   console.log(selectedCandidateInfo.developerId);
+  // }, [selectedCandidateInfo]);
+
+  ////////////////////////////////////////////////////////////////////////////////////////
   const [selectAllDevMatching, setSelectAllDevAllMatching] = useState(false);
   const [selectedDev, setSelectedDev] = useState([]);
+
+  // const [devHasBeenSent, setDevHasBeenSent] = useState([]);
 
   const toggleSelectDevAll = () => {
     setSelectAllDevAllMatching(!selectAllDevMatching);
     if (!selectAllDevMatching) {
-      setSelectedDev(candidateDetails.map((candidate) => candidate.id));
+      setSelectedDev(
+        candidateDetails.map((candidate) => candidate.developerId)
+      );
     } else {
       setSelectedDev([]);
     }
@@ -55,6 +69,8 @@ const JobDetailsDescription = () => {
       setSelectedDev([...selectedDev, candidateId]);
     }
   };
+
+  //////////////////////////////////////////////////////////////////////////////////////////
 
   const [cancelReason, setCancelReason] = useState("");
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
@@ -78,7 +94,7 @@ const JobDetailsDescription = () => {
 
   const fetchHiringRequestDetailInManager = async () => {
     let response;
-    // const saveData = localStorage.getItem("myData");
+
     try {
       response = await hiringrequestService.getHiringRequestDetailInManager(
         state.jobId
@@ -86,160 +102,202 @@ const JobDetailsDescription = () => {
 
       setHiringRequestDetail(response.data.data);
 
-      console.log(response);
-
       return response;
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
   };
 
+  const fetchDeveloperMatchingInManager = async () => {
+    let response;
+
+    try {
+      response = await hiringrequestService.getDeveloperMatchingInManager(
+        state.jobId
+      );
+      // console.log(response.data.data);
+      setDevMatching(response.data.data);
+      console.log("request id: " + state.jobId);
+      console.log(response.data.data);
+      return response;
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
+
+  const fetchsendHiringRequestToDevMatching = async () => {
+    let response;
+
+    try {
+      response = await hiringrequestService.sendHiringRequestToDevMatching(
+        state.jobId,
+        selectedDev
+      );
+
+      console.log("Send OK");
+      console.log("/////////////");
+      console.log(selectedDev);
+      console.log("/////////////");
+
+      console.log(state.jobId);
+      console.log(selectedDev);
+      return response;
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+      console.log(state.jobId);
+      console.log(selectedDev);
+    }
+  };
+
   useEffect(() => {
     fetchHiringRequestDetailInManager();
+    fetchDeveloperMatchingInManager();
   }, []);
 
-  const candidateDetails = [
-    {
-      id: 1,
-      userImg: userImage1,
-      candidateName: "Charles Dickens",
-      candidateDesignation: "Project Manager",
-      location: "Senior Javascript/Nodejs",
-      salary: "Average Salary: $650",
-      rating: 4,
-      ratingClass: "badge bg-secondary bg-gradient ms-1",
-      addclassNameBookmark: false,
-      progress: 100,
-      hidden: false,
-      badges: [
-        {
-          id: 1,
-          badgeName: "Manage",
-          classname: "success",
-        },
-        {
-          id: 2,
-          badgeName: "Manage",
-          classname: "success",
-        },
-        {
-          id: 3,
-          badgeName: "Manage",
-          classname: "success",
-        },
-        {
-          id: 4,
-          badgeName: "Manage",
-          classname: "success",
-        },
-        {
-          id: 5,
-          badgeName: "Manage",
-          classname: "success",
-        },
-      ],
-    },
-    {
-      id: 2,
-      userImg: userImage2,
-      candidateName: "Gabriel Palmer",
-      candidateDesignation: "HTML Developer",
-      location: "Junior C#",
-      salary: "Average Salary: $250",
-      rating: 3,
-      ratingClass: "badge bg-secondary bg-gradient ms-1",
-      addclassNameBookmark: true,
-      progress: 60,
-      hidden: false,
-      badges: [
-        {
-          id: 1,
-          badgeName: "Design",
-          classname: "info",
-        },
-        {
-          id: 2,
-          badgeName: "Developer",
-          classname: "primary",
-        },
-      ],
-    },
-    {
-      id: 3,
-      userImg: userImage3,
-      candidateName: "Rebecca Swartz ",
-      candidateDesignation: "Graphic Designer",
-      location: "Leader Photoshop/Adobe InDesign",
-      salary: "Average Salary: $380",
-      rating: 4,
-      ratingClass: "badge bg-secondary bg-gradient ms-1",
-      addclassNameBookmark: false,
-      progress: 40,
-      hidden: false,
-      badges: [
-        {
-          id: 1,
-          badgeName: "Design",
-          classname: "success",
-        },
-        {
-          id: 2,
-          badgeName: "Developer",
-          classname: "primary",
-        },
-      ],
-    },
-    {
-      id: 4,
-      userImg: userImage4,
-      candidateName: "Betty Richards",
-      candidateDesignation: "Education Training",
-      location: "Senior Java/Springboot",
-      salary: "Average Salary: $650",
-      rating: 4,
-      ratingClass: "badge bg-secondary bg-gradient ms-1",
-      addclassNameBookmark: true,
-      progress: 50,
-      hidden: false,
-      badges: [
-        {
-          id: 1,
-          badgeName: "C++",
-          classname: "primary",
-        },
-        {
-          id: 2,
-          badgeName: "UI/UX",
-          classname: "info",
-        },
-      ],
-    },
-    {
-      id: 5,
-      userImg: userImage5,
-      candidateName: "Jeffrey Montgomery",
-      candidateDesignation: "Restaurant Team Member",
-      location: "Fresher Javascript",
-      salary: "Average Salary: $125",
-      rating: 4,
-      ratingClass: "badge bg-secondary bg-gradient ms-1",
-      addclassNameBookmark: false,
-      progress: 30,
-      hidden: false,
-      badges: [
-        {
-          id: 1,
-          badgeName: "Javascript",
-          classname: "primary",
-        },
-        {
-          id: 2,
-          badgeName: "Ruby",
-          classname: "primary",
-        },
-      ],
-    },
-  ];
+  const candidateDetails = devMatching;
+  // const candidateDetails = [
+  //   {
+  //     id: 1,
+  //     userImg: userImage1,
+  //     candidateName: "Charles Dickens",
+  //     candidateDesignation: "Project Manager",
+  //     location: "Senior Javascript/Nodejs",
+  //     salary: "Average Salary: $650",
+  //     rating: 4,
+  //     ratingClass: "badge bg-secondary bg-gradient ms-1",
+  //     addclassNameBookmark: false,
+  //     progress: 100,
+  //     hidden: false,
+  //     badges: [
+  //       {
+  //         id: 1,
+  //         badgeName: "Manage",
+  //         classname: "success",
+  //       },
+  //       {
+  //         id: 2,
+  //         badgeName: "Manage",
+  //         classname: "success",
+  //       },
+  //       {
+  //         id: 3,
+  //         badgeName: "Manage",
+  //         classname: "success",
+  //       },
+  //       {
+  //         id: 4,
+  //         badgeName: "Manage",
+  //         classname: "success",
+  //       },
+  //       {
+  //         id: 5,
+  //         badgeName: "Manage",
+  //         classname: "success",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 2,
+  //     userImg: userImage2,
+  //     candidateName: "Gabriel Palmer",
+  //     candidateDesignation: "HTML Developer",
+  //     location: "Junior C#",
+  //     salary: "Average Salary: $250",
+  //     rating: 3,
+  //     ratingClass: "badge bg-secondary bg-gradient ms-1",
+  //     addclassNameBookmark: true,
+  //     progress: 60,
+  //     hidden: false,
+  //     badges: [
+  //       {
+  //         id: 1,
+  //         badgeName: "Design",
+  //         classname: "info",
+  //       },
+  //       {
+  //         id: 2,
+  //         badgeName: "Developer",
+  //         classname: "primary",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 3,
+  //     userImg: userImage3,
+  //     candidateName: "Rebecca Swartz ",
+  //     candidateDesignation: "Graphic Designer",
+  //     location: "Leader Photoshop/Adobe InDesign",
+  //     salary: "Average Salary: $380",
+  //     rating: 4,
+  //     ratingClass: "badge bg-secondary bg-gradient ms-1",
+  //     addclassNameBookmark: false,
+  //     progress: 40,
+  //     hidden: false,
+  //     badges: [
+  //       {
+  //         id: 1,
+  //         badgeName: "Design",
+  //         classname: "success",
+  //       },
+  //       {
+  //         id: 2,
+  //         badgeName: "Developer",
+  //         classname: "primary",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 4,
+  //     userImg: userImage4,
+  //     candidateName: "Betty Richards",
+  //     candidateDesignation: "Education Training",
+  //     location: "Senior Java/Springboot",
+  //     salary: "Average Salary: $650",
+  //     rating: 4,
+  //     ratingClass: "badge bg-secondary bg-gradient ms-1",
+  //     addclassNameBookmark: true,
+  //     progress: 50,
+  //     hidden: false,
+  //     badges: [
+  //       {
+  //         id: 1,
+  //         badgeName: "C++",
+  //         classname: "primary",
+  //       },
+  //       {
+  //         id: 2,
+  //         badgeName: "UI/UX",
+  //         classname: "info",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 5,
+  //     userImg: userImage5,
+  //     candidateName: "Jeffrey Montgomery",
+  //     candidateDesignation: "Restaurant Team Member",
+  //     location: "Fresher Javascript",
+  //     salary: "Average Salary: $125",
+  //     rating: 4,
+  //     ratingClass: "badge bg-secondary bg-gradient ms-1",
+  //     addclassNameBookmark: false,
+  //     progress: 30,
+  //     hidden: false,
+  //     badges: [
+  //       {
+  //         id: 1,
+  //         badgeName: "Javascript",
+  //         classname: "primary",
+  //       },
+  //       {
+  //         id: 2,
+  //         badgeName: "Ruby",
+  //         classname: "primary",
+  //       },
+  //     ],
+  //   },
+  // ];
 
   const getBarColor = (progress) => {
     if (progress <= 30) {
@@ -319,10 +377,7 @@ const JobDetailsDescription = () => {
                 className="border rounded p-3 "
                 style={{ maxWidth: "266px" }}
               >
-                <div
-                // className="border rounded-start p-3"
-                // style={{ height: `${divHeight}px` }}
-                >
+                <div>
                   <p className="text-muted mb-0 fs-13">Type Of Developer</p>
                   <p className="fw-medium mb-0 badge bg-purple text-light">
                     {hiringRequestDetail.typeRequireName}
@@ -331,7 +386,7 @@ const JobDetailsDescription = () => {
               </Col>
               <Col
                 lg={3}
-                className="border rounded-start p-3"
+                className="border rounded p-3"
                 style={{ maxWidth: "266px" }}
               >
                 <div id="standard">
@@ -353,13 +408,10 @@ const JobDetailsDescription = () => {
               </Col>
               <Col
                 lg={3}
-                className="border rounded-start p-3"
+                className="border rounded p-3"
                 style={{ maxWidth: "266px" }}
               >
-                <div
-                // className="border p-3"
-                // style={{ height: `${divHeight}px` }}
-                >
+                <div>
                   <p className="text-muted fs-13 mb-0">Level Requirement</p>
                   <p className="fw-medium mb-0 badge bg-info text-light">
                     {hiringRequestDetail.levelRequireName}
@@ -368,13 +420,10 @@ const JobDetailsDescription = () => {
               </Col>
               <Col
                 lg={3}
-                className="border rounded-start p-3"
+                className="border rounded p-3"
                 style={{ maxWidth: "266px" }}
               >
-                <div
-                // className="border rounded-end p-3"
-                // style={{ height: `${divHeight}px` }}
-                >
+                <div>
                   <p className="text-muted fs-13 mb-0">Salary of Developer</p>
                   <p className="fw-medium mb-0 badge bg-danger text-light">
                     {hiringRequestDetail.salaryPerDev} $
@@ -393,36 +442,96 @@ const JobDetailsDescription = () => {
             </div>
           </div>
 
-          <div className="mt-4">
-            <h5 className="mb-3">Responsibilities</h5>
-            <div className="job-detail-desc mt-2">
-              <p className="text-muted">
-                As a Product Designer, you will work within a Product Delivery
-                Team fused with UX, engineering, product and data talent.
-              </p>
-              <ul className="job-detail-list list-unstyled mb-0 text-muted">
-                <li>
-                  <i className="uil uil-circle"></i> Have sound knowledge of
-                  commercial activities.
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> Build next-generation web
-                  applications with a focus on the client side
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> Work on multiple projects
-                  at once, and consistently meet draft deadlines
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> have already graduated or
-                  are currently in any year of study
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> Revise the work of previous
-                  designers to create a unified aesthetic for our brand
-                  materials
-                </li>
-              </ul>
+          <div className="candidate-education-details mt-3 pt-3">
+            <h6 className="fs-17 fw-bold mb-0">Education</h6>
+            <div className="candidate-education-content mt-4 d-flex">
+              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
+                {" "}
+                B{" "}
+              </div>
+              <div className="ms-2">
+                <h6 className="fs-16 mb-1">
+                  BCA - Bachelor of Computer Applications
+                </h6>
+                <p className="mb-2 text-muted">
+                  International University - (2004 - 2010)
+                </p>
+                <p className="text-muted">
+                  There are many variations of passages of available, but the
+                  majority alteration in some form.
+                </p>
+              </div>
+            </div>
+            <div className="candidate-education-content mt-4 d-flex">
+              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
+                {" "}
+                M{" "}
+              </div>
+              <div className="ms-2">
+                <h6 className="fs-16 mb-1">
+                  MCA - Master of Computer Application
+                </h6>
+                <p className="mb-2 text-muted">
+                  International University - (2010 - 2012)
+                </p>
+                <p className="text-muted">
+                  There are many variations of passages of available, but the
+                  majority alteration in some form.
+                </p>
+              </div>
+            </div>
+            <div className="candidate-education-content mt-4 d-flex">
+              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
+                {" "}
+                D{" "}
+              </div>
+              <div className="ms-2">
+                <h6 className="fs-16 mb-1">Design Communication Visual</h6>
+                <p className="text-muted mb-2">
+                  International University - (2012-2015)
+                </p>
+                <p className="text-muted">
+                  There are many variations of passages of available, but the
+                  majority alteration in some form.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="candidate-education-details mt-3 pt-3">
+            <h6 className="fs-17 fw-bold mb-0">Professional Experience</h6>
+            <div className="candidate-education-content mt-4 d-flex">
+              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
+                {" "}
+                W{" "}
+              </div>
+              <div className="ms-2">
+                <h6 className="fs-16 mb-1">
+                  Web Design & Development Team Leader
+                </h6>
+                <p className="mb-2 text-muted">
+                  Creative Agency - (2013 - 2016)
+                </p>
+                <p className="text-muted">
+                  There are many variations of passages of available, but the
+                  majority alteration in some form.
+                </p>
+              </div>
+            </div>
+            <div className="candidate-education-content mt-4 d-flex">
+              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
+                {" "}
+                P{" "}
+              </div>
+              <div className="ms-2">
+                <h6 className="fs-16 mb-1">Project Manager</h6>
+                <p className="mb-2 text-muted">
+                  Jobcy Technology Pvt.Ltd - (Pressent)
+                </p>
+                <p className="text-muted mb-0">
+                  There are many variations of passages of available, but the
+                  majority alteration in some form.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -475,13 +584,6 @@ const JobDetailsDescription = () => {
                   (Preferred)
                 </li>
               </ul>
-              <div className="mt-4 d-flex flex-wrap align-items-start gap-1">
-                <span className="badge bg-primary">PHP</span>
-                <span className="badge bg-primary">JS</span>
-                <span className="badge bg-primary">Marketing</span>
-                <span className="badge bg-primary">REACT</span>
-                <span className="badge bg-primary">PHOTOSHOP</span>
-              </div>
             </div>
           </div>
         </CardBody>
@@ -552,7 +654,7 @@ const JobDetailsDescription = () => {
               <button
                 class="button-send-dev-matching-pushable"
                 role="button"
-              // onClick={handleSendButtonClick}
+                // onClick={handleSendButtonClick}
               >
                 <span className="button-send-dev-matching-shadow"></span>
                 <span className="button-send-dev-matching-edge"></span>
@@ -588,7 +690,7 @@ const JobDetailsDescription = () => {
                   : "candidate-list-box card mt-4"
               }
 
-            // onClick={() => openModal(candidateDetailsNew)}
+              // onClick={() => openModal(candidateDetailsNew)}
             >
               {/* thêm checkbox cho mỗi ứng viên */}
               <CardBody className="p-4">
@@ -598,9 +700,13 @@ const JobDetailsDescription = () => {
                       <label>
                         <input
                           type="checkbox"
-                          checked={selectedDev.includes(candidateDetailsNew.id)}
+                          checked={selectedDev.includes(
+                            candidateDetailsNew.developerId
+                          )}
                           onChange={() =>
-                            toggleDevMatchingSelection(candidateDetailsNew.id)
+                            toggleDevMatchingSelection(
+                              candidateDetailsNew.developerId
+                            )
                           }
                         />
                         <span className="checkbox"></span>
@@ -624,65 +730,54 @@ const JobDetailsDescription = () => {
                   </div>
                   <Col lg={4}>
                     <div className="candidate-list-content mt-3 mt-lg-0">
-                      <h5 className="fs-19 mb-0">
-                        <Link to="/developerinfo" className="primary-link">
-                          {candidateDetailsNew.candidateName}
+                      <h5 className="fs-19 mb-0 d-flex">
+                        <Link
+                          to="/developerinfo"
+                          className="primary-link d-flex align-items-end"
+                        >
+                          {candidateDetailsNew.firstName}{" "}
+                          {candidateDetailsNew.lastName}
                         </Link>
-
-                        <span className={candidateDetailsNew.ratingClass}>
-                          <i className="mdi mdi-star align-middle"></i>
-                          Year Of Experience:
-                          {candidateDetailsNew.rating}
-                        </span>
+                        <div>
+                          <span
+                            className={"badge bg-secondary bg-gradient ms-1"}
+                          >
+                            <i className="mdi mdi-star align-middle"></i>
+                            Year Of Experience:{" "}
+                            {candidateDetailsNew.yearOfExperience}
+                          </span>
+                        </div>
                       </h5>
                       <p className="text-muted mb-0">
-                        {candidateDetailsNew.candidateDesignation}
+                        {candidateDetailsNew.typeRequireStrings.join(", ")}
                       </p>
                       <ul className="list-inline mb-0 text-muted">
                         <li className="list-inline-item">
                           <i className="uil-keyboard"></i>{" "}
-                          {candidateDetailsNew.location}
+                          {candidateDetailsNew.levelRequireName}
                         </li>
                         <br />
                         <li className="list-inline-item">
                           <i className="uil uil-wallet"></i>{" "}
-                          {candidateDetailsNew.salary}
+                          {candidateDetailsNew.averageSalary}$
                         </li>
                       </ul>
                       <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                        {(candidateDetailsNew.badges || [])
+                        {(candidateDetailsNew.skillRequireStrings || [])
                           .slice(0, 4)
-                          .map((badgesInner, key) => (
+                          .map((skillDevRequire, key) => (
                             <span
-                              className={`badge bg-${badgesInner.classname}-subtle text-${badgesInner.classname} fs-14 mt-1`}
+                              className={`badge bg-success-subtle text-success fs-14 mt-1`}
                               key={key}
                             >
-                              {badgesInner.badgeName}
+                              {skillDevRequire}
                             </span>
                           ))}
-                        {candidateDetailsNew.badges.length > 4 && (
-                          <span className="badge bg-secondary-subtle text-secondary fs-14 mt-1">
-                            .....
-                          </span>
-                        )}
                       </div>
                     </div>
                   </Col>
 
                   <Col lg={3}>
-                    {/* <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                      {(candidateDetailsNew.badges || []).map(
-                        (badgesInner, key) => (
-                          <span
-                            className={`badge bg-${badgesInner.classname}-subtle text-${badgesInner.classname} fs-14 mt-1`}
-                            key={key}
-                          >
-                            {badgesInner.badgeName}
-                          </span>
-                        )
-                      )}
-                    </div> */}
-
                     <div className="d-flex flex-column">
                       <div className=" d-flex mb-2">
                         <span className=" fs-14" style={{ width: "38px" }}>
@@ -690,8 +785,12 @@ const JobDetailsDescription = () => {
                         </span>
                         <div class="checkbox-wrapper-type ms-2">
                           <div class="round ms-2">
-                            <input type="checkbox" id="checkbox-type" />
-                            <label for="checkbox-type"></label>
+                            <input
+                              type="checkbox"
+                              id="checkbox-type"
+                              checked={candidateDetailsNew.typeMatching}
+                            />
+                            <label htmlFor="checkbox-type"></label>
                           </div>
                         </div>
                       </div>
@@ -701,8 +800,12 @@ const JobDetailsDescription = () => {
                         </span>
                         <div class="checkbox-wrapper-level ms-2">
                           <div class="round ms-2">
-                            <input type="checkbox" id="checkbox-level" />
-                            <label for="checkbox-level"></label>
+                            <input
+                              type="checkbox"
+                              id="checkbox-level"
+                              checked={candidateDetailsNew.levelMatching}
+                            />
+                            <label htmlFor="checkbox-level"></label>
                           </div>
                         </div>
                       </div>
@@ -712,9 +815,9 @@ const JobDetailsDescription = () => {
                           <div
                             className="devmatch-level-salary"
                             style={{
-                              width: `${candidateDetailsNew.progress}%`,
+                              width: `${candidateDetailsNew.salaryPerDevPercentage}%`,
                               backgroundColor: getBarColor(
-                                candidateDetailsNew.progress
+                                candidateDetailsNew.salaryPerDevPercentage
                               ),
                             }}
                           ></div>
@@ -728,9 +831,9 @@ const JobDetailsDescription = () => {
                           <div
                             className="devmatch-level-skill"
                             style={{
-                              width: `${candidateDetailsNew.progress}%`,
+                              width: `${candidateDetailsNew.skillPercentage}%`,
                               backgroundColor: getBarColor(
-                                candidateDetailsNew.progress
+                                candidateDetailsNew.skillPercentage
                               ),
                             }}
                           ></div>
@@ -742,15 +845,16 @@ const JobDetailsDescription = () => {
                   <Col lg={3} className="border-start border-3">
                     <div style={{ height: "100px" }}>
                       <div className="left-side-matching ">
-                        <div className="d-flex">
+                        <div className="d-flex w-100 justify-content-between">
                           <div
                             className="d-flex align-items-center"
-                            style={{ marginRight: "25px" }}
+                            // style={{ marginRight: "15px" }}
                           >
                             <p
                               style={{
                                 display: "contents",
                                 fontFamily: "Tahoma",
+                                fontSize: "15px",
                               }}
                             >
                               Matching with request
@@ -761,11 +865,14 @@ const JobDetailsDescription = () => {
                               className="percent-matching-dev"
                               style={{
                                 color: getBarColor(
-                                  candidateDetailsNew.progress
+                                  candidateDetailsNew.averagedPercentage
                                 ),
                               }}
                             >
-                              {candidateDetailsNew.progress}%
+                              {candidateDetailsNew.averagedPercentage.toFixed(
+                                2
+                              )}
+                              %
                             </span>
                           </div>
                         </div>
@@ -774,9 +881,9 @@ const JobDetailsDescription = () => {
                           <div
                             className="devmatch-level"
                             style={{
-                              width: `${candidateDetailsNew.progress}%`,
+                              width: `${candidateDetailsNew.averagedPercentage}%`,
                               backgroundColor: getBarColor(
-                                candidateDetailsNew.progress
+                                candidateDetailsNew.averagedPercentage
                               ),
                             }}
                           ></div>
@@ -792,260 +899,11 @@ const JobDetailsDescription = () => {
       )}
 
       <div>
-        <Modal isOpen={isModalOpen} toggle={closeModal} size={"xl"}>
-          <div className="mt-2 d-flex justify-content-end ">
-            <Button
-              close
-              className="close-button"
-              onClick={closeModal}
-              style={{ marginRight: "10px" }}
-            ></Button>
-          </div>
-
-          <ModalBody className="rounded">
-            {selectedCandidateInfo && (
-              <div>
-                <Row>
-                  <Col lg={4}>
-                    <Card className="side-bar Modal-info-dev-left">
-                      <CardBody className="p-4">
-                        <div className="candidate-profile text-center">
-                          <img
-                            src={selectedCandidateInfo.userImg}
-                            alt=""
-                            className="avatar-lg rounded-circle"
-                          />
-                          <h6 className="fs-18 mb-0 mt-4">
-                            {selectedCandidateInfo.candidateName}
-                          </h6>
-                        </div>
-                      </CardBody>
-                      <CardBody className="candidate-profile-overview border-top p-4">
-                        <h6 className="fs-17 fw-semibold mb-3">
-                          Profile Overview
-                        </h6>
-                        <ul className="list-unstyled mb-0">
-                          <li>
-                            <div className="d-flex">
-                              <label className="text-dark">Name</label>
-                              <div>
-                                <p className="text-muted mb-0">
-                                  Gabriel Palmer
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="d-flex">
-                              <label className="text-dark">Date of Birth</label>
-                              <div>
-                                <p className="text-muted mb-0">30/4/1975</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="d-flex">
-                              <label className="text-dark">Gender</label>
-                              <div>
-                                <p className="text-muted mb-0">Female</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="d-flex">
-                              <label className="text-dark">
-                                Average Salary
-                              </label>
-                              <div>
-                                <p className="text-muted mb-0">$1000</p>
-                              </div>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="d-flex">
-                              <label className="text-dark">
-                                Year Experience
-                              </label>
-                              <div>
-                                <p className="text-muted mb-0 ms-2"> 4 years</p>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </CardBody>
-                      <CardBody className="p-4 border-top">
-                        <div className="border-bottom pb-3">
-                          <h6 className="fs-17 fw-semibold mb-3">
-                            Type of Developer
-                          </h6>
-                          <div className="d-flex flex-wrap align-items-start gap-1">
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              BackEnd Developer
-                            </span>
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              AWS Developer
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="mt-3 border-bottom pb-3">
-                          <h6 className="fs-17 fw-semibold mb-3">
-                            Level of Developer
-                          </h6>
-                          <div className="d-flex flex-wrap align-items-start gap-1">
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              Senior
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="mt-3">
-                          <h6 className="fs-17 fw-semibold mb-3">
-                            Skill of Developer
-                          </h6>
-                          <div className="d-flex flex-wrap align-items-start gap-1">
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              Springboot
-                            </span>
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              Web Design
-                            </span>
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              SpringMVC
-                            </span>
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              JUnit
-                            </span>
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              Java Server Faces
-                            </span>
-                          </div>
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                  <Col lg={8}>
-                    <Card className="candidate-details mt-4 mt-lg-0 Modal-info-dev-right">
-                      <CardBody className="p-4 candidate-personal-detail">
-                        <div>
-                          <h6 className="fs-17 fw-semibold mb-3 fw-bold">
-                            Summary
-                          </h6>
-                          <p className="text-muted mb-2">
-                            Very well thought out and articulate communication.
-                            Clear milestones, deadlines and fast work. Patience.
-                            Infinite patience. No shortcuts.
-                          </p>
-                        </div>
-                        <div className="candidate-education-details mt-3 pt-3">
-                          <h6 className="fs-17 fw-bold mb-0">Education</h6>
-                          <div className="candidate-education-content mt-4 d-flex">
-                            <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                              {" "}
-                              B{" "}
-                            </div>
-                            <div className="ms-2">
-                              <h6 className="fs-16 mb-1">
-                                BCA - Bachelor of Computer Applications
-                              </h6>
-                              <p className="mb-2 text-muted">
-                                International University - (2004 - 2010)
-                              </p>
-                              <p className="text-muted">
-                                There are many variations of passages of
-                                available, but the majority alteration in some
-                                form.
-                              </p>
-                            </div>
-                          </div>
-                          <div className="candidate-education-content mt-4 d-flex">
-                            <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                              {" "}
-                              M{" "}
-                            </div>
-                            <div className="ms-2">
-                              <h6 className="fs-16 mb-1">
-                                MCA - Master of Computer Application
-                              </h6>
-                              <p className="mb-2 text-muted">
-                                International University - (2010 - 2012)
-                              </p>
-                              <p className="text-muted">
-                                There are many variations of passages of
-                                available, but the majority alteration in some
-                                form.
-                              </p>
-                            </div>
-                          </div>
-                          <div className="candidate-education-content mt-4 d-flex">
-                            <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                              {" "}
-                              D{" "}
-                            </div>
-                            <div className="ms-2">
-                              <h6 className="fs-16 mb-1">
-                                Design Communication Visual
-                              </h6>
-                              <p className="text-muted mb-2">
-                                International University - (2012-2015)
-                              </p>
-                              <p className="text-muted">
-                                There are many variations of passages of
-                                available, but the majority alteration in some
-                                form.
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="candidate-education-details mt-3 pt-3">
-                          <h6 className="fs-17 fw-bold mb-0">
-                            Professional Experience
-                          </h6>
-                          <div className="candidate-education-content mt-4 d-flex">
-                            <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                              {" "}
-                              W{" "}
-                            </div>
-                            <div className="ms-2">
-                              <h6 className="fs-16 mb-1">
-                                Web Design & Development Team Leader
-                              </h6>
-                              <p className="mb-2 text-muted">
-                                Creative Agency - (2013 - 2016)
-                              </p>
-                              <p className="text-muted">
-                                There are many variations of passages of
-                                available, but the majority alteration in some
-                                form.
-                              </p>
-                            </div>
-                          </div>
-                          <div className="candidate-education-content mt-4 d-flex">
-                            <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                              {" "}
-                              P{" "}
-                            </div>
-                            <div className="ms-2">
-                              <h6 className="fs-16 mb-1">Project Manager</h6>
-                              <p className="mb-2 text-muted">
-                                Jobcy Technology Pvt.Ltd - (Pressent)
-                              </p>
-                              <p className="text-muted mb-0">
-                                There are many variations of passages of
-                                available, but the majority alteration in some
-                                form.
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                </Row>
-              </div>
-            )}
-          </ModalBody>
-        </Modal>
+        <DeveloperDetailInManagerPopup
+          isModalOpen={isModalOpen}
+          closeModal={closeModal}
+          devId={selectedCandidateInfo.developerId}
+        />
       </div>
 
       <div>

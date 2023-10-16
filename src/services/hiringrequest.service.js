@@ -28,7 +28,7 @@ const createHiringRequest = async (
     isSaved,
     companyId,
     scheduleTypeId,
-    employmentTypeId
+    employmentTypeId,
   });
   return response;
 };
@@ -116,14 +116,60 @@ const getHiringRequestDetailInCompany = async (hiringRequestId) => {
     );
 
   const response = await utils.axiosLocalHost.get(serviceUrl);
-
-  // localStorage.setItem("myData", hiringRequestId);
-
   return response;
 };
 
-const getHiringRequestByidAndPaging = async (companyId, currentPage, pageSize) => {
-  const serviceUrl = urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace("${companyId}", companyId) + "&";
+const getDeveloperMatchingInManager = async (devMatchingId) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getDeveloperMatchingInManager.replace(
+      "${devMatching}",
+      devMatchingId
+    );
+
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
+const sendHiringRequestToDevMatching = async (requestId, developerIds) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.sendHiringRequestToDevMatching;
+  const response = await utils.axiosLocalHost.post(serviceUrl, {
+    requestId,
+    developerIds,
+  });
+  return response;
+};
+
+const getDevMatchingHasBeenSent = async (requestId) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getDevMatchingHasBeenSent.replace(
+      "${requestId}",
+      requestId
+    );
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
+const getDeveloperDetailInManager = async (devId) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getDeveloperDetailInManager.replace(
+      "${devId}",
+      devId
+    );
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
+const getHiringRequestByidAndPaging = async (
+  companyId,
+  currentPage,
+  pageSize
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace(
+      "${companyId}",
+      companyId
+    ) + "&";
   const pagingUrl = urlConstant.endpoint.hiringRequest.paging
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", pageSize);
@@ -140,7 +186,11 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   skill,
   level
 ) => {
-  const serviceUrl = urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace("${companyId}", companyId) + "&";
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace(
+      "${companyId}",
+      companyId
+    ) + "&";
   const pagingUrl = urlConstant.endpoint.hiringRequest.paging
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", pageSize);
@@ -178,7 +228,11 @@ export default {
   getAllHiringRequestByJobTitleAndSkill,
   getAllStatusHiringRequest,
   getHiringRequestDetailInManager,
+  getDeveloperMatchingInManager,
+  sendHiringRequestToDevMatching,
+  getDevMatchingHasBeenSent,
+  getDeveloperDetailInManager,
   getHiringRequestByidAndPaging,
   getAllHiringRequestByIdAndJobTitleAndSkill,
-  getHiringRequestDetailInCompany
+  getHiringRequestDetailInCompany,
 };
