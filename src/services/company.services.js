@@ -13,6 +13,15 @@ const createCompany = async (formData) => {
     return response
 }
 
+
+const getCompanyByCompanyId = async (companyId) => {
+    const serviceUrl = urlConstant.endpoint.company.getCompanyByCompanyId.replace("${companyId}",companyId);
+    const response = await utils.axiosLocalHost.get(serviceUrl)
+    console.log(response);
+    return response
+}
+
 export default {
-    createCompany
+    createCompany,
+    getCompanyByCompanyId
 }
