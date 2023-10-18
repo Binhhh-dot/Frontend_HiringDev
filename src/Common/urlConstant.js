@@ -43,9 +43,13 @@ export default {
       getDeveloperDetailInManager: "/Developer/${devId}",
       getAllHiringRequestById:
         "/HiringRequest/ByCompany?companyId=${companyId}",
+      approvedHirringRequestStatus: "/HiringRequestStatus/ChangeWaitingStatus",
     },
     developer: {
       GetAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
+      getSelectedDevByManager:
+        "/SelectingDev/SelectedDevByManager/${requestId}",
+      sendDevToHR: "/SelectingDev/SendDevToHR",
     },
     company: {
       createCompany: "/CompanyPartner",

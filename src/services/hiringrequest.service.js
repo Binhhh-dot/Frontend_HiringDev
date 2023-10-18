@@ -221,6 +221,20 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   return response;
 };
 
+const approvedHirringRequestStatus = async (
+  requestId,
+  rejectionReason,
+  isApproved
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.approvedHirringRequestStatus;
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    requestId,
+    rejectionReason,
+    isApproved,
+  });
+  return response;
+};
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -235,4 +249,5 @@ export default {
   getHiringRequestByidAndPaging,
   getAllHiringRequestByIdAndJobTitleAndSkill,
   getHiringRequestDetailInCompany,
+  approvedHirringRequestStatus,
 };
