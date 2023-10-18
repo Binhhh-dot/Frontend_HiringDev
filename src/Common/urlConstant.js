@@ -35,7 +35,7 @@ export default {
       searchDuration:
         "&StartSalaryPerDev=${StartSalaryPerDev}&EndSalaryPerDev=${EndSalaryPerDev}",
       getAllStatus: "/HiringRequest/Status",
-      getHiringRequestDetailInManager: "//HiringRequest/${hiringRequestId}",
+      getHiringRequestDetailInManager: "/HiringRequest/${hiringRequestId}",
       getHiringRequestDetailInCompany: "/HiringRequest/${hiringRequestId}",
       getDeveloperMatchingInManager: "/Developer/DevMatching/${devMatching}",
       sendHiringRequestToDevMatching: "/SelectingDev",
@@ -46,8 +46,10 @@ export default {
         "/HiringRequest/ByCompany?companyId=${companyId}",
       getHiringRequestByRequestId: "/HiringRequest?requestId=${requestId}",
     },
-    developer: {
-      GetAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
+    selectingDeveloper: {
+      getAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
+      approvalByHR: "/SelectingDev/ApprovalByHR",
+      onboarnding: "/SelectingDev/Onboarding",
     },
     company: {
       createCompany: "/CompanyPartner",

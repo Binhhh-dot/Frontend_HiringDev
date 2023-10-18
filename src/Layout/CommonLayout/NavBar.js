@@ -273,7 +273,12 @@ const NavBar = (props) => {
                         >
                           Create hiring request
                         </Link>
-
+                        <Link
+                          className="dropdown-item"
+                          to="/createInterview"
+                        >
+                          Create interview
+                        </Link>
                         <Link className="dropdown-item" to="/joblist">
                           Job List
                         </Link>

@@ -229,10 +229,11 @@ const CandidateGridDetails = () => {
 
           <div className="mt-4">
             <h5 className="mb-3">Job Description</h5>
-            <div className="job-detail-desc">
-              <p className="text-muted mb-0">
-                {hiringRequestDetail.jobDescription}
-              </p>
+            <div className="">
+              <p
+                className=""
+                dangerouslySetInnerHTML={{ __html: hiringRequestDetail.jobDescription }}
+              />
             </div>
           </div>
         </CardBody>

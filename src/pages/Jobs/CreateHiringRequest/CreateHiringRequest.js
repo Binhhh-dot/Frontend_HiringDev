@@ -436,6 +436,7 @@ const CreateHiringRequest = () => {
           const isSaved = true;
           const requestId = localStorage.getItem('requestId');
           console.log(requestId)
+          console.log(jobDescription)
           if (requestId) {
             const targetedDev = 0;
             const response = await hiringRequestService.updateHiringRequest(
