@@ -386,6 +386,7 @@ const CreateHiringRequest = () => {
             }
             setLoading(false);
             setSuccessMessage("Đăng công việc thành công");
+            localStorage.removeItem('requestId');
             setErrorMessage(null);
           } catch (error) {
             console.log(value);

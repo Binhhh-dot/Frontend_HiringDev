@@ -60,20 +60,20 @@ const JobVacancyList = (a) => {
   const fetchJobVacancies = async () => {
     let response;
     try {
-      if (search || skill) {
-        response =
-          await hiringrequestService.getAllHiringRequestByJobTitleAndSkill(
-            currentPage,
-            5,
-            search,
-            skill
-          );
-      } else {
+      // if (search || skill) {
+      //   response =
+      //     await hiringrequestService.getAllHiringRequestByJobTitleAndSkill(
+      //       currentPage,
+      //       5,
+      //       search,
+      //       skill
+      //     );
+      // } else {
         response = await hiringrequestService.getHiringRequestAndPaging(
           currentPage,
           5
         );
-      }
+      // }
 
       const data = response.data;
       const formattedJobVacancies = data.data.map((job) => {

@@ -27,6 +27,7 @@ const CreateCompanyAccount = () => {
       });
   }, []);
 
+  
   const handleCreateCompany = async () => {
     const companyName = document.getElementById('company-name').value;
     const companyEmail = document.getElementById('email-address').value;
