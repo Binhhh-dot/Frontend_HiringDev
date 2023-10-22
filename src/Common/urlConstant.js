@@ -44,14 +44,22 @@ export default {
       getDeveloperDetailInManager: "/Developer/${devId}",
       getAllHiringRequestById:
         "/HiringRequest/ByCompany?companyId=${companyId}",
+      approvedHirringRequestStatus: "/HiringRequestStatus/ChangeWaitingStatus",
       getHiringRequestByRequestId: "/HiringRequest?requestId=${requestId}",
     },
+
     selectingDeveloper: {
       getAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
       approvalByHR: "/SelectingDev/ApprovalByHR",
       onboarnding: "/SelectingDev/Onboarding",
-      rejectSelectedDev: "/SelectingDev/RejectDev?requestId=${requestId}&developerId=${developerId}",
-      accpectDevToInterview: "/SelectingDev/DevToInterviewing?requestId=${requestId}"
+      rejectSelectedDev:
+        "/SelectingDev/RejectDev?requestId=${requestId}&developerId=${developerId}",
+      accpectDevToInterview:
+        "/SelectingDev/DevToInterviewing?requestId=${requestId}",
+      // GetAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
+      getSelectedDevByManager:
+        "/SelectingDev/SelectedDevByManager/${requestId}",
+      sendDevToHR: "/SelectingDev/SendDevToHR",
     },
     company: {
       createCompany: "/CompanyPartner",
@@ -68,6 +76,6 @@ export default {
     interview: {
       createAnInterview: "/Interview",
       getListInterviewByRequestId: "/Interview/${requestId}",
-    }
+    },
   },
 };

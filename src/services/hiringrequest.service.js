@@ -48,8 +48,12 @@ const updateHiringRequest = async (
   employmentTypeId,
   scheduleTypeId
 ) => {
-  const serviceUrl = urlConstant.endpoint.hiringRequest.getHiringRequestByRequestId.replace("${requestId}", requestId);
-  console.log(serviceUrl)
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestByRequestId.replace(
+      "${requestId}",
+      requestId
+    );
+  console.log(serviceUrl);
   const response = await utils.axiosLocalHost.put(serviceUrl, {
     requestId,
     jobTitle,
@@ -160,10 +164,11 @@ const getHiringRequestSaved = async (companyId) => {
       "${companyId}",
       companyId
     );
-  const statusUrls = urlConstant.endpoint.hiringRequest.searchStatusHiringRequest.replace(
-    "${Status}",
-    0
-  )
+  const statusUrls =
+    urlConstant.endpoint.hiringRequest.searchStatusHiringRequest.replace(
+      "${Status}",
+      0
+    );
   const fullUrl = serviceUrl + statusUrls;
   const response = await utils.axiosLocalHost.get(fullUrl);
   return response;
@@ -271,6 +276,20 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   return response;
 };
 
+const approvedHirringRequestStatus = async (
+  requestId,
+  rejectionReason,
+  isApproved
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.approvedHirringRequestStatus;
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    requestId,
+    rejectionReason,
+    isApproved,
+  });
+  return response;
+};
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -285,6 +304,7 @@ export default {
   getHiringRequestByidAndPaging,
   getAllHiringRequestByIdAndJobTitleAndSkill,
   getHiringRequestDetailInCompany,
+  approvedHirringRequestStatus,
   getHiringRequestSaved,
-  updateHiringRequest
+  updateHiringRequest,
 };
