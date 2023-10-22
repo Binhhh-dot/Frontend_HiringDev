@@ -9,7 +9,7 @@ const createHiringRequest = async (
   duration,
   typeRequireId,
   levelRequireId,
-  skills,
+  skillIds,
   isSaved,
   companyId,
   employmentTypeId,
@@ -24,9 +24,48 @@ const createHiringRequest = async (
     duration,
     typeRequireId,
     levelRequireId,
-    skills,
+    skillIds,
     isSaved,
     companyId,
+    scheduleTypeId,
+    employmentTypeId,
+  });
+  return response;
+};
+
+const updateHiringRequest = async (
+  requestId,
+  jobTitle,
+  jobDescription,
+  numberOfDev,
+  targetedDev,
+  salaryPerDev,
+  duration,
+  typeRequireId,
+  levelRequireId,
+  skillIds,
+  isSaved,
+  employmentTypeId,
+  scheduleTypeId
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestByRequestId.replace(
+      "${requestId}",
+      requestId
+    );
+  console.log(serviceUrl);
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    requestId,
+    jobTitle,
+    jobDescription,
+    numberOfDev,
+    targetedDev,
+    salaryPerDev,
+    duration,
+    typeRequireId,
+    levelRequireId,
+    skillIds,
+    isSaved,
     scheduleTypeId,
     employmentTypeId,
   });
@@ -116,6 +155,22 @@ const getHiringRequestDetailInCompany = async (hiringRequestId) => {
     );
 
   const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
+const getHiringRequestSaved = async (companyId) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace(
+      "${companyId}",
+      companyId
+    );
+  const statusUrls =
+    urlConstant.endpoint.hiringRequest.searchStatusHiringRequest.replace(
+      "${Status}",
+      0
+    );
+  const fullUrl = serviceUrl + statusUrls;
+  const response = await utils.axiosLocalHost.get(fullUrl);
   return response;
 };
 
@@ -250,4 +305,6 @@ export default {
   getAllHiringRequestByIdAndJobTitleAndSkill,
   getHiringRequestDetailInCompany,
   approvedHirringRequestStatus,
+  getHiringRequestSaved,
+  updateHiringRequest,
 };

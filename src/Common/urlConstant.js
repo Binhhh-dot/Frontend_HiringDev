@@ -21,6 +21,7 @@ export default {
     },
     type: {
       getAll: "/Type",
+      searchName: "",
     },
     hiringRequest: {
       getAll: "/HiringRequest",
@@ -44,6 +45,7 @@ export default {
       getAllHiringRequestById:
         "/HiringRequest/ByCompany?companyId=${companyId}",
       approvedHirringRequestStatus: "/HiringRequestStatus/ChangeWaitingStatus",
+      getHiringRequestByRequestId: "/HiringRequest?requestId=${requestId}",
     },
     developer: {
       GetAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",

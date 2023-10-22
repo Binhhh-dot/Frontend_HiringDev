@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import hiringrequestService from "../../../services/hiringrequest.service";
 import { Row, Col, Card, CardBody, Modal, ModalBody, Button } from "reactstrap";
+import imgMale from "../../../assets/images/user/img-02.jpg";
+import imgfeMale from "../../../assets/images/user/img-03.jpg";
 
 const DeveloperDetailInManagerPopup = (
   { isModalOpen, closeModal, devId },
@@ -23,6 +25,13 @@ const DeveloperDetailInManagerPopup = (
       );
     }
   };
+
+  const validImage =
+    devId && developerInfo?.userImage
+      ? developerInfo?.userImage
+      : developerInfo?.genderName === "Male"
+      ? imgMale
+      : imgfeMale;
 
   useEffect(() => {
     fetchGetDeveloperDetailInManager();
@@ -50,7 +59,7 @@ const DeveloperDetailInManagerPopup = (
                       <CardBody className="p-4">
                         <div className="candidate-profile text-center">
                           <img
-                            src={developerInfo.userImg}
+                            src={validImage}
                             alt=""
                             className="avatar-lg rounded-circle"
                           />

@@ -84,6 +84,7 @@ const JobVacancyList = (a) => {
         );
         return {
           id: job.requestId,
+          companyIdMana: job.companyId,
           companyImg: job.companyImage,
           jobDescription: job.jobTitle,
           companyName: job.companyName,
@@ -92,7 +93,7 @@ const JobVacancyList = (a) => {
           cancelled: job.statusString.includes("Cancelled"),
           done: job.statusString.includes("Done"),
           outOfTime: job.statusString.includes("Expired"),
-          fullTime: job.statusString.includes("Waiting Approval"),
+          waitingApproval: job.statusString.includes("Waiting Approval"),
           timing: job.statusString,
           addclassNameBookmark: false,
           showFullSkills: false,
@@ -201,7 +202,13 @@ const JobVacancyList = (a) => {
                       <Link
                         to="/hiringrequestdetails"
                         className="text-dark"
-                        state={{ jobId: jobVacancyListDetails.id }}
+                        state={{
+                          jobId: jobVacancyListDetails.id,
+                          company: jobVacancyListDetails.companyIdMana,
+                        }}
+                        // stateCompany={{
+                        //   company: jobVacancyListDetails.companyIdMana,
+                        // }}
                       >
                         {jobVacancyListDetails.jobDescription}
                       </Link>
@@ -239,8 +246,8 @@ const JobVacancyList = (a) => {
                   <div>
                     <span
                       className={
-                        jobVacancyListDetails.fullTime === true
-                          ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
+                        jobVacancyListDetails.waitingApproval === true
+                          ? "badge bg-warning-subtle text-warning fs-12 mt-1 mx-1"
                           : jobVacancyListDetails.partTime === true
                           ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
                           : jobVacancyListDetails.freeLance === true
