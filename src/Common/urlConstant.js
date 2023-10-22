@@ -35,7 +35,7 @@ export default {
       searchDuration:
         "&StartSalaryPerDev=${StartSalaryPerDev}&EndSalaryPerDev=${EndSalaryPerDev}",
       getAllStatus: "/HiringRequest/Status",
-      getHiringRequestDetailInManager: "//HiringRequest/${hiringRequestId}",
+      getHiringRequestDetailInManager: "/HiringRequest/${hiringRequestId}",
       getHiringRequestDetailInCompany: "/HiringRequest/${hiringRequestId}",
       getDeveloperMatchingInManager: "/Developer/DevMatching/${devMatching}",
       sendHiringRequestToDevMatching: "/SelectingDev",
@@ -46,8 +46,12 @@ export default {
         "/HiringRequest/ByCompany?companyId=${companyId}",
       getHiringRequestByRequestId: "/HiringRequest?requestId=${requestId}",
     },
-    developer: {
-      GetAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
+    selectingDeveloper: {
+      getAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
+      approvalByHR: "/SelectingDev/ApprovalByHR",
+      onboarnding: "/SelectingDev/Onboarding",
+      rejectSelectedDev: "/SelectingDev/RejectDev?requestId=${requestId}&developerId=${developerId}",
+      accpectDevToInterview: "/SelectingDev/DevToInterviewing?requestId=${requestId}"
     },
     company: {
       createCompany: "/CompanyPartner",
@@ -57,5 +61,13 @@ export default {
       getAll:
         "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4",
     },
+    developer: {
+      getListDevWaitingInterview: "/Developer/DevWaitingInterview/${requestId}",
+      createDeveloper: "/Developer",
+    },
+    interview: {
+      createAnInterview: "/Interview",
+      getListInterviewByRequestId: "/Interview/${requestId}",
+    }
   },
 };

@@ -24,6 +24,7 @@ const SignIn = () => {
   const handleSignIn = async (e) => {
     e.preventDefault();
     let userId;
+    let role;
     try {
       const response = await loginService.login(email, password);
       // Check if the API call was successful
@@ -31,11 +32,11 @@ const SignIn = () => {
 
         // Extract user ID from the decoded token
         userId = response.data.data.userId;
-
+        role = response.data.data.role;
         if (userId) {
           // Save user ID to local storage
           localStorage.setItem("userId", userId);
-
+          localStorage.setItem("role", role)
           // Navigate to "/layout3"
           navigate("/layout3");
         }

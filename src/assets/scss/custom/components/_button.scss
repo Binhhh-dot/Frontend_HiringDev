@@ -55,6 +55,7 @@
 }
 
 .btn {
+
     &.btn-info,
     &.btn-purple,
     &.btn-warning {
@@ -70,6 +71,18 @@
         box-shadow: 0 0 0 0.15rem rgb(var(--#{$prefix}primary-rgb), 0.5);
     }
 }
+
+.btn-red {
+    background-color: #ff0000 !important;
+    border-color: #ff0000 !important;
+    --bs-btn-color: #fff;
+    --bs-btn-hover-color: #fff;
+
+    &:focus {
+        box-shadow: 0 0 0 0.15rem rgb(#ff0000, 0.5);
+    }
+}
+
 
 .btn-outline-primary {
     border-color: var(--#{$prefix}primary) !important;

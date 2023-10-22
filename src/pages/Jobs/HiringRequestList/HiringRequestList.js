@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Section from "../HiringRequestList/Section";
 import JobSearchOptions from "./JobSearchOptions";
@@ -6,9 +6,19 @@ import JobVacancyList from "./JobVacancyList";
 
 import Sidebar from "./Sidebar";
 import Pagination from "./Pagination";
+import { useNavigate } from "react-router-dom";
 
 const HiringRequestList = () => {
   document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
+  const navigate = useNavigate();
+  useEffect(() => {
+    const role = localStorage.getItem('role');
+    if (role === null) {
+      navigate("/signin");
+    } else if (role === 'HR') {
+      navigate("/error404");
+    }
+  });
   return (
     <React.Fragment>
       <Section />

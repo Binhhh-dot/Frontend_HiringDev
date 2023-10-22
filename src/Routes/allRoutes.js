@@ -68,6 +68,7 @@ import HiringRequestListInCompanyPartner from "../pages/Jobs/HiringRequestListIn
 import HiringRequestListInCompanyPartnerDetail from "../pages/Jobs/HiringRequestListInCompanyPartnerDetail/HiringRequestListInCompanyPartnerDetail";
 import HiringRequestInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestInHR";
 import HiringRequestDetailInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestDetailInHR";
+import CreateInterview from "../pages/Jobs/CreateInterview/CreateInterview";
 
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
@@ -131,6 +132,10 @@ const userRoutes = [
   {
     path: "/hiringrequestlistincompanypartnerdetail",
     component: <HiringRequestListInCompanyPartnerDetail />,
+  },
+  {
+    path: "/createInterview",
+    component: <CreateInterview />
   },
 
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },
