@@ -50,6 +50,8 @@ export default {
       getAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
       approvalByHR: "/SelectingDev/ApprovalByHR",
       onboarnding: "/SelectingDev/Onboarding",
+      rejectSelectedDev: "/SelectingDev/RejectDev?requestId=${requestId}&developerId=${developerId}",
+      accpectDevToInterview: "/SelectingDev/DevToInterviewing?requestId=${requestId}"
     },
     company: {
       createCompany: "/CompanyPartner",
@@ -59,5 +61,13 @@ export default {
       getAll:
         "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4",
     },
+    developer: {
+      getListDevWaitingInterview: "/Developer/DevWaitingInterview/${requestId}",
+      createDeveloper: "/Developer",
+    },
+    interview: {
+      createAnInterview: "/Interview",
+      getListInterviewByRequestId: "/Interview/${requestId}",
+    }
   },
 };

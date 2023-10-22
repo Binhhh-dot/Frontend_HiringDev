@@ -55,7 +55,7 @@ const DeveloperDetailInCompanyPopup = (
                             className="avatar-lg rounded-circle"
                           />
                           <h6 className="fs-18 mb-0 mt-4">
-                            {developerInfo.lastName}
+                            {developerInfo.codeName}
                           </h6>
                         </div>
                       </CardBody>
@@ -64,29 +64,12 @@ const DeveloperDetailInCompanyPopup = (
                           Profile Overview
                         </h6>
                         <ul className="list-unstyled mb-0">
-                          <li>
-                            <div className="d-flex">
-                              <label className="text-dark">Name</label>
-                              <div>
-                                <p className="text-muted mb-0">
-                                  Gabriel Palmer
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="d-flex">
-                              <label className="text-dark">Date of Birth</label>
-                              <div>
-                                <p className="text-muted mb-0">30/4/1975</p>
-                              </div>
-                            </div>
-                          </li>
+
                           <li>
                             <div className="d-flex">
                               <label className="text-dark">Gender</label>
                               <div>
-                                <p className="text-muted mb-0">Female</p>
+                                <p className="text-muted mb-0">{developerInfo.genderName}</p>
                               </div>
                             </div>
                           </li>
@@ -96,7 +79,7 @@ const DeveloperDetailInCompanyPopup = (
                                 Average Salary
                               </label>
                               <div>
-                                <p className="text-muted mb-0">$1000</p>
+                                <p className="text-muted mb-0">${developerInfo.averageSalary}</p>
                               </div>
                             </div>
                           </li>
@@ -106,7 +89,7 @@ const DeveloperDetailInCompanyPopup = (
                                 Year Experience
                               </label>
                               <div>
-                                <p className="text-muted mb-0 ms-2"> 4 years</p>
+                                <p className="text-muted mb-0 ms-2">{developerInfo.yearOfExperience} years</p>
                               </div>
                             </div>
                           </li>
@@ -118,12 +101,11 @@ const DeveloperDetailInCompanyPopup = (
                             Type of Developer
                           </h6>
                           <div className="d-flex flex-wrap align-items-start gap-1">
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              BackEnd Developer
-                            </span>
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              AWS Developer
-                            </span>
+                            {developerInfo.types.map((type) => (
+                              <span key={type.typeId} className="badge bg-success-subtle text-success fs-13 mt-1">
+                                {type.typeName}
+                              </span>
+                            ))}
                           </div>
                         </div>
 
@@ -133,7 +115,7 @@ const DeveloperDetailInCompanyPopup = (
                           </h6>
                           <div className="d-flex flex-wrap align-items-start gap-1">
                             <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              Senior
+                              {developerInfo.level.levelName}
                             </span>
                           </div>
                         </div>
@@ -143,21 +125,11 @@ const DeveloperDetailInCompanyPopup = (
                             Skill of Developer
                           </h6>
                           <div className="d-flex flex-wrap align-items-start gap-1">
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              Springboot
-                            </span>
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              Web Design
-                            </span>
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              SpringMVC
-                            </span>
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              JUnit
-                            </span>
-                            <span className="badge bg-success-subtle text-success fs-13 mt-1">
-                              Java Server Faces
-                            </span>
+                            {developerInfo.skills.map((skill) => (
+                              <span key={skill.skillId} className="badge bg-success-subtle text-success fs-13 mt-1">
+                                {skill.skillName}
+                              </span>
+                            ))}
                           </div>
                         </div>
                       </CardBody>

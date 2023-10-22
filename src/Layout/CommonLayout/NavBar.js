@@ -43,9 +43,11 @@ const NavBar = (props) => {
 
   //scroll navbar
   const [navClass, setnavClass] = useState(false);
-
+  const [role, setRole] = useState(null);
   useEffect(() => {
     window.addEventListener("scroll", scrollNavigation, true);
+    const role = localStorage.getItem('role');
+    setRole(role)
   });
 
   function scrollNavigation() {
@@ -144,9 +146,9 @@ const NavBar = (props) => {
             id="navbarCollapse"
           >
             <ul className="navbar-nav mx-auto navbar-center">
-              <NavItem className="dropdown dropdown-hover">
+              {/* <NavItem className="dropdown dropdown-hover">
                 <NavLink
-                  to="/#"
+                  to="/layout3"
                   id="homedrop"
                   className="arrow-none"
                   onClick={() => setHome(!home)}
@@ -175,6 +177,11 @@ const NavBar = (props) => {
                     </Link>
                   </li>
                 </ul>
+              </NavItem> */}
+              <NavItem>
+                <Link className="nav-link" to="/layout3">
+                  Home
+                </Link>
               </NavItem>
               <NavItem className="dropdown dropdown-hover">
                 <NavLink
@@ -221,53 +228,40 @@ const NavBar = (props) => {
                   </li>
                 </ul>
               </NavItem>
-              <li className="nav-item dropdown dropdown-hover">
-                <Link
-                  to="/#"
-                  id="pagesdoropdown"
-                  className="nav-link dropdown-toggle arrow-none"
-                  onClick={() => setPages(!pages)}
-                >
-                  Pages
-                  <div className="arrow-down"></div>
-                </Link>
-                <div
-                  className={classname(
-                    "dropdown-menu dropdown-menu-lg dropdown-menu-center",
-                    { show: pages }
-                  )}
-                  aria-labelledby="pagesdoropdown"
-                >
-                  <Row>
-                    <Col lg={4}>
-                      <span className="dropdown-header">Jobs</span>
-                      <div>
-                        <Link className="dropdown-item" to="/hiringrequestlist">
-                          HiringRequestL In Manager
-                        </Link>
 
-                        <Link
-                          className="dropdown-item"
-                          to="/hiringrequestdetails"
-                        >
-                          HiringRequestD In Manager
-                        </Link>
+              {!(role === null) && (
+                <>
+                  <li className="nav-item dropdown dropdown-hover">
+                    <Link
+                      id="pagesdoropdown"
+                      className="nav-link dropdown-toggle arrow-none"
+                      onClick={() => setPages(!pages)}
+                    >
+                      Pages
+                      <div className="arrow-down"></div>
+                    </Link>
+                    <div
+                      className={classname(
+                        "dropdown-menu dropdown-menu-lg dropdown-menu-center",
+                        { show: pages }
+                      )}
+                      aria-labelledby="pagesdoropdown"
 
-                        <Link
-                          className="dropdown-item"
-                          to="/hiringrequestlistincompanypartner"
-                        >
-                          HiringRequestL In Company
-                        </Link>
+                    >
 
-                        <Link
-                          className="dropdown-item"
-                          to="/hiringrequestlistincompanypartnerdetail"
-                        >
-                          HiringRequestD In Company
-                        </Link>
-
-                        <Link
+                      <Row>
+                        {role === "HR" && (
+                          <>
+                            <Col lg={4}>
+                              <span className="dropdown-header">List</span>
+                              <Link
+                                className="dropdown-item"
+                                to="/hiringrequestlistincompanypartner"
+                              >
+                                List Hiring Request
+                              </Link>
+                            </Col>
+                            {/* <Link
                           className="dropdown-item"
                           to="/createhiringrequest"
                         >
@@ -278,8 +272,8 @@ const NavBar = (props) => {
                           to="/createInterview"
                         >
                           Create interview
-                        </Link>
-                        <Link className="dropdown-item" to="/joblist">
+                        </Link> */}
+                            {/* <Link className="dropdown-item" to="/joblist">
                           Job List
                         </Link>
                         <Link className="dropdown-item" to="/joblist2">
@@ -297,14 +291,19 @@ const NavBar = (props) => {
 
                         <Link className="dropdown-item" to="/jobscategories">
                           Jobs Categories
-                        </Link>
-                      </div>
-                    </Col>
-                    <Col lg={4}>
-                      <span className="dropdown-header">
-                        Candidates / Companys
-                      </span>
-                      <div>
+                        </Link> */}
+
+                            <Col lg={4}>
+
+                              <span className="dropdown-header">
+                                Interview
+                              </span>
+
+                              <Link className="dropdown-item" to="/developerinfo">
+                                List Interview
+                              </Link>
+
+                              {/* <div>
                         <Link className="dropdown-item" to="/developerlist">
                           Developer List
                         </Link>
@@ -351,17 +350,23 @@ const NavBar = (props) => {
                           HiringRequest Details In HR
                         </Link>
 
-                        {/* <Link
+                        <Link
                           className="dropdown-item"
                           to="/developerlistincompanypartner"
                         >
                           Developer List In Company
-                        </Link> */}
-                      </div>
-                    </Col>
-                    <Col lg={4}>
-                      <span className="dropdown-header">Extra Pages</span>
-                      <div>
+                        </Link>
+                      </div> */}
+                            </Col>
+                            <Col lg={4}>
+                              <span className="dropdown-header">Hiring Request</span>
+
+                              <Link className="dropdown-item" to="/createhiringrequest">
+                                Create Hiring Request
+                              </Link>
+
+
+                              {/* <div>
                         <Link className="dropdown-item" to="/signup">
                           Sign Up
                         </Link>
@@ -383,12 +388,126 @@ const NavBar = (props) => {
                         <Link className="dropdown-item" to="/components">
                           Components
                         </Link>
-                      </div>
-                    </Col>
-                  </Row>
-                </div>
-              </li>
-              <NavItem className="dropdown dropdown-hover">
+                      </div> */}
+                            </Col>
+                          </>
+                        )}
+                        {role === "Manager" && (
+                          <>
+
+                            <Col lg={5}>
+                              <span className="dropdown-header">List</span>
+
+                              <Link className="dropdown-item" to="/hiringrequestlist">
+                                List HiringRequest In Process
+                              </Link>
+                              <Link
+                                className="dropdown-item"
+                                to="/hiringrequestdetails"
+                              >
+                                List HiringRequest Expired
+                              </Link>
+
+                            </Col>
+                            <Col lg={3}>
+
+                              <span className="dropdown-header">
+                                Interview
+                              </span>
+
+                              {/* <div>
+                        <Link className="dropdown-item" to="/developerlist">
+                          Developer List
+                        </Link>
+                        <Link className="dropdown-item" to="/developerinfo">
+                          Developer Info
+                        </Link>
+                        <Link
+                          className="dropdown-item"
+                          to="/createstaffaccount"
+                        >
+                          Create Staff Account
+                        </Link>
+                        <Link
+                          className="dropdown-item"
+                          to="/createdeveloperaccount"
+                        >
+                          Create Developer Account
+                        </Link>
+
+                        <Link
+                          className="dropdown-item"
+                          to="/createcompanyaccount"
+                        >
+                          Create Company Account
+                        </Link>
+
+                        <Link className="dropdown-item" to="/candidatelist">
+                          Candidate List
+                        </Link>
+                        <Link className="dropdown-item" to="/candidategrid">
+                          Candidate Grid
+                        </Link>
+                        <Link className="dropdown-item" to="/candidatedetails">
+                          Candidate Details
+                        </Link>
+                        <Link className="dropdown-item" to="/companylist">
+                          Company List
+                        </Link>
+                        <Link className="dropdown-item" to="/companydetails">
+                          Company Details
+                        </Link>
+
+                        <Link className="dropdown-item" to="/hiringrequestinhr">
+                          HiringRequest Details In HR
+                        </Link>
+
+                        <Link
+                          className="dropdown-item"
+                          to="/developerlistincompanypartner"
+                        >
+                          Developer List In Company
+                        </Link>
+                      </div> */}
+                            </Col>
+                            <Col lg={4}>
+                              <span className="dropdown-header">Hiring Request</span>
+
+                              {/* <div>
+                        <Link className="dropdown-item" to="/signup">
+                          Sign Up
+                        </Link>
+                        <Link className="dropdown-item" to="/signin">
+                          Sign In
+                        </Link>
+                        <Link className="dropdown-item" to="/signout">
+                          Sign Out
+                        </Link>
+                        <Link className="dropdown-item" to="/resetpassword">
+                          Reset Password
+                        </Link>
+                        <Link className="dropdown-item" to="/comingsoon">
+                          Coming Soon
+                        </Link>
+                        <Link className="dropdown-item" to="/error404">
+                          404 Error
+                        </Link>
+                        <Link className="dropdown-item" to="/components">
+                          Components
+                        </Link>
+                      </div> */}
+                            </Col>
+                          </>
+                        )}
+
+                      </Row>
+                    </div>
+                  </li>
+
+                </>
+              )}
+
+              {/* <NavItem className="dropdown dropdown-hover">
                 <NavLink
                   to="/#"
                   id="productdropdown"
@@ -436,7 +555,7 @@ const NavBar = (props) => {
                     </Link>
                   </li>
                 </ul>
-              </NavItem>
+              </NavItem> */}
               <NavItem>
                 <Link className="nav-link" to="/contact">
                   Contact

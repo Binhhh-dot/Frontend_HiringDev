@@ -8,6 +8,7 @@ import {
   Label
 } from "reactstrap"; // Assuming you are using reactstrap for modal components
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Section from "../CreateHiringRequest/Section";
 import Select from "react-select";
 import axios from "axios";
@@ -78,6 +79,15 @@ const CreateHiringRequest = () => {
   const handleChange5 = (selected) => {
     setSelectedOptions5(selected);
   };
+  const navigate = useNavigate();
+  useEffect(() => {
+    const role = localStorage.getItem('role');
+    if (role === null) {
+      navigate("/signin");
+    } else if (role === 'manager') {
+      navigate("/error404");
+    }
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -416,7 +426,10 @@ const CreateHiringRequest = () => {
       if (!companyIdErr) {
         openModal2();
       } else {
+        if (!document.getElementById("job-title").value) {
+          setJobTitleError("Please enter a job title.");
 
+        }
         console.log("Save job...");
         setLoading(true);
         try {
@@ -613,7 +626,14 @@ const CreateHiringRequest = () => {
                     </div>
 
                     <div class="row">
-                      <div class="col-lg-12 mt-2">
+                      <div class="col-lg-12 mt-2 d-flex justify-content-end gap-2">
+                        <button type="button" className=" btn btn-info " style={{ backgroundColor: "#0051ffe0" }} onClick={handleSavePostJob} disabled={loading}>
+                          {loading ? (
+                            <RingLoader color="#fff" loading={true} size={20} />
+                          ) : (
+                            "Save"
+                          )}
+                        </button>
                         <button type="button" className="btn btn-primary" onClick={handlePostJob} disabled={loading}>
                           {loading ? (
                             <RingLoader color="#fff" loading={true} size={20} />
@@ -622,15 +642,7 @@ const CreateHiringRequest = () => {
                           )}
                         </button>
                       </div>
-                      <div class="col-lg-12 mt-2">
-                        <button type="button" className="btn btn-primary" onClick={handleSavePostJob} disabled={loading}>
-                          {loading ? (
-                            <RingLoader color="#fff" loading={true} size={20} />
-                          ) : (
-                            "Save"
-                          )}
-                        </button>
-                      </div>
+
                       {successMessage && (
                         <div className="alert alert-success mt-2" role="alert">
                           {successMessage}
