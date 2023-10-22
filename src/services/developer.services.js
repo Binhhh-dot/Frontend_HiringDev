@@ -81,13 +81,10 @@ const rejectSelectedDev = async (requestId, developerId) => {
   return response;
 };
 
-const appectDevToInterview = async (requestId) => {
+const appectDevToInterview = async (requestId, interviewId, devIds) => {
   const serviceUrl =
-    urlConstant.endpoint.selectingDeveloper.accpectDevToInterview.replace(
-      "${requestId}",
-      requestId
-    );
-  const response = await utils.axiosLocalHost.put(serviceUrl, requestId);
+    urlConstant.endpoint.selectingDeveloper.accpectDevToInterview;
+  const response = await utils.axiosLocalHost.put(serviceUrl, { requestId, interviewId, devIds });
   return response;
 };
 

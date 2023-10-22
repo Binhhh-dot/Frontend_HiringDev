@@ -55,7 +55,7 @@ export default {
       rejectSelectedDev:
         "/SelectingDev/RejectDev?requestId=${requestId}&developerId=${developerId}",
       accpectDevToInterview:
-        "/SelectingDev/DevToInterviewing?requestId=${requestId}",
+        "/SelectingDev/DevToInterviewing",
       // GetAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
       getSelectedDevByManager:
         "/SelectingDev/SelectedDevByManager/${requestId}",
@@ -70,7 +70,7 @@ export default {
         "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4",
     },
     developer: {
-      getListDevWaitingInterview: "/Developer/DevWaitingInterview/${requestId}",
+      getListDevWaitingInterview: "/Developer/DevWaitingInterview/Request/${requestId}",
       createDeveloper: "/Developer",
     },
     interview: {

@@ -1,9 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardBody, Col } from "reactstrap";
-
+import hiringrequestService from "../../../services/hiringrequest.service";
 //Import images
 import profileImage from "../../../assets/images/profile.jpg";
+
+
+const fetchDetailAccount = async () => {
+  let response;
+
+  try {
+    response = await hiringrequestService.getHiringRequestDetailInManager(
+      state.jobId
+    );
+
+    setHiringRequestDetail(response.data.data);
+    if (response.data.data.statusString !== "Waiting Approval") {
+      setShowCandidateList(true);
+    }
+
+    console.log(response)
+    return response;
+  } catch (error) {
+    console.error("Error fetching hiring request:", error);
+  }
+};
+
+useEffect(() => {
+  fetchDetailAccount();
+}, []);
 
 const LeftSideContent = () => {
   return (

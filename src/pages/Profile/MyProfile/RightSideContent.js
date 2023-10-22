@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Col,
   Row,
@@ -13,19 +13,172 @@ import {
   CardBody,
   Label
 } from "reactstrap";
+import Select from "react-select";
 
 import classnames from "classnames";
 
 //Images Import
 import userImage2 from "../../../assets/images/user/img-02.jpg";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import companyServices from "../../../services/company.services";
+
+
 
 const RightSideContent = () => {
   const [activeTab, setActiveTab] = useState("1");
-
+  const [companyId, setCompanyId] = useState(null);
+  const [userImage, setUserImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
   const tabChange = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
+  let companyDetail = null;
+
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  useEffect(() => {
+    const fetchCompanyDetail = async () => {
+      let companyId = localStorage.getItem('companyId');
+      setCompanyId(companyId);
+      const userId = localStorage.getItem('userId');
+      if (companyId) {
+
+        try {
+          // Make API request
+          const response = await companyServices.getCompanyByCompanyId(companyId);
+          companyDetail = response;
+          // Handle the response (you can show a success message or redirect to another page)
+          document.getElementById("company-name").value = response.data.data.companyName;
+          document.getElementById("email-address").value = response.data.data.companyEmail;
+          document.getElementById("address").value = response.data.data.address;
+          document.getElementById("email").value = response.data.data.companyEmail;
+          document.getElementById("number").value = response.data.data.phoneNumber;
+          const fileDev = response.data.data.companyImage;
+          // const file = fileDev.target.files[0];
+          console.log(fileDev)
+          setUserImage(fileDev)
+          console.log('API Response:', response.data.data.companyName);
+
+
+        } catch (error) {
+          // Handle errors (show an error message or log the error)
+          console.error('Error creating company:', error);
+          console.log(error.response.data);
+        }
+      } else {
+        setUserImage(userImage2)
+      }
+
+
+      axios
+        .get('https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4')
+        .then((response) => {
+          const data = response.data;
+          const formattedCountries = data.map((country) => ({
+            value: country.name.common,
+            label: country.name.common,
+          }));
+          setCountries(formattedCountries);
+          if (companyDetail) {
+            const selected = formattedCountries.find((country) => country.value === companyDetail.data.data.country);
+            if (selected) {
+              const company = {
+                value: selected.value,
+                label: selected.label,
+              };
+              setSelectedCountry(company);
+            }
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching data', error);
+        });
+    };
+    fetchCompanyDetail();
+  }, []);
+
+
+  const handleUpdateCompany = async () => {
+    const companyName = document.getElementById('company-name').value;
+    const companyEmail = document.getElementById('email-address').value;
+    const phoneNumber = document.getElementById('number').value;
+    const address = document.getElementById('address').value;
+    const country = selectedCountry ? selectedCountry.value : '';
+
+    const fileInput = document.getElementById('company-image');
+    const file = fileInput.files[0];
+    // Get userId from localStorage
+    const userId = localStorage.getItem('userId');
+
+    const formData = new FormData();
+    formData.append('companyName', companyName);
+    formData.append('companyEmail', companyEmail);
+    formData.append('phoneNumber', phoneNumber);
+    formData.append('address', address);
+    formData.append('country', country);
+    formData.append('userId', userId);
+    formData.append('file', file);
+
+
+    try {
+      // Make API request
+      const response = await companyServices.createCompany(formData);
+
+      // Handle the response (you can show a success message or redirect to another page)
+      console.log('API Response:', response.data);
+      const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+      const userData = responseUser.data;
+      localStorage.setItem('companyId', userData.data.companyId);
+    } catch (error) {
+      // Handle errors (show an error message or log the error)
+      console.error('Error creating company:', error);
+      console.log(error.response.data);
+    }
+
+
+  };
+
+
+
+
+  const [avatar, setAvatar] = useState();
+  const [avatar2, setAvatar2] = useState();
+
+  useEffect(() => {
+    return () => avatar && URL.revokeObjectURL(avatar.preview);
+  }, [avatar]);
+
+  const handleChooseAvatar = () => {
+    const inputElement = document.getElementById('profile-img-file-input');
+    inputElement.click();
+  };
+
+  const handlePreviewAvatar = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      file.preview = URL.createObjectURL(file);
+      setAvatar(file);
+    }
+  };
+
+  useEffect(() => {
+    return () => avatar2 && URL.revokeObjectURL(avatar2.preview);
+  }, [avatar]);
+
+  const handleChooseAvatar2 = () => {
+    const inputElement = document.getElementById('profile-img-file-input2');
+    inputElement.click();
+  };
+
+  const handlePreviewAvatar2 = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      file.preview = URL.createObjectURL(file);
+      setAvatar2(file);
+    }
+  };
+
   return (
     <React.Fragment>
       <Col lg={8}>
@@ -57,6 +210,18 @@ const RightSideContent = () => {
                 type="button"
               >
                 Settings
+              </NavLink>
+            </NavItem>
+            <NavItem role="presentation">
+              <NavLink
+                to="#"
+                className={classnames({ active: activeTab === "3" })}
+                onClick={() => {
+                  tabChange("3");
+                }}
+                type="button"
+              >
+                Company
               </NavLink>
             </NavItem>
           </Nav>
@@ -224,27 +389,36 @@ const RightSideContent = () => {
               <TabPane tabId="2">
                 <Form action="#">
                   <div>
-                    <h5 className="fs-17 fw-semibold mb-3 mb-0">My Account</h5>
+                    <h5 className="fs-17 fw-semibold mb-3 mb-0">My Company</h5>
                     <div className="text-center">
                       <div className="mb-4 profile-user">
-                        <img
-                          src={userImage2}
-                          className="rounded-circle img-thumbnail profile-img"
-                          id="profile-img"
-                          alt=""
-                        />
-                        <div className="p-0 rounded-circle profile-photo-edit">
-                          <Input
-                            id="profile-img-file-input"
-                            type="file"
-                            className="profile-img-file-input"
+                        {avatar2 ? (
+                          <img
+                            src={avatar2.preview}
+                            className="rounded-circle img-thumbnail profile-img"
+                            id="profile-img"
+                            alt=""
                           />
-                          <Label
-                            htmlFor="profile-img-file-input"
+                        ) : (
+                          <img
+                            src={userImage}  // Giá trị mặc định là "userImage2"
+                            className="rounded-circle img-thumbnail profile-img"
+                            id="profile-img-2"
+                            alt=""
+                          />
+                        )}
+                        <div className="p-0 rounded-circle profile-photo-edit">
+                          <label
                             className="profile-photo-edit avatar-xs"
                           >
-                            <i className="uil uil-edit"></i>
-                          </Label>
+                            <i className="uil uil-edit" onClick={handleChooseAvatar2}></i>
+                          </label>
+                          <input
+                            type="file"
+                            id="profile-img-file-input2"
+                            onChange={handlePreviewAvatar2}
+                            style={{ display: 'none' }}
+                          />
                         </div>
                       </div>
                     </div>
@@ -525,11 +699,120 @@ const RightSideContent = () => {
                   </div>
                 </Form>
               </TabPane>
+              <TabPane tabId="3">
+                <Form action="#">
+                  <div>
+                    <h5 className="fs-17 fw-semibold mb-3 mb-0">My Company</h5>
+                    <div className="text-center">
+                      <div className="mb-4 profile-user">
+                        {avatar ? (
+                          <img
+                            src={avatar.preview}
+                            className="rounded-circle img-thumbnail profile-img"
+                            id="profile-img"
+                            alt=""
+                          />
+                        ) : (
+                          <img
+                            src={userImage}  // Giá trị mặc định là "userImage2"
+                            className="rounded-circle img-thumbnail profile-img"
+                            id="profile-img-2"
+                            alt=""
+                          />
+                        )}
+                        <div className="p-0 rounded-circle profile-photo-edit">
+                          <label
+                            className="profile-photo-edit avatar-xs"
+                          >
+                            <i className="uil uil-edit" onClick={handleChooseAvatar}></i>
+                          </label>
+                          <input
+                            type="file"
+                            id="profile-img-file-input"
+                            onChange={handlePreviewAvatar}
+                            style={{ display: 'none' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <Row>
+                      <Col lg={12}>
+                        <div className="mb-3">
+                          <label htmlFor="firstName" className="form-label">
+                            Company Name
+                          </label>
+                          <Input
+                            type="text"
+                            className="form-control"
+                            id="company-name"
+                          />
+                        </div>
+                      </Col>
+                      <Col lg={6}>
+                        <div className="mb-3">
+                          <Label class="text-muted">Country</Label>
+                          <div style={{ paddingBottom: "10px" }}>
+                            <Select
+                              options={countries}
+                              value={selectedCountry}
+                              onChange={(selectedOption) =>
+                                setSelectedCountry(selectedOption)
+                              }
+                            />
+                          </div>
+                        </div>
+                      </Col>
+
+                      <Col lg={6}>
+                        <div className="mb-3">
+                          <Label htmlFor="email" className="form-label">
+                            Address
+                          </Label>
+                          <Input
+                            type="text"
+                            className="form-control"
+                            id="address"
+                          />
+                        </div>
+                      </Col>
+                      <Col lg={6}>
+                        <div className="mb-3">
+                          <Label htmlFor="email" className="form-label">
+                            Email
+                          </Label>
+                          <Input
+                            type="text"
+                            className="form-control"
+                            id="email-address"
+                          />
+                        </div>
+                      </Col>
+                      <Col lg={6}>
+                        <div className="mb-3">
+                          <Label htmlFor="email" className="form-label">
+                            Company Phone Number
+                          </Label>
+                          <Input
+                            type="text"
+                            className="form-control"
+                            id="number"
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+                  </div>
+                  <div className="mt-4 text-end">
+                    <Link to="#" className="btn btn-primary" >
+                      {companyId ? 'Update' : 'Create'}
+                    </Link>
+                  </div>
+                </Form>
+              </TabPane>
             </TabContent>
           </CardBody>
         </Card>
       </Col>
-    </React.Fragment>
+    </React.Fragment >
   );
 };
 

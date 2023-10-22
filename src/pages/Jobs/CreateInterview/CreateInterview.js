@@ -90,7 +90,7 @@ const CreateInterview = () => {
             const data = response.data;
             if (data.code === 201) {
                 try {
-                    const response = await developerServices.appectDevToInterview(state.jobId);
+                    const response = await developerServices.appectDevToInterview(state.jobId, data.data.interviewId);
                     const data = response.data;
                     console.log(data)
                 } catch (error) {
