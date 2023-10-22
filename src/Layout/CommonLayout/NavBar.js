@@ -299,7 +299,7 @@ const NavBar = (props) => {
                                 Interview
                               </span>
 
-                              <Link className="dropdown-item" to="/developerinfo">
+                              <Link className="dropdown-item" to="/listInterview">
                                 List Interview
                               </Link>
 
