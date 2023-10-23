@@ -48,7 +48,9 @@ const SignIn = () => {
 
     const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
     const userData = responseUser.data;
-    localStorage.setItem('companyId', userData.data.companyId);
+    if (userData.data.companyId != null) {
+      localStorage.setItem('companyId', userData.data.companyId);
+    }
   };
 
   const saveTokenToLocalStorage = (token) => {

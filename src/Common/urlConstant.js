@@ -78,8 +78,9 @@ export default {
       createAnInterview: "/Interview",
       getListInterviewByRequestId: "/Interview/${requestId}",
     },
-    user:{
-      getUserById : "/User/${userId}"
+    user: {
+      getUserById: "/User/${userId}",
+      updateUser: "/User/${userId}",
     }
   },
 };

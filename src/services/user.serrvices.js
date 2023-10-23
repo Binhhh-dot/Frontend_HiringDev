@@ -7,6 +7,19 @@ const getUserById = async (userId) => {
     return response
 }
 
+const updateUser = async (formData, userId) => {
+    const serviceUrl = urlConstant.endpoint.user.updateUser.replace("${userId}", userId);
+    const config = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }
+    const response = await utils.axiosLocalHost.put(serviceUrl, formData, config)
+
+    return response
+}
+
 export default {
-    getUserById
+    getUserById,
+    updateUser
 }

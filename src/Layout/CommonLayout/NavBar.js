@@ -260,6 +260,12 @@ const NavBar = (props) => {
                               >
                                 List Hiring Request
                               </Link>
+                              <Link
+                                className="dropdown-item"
+                                to="/hiringRequestListExpiredHR"
+                              >
+                                List Hiring Request Expired
+                              </Link>
                             </Col>
                             {/* <Link
                           className="dropdown-item"
