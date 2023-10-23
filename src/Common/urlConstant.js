@@ -64,6 +64,7 @@ export default {
     company: {
       createCompany: "/CompanyPartner",
       getCompanyByCompanyId: "/CompanyPartner/${companyId}",
+      updateCompany: "/CompanyPartner?companyId=${companyId}",
     },
     country: {
       getAll:
@@ -77,5 +78,8 @@ export default {
       createAnInterview: "/Interview",
       getListInterviewByRequestId: "/Interview/${requestId}",
     },
+    user:{
+      getUserById : "/User/${userId}"
+    }
   },
 };

@@ -1,36 +1,48 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardBody, Col } from "reactstrap";
 import hiringrequestService from "../../../services/hiringrequest.service";
 //Import images
 import profileImage from "../../../assets/images/profile.jpg";
+import userSerrvices from "../../../services/user.serrvices";
+import axios from "axios";
 
-
-const fetchDetailAccount = async () => {
-  let response;
-
-  try {
-    response = await hiringrequestService.getHiringRequestDetailInManager(
-      state.jobId
-    );
-
-    setHiringRequestDetail(response.data.data);
-    if (response.data.data.statusString !== "Waiting Approval") {
-      setShowCandidateList(true);
-    }
-
-    console.log(response)
-    return response;
-  } catch (error) {
-    console.error("Error fetching hiring request:", error);
-  }
-};
-
-useEffect(() => {
-  fetchDetailAccount();
-}, []);
 
 const LeftSideContent = () => {
+  const [userData, setUserData] = useState({
+    lastName: "",
+    firstName: "",
+    email: "",
+    phoneNumber: "",
+  });
+
+  useEffect(() => {
+    const fetchUserDetail = async () => {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        try {
+          // Make API request
+          const response = await userSerrvices.getUserById(userId);
+          const { lastName, firstName, email, phoneNumber } = response.data.data;
+          setUserData({
+            lastName,
+            firstName,
+            email,
+            phoneNumber,
+          });
+
+          console.log('API Response:', response.data);
+  
+  
+        } catch (error) {
+          // Handle errors (show an error message or log the error)
+          console.error('Error creating company:', error);
+          console.log(error.response.data);
+        }
+      } 
+    };
+    fetchUserDetail();
+  }, []);
   return (
     <React.Fragment>
       <Col lg={4}>
@@ -42,8 +54,8 @@ const LeftSideContent = () => {
                 alt=""
                 className="avatar-lg img-thumbnail rounded-circle mb-4"
               />
-              <h5 className="mb-0">Jennifer Dickens</h5>
-              <p className="text-muted">Developer</p>
+              <h5 className="mb-0" id="user-name">{userData.lastName} {userData.firstName}</h5>
+              <p className="text-muted">HR</p>
               <ul className="list-inline d-flex justify-content-center align-items-center ">
                 <li className="list-inline-item text-warning fs-19">
                   <i className="mdi mdi-star"></i>
@@ -136,8 +148,8 @@ const LeftSideContent = () => {
                     <div className="d-flex">
                       <label>Email</label>
                       <div>
-                        <p className="text-muted text-break mb-0">
-                          jennifer@gmail.com
+                        <p className="text-muted text-break mb-0" id="email-user">
+                        {userData.email}
                         </p>
                       </div>
                     </div>
@@ -146,7 +158,7 @@ const LeftSideContent = () => {
                     <div className="d-flex">
                       <label>Phone Number</label>
                       <div>
-                        <p className="text-muted mb-0">+2 345 678 0000</p>
+                        <p className="text-muted mb-0" id="phone-user">{userData.phoneNumber}</p>
                       </div>
                     </div>
                   </li>

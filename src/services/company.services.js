@@ -13,6 +13,17 @@ const createCompany = async (formData) => {
     return response
 }
 
+const updateCompany = async (companyId,formData) => {
+    const serviceUrl = urlConstant.endpoint.company.updateCompany.replace("${companyId}", companyId);
+    const config = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }
+    const response = await utils.axiosLocalHost.put(serviceUrl,formData, config)
+    console.log(response);
+    return response
+}
 
 const getCompanyByCompanyId = async (companyId) => {
     const serviceUrl = urlConstant.endpoint.company.getCompanyByCompanyId.replace("${companyId}",companyId);
@@ -23,5 +34,6 @@ const getCompanyByCompanyId = async (companyId) => {
 
 export default {
     createCompany,
-    getCompanyByCompanyId
+    getCompanyByCompanyId,
+    updateCompany
 }

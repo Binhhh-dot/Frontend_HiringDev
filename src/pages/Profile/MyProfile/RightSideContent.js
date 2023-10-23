@@ -52,7 +52,6 @@ const RightSideContent = () => {
           document.getElementById("company-name").value = response.data.data.companyName;
           document.getElementById("email-address").value = response.data.data.companyEmail;
           document.getElementById("address").value = response.data.data.address;
-          document.getElementById("email").value = response.data.data.companyEmail;
           document.getElementById("number").value = response.data.data.phoneNumber;
           const fileDev = response.data.data.companyImage;
           // const file = fileDev.target.files[0];
@@ -105,25 +104,31 @@ const RightSideContent = () => {
     const phoneNumber = document.getElementById('number').value;
     const address = document.getElementById('address').value;
     const country = selectedCountry ? selectedCountry.value : '';
-
-    const fileInput = document.getElementById('company-image');
+    const fileInput = document.getElementById('profile-img-file-input');
     const file = fileInput.files[0];
     // Get userId from localStorage
     const userId = localStorage.getItem('userId');
 
     const formData = new FormData();
-    formData.append('companyName', companyName);
-    formData.append('companyEmail', companyEmail);
+    formData.append('CompanyId', companyId)
+    formData.append('CompanyName', companyName);
+    formData.append('CompanyEmail', companyEmail);
     formData.append('phoneNumber', phoneNumber);
     formData.append('address', address);
     formData.append('country', country);
-    formData.append('userId', userId);
-    formData.append('file', file);
+    formData.append('file', file || null);
+    const fileField = formData.get('file');
 
-
+// Kiểm tra xem giá trị có tồn tại hay không
+if (fileField) {
+  console.log('Giá trị của trường "file" trong formData:', fileField);
+} else {
+  console.log('Trường "file" trong formData không tồn tại hoặc có giá trị là null.');
+}
+    console.log(formData)
     try {
       // Make API request
-      const response = await companyServices.createCompany(formData);
+      const response = await companyServices.updateCompany(companyId,formData);
 
       // Handle the response (you can show a success message or redirect to another page)
       console.log('API Response:', response.data);
@@ -133,14 +138,10 @@ const RightSideContent = () => {
     } catch (error) {
       // Handle errors (show an error message or log the error)
       console.error('Error creating company:', error);
-      console.log(error.response.data);
     }
 
 
   };
-
-
-
 
   const [avatar, setAvatar] = useState();
   const [avatar2, setAvatar2] = useState();
@@ -802,7 +803,7 @@ const RightSideContent = () => {
                     </Row>
                   </div>
                   <div className="mt-4 text-end">
-                    <Link to="#" className="btn btn-primary" >
+                    <Link to="#" className="btn btn-primary" onClick={handleUpdateCompany} >
                       {companyId ? 'Update' : 'Create'}
                     </Link>
                   </div>
