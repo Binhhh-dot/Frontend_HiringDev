@@ -69,7 +69,9 @@ import HiringRequestListInCompanyPartnerDetail from "../pages/Jobs/HiringRequest
 import HiringRequestInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestInHR";
 import HiringRequestDetailInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestDetailInHR";
 import CreateInterview from "../pages/Jobs/CreateInterview/CreateInterview";
-
+import DetailInterview from "../pages/Jobs/DetailInterview/DetailInterview";
+import InterviewList from "../pages/Jobs/JobGrid copy/JobGrid";
+import HiringRequestListExpiredHR from "../pages/Jobs/HiringRequestListExpiredHR/HiringRequestListExpiredHR";
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -106,6 +108,7 @@ const userRoutes = [
   { path: "/candidatelist", component: <CandidateList /> },
   { path: "/hiringrequestinhr", component: <HiringRequestInHR /> },
   { path: "/hiringrequestdetailinhr", component: <HiringRequestDetailInHR /> },
+  { path: "/listInterview", component: <InterviewList /> },
 
   // {
   //   path: "/developerlistincompanypartner",
@@ -130,12 +133,20 @@ const userRoutes = [
     component: <HiringRequestListInCompanyPartner />,
   },
   {
+    path: "/hiringRequestListExpiredHR",
+    component: <HiringRequestListExpiredHR />
+  },
+  {
     path: "/hiringrequestlistincompanypartnerdetail",
     component: <HiringRequestListInCompanyPartnerDetail />,
   },
   {
     path: "/createInterview",
     component: <CreateInterview />
+  },
+  {
+    path: "/detailInterview",
+    component: <DetailInterview />
   },
 
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },

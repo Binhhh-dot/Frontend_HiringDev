@@ -10,7 +10,7 @@ import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetail
 import { useNavigate } from "react-router-dom";
 
 
-const CreateInterview = () => {
+const DetailInterview = () => {
     document.title = "Job Details | Jobcy - Job Listing Template | Themesdesign";
     const [listDevId, setListDevid] = useState([]);
     const { state } = useLocation();
@@ -18,14 +18,6 @@ const CreateInterview = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
     const navigate = useNavigate();
-    useEffect(() => {
-        const role = localStorage.getItem('role');
-        if (role === null) {
-            navigate("/signin");
-        } else if (role === 'manager') {
-            navigate("/error404");
-        }
-    });
     const fetchListDevInterview = async () => {
         try {
             const response = await developerServices.getListDevWaitingInterview(state.jobId)
@@ -65,9 +57,50 @@ const CreateInterview = () => {
 
 
     useEffect(() => {
-        fetchListDevInterview();
+        // fetchListDevInterview();
+        fetchDetailInterview();
     }, []);
 
+    const fetchDetailInterview = async () => {
+        try {
+            const response = await interviewServices.getDetailInterviewByInterviewId(state.interviewId)
+            const data = response.data;
+            document.getElementById("interview-title").value = data.data.title;
+            document.getElementById("description").value = data.data.title;
+            document.getElementById("date-of-interview").value = data.data.dateOfInterview.split("T")[0];
+            document.getElementById("startTime").value = data.data.startTime;
+            document.getElementById("endTime").value = data.data.endTime;
+
+            const jobListing = data.data.developers.map((dev) => {
+                return {
+                    developerId: dev.developerId,
+                    userId: dev.userId,
+                    codeName: dev.codeName,
+                    candidateStatusClassName:
+                        "profile-active position-absolute badge rounded-circle bg-success",
+                    yearOfExperience: dev.yearOfExperience + " Years Experience",
+                    averageSalary: dev.averageSalary,
+                    employmentTypeName: dev.employmentTypeName,
+                    devStatusString: dev.devStatusString,
+                    partTime: true,
+                    timing: dev.scheduleTypeName,
+                    badges: [
+                        {
+                            id: 1,
+                            badgeclassName: "bg-primary-subtle text-primary",
+                            badgeName: dev.levelRequireName,
+                        }
+                    ]
+                };
+            });
+            setJobListing(jobListing);
+            const developerIds = jobListing.map((job) => job.developerId);
+            setListDevid(developerIds);
+
+        } catch (error) {
+            console.error("Error fetching job vacancies:", error);
+        }
+    };
 
     const openModal = (candidateInfo) => {
         setSelectedCandidateInfo(candidateInfo);
@@ -81,33 +114,33 @@ const CreateInterview = () => {
     };
 
 
-    const handleCreateInterview = async () => {
-        try {
-            const title = document.getElementById("interview-title").value;
-            const description = document.getElementById("description").value;
-            const dateOfInterview = document.getElementById("date-of-interview").value;
+    // const handleCreateInterview = async () => {
+    //     try {
+    //         const title = document.getElementById("interview-title").value;
+    //         const description = document.getElementById("description").value;
+    //         const dateOfInterview = document.getElementById("date-of-interview").value;
 
-            const startTime = document.getElementById("startTime").value + ":00";
-            console.log(startTime)
-            const endTime = document.getElementById("endTime").value + ":00";
+    //         const startTime = document.getElementById("startTime").value + ":00";
+    //         console.log(startTime)
+    //         const endTime = document.getElementById("endTime").value + ":00";
 
-            const response = await interviewServices.createAnInterview(state.jobId, title, description, dateOfInterview, startTime, endTime);
-            let data = response.data;
-            console.log(data);
-            if (data.code === 201) {
-                try {
-                    const interviewId = data.data.interviewId;
-                    const response = await developerServices.appectDevToInterview(state.jobId, interviewId, listDevId);
-                } catch (error) {
-                    console.error("Error:", error);
-                }
-            }
-            console.log(data)
-            fetchListDevInterview();
-        } catch (error) {
-            console.error("Error fetching job vacancies:", error);
-        }
-    };
+    //         const response = await interviewServices.createAnInterview(state.jobId, title, description, dateOfInterview, startTime, endTime);
+    //         let data = response.data;
+    //         console.log(data);
+    //         if (data.code === 201) {
+    //             try {
+    //                 const interviewId = data.data.interviewId;
+    //                 const response = await developerServices.appectDevToInterview(state.jobId, interviewId, listDevId);
+    //             } catch (error) {
+    //                 console.error("Error:", error);
+    //             }
+    //         }
+    //         console.log(data)
+    //         fetchListDevInterview();
+    //     } catch (error) {
+    //         console.error("Error fetching job vacancies:", error);
+    //     }
+    // };
 
     return (
         <React.Fragment>
@@ -120,12 +153,12 @@ const CreateInterview = () => {
                                 <div class="custom-form">
                                     <div id="message3"></div>
                                     <form method="post" action="php/contact.php" name="contact-form" id="contact-form3">
-                                        <h4 class="text-dark mb-3 ">Create Interview :</h4>
+                                        <h4 class="text-dark mb-3 ">Detail Interview :</h4>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Interview Title</label>
-                                                    <input id="interview-title" type="text" class="form-control resume" placeholder="" required></input>
+                                                    <input id="interview-title" type="text" class="form-control resume" placeholder="" required readOnly></input>
 
                                                 </div>
                                             </div>
@@ -135,7 +168,7 @@ const CreateInterview = () => {
                                             <div class="col-md-12">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Date of Interview</label>
-                                                    <input id="date-of-interview" type="date" class="form-control resume" placeholder=""></input>
+                                                    <input id="date-of-interview" type="date" class="form-control resume" placeholder="" readOnly></input>
 
                                                 </div>
                                             </div>
@@ -149,7 +182,7 @@ const CreateInterview = () => {
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Start Time</label>
-                                                    <input id="startTime" type="time" class="form-control resume" placeholder=""></input>
+                                                    <input id="startTime" type="time" class="form-control resume" placeholder="" readOnly></input>
 
                                                 </div>
                                             </div>
@@ -157,7 +190,7 @@ const CreateInterview = () => {
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">End Time</label>
-                                                    <input id="endTime" type="time" class="form-control resume" placeholder=""></input>
+                                                    <input id="endTime" type="time" class="form-control resume" placeholder="" readOnly></input>
 
                                                 </div>
                                             </div>
@@ -167,21 +200,21 @@ const CreateInterview = () => {
                                             <div class="col-md-12">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Description</label>
-                                                    <textarea id="description" class="form-control resume" placeholder="" style={{ height: 125 }}></textarea>
+                                                    <textarea id="description" class="form-control resume" placeholder="" style={{ height: 125 }} readOnly></textarea>
                                                 </div>
                                             </div>
                                         </div>
 
 
-                                        <div class="row">
+                                        {/* <div class="row">
                                             <div class="col-lg-12 mt-3 d-flex justify-content-end ">
                                                 <button type="button" className="btn btn-primary btn-hover"
-                                                    onClick={handleCreateInterview}
+                                                // onClick={handleCreateInterview}
                                                 >
                                                     Create an interview
                                                 </button>
                                             </div>
-                                        </div>
+                                        </div> */}
 
                                     </form>
                                 </div>
@@ -277,7 +310,7 @@ const CreateInterview = () => {
                                                                     <i className="mdi mdi-eye"></i>
                                                                 </Link>
                                                             </li>
-                                                            <li
+                                                            {/* <li
                                                                 className="list-inline-item"
                                                                 data-bs-toggle="tooltip"
                                                                 data-bs-placement="top"
@@ -291,7 +324,7 @@ const CreateInterview = () => {
                                                                 >
                                                                     <i className="uil uil-trash-alt"></i>
                                                                 </Link>
-                                                            </li>
+                                                            </li> */}
                                                         </ul>
                                                     </Col>
                                                 </Row>
@@ -317,4 +350,4 @@ const CreateInterview = () => {
     );
 };
 
-export default CreateInterview;
+export default DetailInterview;

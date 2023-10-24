@@ -158,15 +158,6 @@ const RightSideContent = () => {
                   </div>
                 </div>
               </li>
-              {/* <li>
-                <div className="d-flex mt-4">
-                  <i className="uil uil-location-point icon bg-primary-subtle text-primary"></i>
-                  <div className="ms-3">
-                    <h6 className="fs-14 mb-2">Location</h6>
-                    <p className="text-muted mb-0"> New york</p>
-                  </div>
-                </div>
-              </li> */}
               <li>
                 <div className="d-flex mt-4">
                   <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
@@ -187,15 +178,6 @@ const RightSideContent = () => {
                   </div>
                 </div>
               </li>
-              {/* <li>
-                <div className="d-flex mt-4">
-                  <i className="uil uil-building icon bg-primary-subtle text-primary"></i>
-                  <div className="ms-3">
-                    <h6 className="fs-14 mb-2">Industry</h6>
-                    <p className="text-muted mb-0">Private</p>
-                  </div>
-                </div>
-              </li> */}
               <li>
                 <div className="d-flex mt-4">
                   <i className="uil uil-history icon bg-primary-subtle text-primary"></i>

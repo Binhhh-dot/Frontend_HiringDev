@@ -39,7 +39,8 @@ const CreateCompanyAccount = () => {
     const file = fileInput.files[0];
     // Get userId from localStorage
     const userId = localStorage.getItem('userId');
-
+    
+    console.log(file)
     const formData = new FormData();
     formData.append('companyName', companyName);
     formData.append('companyEmail', companyEmail);
@@ -50,20 +51,20 @@ const CreateCompanyAccount = () => {
     formData.append('file', file);
 
 
-    try {
-      // Make API request
-      const response = await companyServices.createCompany(formData);
+    // try {
+    //   // Make API request
+    //   const response = await companyServices.createCompany(formData);
 
-      // Handle the response (you can show a success message or redirect to another page)
-      console.log('API Response:', response.data);
-      const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
-      const userData = responseUser.data;
-      localStorage.setItem('companyId', userData.data.companyId);
-    } catch (error) {
-      // Handle errors (show an error message or log the error)
-      console.error('Error creating company:', error);
-      console.log(error.response.data);
-    }
+    //   // Handle the response (you can show a success message or redirect to another page)
+    //   console.log('API Response:', response.data);
+    //   const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+    //   const userData = responseUser.data;
+    //   localStorage.setItem('companyId', userData.data.companyId);
+    // } catch (error) {
+    //   // Handle errors (show an error message or log the error)
+    //   console.error('Error creating company:', error);
+    //   console.log(error.response.data);
+    // }
 
 
   };

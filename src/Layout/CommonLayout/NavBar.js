@@ -260,7 +260,32 @@ const NavBar = (props) => {
                               >
                                 List Hiring Request
                               </Link>
+                              <Link
+                                className="dropdown-item"
+                                to="/hiringRequestListExpiredHR"
+                              >
+                                List Hiring Request Expired
+                              </Link>
                             </Col>
+                            {/* <Link className="dropdown-item" to="/joblist">
+                              Job List
+                            </Link>
+                            <Link className="dropdown-item" to="/joblist2">
+                              Job List-2
+                            </Link>
+                            <Link className="dropdown-item" to="/jobgrid">
+                              Job Grid
+                            </Link>
+                            <Link className="dropdown-item" to="/jobgrid2">
+                              Job Grid-2
+                            </Link>
+                            <Link className="dropdown-item" to="/jobdetails">
+                              Job Details
+                            </Link>
+
+                            <Link className="dropdown-item" to="/jobscategories">
+                              Jobs Categories
+                            </Link> */}
                             {/* <Link
                           className="dropdown-item"
                           to="/createhiringrequest"
@@ -273,25 +298,6 @@ const NavBar = (props) => {
                         >
                           Create interview
                         </Link> */}
-                            {/* <Link className="dropdown-item" to="/joblist">
-                          Job List
-                        </Link>
-                        <Link className="dropdown-item" to="/joblist2">
-                          Job List-2
-                        </Link>
-                        <Link className="dropdown-item" to="/jobgrid">
-                          Job Grid
-                        </Link>
-                        <Link className="dropdown-item" to="/jobgrid2">
-                          Job Grid-2
-                        </Link>
-                        <Link className="dropdown-item" to="/jobdetails">
-                          Job Details
-                        </Link>
-
-                        <Link className="dropdown-item" to="/jobscategories">
-                          Jobs Categories
-                        </Link> */}
 
                             <Col lg={4}>
 
@@ -299,7 +305,7 @@ const NavBar = (props) => {
                                 Interview
                               </span>
 
-                              <Link className="dropdown-item" to="/developerinfo">
+                              <Link className="dropdown-item" to="/listInterview">
                                 List Interview
                               </Link>
 

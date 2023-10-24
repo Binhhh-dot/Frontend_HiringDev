@@ -53,18 +53,18 @@ const CandidateGridDetails = () => {
   const fetchListInterview = async () => {
     try {
       const response = await interviewServices.getListInterviewByRequestId(state.jobId)
-      // const data = response.data;
+      const data = response.data;
 
-      // const listInterview = data.data.map((interview) => {
-      //   return {
-      //     interviewId: interview.interviewId,
-      //     title: interview.title,
-      //     dateOfInterview: interview.dateOfInterview.split("T")[0],
-      //     startTime: interview.startTime,
-      //     endTime: interview.endTime,
-      //   }
-      // });
-      // console.log(listInterview)
+      const listInterview = data.data.map((interview) => {
+        return {
+          interviewId: interview.interviewId,
+          title: interview.title,
+          dateOfInterview: interview.dateOfInterview.split("T")[0],
+          startTime: interview.startTime,
+          endTime: interview.endTime,
+        }
+      });
+      console.log(listInterview)
       setlistInterview(response.data.data)
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -130,7 +130,8 @@ const CandidateGridDetails = () => {
 
   const fetchJobVacancies = async () => {
     try {
-      const response = await developerServices.GetAllSelectedDevByHR(state.jobId)
+      const response = await developerServices.GetAllSelectedDevByHR(state.jobId);
+      console.log("cc");
       const data = response.data;
       const candidategridDetails = data.data.map((dev) => {
         return {
@@ -156,16 +157,17 @@ const CandidateGridDetails = () => {
     }
   };
 
-  useEffect(() => {
-    fetchJobVacancies();
-    fetchListInterview();
-  }, []);
+  // useEffect(() => {
+  //   fetchJobVacancies();
+  //   // fetchListInterview();
+  // }, []);
 
 
 
   const fetchHiringRequestDetailInCompany = async () => {
     let response;
     // const saveData = localStorage.getItem("myData");
+
     try {
       response = await hiringrequestService.getHiringRequestDetailInCompany(
         state.jobId
@@ -182,8 +184,14 @@ const CandidateGridDetails = () => {
 
   useEffect(() => {
     fetchHiringRequestDetailInCompany();
+    fetchJobVacancies();
+    fetchListInterview();
   }, []);
 
+  const [showItems, setShowItems] = useState(5);
+  const listInterviewArray = Object.values(listInterview);
+  const listInterviewToShow = listInterviewArray.slice(0, showItems);
+  const showAll = listInterviewArray.length > 5;
   if (!hiringRequestDetail) {
     return null;
   }
@@ -493,55 +501,137 @@ const CandidateGridDetails = () => {
 
             </Container>
           </div>
-          <div class="col-lg-3" >
-
-            <h5 class="justify-content-center">List Developer Accepted</h5>
-
-            <Row className="d-flex flex-column gap-4">
-              {/* {listInterview.map((listInterviewDetails, key) => ( */}
-              <Col lg={12} md={12} >
-                <div style={{ paddingRight: "12px" }} >
-                  <div className="dev-accepted ">
-                    <div
-                    // key={key}
-                    >
-                      <div className="p-4">
-                        <Row >
-                          <Col lg={12}>
-                            <div className="mt-3 mt-lg-0">
-                              <div className="d-flex justify-content-between">
-                                <h5 className=" mb-1">
-                                  <Link to="/jobdetails" className="text-dark">
-                                    {listInterview.title}
-                                  </Link>{" "}
-                                </h5>
-                                <span
-                                  className={
-                                    "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
-                                  }
-                                >
-                                  {listInterview.statusString}
-                                </span>
-
-                              </div>
-                              <div className="d-flex flex-column gap-1">
-                                <p className="text-muted fs-14 mb-0">
-                                  Date: {listInterview.dateOfInterview}
-                                </p>
-                                <p className="text-muted fs-14 mb-0">
-                                  Time: {listInterview.startTime} - {listInterview.endTime}
-                                </p>
-                              </div>
-                            </div>
-                          </Col>
-                        </Row>
+          <div class="col-lg-3 d-flex flex-column gap-4" style={{ paddingRight: "24px" }}>
+            <Card className="job-overview ">
+              <CardBody className="p-4">
+                <h4>Job Overview</h4>
+                <ul className="list-unstyled mt-4 mb-0">
+                  <li>
+                    <div className="d-flex mt-4">
+                      <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
+                      <div className="ms-3">
+                        <h6 className="fs-14 mb-2">Job Title</h6>
+                        <p className="text-muted mb-0">
+                        </p>
                       </div>
                     </div>
+                  </li>
+                  <li>
+                    <div className="d-flex mt-4">
+                      <i className="uil uil-star-half-alt icon bg-primary-subtle text-primary"></i>
+                      <div className="ms-3">
+                        <h6 className="fs-14 mb-2">Experience</h6>
+                        <p className="text-muted mb-0"> 0-3 Years</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="d-flex mt-4">
+                      <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
+                      <div className="ms-3">
+                        <h6 className="fs-14 mb-2">Offered Salary</h6>
+                        <p className="text-muted mb-0">
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="d-flex mt-4">
+                      <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                      <div className="ms-3">
+                        <h6 className="fs-14 mb-2">Qualification</h6>
+                        <p className="text-muted mb-0">Bachelor Degree</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="d-flex mt-4">
+                      <i className="uil uil-history icon bg-primary-subtle text-primary"></i>
+                      <div className="ms-3">
+                        <h6 className="fs-14 mb-2">Date Posted</h6>
+                        <p className="text-muted mb-0">
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </CardBody>
+            </Card>
+            {listInterview.length > 0 ? (
+              <Card className="job-overview ">
+                <CardBody className="p-4">
+                  <div className="d-flex flex-column gap-3">
+                    <div className="d-flex justify-content-between align-items-center ">
+                      <h4 class="justify-content-center ">List Interviews</h4>
+                      {showAll && (
+                        <Link
+                          to="/listInterview"
+                          className="btn btn-link mb-0"
+                          // style={{ backgroundColor: "#02AF74" }}
+                          state={{ jobId: hiringRequestDetail.requestId }}
+                        >
+                          View All
+                        </Link>
+                      )}
+                    </div>
+                    <Row className="d-flex flex-column gap-4">
+                      {listInterviewToShow.map((listInterviewDetails, key) => (
+                        <Col lg={12} md={12} key={key}>
+                          <div >
+                            <div className="dev-accepted ">
+                              <div
+                              // key={key}
+                              >
+                                <div className="p-4">
+                                  <Row >
+                                    <Col lg={12}>
+                                      <div className="mt-3 mt-lg-0 d-flex flex-column gap-3">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                          <h5 className="mb-0">
+                                            <Link to="/jobdetails" className="text-dark">
+                                              {listInterviewDetails.title}
+                                            </Link>{" "}
+                                          </h5>
+                                          <span
+                                            className={
+                                              "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                                            }
+                                          >
+                                            {listInterviewDetails.statusString}
+                                          </span>
+
+                                        </div>
+                                        <div className="d-flex flex-column gap-1">
+                                          <p className="text-muted fs-14 mb-0">
+                                            Date: {listInterviewDetails.dateOfInterview}
+                                          </p>
+                                          <p className="text-muted fs-14 mb-0">
+                                            Time: {listInterviewDetails.startTime} - {listInterviewDetails.endTime}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
                   </div>
-                </div>
-              </Col>
-              {/* ))} */}
-            </Row>
+                </CardBody>
+              </Card>
+            ) : (
+              <div>
+                <p>No interviews available.</p>
+
+              </div>
+            )}
+
+
+
+
 
           </div>
 

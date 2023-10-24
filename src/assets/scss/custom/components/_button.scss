@@ -83,6 +83,17 @@
     }
 }
 
+.btn-link {
+    background-color: #3557ec !important;
+    border-color: #3557ec !important;
+    --bs-btn-color: #fff;
+    --bs-btn-hover-color: #fff;
+
+    &:focus {
+        box-shadow: 0 0 0 0.15rem rgb(#3557ec, 0.5);
+    }
+}
+
 
 .btn-outline-primary {
     border-color: var(--#{$prefix}primary) !important;

@@ -218,7 +218,8 @@ const getDeveloperDetailInManager = async (devId) => {
 const getHiringRequestByidAndPaging = async (
   companyId,
   currentPage,
-  pageSize
+  pageSize,
+  status
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace(
@@ -228,15 +229,23 @@ const getHiringRequestByidAndPaging = async (
   const pagingUrl = urlConstant.endpoint.hiringRequest.paging
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", pageSize);
-  const fullUrl = serviceUrl + pagingUrl;
+  const statusUrls = urlConstant.endpoint.hiringRequest.searchStatusHiringRequest.replace(
+    "${Status}",
+    status
+  );
+  const fullUrl = serviceUrl + pagingUrl + statusUrls;
   const response = await utils.axiosLocalHost.get(fullUrl);
   return response;
 };
+
+
+
 
 const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   companyId,
   currentPage,
   pageSize,
+  status,
   jobTitle,
   skill,
   level
@@ -249,6 +258,7 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   const pagingUrl = urlConstant.endpoint.hiringRequest.paging
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", pageSize);
+
   let fullUrl = serviceUrl + pagingUrl;
 
   if (jobTitle) {
@@ -271,6 +281,12 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
     const fullUrls = skillUrls.join("&");
     fullUrl += fullUrls;
   }
+  const statusUrls =
+    urlConstant.endpoint.hiringRequest.searchStatusHiringRequest.replace(
+      "${Status}",
+      status
+    );
+  fullUrl += statusUrls;
   const response = await utils.axiosLocalHost.get(fullUrl);
   console.log(fullUrl);
   return response;

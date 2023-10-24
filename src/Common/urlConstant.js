@@ -49,13 +49,14 @@ export default {
     },
 
     selectingDeveloper: {
+
       getAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
       approvalByHR: "/SelectingDev/ApprovalByHR",
       onboarnding: "/SelectingDev/Onboarding",
       rejectSelectedDev:
         "/SelectingDev/RejectDev?requestId=${requestId}&developerId=${developerId}",
       accpectDevToInterview:
-        "/SelectingDev/DevToInterviewing?requestId=${requestId}",
+        "/SelectingDev/DevToInterviewing",
       // GetAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
       getSelectedDevByManager:
         "/SelectingDev/SelectedDevByManager/${requestId}",
@@ -64,6 +65,7 @@ export default {
     company: {
       createCompany: "/CompanyPartner",
       getCompanyByCompanyId: "/CompanyPartner/${companyId}",
+      updateCompany: "/CompanyPartner?companyId=${companyId}",
     },
     country: {
       getAll:
@@ -72,10 +74,17 @@ export default {
     developer: {
       getListDevWaitingInterview: "/Developer/DevWaitingInterview/${requestId}",
       createDeveloper: "/Developer",
+
     },
     interview: {
       createAnInterview: "/Interview",
-      getListInterviewByRequestId: "/Interview/${requestId}",
+      getListInterviewByRequestId: "/Interview/Request/${requestId}",
+      getAllInterviewByHRAndPaging: "/Interview/ByHR?companyId=${companyId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getDetailInterviewByInterviewId: "/Interview/${InterviewId}",
     },
+    user: {
+      getUserById: "/User/${userId}",
+      updateUser: "/User/${userId}",
+    }
   },
 };
