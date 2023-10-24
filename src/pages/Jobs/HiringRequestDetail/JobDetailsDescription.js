@@ -101,6 +101,10 @@ const JobDetailsDescription = () => {
       return updatedSelectedDev;
     });
   };
+  // console.log("---------------------------------------");
+  // console.log("cac dev matching duoc chon de gui di cho dev chap nhan");
+  // console.log(selectedDev);
+  // console.log("---------------------------------------");
 
   //////////////////////////////////////////////////////////////////////////////////////////
   // chon dev o phan dev accepted
@@ -144,6 +148,11 @@ const JobDetailsDescription = () => {
       //selectedAllDevAccept || selectedDevAccept.length > 0
       !selectedAllDevAccept && selectedDevAccept.length === 0
     );
+
+    console.log("---------------------------------------------------");
+    console.log("cac dev accepted duoc chon de gui di cho HR chap nhan");
+    console.log(selectedDevAccept);
+    console.log("---------------------------------------------------");
   };
 
   /////////////////////////////////////////////////////////////////////////////////////////
@@ -163,11 +172,30 @@ const JobDetailsDescription = () => {
     if (cancelReason.trim() === "") {
       console.log("Please enter a reason for cancellation.");
     } else {
+      // fetchCancelHirringRequestStatus();
       console.log("Cancel Request Reason:", cancelReason);
       closeCancelModal();
     }
   };
 
+  //---------------------------------------------------------------------------------------------------
+  const fetchCancelHirringRequestStatus = async () => {
+    let response;
+    try {
+      response = await hiringrequestService.cancelHirringRequestStatus(
+        state.jobId,
+        cancelReason,
+        false
+      );
+      console.log("li do cancel request:");
+      console.log(cancelReason);
+      return response;
+    } catch (error) {
+      console.error("Error fetching cancel hiring request", error);
+    }
+  };
+
+  //---------------------------------------------------------------------------------------------------
   const fetchHiringRequestDetailInManager = async () => {
     let response;
 
@@ -275,6 +303,23 @@ const JobDetailsDescription = () => {
     }
   };
 
+  //--------------------------------------------------------------------------------
+
+  // const fetchCancelHirringRequestStatus = async () => {
+  //   let response;
+  //   try {
+  //     response = await hiringrequestService.cancelHirringRequestStatus(
+  //       state.jobId,
+  //       cancelReason,
+  //       false
+  //     );
+  //     console.log(cancelReason);
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Error fetching cancel hiring request", error);
+  //   }
+  // };
+
   /////////////////////////////////////////////////////////////////////////////////
   // ham xu li approved hiring request
   const handleAcceptedHirringRequest = () => {
@@ -320,12 +365,12 @@ const JobDetailsDescription = () => {
   //////////////////////////////////////////////////////////////////////////////
   const abc = (id) => {
     const xyz = devMatching.find((dev) => dev.developerId === id);
-    return xyz.lastName;
+    return xyz?.lastName;
   };
 
   const def = (id) => {
     const atk = devHasBeenSent.find((dev) => dev.developerId === id);
-    return atk.lastName;
+    return atk?.lastName;
   };
   /////////////////////////////////////////////////////////////////////////////
   const [showDropdown, setShowDropdown] = useState(false);
@@ -431,11 +476,28 @@ const JobDetailsDescription = () => {
                     />
                   </DropdownToggle>
                   <DropdownMenu>
-                    <DropdownItem header>Option</DropdownItem>
-                    <DropdownItem>Content</DropdownItem>
-                    <DropdownItem disabled>Action (disabled)</DropdownItem>
+                    <DropdownItem header>Are you sure?</DropdownItem>
                     <DropdownItem divider />
-                    <DropdownItem>Another Action</DropdownItem>
+                    <DropdownItem>
+                      <button
+                        className="d-flex justify-content-center"
+                        style={{
+                          width: "100%",
+                          padding: "12px",
+                          fontSize: "larger",
+                          fontWeight: "500",
+                        }}
+                        class="btn btn-danger"
+                        role="button"
+                        onClick={openCancelModal}
+                      >
+                        <span>Cancel Request</span>
+                      </button>
+                    </DropdownItem>
+
+                    {/* <DropdownItem disabled>Action (disabled)</DropdownItem> */}
+                    <DropdownItem divider />
+                    {/* <DropdownItem>Another Action</DropdownItem> */}
                   </DropdownMenu>
                 </Dropdown>
               </div>
@@ -810,7 +872,7 @@ const JobDetailsDescription = () => {
             <span>Show Dev Matching</span>
           </button> */}
 
-          <button
+          {/* <button
             className="d-flex justify-content-center"
             style={{
               width: "50%",
@@ -823,7 +885,7 @@ const JobDetailsDescription = () => {
             onClick={openCancelModal}
           >
             <span>Cancel Request</span>
-          </button>
+          </button> */}
         </div>
       )}
 

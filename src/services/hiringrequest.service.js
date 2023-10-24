@@ -290,6 +290,22 @@ const approvedHirringRequestStatus = async (
   });
   return response;
 };
+
+const cancelHirringRequestStatus = async (
+  requestId,
+  rejectionReason,
+  isApproved
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.cancelHirringRequestStatus;
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    requestId,
+    rejectionReason,
+    isApproved,
+  });
+  return response;
+};
+
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -307,4 +323,5 @@ export default {
   approvedHirringRequestStatus,
   getHiringRequestSaved,
   updateHiringRequest,
+  cancelHirringRequestStatus,
 };

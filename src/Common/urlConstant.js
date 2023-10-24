@@ -45,6 +45,7 @@ export default {
       getAllHiringRequestById:
         "/HiringRequest/ByCompany?companyId=${companyId}",
       approvedHirringRequestStatus: "/HiringRequestStatus/ChangeWaitingStatus",
+      cancelHirringRequestStatus: "/HiringRequestStatus/ChangeWaitingStatus",
       getHiringRequestByRequestId: "/HiringRequest?requestId=${requestId}",
     },
 

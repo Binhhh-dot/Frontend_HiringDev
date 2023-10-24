@@ -69,6 +69,7 @@ import HiringRequestListInCompanyPartnerDetail from "../pages/Jobs/HiringRequest
 import HiringRequestInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestInHR";
 import HiringRequestDetailInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestDetailInHR";
 import CreateInterview from "../pages/Jobs/CreateInterview/CreateInterview";
+import AssignTaskList from "../pages/CandidateAndCompany/AssignTask/AssignTaskList";
 
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
@@ -106,6 +107,7 @@ const userRoutes = [
   { path: "/candidatelist", component: <CandidateList /> },
   { path: "/hiringrequestinhr", component: <HiringRequestInHR /> },
   { path: "/hiringrequestdetailinhr", component: <HiringRequestDetailInHR /> },
+  { path: "/assigntasklist", component: <AssignTaskList /> },
 
   // {
   //   path: "/developerlistincompanypartner",
@@ -135,7 +137,7 @@ const userRoutes = [
   },
   {
     path: "/createInterview",
-    component: <CreateInterview />
+    component: <CreateInterview />,
   },
 
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },

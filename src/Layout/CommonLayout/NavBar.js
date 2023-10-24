@@ -27,7 +27,7 @@ import profileImage from "../../assets/images/profile.jpg";
 const NavBar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem("userId");
   const [home, setHome] = useState(false);
   const [company, setCompany] = useState(false);
   const [pages, setPages] = useState(false);
@@ -46,8 +46,8 @@ const NavBar = (props) => {
   const [role, setRole] = useState(null);
   useEffect(() => {
     window.addEventListener("scroll", scrollNavigation, true);
-    const role = localStorage.getItem('role');
-    setRole(role)
+    const role = localStorage.getItem("role");
+    setRole(role);
   });
 
   function scrollNavigation() {
@@ -246,9 +246,7 @@ const NavBar = (props) => {
                         { show: pages }
                       )}
                       aria-labelledby="pagesdoropdown"
-
                     >
-
                       <Row>
                         {role === "HR" && (
                           <>
@@ -294,12 +292,12 @@ const NavBar = (props) => {
                         </Link> */}
 
                             <Col lg={4}>
+                              <span className="dropdown-header">Interview</span>
 
-                              <span className="dropdown-header">
-                                Interview
-                              </span>
-
-                              <Link className="dropdown-item" to="/developerinfo">
+                              <Link
+                                className="dropdown-item"
+                                to="/developerinfo"
+                              >
                                 List Interview
                               </Link>
 
@@ -359,12 +357,16 @@ const NavBar = (props) => {
                       </div> */}
                             </Col>
                             <Col lg={4}>
-                              <span className="dropdown-header">Hiring Request</span>
+                              <span className="dropdown-header">
+                                Hiring Request
+                              </span>
 
-                              <Link className="dropdown-item" to="/createhiringrequest">
+                              <Link
+                                className="dropdown-item"
+                                to="/createhiringrequest"
+                              >
                                 Create Hiring Request
                               </Link>
-
 
                               {/* <div>
                         <Link className="dropdown-item" to="/signup">
@@ -394,11 +396,13 @@ const NavBar = (props) => {
                         )}
                         {role === "Manager" && (
                           <>
-
                             <Col lg={5}>
                               <span className="dropdown-header">List</span>
 
-                              <Link className="dropdown-item" to="/hiringrequestlist">
+                              <Link
+                                className="dropdown-item"
+                                to="/hiringrequestlist"
+                              >
                                 List HiringRequest In Process
                               </Link>
                               <Link
@@ -408,12 +412,15 @@ const NavBar = (props) => {
                                 List HiringRequest Expired
                               </Link>
 
+                              <Link
+                                className="dropdown-item"
+                                to="/assigntasklist"
+                              >
+                                Assign Task List
+                              </Link>
                             </Col>
                             <Col lg={3}>
-
-                              <span className="dropdown-header">
-                                Interview
-                              </span>
+                              <span className="dropdown-header">Interview</span>
 
                               {/* <div>
                         <Link className="dropdown-item" to="/developerlist">
@@ -471,7 +478,9 @@ const NavBar = (props) => {
                       </div> */}
                             </Col>
                             <Col lg={4}>
-                              <span className="dropdown-header">Hiring Request</span>
+                              <span className="dropdown-header">
+                                Hiring Request
+                              </span>
 
                               {/* <div>
                         <Link className="dropdown-item" to="/signup">
@@ -499,11 +508,9 @@ const NavBar = (props) => {
                             </Col>
                           </>
                         )}
-
                       </Row>
                     </div>
                   </li>
-
                 </>
               )}
 
@@ -613,7 +620,10 @@ const NavBar = (props) => {
                         </div>
                       </div>
                     </Link>
-                    <Link to="#" className="text-dark notification-item d-block">
+                    <Link
+                      to="#"
+                      className="text-dark notification-item d-block"
+                    >
                       <div className="d-flex align-items-center">
                         <div className="flex-shrink-0 me-3">
                           <img
@@ -631,7 +641,10 @@ const NavBar = (props) => {
                         </div>
                       </div>
                     </Link>
-                    <Link to="#" className="text-dark notification-item d-block">
+                    <Link
+                      to="#"
+                      className="text-dark notification-item d-block"
+                    >
                       <div className="d-flex align-items-center">
                         <div className="flex-shrink-0 me-3">
                           <img
@@ -651,7 +664,10 @@ const NavBar = (props) => {
                         </div>
                       </div>
                     </Link>
-                    <Link to="#" className="text-dark notification-item d-block">
+                    <Link
+                      to="#"
+                      className="text-dark notification-item d-block"
+                    >
                       <div className="d-flex align-items-center">
                         <div className="flex-shrink-0 me-3">
                           <img
@@ -669,7 +685,10 @@ const NavBar = (props) => {
                         </div>
                       </div>
                     </Link>
-                    <Link to="#" className="text-dark notification-item d-block">
+                    <Link
+                      to="#"
+                      className="text-dark notification-item d-block"
+                    >
                       <div className="d-flex align-items-center">
                         <div className="flex-shrink-0 me-3">
                           <img
@@ -748,7 +767,8 @@ const NavBar = (props) => {
                   </li>
                 </DropdownMenu>
               </Dropdown>
-            </ul>) : null}
+            </ul>
+          ) : null}
         </Container>
       </nav>
     </React.Fragment>
