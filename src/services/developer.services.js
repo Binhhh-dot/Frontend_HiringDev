@@ -3,7 +3,7 @@ import utils from "../utils/customAxios";
 
 const GetAllSelectedDevByHR = async (hiringRequestId) => {
   const serviceUrl =
-    urlConstant.endpoint.selectingDeveloper.GetAllSelectedDevByHR.replace(
+    urlConstant.endpoint.selectingDeveloper.getAllSelectedDevByHR.replace(
       "${hiringRequestId}",
       hiringRequestId
     );

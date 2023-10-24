@@ -69,7 +69,8 @@ import HiringRequestListInCompanyPartnerDetail from "../pages/Jobs/HiringRequest
 import HiringRequestInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestInHR";
 import HiringRequestDetailInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestDetailInHR";
 import CreateInterview from "../pages/Jobs/CreateInterview/CreateInterview";
-import InterviewList from "../pages/Jobs/ListInterview/InterviewList";
+import DetailInterview from "../pages/Jobs/DetailInterview/DetailInterview";
+import InterviewList from "../pages/Jobs/JobGrid copy/JobGrid";
 import HiringRequestListExpiredHR from "../pages/Jobs/HiringRequestListExpiredHR/HiringRequestListExpiredHR";
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
@@ -142,6 +143,10 @@ const userRoutes = [
   {
     path: "/createInterview",
     component: <CreateInterview />
+  },
+  {
+    path: "/detailInterview",
+    component: <DetailInterview />
   },
 
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },

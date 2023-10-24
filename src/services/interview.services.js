@@ -29,7 +29,26 @@ const getListInterviewByRequestId = async (requestId) => {
     return response;
 }
 
+const getAllInterviewByHRAndPaging = async (companyId, pageSize, pageIndex) => {
+    const serviceUrl = urlConstant.endpoint.interview.getAllInterviewByHRAndPaging
+        .replace("${companyId}", companyId)
+        .replace("${PageSize}", pageSize)
+        .replace("${PageIndex}", pageIndex)
+        ;
+    const response = await utils.axiosLocalHost.get(serviceUrl);
+    return response;
+}
+
+const getDetailInterviewByInterviewId = async (interviewId) => {
+    const serviceUrl = urlConstant.endpoint.interview.getDetailInterviewByInterviewId
+        .replace("${InterviewId}", interviewId);
+    const response = await utils.axiosLocalHost.get(serviceUrl, interviewId);
+    return response;
+}
+
 export default {
     createAnInterview,
-    getListInterviewByRequestId
+    getListInterviewByRequestId,
+    getAllInterviewByHRAndPaging,
+    getDetailInterviewByInterviewId
 }
