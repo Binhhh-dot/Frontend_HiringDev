@@ -138,8 +138,11 @@ const JobVacancy2 = () => {
   ];
   return (
     <React.Fragment>
+
+
       {jobVacancy2.map((jobVacancy2Details, key) => (
         <Col lg={4} md={6} className="mt-4" key={key}>
+
           <div
             className={
               jobVacancy2Details.addclassNameBookmark === true

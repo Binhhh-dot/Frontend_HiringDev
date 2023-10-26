@@ -10,7 +10,7 @@ import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetail
 import { useNavigate } from "react-router-dom";
 
 
-const DetailInterview = () => {
+const DetailInterviewManager = () => {
     document.title = "Job Details | Jobcy - Job Listing Template | Themesdesign";
     const [listDevId, setListDevid] = useState([]);
     const { state } = useLocation();
@@ -148,7 +148,7 @@ const DetailInterview = () => {
             <section class="section">
                 <div class="">
                     <div class="row  justify-content-center w-100">
-                        <div class="col-lg-4 ps-5" >
+                        <div class="col-lg-6 ps-5" >
                             <div class="rounded shadow bg-white p-4">
                                 <div class="custom-form">
                                     <div id="message3"></div>
@@ -220,10 +220,10 @@ const DetailInterview = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-8 mb-4">
+                        <div class="col-lg-6 mb-4">
                             <Row>
                                 {jobListing.map((jobListingDetails, key) => (
-                                    <Col lg={6} md={6} className="" key={key}>
+                                    <Col lg={12} md={6} className="" key={key}>
                                         <CardBody className="p-4 rounded shadow bg-white">
                                             <Row>
                                                 <Col lg={1}>
@@ -349,4 +349,4 @@ const DetailInterview = () => {
     );
 };
 
-export default DetailInterview;
+export default DetailInterviewManager;

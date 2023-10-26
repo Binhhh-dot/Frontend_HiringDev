@@ -12,13 +12,10 @@ const InterviewList = () => {
       <Section />
       <section className="section">
         <Container>
+
           <JobGridHeader />
           <Selected />
-
           <JobVacancy />
-
-
-
         </Container>
       </section>
     </React.Fragment>

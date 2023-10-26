@@ -39,6 +39,17 @@ const getAllInterviewByHRAndPaging = async (companyId, pageSize, pageIndex) => {
     return response;
 }
 
+const getAllInterviewByHRAndRequestIdAndPaging = async (companyId, requestId, pageSize, pageIndex) => {
+    const serviceUrl = urlConstant.endpoint.interview.getAllInterviewByHRAndRequestIdAndPaging
+        .replace("${companyId}", companyId)
+        .replace("${PageSize}", pageSize)
+        .replace("${PageIndex}", pageIndex)
+        .replace("${requestId}", requestId)
+        ;
+    const response = await utils.axiosLocalHost.get(serviceUrl);
+    return response;
+}
+
 const getDetailInterviewByInterviewId = async (interviewId) => {
     const serviceUrl = urlConstant.endpoint.interview.getDetailInterviewByInterviewId
         .replace("${InterviewId}", interviewId);
@@ -46,9 +57,21 @@ const getDetailInterviewByInterviewId = async (interviewId) => {
     return response;
 }
 
+const getAllInterviewByManagerAndPaging = async (pageSize, pageIndex) => {
+    const serviceUrl = urlConstant.endpoint.interview.getAllInterviewByManagerAndPaging
+        .replace("${PageSize}", pageSize)
+        .replace("${PageIndex}", pageIndex)
+        ;
+    const response = await utils.axiosLocalHost.get(serviceUrl);
+    return response;
+}
+
+
 export default {
     createAnInterview,
     getListInterviewByRequestId,
     getAllInterviewByHRAndPaging,
-    getDetailInterviewByInterviewId
+    getDetailInterviewByInterviewId,
+    getAllInterviewByHRAndRequestIdAndPaging,
+    getAllInterviewByManagerAndPaging
 }

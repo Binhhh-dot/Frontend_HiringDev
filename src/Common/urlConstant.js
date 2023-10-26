@@ -81,6 +81,8 @@ export default {
       getListInterviewByRequestId: "/Interview/Request/${requestId}",
       getAllInterviewByHRAndPaging: "/Interview/ByHR?companyId=${companyId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
       getDetailInterviewByInterviewId: "/Interview/${InterviewId}",
+      getAllInterviewByHRAndRequestIdAndPaging: "/Interview/ByHR?companyId=${companyId}&requestId=${requestId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getAllInterviewByManagerAndPaging: "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}",
     },
     user: {
       getUserById: "/User/${userId}",

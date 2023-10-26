@@ -563,16 +563,16 @@ const CandidateGridDetails = () => {
                   <div className="d-flex flex-column gap-3">
                     <div className="d-flex justify-content-between align-items-center ">
                       <h4 class="justify-content-center ">List Interviews</h4>
-                      {showAll && (
-                        <Link
-                          to="/listInterview"
-                          className="btn btn-link mb-0"
-                          // style={{ backgroundColor: "#02AF74" }}
-                          state={{ jobId: hiringRequestDetail.requestId }}
-                        >
-                          View All
-                        </Link>
-                      )}
+                      {/* {showAll && ( */}
+                      <Link
+                        to="/listInterview"
+                        className="btn btn-link mb-0"
+                        // style={{ backgroundColor: "#02AF74" }}
+                        state={{ jobId: hiringRequestDetail.requestId }}
+                      >
+                        View All
+                      </Link>
+                      {/* )} */}
                     </div>
                     <Row className="d-flex flex-column gap-4">
                       {listInterviewToShow.map((listInterviewDetails, key) => (

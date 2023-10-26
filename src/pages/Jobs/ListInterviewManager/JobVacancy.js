@@ -15,19 +15,10 @@ import interviewServices from "../../../services/interview.services";
 
 const JobVacancy = () => {
   const [jobVacancyList, setJobVacancyList] = useState([]);
-  let leftColumn = [];
-  let rightColumn = [];
+
   const { state } = useLocation();
 
-  jobVacancyList.forEach((job, index) => {
-    if (index % 2 === 0) {
-      // Add job to the left column
-      leftColumn.push(job);
-    } else {
-      // Add job to the right column
-      rightColumn.push(job);
-    }
-  });
+
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
@@ -57,7 +48,7 @@ const JobVacancy = () => {
   };
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 8;
+  const pageSize = 5;
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -76,17 +67,20 @@ const JobVacancy = () => {
 
   const fetchJobVacancies = async () => {
     let response;
-    const companyId = localStorage.getItem('companyId');
-    if (state) {
-
-      console.log(state.jobId)
-    }
+    console.log(state?.jobId)
     try {
-      response = await interviewServices.getAllInterviewByHRAndPaging(
-        companyId,
-        8,
+      // if (state?.jobId) {
+      //   response = await interviewServices.getAllInterviewByHRAndRequestIdAndPaging(
+      //     state.jobId,
+      //     8,
+      //     currentPage,
+      //   );
+      // } else {
+      response = await interviewServices.getAllInterviewByManagerAndPaging(
+        5,
         currentPage,
       );
+      // }
       const data = response.data;
       const formattedJobVacancies = data.data.map((job) => {
         // Assuming job.typeRequireName and job.levelRequireName are available
@@ -120,8 +114,8 @@ const JobVacancy = () => {
   return (
     <React.Fragment>
       <Row>
-        <Col lg={6}>
-          {leftColumn.map((jobVacancyDetails, key) => (
+        <Col lg={12}>
+          {jobVacancyList.map((jobVacancyDetails, key) => (
             <div
               key={key}
               className={
@@ -197,7 +191,7 @@ const JobVacancy = () => {
                   <Col md={4}>
                     <div className="text-md-end">
                       <Link
-                        to="/detailInterview"
+                        to="/detailInterviewManager"
                         className="primary-link"
                         state={{ interviewId: jobVacancyDetails.interviewId }}
                       >
@@ -210,97 +204,7 @@ const JobVacancy = () => {
             </div>
           ))}
         </Col>
-        <Col lg={6}>
 
-          {rightColumn.map((jobVacancyDetails, key) => (
-            <div
-              key={key}
-              className={
-                jobVacancyDetails.addclassNameBookmark === true
-                  ? "job-box bookmark-post card mt-4"
-                  : "job-box card mt-4"
-              }
-            >
-              <div className="p-4">
-                <Row>
-                  <Col lg={2}>
-                    <Link to="/companydetails">
-                      <img
-                        src={jobImage1}
-                        alt=""
-                        className="img-fluid rounded-3"
-                      />
-                    </Link>
-                  </Col>
-                  <Col lg={10}>
-                    <div className="mt-3 mt-lg-0">
-                      <h5 className="fs-17 mb-1">
-                        <Link to="/jobdetails" className="text-dark">
-                          {jobVacancyDetails.title}
-                        </Link>{" "}
-                      </h5>
-                      <ul className="list-inline mb-0">
-                        <li className="list-inline-item">
-                          <p className="text-muted fs-14 mb-0">
-                            {jobVacancyDetails.dateOfInterview}
-                          </p>
-                        </li>
-                      </ul>
-                      <ul className="list-inline mb-0">
-                        <li className="list-inline-item">
-                          <p className="text-muted fs-14 mb-0">
-                            {jobVacancyDetails.startTime} {jobVacancyDetails.endTime}
-                          </p>
-                        </li>
-                      </ul>
-                    </div>
-                  </Col>
-                </Row>
-                <div className="favorite-icon">
-                  <span
-                    className={
-                      "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
-                    }
-                  >
-                    {jobVacancyDetails.statusString}
-                  </span>
-                </div>
-              </div>
-              <div className="p-3 bg-light">
-                <Row className="justify-content-between">
-                  <Col md={8}>
-                    <div>
-                      <ul className="list-inline mb-0">
-                        <li className="list-inline-item">
-                          <i className="uil uil-tag"></i> Assign Staff Name:  :
-                        </li>
-                        <li className="list-inline-item">
-                          <Link to="#" className="primary-link text-muted">
-                            {jobVacancyDetails.assignStaffName}
-                          </Link>
-
-                        </li>
-
-                      </ul>
-                    </div>
-                  </Col>
-
-                  <Col md={4}>
-                    <div className="text-md-end">
-                      <Link
-                        to="/detailInterview"
-                        className="primary-link"
-                        state={{ interviewId: jobVacancyDetails.interviewId }}
-                      >
-                        View Details <i className="mdi mdi-chevron-double-right"></i>
-                      </Link>
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          ))}
-        </Col>
       </Row>
       <Row>
         <Col lg={12} className="mt-4 pt-2">

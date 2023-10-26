@@ -420,7 +420,9 @@ const NavBar = (props) => {
                               <span className="dropdown-header">
                                 Interview
                               </span>
-
+                              <Link className="dropdown-item" to="/listInterviewHR">
+                                List Interview
+                              </Link>
                               {/* <div>
                         <Link className="dropdown-item" to="/developerlist">
                           Developer List
