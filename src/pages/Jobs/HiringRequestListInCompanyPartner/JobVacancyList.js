@@ -115,6 +115,16 @@ const JobVacancyList = () => {
       console.log(response.data);
       setJobVacancyList(formattedJobVacancies);
       setTotalPages(Math.ceil(data.paging.total / pageSize));
+      if (data.paging.total < 6) {
+        // Lấy tham chiếu đến phần tử có id="paging"
+        var rowElement = document.getElementById("paging");
+
+        // Ẩn phần tử bằng cách đặt style.display thành "none"
+        if (rowElement) {
+          rowElement.style.display = "none";
+        }
+      }
+
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -336,30 +346,29 @@ const JobVacancyList = () => {
           </div>
         ))}
       </div>
-      <Row>
+      <Row id="paging">
         <Col lg={12} className="mt-4 pt-2">
           <nav aria-label="Page navigation example">
             <div className="pagination job-pagination mb-0 justify-content-center">
               <li
                 className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
               >
-                <Link
+                <div
                   className="page-link"
-                  to="#"
                   tabIndex="-1"
                   onClick={handlePrevPage}
                 >
                   <i className="mdi mdi-chevron-double-left fs-15"></i>
-                </Link>
+                </div>
               </li>
               {renderPageNumbers()}
               <li
                 className={`page-item ${currentPage === totalPages ? "disabled" : ""
                   }`}
               >
-                <Link className="page-link" to="#" onClick={handleNextPage}>
+                <div className="page-link" to="#" onClick={handleNextPage}>
                   <i className="mdi mdi-chevron-double-right fs-15"></i>
-                </Link>
+                </div>
               </li>
             </div>
           </nav>

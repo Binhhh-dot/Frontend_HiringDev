@@ -291,8 +291,10 @@ const CreateHiringRequest = () => {
       openModal(); // Nếu không có, mở modal signup
     } else {
       const companyIdErr = localStorage.getItem("companyId");
-      if (!companyIdErr) {
+      if (companyIdErr == "null") {
+        console.log("null")
         openModal2();
+
       } else {
         setLoading(true);
         let check = true;
@@ -452,10 +454,10 @@ const CreateHiringRequest = () => {
               console.log("Job posted successfully:", response);
             }
             setLoading(false);
-            navigate("/signin");
             setSuccessMessage("Đăng công việc thành công");
             localStorage.removeItem("requestId");
             setErrorMessage(null);
+            navigate("/hiringrequestlistincompanypartner");
           } catch (error) {
             console.log(value);
             console.error("Error posting job:", error);
@@ -931,10 +933,10 @@ const CreateHiringRequest = () => {
                           <div className="auth-content">
                             <div className="w-100">
                               <div className="text-center mb-4">
-                                <h5>Sign Up</h5>
+                                <h5>Create Company Account</h5>
                                 <p className="text-muted">
-                                  Sign Up and get access to all the features of
-                                  Jobcy
+                                  Create Company Account and get access to all the features of
+                                  WeHire
                                 </p>
                               </div>
                               <Form action="#" className="auth-form">

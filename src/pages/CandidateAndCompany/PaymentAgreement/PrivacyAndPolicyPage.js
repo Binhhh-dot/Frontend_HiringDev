@@ -74,8 +74,8 @@ const PrivacyAndPolicyPage = () => {
     <React.Fragment>
       <section className="section">
         <Container>
-          <Row className="justify-content-center">
-            <h1 className="text-center mb-4">COMMISSION AGREEMENT</h1>
+          <Row className="justify-content-center p-5" style={{ border: "1px solid #b3adad" }}>
+            <h1 className="text-center mb-4 mt-3">COMMISSION AGREEMENT</h1>
 
             <p>This Commission Agreement is entered into on <b>[Effective Date]</b> , by and between: WeHire and Company Partner.</p>
             <p>By executing this document, both parties affirmatively state that it has carefully read and understood the terms and conditions set forth herein and agree to be bound by the said terms and conditions.</p>
@@ -172,7 +172,7 @@ const PrivacyAndPolicyPage = () => {
               </div>
             </div>
 
-            {privacyandpolicyPage.map((privacyandpolicyDetails, key) => (
+            {/* {privacyandpolicyPage.map((privacyandpolicyDetails, key) => (
               <Col lg={12} key={key}>
                 <h5 className="mb-4">{privacyandpolicyDetails.policyTitle}</h5>
                 <ul className="about-list list-unstyled text-muted mb-4 pb-2">
@@ -183,7 +183,7 @@ const PrivacyAndPolicyPage = () => {
                   )}
                 </ul>
               </Col>
-            ))}
+            ))} */}
             <div className="text-end">
               <Link to="#" className="btn btn-primary">
                 <i className="uil uil-print"></i> Print
