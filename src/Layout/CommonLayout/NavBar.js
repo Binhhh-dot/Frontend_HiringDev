@@ -414,9 +414,37 @@ const NavBar = (props) => {
 
                               <Link
                                 className="dropdown-item"
-                                to="/assigntasklist"
+                                to="/assigntaskcreate"
                               >
-                                Assign Task List
+                                Assign Task Create
+                              </Link>
+
+                              <Link
+                                className="dropdown-item"
+                                to="/assigntaskdetail"
+                              >
+                                Assign Task Detail
+                              </Link>
+
+                              <Link
+                                className="dropdown-item"
+                                to="/assigntaskforstaffdetail"
+                              >
+                                Task Detail For Staff
+                              </Link>
+
+                              <Link
+                                className="dropdown-item"
+                                to="/assigntasklistformanager"
+                              >
+                                Task List For Manager
+                              </Link>
+
+                              <Link
+                                className="dropdown-item"
+                                to="/assigntasklistforstaff"
+                              >
+                                Task List For Staff
                               </Link>
                             </Col>
                             <Col lg={3}>
@@ -578,11 +606,11 @@ const NavBar = (props) => {
                 className="list-inline-item  me-4"
               >
                 <DropdownToggle
-                  href="#"
+                  // href="#"
                   className="header-item noti-icon position-relative"
                   id="notification"
                   type="button"
-                  tag="a"
+                  tag="div"
                 >
                   <i className="mdi mdi-bell fs-22"></i>
                   <div className="count position-absolute">3</div>

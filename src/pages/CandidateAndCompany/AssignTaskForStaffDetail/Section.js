@@ -10,7 +10,7 @@ const Section = () => {
           <Row className="justify-content-center">
             <Col md={6}>
               <div className="text-center text-white">
-                <h3 className="mb-4">Assign Task List</h3>
+                <h3 className="mb-4">Assign Task For Staff Detail</h3>
                 <div className="page-next">
                   <nav
                     className="d-inline-block"
@@ -28,7 +28,7 @@ const Section = () => {
                         aria-current="page"
                       >
                         {" "}
-                        Assign Task List{" "}
+                        Assign Task For Staff Detail{" "}
                       </li>
                     </ol>
                   </nav>

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Col, Row, Input } from "reactstrap";
-import axios from "axios";
 import JobType from "../../Home/SubSection/JobType";
 import { Form } from "react-bootstrap";
 import hiringrequestService from "../../../services/hiringrequest.service";
-const JobVacancyList = (a) => {
+import assignTaskServices from "../../../services/assignTask.services";
+const AssignTaskListForStaff = (a) => {
   //Apply Now Model
   const [jobVacancyList, setJobVacancyList] = useState([]);
+  const [AssignTaskList, setAssignTaskList] = useState([]);
 
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -60,20 +61,10 @@ const JobVacancyList = (a) => {
   const fetchJobVacancies = async () => {
     let response;
     try {
-      // if (search || skill) {
-      //   response =
-      //     await hiringrequestService.getAllHiringRequestByJobTitleAndSkill(
-      //       currentPage,
-      //       5,
-      //       search,
-      //       skill
-      //     );
-      // } else {
       response = await hiringrequestService.getHiringRequestAndPaging(
         currentPage,
         5
       );
-      // }
 
       const data = response.data;
       const formattedJobVacancies = data.data.map((job) => {
@@ -90,18 +81,10 @@ const JobVacancyList = (a) => {
           companyName: job.companyName,
           location: job.numberOfDev + " Developer",
           jobPostTime: new Date(job.duration).toLocaleDateString(),
-
-          done: job.statusString.includes("Done"),
-
-          save: job.statusString.includes("Saved"),
-          waitingApproval: job.statusString.includes("Waiting Approval"),
-          inProgress: job.statusString.includes("In Progress"),
-          rejected: job.statusString.includes("Rejected"),
-          expired: job.statusString.includes("Expired"),
           cancelled: job.statusString.includes("Cancelled"),
-          finished: job.statusString.includes("Finished"),
-          completed: job.statusString.includes("Completed"),
-
+          done: job.statusString.includes("Done"),
+          outOfTime: job.statusString.includes("Expired"),
+          waitingApproval: job.statusString.includes("Waiting Approval"),
           timing: job.statusString,
           addclassNameBookmark: false,
           showFullSkills: false,
@@ -139,6 +122,26 @@ const JobVacancyList = (a) => {
       [id]: !prevState[id],
     }));
   };
+  //--------------------------------------------------------------------------------
+  const fetchGetPagingAssignTaskForStaffWithId = async () => {
+    let response;
+    try {
+      response = await assignTaskServices.getPagingAssignTaskForStaffWithId(
+        //3,
+        48,
+        currentPage,
+        5
+      );
+      setAssignTaskList(response.data.data);
+    } catch (error) {
+      console.error("Error fetching list task for staff:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchGetPagingAssignTaskForStaffWithId();
+  }, [currentPage]);
+  //--------------------------------------------------------------------------------
 
   return (
     <React.Fragment>
@@ -168,14 +171,14 @@ const JobVacancyList = (a) => {
             </Col>
             <Col lg={3} md={6}>
               <div className="btn btn-primary w-100" onClick={() => onSearch()}>
-                <i className="uil uil-filter"></i> Fliter
+                <i className="uil uil-filter"></i> Filter
               </div>
             </Col>
           </Row>
         </Form>
       </div>
       <div>
-        {jobVacancyList.map((jobVacancyListDetails, key) => (
+        {AssignTaskList.map((jobVacancyListDetails, key) => (
           <div
             key={key}
             className={
@@ -183,70 +186,58 @@ const JobVacancyList = (a) => {
                 ? "job-box bookmark-post card mt-4"
                 : "job-box card mt-4"
             }
-            // className="job-box card mt-4"
           >
-            <div className="bookmark-label text-center">
+            <div
+              className="bookmark-label text-center"
+              style={{ display: "none" }}
+            >
               <Link to="#" className="align-middle text-white">
                 <i className="mdi mdi-star"></i>
               </Link>
             </div>
             <div className="p-4">
-              <Row className="align-items-center">
-                <Col md={2}>
-                  <div className="text-center mb-4 mb-md-0">
-                    <Link to="/companydetails">
-                      <img
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                        }}
-                        src={jobVacancyListDetails.companyImg}
-                        alt=""
-                        className="img-fluid rounded-3 img-avt-hiring-request"
-                      />
-                    </Link>
-                  </div>
-                </Col>
-
+              <Row
+                className="align-items-center"
+                style={{ justifyContent: "space-evenly" }}
+              >
                 <Col md={3}>
                   <div className="mb-2 mb-md-0">
                     <h5 className="fs-18 mb-0">
                       <Link
-                        to="/hiringrequestdetails"
+                        to="/assigntaskforstaffdetail"
                         className="text-dark"
                         state={{
-                          jobId: jobVacancyListDetails.id,
-                          company: jobVacancyListDetails.companyIdMana,
+                          taskIdForStaff: jobVacancyListDetails.taskId,
                         }}
                       >
-                        {jobVacancyListDetails.jobDescription}
+                        {jobVacancyListDetails.taskTitle}
                       </Link>
                     </h5>
                     <p className="text-muted fs-14 mb-0">
-                      {jobVacancyListDetails.companyName}
-                    </p>
-                  </div>
-                </Col>
-
-                <Col md={3}>
-                  <div className="d-flex mb-2">
-                    <div className="flex-shrink-0">
-                      <i className="uil uil-user-check text-primary me-1"></i>
-                    </div>
-                    <p className="text-muted mb-0">
-                      {jobVacancyListDetails.location}
+                      {/* {jobVacancyListDetails.companyName} */}2 min ago
                     </p>
                   </div>
                 </Col>
 
                 <Col md={2}>
+                  <div className="d-flex">
+                    <div className="flex-shrink-0">
+                      <i className="uil  uil-user text-primary me-1"></i>
+                    </div>
+                    <p className="text-muted mb-0">
+                      {/* {jobVacancyListDetails.description} */}2 Member
+                    </p>
+                  </div>
+                </Col>
+
+                <Col md={3}>
                   <div className="d-flex mb-0">
                     <div className="flex-shrink-0">
                       <i className="uil uil-clock-three text-primary me-1"></i>
                     </div>
                     <p className="text-muted mb-0">
                       {" "}
-                      {jobVacancyListDetails.jobPostTime}
+                      {jobVacancyListDetails.deadline}
                     </p>
                   </div>
                 </Col>
@@ -255,89 +246,24 @@ const JobVacancyList = (a) => {
                   <div>
                     <span
                       className={
-                        jobVacancyListDetails.waitingApproval === true
-                          ? "badge bg-warning text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.inProgress === true
-                          ? "badge bg-blue text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.rejected === true
-                          ? "badge bg-danger text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.expired === true
-                          ? "badge bg-darkcyan text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.cancelled === true
-                          ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.finished === true
-                          ? "badge bg-primary text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.completed === true
-                          ? "badge bg-success text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.save === true
-                          ? "badge bg-teal text-light fs-12 mt-1 mx-1"
+                        jobVacancyListDetails.statusString === "Preparing"
+                          ? "badge bg-info-subtle text-info fs-12"
+                          : jobVacancyListDetails.statusString === "InProgress"
+                          ? "badge bg-blue text-light fs-12"
+                          : jobVacancyListDetails.statusString === "Done"
+                          ? "badge bg-primary-subtle text-primary fs-12"
+                          : jobVacancyListDetails.statusString === "Cancelled"
+                          ? "badge bg-danger-subtle text-danger fs-12"
                           : ""
                       }
                     >
-                      {jobVacancyListDetails.timing}
+                      {jobVacancyListDetails.statusString}
                     </span>
-                    {/* {(jobVacancyListDetails.badges || []).map(
-                      (badgeInner, key) => (
-                        <span
-                          className={`badge ${badgeInner.badgeclassName} fs-13 mt-1`}
-                          key={key}
-                        >
-                          {badgeInner.badgeName}
-                        </span>
-                      )
-                    )} */}
                   </div>
                 </Col>
               </Row>
             </div>
-            <div className="p-3 bg-light">
-              <Row className="justify-content-between">
-                <Col md={12}>
-                  <div>
-                    <p className="text-muted mb-0 ">
-                      {jobVacancyListDetails.experience
-                        .split(",")
-                        .slice(
-                          0,
-                          showFullSkills[jobVacancyListDetails.id]
-                            ? undefined
-                            : 6
-                        )
-                        .map((skill, index) => (
-                          <span
-                            key={index}
-                            className={`badge ${
-                              index === 0
-                                ? "bg-info text-light"
-                                : index === 1
-                                ? "bg-purple text-light"
-                                : "bg-primary-subtle text-primary"
-                            }  ms-2`}
-                          >
-                            {skill.trim()}
-                          </span>
-                        ))}
-
-                      {jobVacancyListDetails.experience.split(",").length >
-                        6 && (
-                        <Link
-                          style={{ color: "#A3A6AD" }}
-                          to="#"
-                          onClick={() =>
-                            toggleShowFullSkills(jobVacancyListDetails.id)
-                          }
-                        >
-                          {" "}
-                          {showFullSkills[jobVacancyListDetails.id]
-                            ? "less"
-                            : "...more"}
-                        </Link>
-                      )}
-                    </p>
-                  </div>
-                </Col>
-              </Row>
-            </div>
+            <div className="p-3 bg-light"></div>
           </div>
         ))}
       </div>
@@ -375,4 +301,4 @@ const JobVacancyList = (a) => {
   );
 };
 
-export default JobVacancyList;
+export default AssignTaskListForStaff;

@@ -73,10 +73,35 @@ export default {
     developer: {
       getListDevWaitingInterview: "/Developer/DevWaitingInterview/${requestId}",
       createDeveloper: "/Developer",
+      getDeveloperUnofficial: "/Developer/Unofficial",
+      getDeveloperUnofficialPaging:
+        "PageIndex=${currentPage}&PageSize=${pageSize}",
+
+      changeStatusDevUnofficialInTaskDetailForStaff:
+        "/AssignTask/ChangeStatusDevTask",
     },
     interview: {
       createAnInterview: "/Interview",
       getListInterviewByRequestId: "/Interview/${requestId}",
+    },
+    assignTask: {
+      createAssignTask: "/AssignTask",
+      getAssignTaskDetail: "/AssignTask/${taskId}",
+
+      getAllAssignTaskForManager: "/AssignTask",
+      getPagingAssignTaskForManager:
+        "PageIndex=${PageIndex}&PageSize=${PageSize}",
+
+      getAllAssignTaskForStaff: "/AssignTask",
+      getPagingAssignTaskForStaffWithId:
+        "/Staff/${staffId}?PageIndex=${PageIndex}&PageSize=${PageSize}",
+
+      handleCompleteTask: "/AssignTask/Finished?taskId=${taskId}",
+
+      handleApproveAssignTask: "/AssignTask/Approval",
+    },
+    user: {
+      getStaff: "/User/Staff?PageIndex=${currentPage}&PageSize=${pageSize}",
     },
   },
 };

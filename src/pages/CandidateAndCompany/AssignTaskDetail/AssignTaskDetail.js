@@ -1,12 +1,12 @@
 import React from "react";
 import { Col, Container, Row } from "reactstrap";
 //import CandidateDetails from "./CandidateDetails";
-import AssignTaskListDetails from "./AssignTaskListDetails";
+import AssignTaskDetailsInfo from "./AssignTaskDetailsInfo";
 import JobFilters from "./JobFilters";
 import Section from "./Section";
 import Pagination from "../../Jobs/JobList2/Pagination";
 
-const AssignTaskList = () => {
+const AssignTaskDetail = () => {
   document.title =
     "Candidate List | Jobcy - Job Listing Template | Themesdesign";
   return (
@@ -17,7 +17,7 @@ const AssignTaskList = () => {
           {/* <JobFilters /> */}
           <Row>
             <Col lg={12}>
-              <AssignTaskListDetails />
+              <AssignTaskDetailsInfo />
             </Col>
           </Row>
           {/* <Pagination /> */}
@@ -27,4 +27,4 @@ const AssignTaskList = () => {
   );
 };
 
-export default AssignTaskList;
+export default AssignTaskDetail;
