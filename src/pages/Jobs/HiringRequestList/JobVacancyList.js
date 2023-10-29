@@ -218,6 +218,9 @@ const JobVacancyList = (a) => {
                           jobId: jobVacancyListDetails.id,
                           company: jobVacancyListDetails.companyIdMana,
                         }}
+                        // stateCompany={{
+                        //   company: jobVacancyListDetails.companyIdMana,
+                        // }}
                       >
                         {jobVacancyListDetails.jobDescription}
                       </Link>

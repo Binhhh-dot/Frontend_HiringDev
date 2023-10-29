@@ -1,8 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+
 import { Col, Container, Row } from "reactstrap";
 
 const Section = () => {
+  const { state } = useLocation();
   return (
     <React.Fragment>
       <section className="page-title-box">
@@ -21,7 +23,7 @@ const Section = () => {
                         <Link to="/">Home</Link>
                       </li>
                       <li className="breadcrumb-item">
-                        <Link to="#">Pages</Link>
+                        <Link to="/hiringrequestlistincompanypartnerdetail" >hiring request detail</Link>
                       </li>
                       <li
                         className="breadcrumb-item active"

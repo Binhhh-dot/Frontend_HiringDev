@@ -76,6 +76,7 @@ const JobVacancyList = () => {
             companyId,
             currentPage,
             5,
+            4,
             search,
             skill
           );
@@ -83,7 +84,8 @@ const JobVacancyList = () => {
         response = await hiringrequestService.getHiringRequestByidAndPaging(
           companyId,
           currentPage,
-          5
+          5,
+          4
         );
       }
 
@@ -197,7 +199,7 @@ const JobVacancyList = () => {
               <Row className="align-items-center">
                 <Col md={2}>
                   <div className="text-center mb-4 mb-md-0">
-                    <Link to={`/hiringrequestlistincompanypartnerdetail?Id=${jobVacancyListDetails.id}`}>
+                    <Link to="/hiringrequestlistincompanypartnerdetail">
                       <img
                         src={jobVacancyListDetails.companyImg}
                         alt=""
@@ -211,8 +213,9 @@ const JobVacancyList = () => {
                   <div className="mb-2 mb-md-0">
                     <h5 className="fs-18 mb-0">
                       <Link
-                        to={`/hiringrequestlistincompanypartnerdetail?Id=${jobVacancyListDetails.id}`}
+                        to="/hiringrequestlistincompanypartnerdetail"
                         className="text-dark"
+                        state={{ jobId: jobVacancyListDetails.id }}
                       >
                         {jobVacancyListDetails.jobDescription}
                       </Link>

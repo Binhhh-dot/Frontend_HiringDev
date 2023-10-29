@@ -11,7 +11,7 @@ import Team from "../pages/Company/Team/Team";
 import Pricing from "../pages/Company/Pricing/Pricing";
 import PrivacyAndPolicy from "../pages/Company/PrivacyAndPolicy/PrivacyAndPolicy";
 import Faqs from "../pages/Company/Faqs/Faqs";
-
+import PaymenAgreement from "../pages/CandidateAndCompany/PaymentAgreement/PrivacyAndPolicy";
 //Jobs Section
 import HiringRequestList from "../pages/Jobs/HiringRequestList/HiringRequestList";
 import CreateHiringRequest from "../pages/Jobs/CreateHiringRequest/CreateHiringRequest";
@@ -77,6 +77,11 @@ import AssignTaskForStaffDetail from "../pages/CandidateAndCompany/AssignTaskFor
 import AssignTaskList from "../pages/CandidateAndCompany/AssignTaskListForManager/AssignTaskList";
 import AssignTaskListFS from "../pages/CandidateAndCompany/AssignTaskListForStaff/AssignTaskListFS";
 
+import DetailInterview from "../pages/Jobs/DetailInterview/DetailInterview";
+import DetailInterviewManager from "../pages/Jobs/DetailInterviewManager/DetailInterview";
+import InterviewList from "../pages/Jobs/ListInterviewHR/JobGrid";
+import InterviewListManager from "../pages/Jobs/ListInterviewManager/JobGrid";
+import HiringRequestListExpiredHR from "../pages/Jobs/HiringRequestListExpiredHR/HiringRequestListExpiredHR";
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -121,6 +126,8 @@ const userRoutes = [
   },
   { path: "/assigntasklistformanager", component: <AssignTaskList /> },
   { path: "/assigntasklistforstaff", component: <AssignTaskListFS /> },
+  { path: "/listInterview", component: <InterviewListManager /> },
+  { path: "/listInterviewHR", component: <InterviewList /> },
 
   // {
   //   path: "/developerlistincompanypartner",
@@ -145,12 +152,24 @@ const userRoutes = [
     component: <HiringRequestListInCompanyPartner />,
   },
   {
+    path: "/hiringRequestListExpiredHR",
+    component: <HiringRequestListExpiredHR />,
+  },
+  {
     path: "/hiringrequestlistincompanypartnerdetail",
     component: <HiringRequestListInCompanyPartnerDetail />,
   },
   {
     path: "/createInterview",
     component: <CreateInterview />,
+  },
+  {
+    path: "/detailInterview",
+    component: <DetailInterview />,
+  },
+  {
+    path: "/detailInterviewManager",
+    component: <DetailInterviewManager />,
   },
 
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },
@@ -161,6 +180,7 @@ const userRoutes = [
   { path: "/createcompanyaccount", component: <CreateCompanyAccount /> },
   { path: "/faqs", component: <Faqs /> },
   { path: "/privacyandpolicy", component: <PrivacyAndPolicy /> },
+  { path: "/paymentagreement", component: <PaymenAgreement /> },
   { path: "/pricing", component: <Pricing /> },
   { path: "/team", component: <Team /> },
   { path: "/services", component: <Services /> },

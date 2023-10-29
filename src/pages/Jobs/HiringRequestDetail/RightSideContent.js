@@ -167,6 +167,7 @@ const RightSideContent = () => {
                   </div>
                 </div>
               </li> */}
+
               <li>
                 <div className="d-flex mt-4">
                   <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
