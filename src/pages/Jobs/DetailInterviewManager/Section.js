@@ -1,18 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Col, Row } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
 
 const Section = () => {
   return (
     <React.Fragment>
       <section className="page-title-box">
-        <div className="container">
+        <Container>
           <Row className="justify-content-center">
             <Col md={6}>
               <div className="text-center text-white">
-                <h3 className="mb-4">
-                  Hiring Request List In Company Partner Detail
-                </h3>
+                <h3 className="mb-4">Create Interview</h3>
                 <div className="page-next">
                   <nav
                     className="d-inline-block"
@@ -20,17 +18,17 @@ const Section = () => {
                   >
                     <ol className="breadcrumb justify-content-center">
                       <li className="breadcrumb-item">
-                        <Link to="/layout3">Home</Link>
+                        <Link to="/">Home</Link>
                       </li>
                       <li className="breadcrumb-item">
-                        <Link to="/hiringrequestlistincompanypartner">HIRING REQUEST LIST</Link>
+                        <Link to="#">Pages</Link>
                       </li>
                       <li
                         className="breadcrumb-item active"
                         aria-current="page"
                       >
                         {" "}
-                        Hiring Request Detail{" "}
+                        Create Interview{" "}
                       </li>
                     </ol>
                   </nav>
@@ -38,7 +36,7 @@ const Section = () => {
               </div>
             </Col>
           </Row>
-        </div>
+        </Container>
       </section>
       <div className="position-relative" style={{ zIndex: 1 }}>
         <div className="shape">

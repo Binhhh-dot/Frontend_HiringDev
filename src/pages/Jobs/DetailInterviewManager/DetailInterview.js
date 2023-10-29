@@ -10,57 +10,17 @@ import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetail
 import { useNavigate } from "react-router-dom";
 
 
-const DetailInterview = () => {
+const DetailInterviewManager = () => {
     document.title = "Job Details | Jobcy - Job Listing Template | Themesdesign";
     const [listDevId, setListDevid] = useState([]);
     const { state } = useLocation();
     const [jobListing, setJobListing] = useState([]);
-    const { hidingPage, setHingdingPage } = useState(false);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
-    const navigate = useNavigate();
-    const fetchListDevInterview = async () => {
-        try {
-            const response = await developerServices.getListDevWaitingInterview(state.jobId)
-            const data = response.data;
-            const jobListing = data.data.map((dev) => {
-                return {
-                    developerId: dev.developerId,
-                    userId: dev.userId,
-                    codeName: dev.codeName,
-                    candidateStatusClassName:
-                        "profile-active position-absolute badge rounded-circle bg-success",
-                    yearOfExperience: dev.yearOfExperience + " Years Experience",
-                    averageSalary: dev.averageSalary,
-                    employmentTypeName: dev.employmentTypeName,
-                    devStatusString: dev.devStatusString,
-                    partTime: true,
-                    timing: dev.scheduleTypeName,
-                    badges: [
-                        {
-                            id: 1,
-                            badgeclassName: "bg-primary-subtle text-primary",
-                            badgeName: dev.levelRequireName,
-                        }
-                    ]
-                };
-            });
-            setJobListing(jobListing);
-            const developerIds = jobListing.map((job) => job.developerId);
-            setListDevid(developerIds);
-            console.log(listDevId)
-
-            console.log(developerIds)
-        } catch (error) {
-            console.error("Error fetching job vacancies:", error);
-        }
-    };
-
     let [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-
-    const pageSize = 5;
+    const [hidingPage, setHidingPage] = useState(false);
+    const pageSize = 4;
     const handlePageClick = (page) => {
         setCurrentPage(page);
     };
@@ -82,9 +42,9 @@ const DetailInterview = () => {
                     key={i}
                     className={`page-item ${i === currentPage ? "active" : ""}`}
                 >
-                    <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
+                    <p className="page-link" to="#" onClick={() => handlePageClick(i)}>
                         {i}
-                    </Link>
+                    </p>
                 </li>
             );
         }
@@ -103,6 +63,7 @@ const DetailInterview = () => {
             setCurrentPage(currentPage - 1);
         }
     };
+
     useEffect(() => {
         // fetchListDevInterview();
         fetchDetailInterview();
@@ -110,21 +71,14 @@ const DetailInterview = () => {
 
     const fetchDetailInterview = async () => {
         try {
-            const response = await interviewServices.getDetailInterviewByInterviewId(state.interviewId, 8, currentPage)
+            const response = await interviewServices.getDetailInterviewByInterviewId(state.interviewId, 4, currentPage)
             const data = response.data;
+            document.getElementById("interview-title").value = data.data.title;
+            document.getElementById("description").value = data.data.title;
+            document.getElementById("date-of-interview").value = data.data.dateOfInterview.split("T")[0];
+            document.getElementById("startTime").value = data.data.startTime;
+            document.getElementById("endTime").value = data.data.endTime;
 
-            document.getElementById("interview-title").innerHTML = data.data.title;
-            document.getElementById("description").innerHTML = data.data.title;
-            document.getElementById("date-of-interview").innerHTML = data.data.dateOfInterview.split("T")[0];
-            document.getElementById("startTime").innerHTML = data.data.startTime;
-            document.getElementById("endTime").innerHTML = data.data.endTime;
-            // var element = document.getElementById("status-interview");
-
-            // if (element) {
-            //     // Thay đổi thuộc tính className
-            //     element.className = "new-class-name"; // Thay thế "new-class-name" bằng tên lớp bạn muốn thêm hoặc thay đổi.
-            // }
-            document.getElementById("status-interview").innerHTML = data.data.statusString;
             const jobListing = data.data.developers.map((dev) => {
                 return {
                     developerId: dev.developerId,
@@ -147,47 +101,18 @@ const DetailInterview = () => {
                     ]
                 };
             });
-            console.log(jobListing.length)
+            if (data.paging.total <= 4) {
+                setHidingPage(true);
+            }
+            setTotalPages(Math.ceil(data.paging.total / pageSize));
             setJobListing(jobListing);
             const developerIds = jobListing.map((job) => job.developerId);
-            setTotalPages(Math.ceil(data.paging.total / pageSize));
             setListDevid(developerIds);
-            if (data.paging.total <= 3) {
-                setHingdingPage(true);
-            }
+
         } catch (error) {
             console.error("Error fetching job vacancies:", error);
         }
     };
-
-    useEffect(() => {
-        // fetchListDevInterview();
-        changeCss();
-    }, []);
-
-    const changeCss = async () => {
-        const response = await interviewServices.getDetailInterviewByInterviewId(state.interviewId, 8, currentPage)
-        const data = response.data;
-        if (data.paging.total === 1) {
-            // Nếu data.paging.total = 1
-            // Thay đổi thuộc tính class của thẻ có id "col-1"
-            var col1 = document.getElementById("col-1");
-            if (col1) {
-                col1.className = "col-lg-6 ps-5";
-            }
-            // Thay đổi thuộc tính class của thẻ có id "col-2"
-            var col2 = document.getElementById("col-2");
-            if (col2) {
-                col2.className = "col-lg-6 mb-4";
-            }
-            var col3 = document.getElementById("col-3");
-            if (col3) {
-                col3.className = "mb-2 col-lg-12";
-                console.log("thaydoiro")
-            }
-        }
-    };
-
 
     const openModal = (candidateInfo) => {
         setSelectedCandidateInfo(candidateInfo);
@@ -235,28 +160,17 @@ const DetailInterview = () => {
             <section class="section">
                 <div class="">
                     <div class="row  justify-content-center w-100">
-
-                        <div class="col-lg-4 ps-5" id="col-1">
+                        <div class="col-lg-6 ps-5" >
                             <div class="rounded shadow bg-white p-4">
                                 <div class="custom-form">
                                     <div id="message3"></div>
                                     <form method="post" action="php/contact.php" name="contact-form" id="contact-form3">
-                                        <div className="d-flex justify-content-between mb-3">
-
-                                            <h4 class="text-dark ">Detail Interview :</h4>
-                                            <span
-                                                className={
-                                                    "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
-                                                }
-                                                id="status-interview"
-                                            >
-                                            </span>
-                                        </div>
+                                        <h4 class="text-dark mb-3 ">Detail Interview :</h4>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Interview Title</label>
-                                                    <div id="interview-title" type="text" class="form-control resume" placeholder="" required readOnly></div>
+                                                    <input id="interview-title" type="text" class="form-control resume" placeholder="" required readOnly></input>
 
                                                 </div>
                                             </div>
@@ -266,7 +180,7 @@ const DetailInterview = () => {
                                             <div class="col-md-12">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Date of Interview</label>
-                                                    <div id="date-of-interview" type="date" class="form-control resume" placeholder="" readOnly></div>
+                                                    <input id="date-of-interview" type="date" class="form-control resume" placeholder="" readOnly></input>
 
                                                 </div>
                                             </div>
@@ -280,7 +194,7 @@ const DetailInterview = () => {
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Start Time</label>
-                                                    <div id="startTime" type="time" class="form-control resume" placeholder="" readOnly></div>
+                                                    <input id="startTime" type="time" class="form-control resume" placeholder="" readOnly></input>
 
                                                 </div>
                                             </div>
@@ -288,7 +202,7 @@ const DetailInterview = () => {
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">End Time</label>
-                                                    <div id="endTime" type="time" class="form-control resume" placeholder="" readOnly></div>
+                                                    <input id="endTime" type="time" class="form-control resume" placeholder="" readOnly></input>
 
                                                 </div>
                                             </div>
@@ -298,7 +212,7 @@ const DetailInterview = () => {
                                             <div class="col-md-12">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Description</label>
-                                                    <div id="description" class="form-control resume" placeholder="" style={{ height: 125 }} readOnly></div>
+                                                    <textarea id="description" class="form-control resume" placeholder="" style={{ height: 125 }} readOnly></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -317,11 +231,38 @@ const DetailInterview = () => {
                                     </form>
                                 </div>
                             </div>
+                            <div className="d-flex justify-content-around mt-4">
+                                <button
+                                    style={{
+                                        width: "45%",
+                                        padding: "12px",
+                                        fontSize: "larger",
+                                        fontWeight: "500",
+                                    }}
+                                    class="btn btn-primary"
+                                    role="button"
+                                >
+                                    <span> Accept Interview</span>
+                                </button>
+
+                                <button
+                                    style={{
+                                        width: "45%",
+                                        padding: "12px",
+                                        fontSize: "larger",
+                                        fontWeight: "500",
+                                    }}
+                                    class="btn btn-danger"
+                                    role="button"
+                                >
+                                    <span>Cancel Interview</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-lg-8 mb-4" id="col-2">
+                        <div class="col-lg-6 mb-4">
                             <Row>
                                 {jobListing.map((jobListingDetails, key) => (
-                                    <Col md={6} className="mb-2 col-lg-6" id="col-3" key={key}>
+                                    <Col lg={12} md={6} className="mb-2" key={key}>
                                         <CardBody className="p-4 rounded shadow bg-white">
                                             <Row>
                                                 <Col lg={1}>
@@ -429,7 +370,7 @@ const DetailInterview = () => {
                                     </Col>
                                 ))}
                             </Row>
-                            {hidingPage && (
+                            {!hidingPage && (
                                 <Row>
                                     <Col lg={12} className="mt-4 pt-2">
                                         <nav aria-label="Page navigation example">
@@ -437,29 +378,27 @@ const DetailInterview = () => {
                                                 <li
                                                     className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
                                                 >
-                                                    <Link
+                                                    <p
                                                         className="page-link"
-                                                        to="#"
                                                         tabIndex="-1"
                                                         onClick={handlePrevPage}
                                                     >
                                                         <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                                    </Link>
+                                                    </p>
                                                 </li>
                                                 {renderPageNumbers()}
                                                 <li
                                                     className={`page-item ${currentPage === totalPages ? "disabled" : ""
                                                         }`}
                                                 >
-                                                    <Link className="page-link" to="#" onClick={handleNextPage}>
+                                                    <p className="page-link" to="#" onClick={handleNextPage}>
                                                         <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                                    </Link>
+                                                    </p>
                                                 </li>
                                             </div>
                                         </nav>
                                     </Col>
-                                </Row>
-                            )}
+                                </Row>)}
                         </div>
 
                         < div >
@@ -476,4 +415,4 @@ const DetailInterview = () => {
     );
 };
 
-export default DetailInterview;
+export default DetailInterviewManager;

@@ -60,12 +60,13 @@ const approvalOnboardingByHR = async (requestId, developerId, isApproved) => {
   return response;
 };
 
-const getListDevWaitingInterview = async (requestId) => {
+const getListDevWaitingInterview = async (requestId, PageSize, PageIndex) => {
   const serviceUrl =
-    urlConstant.endpoint.developer.getListDevWaitingInterview.replace(
-      "${requestId}",
-      requestId
-    );
+    urlConstant.endpoint.developer.getListDevWaitingInterview
+      .replace("${requestId}", requestId)
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize)
+    ;
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };
@@ -85,6 +86,15 @@ const appectDevToInterview = async (requestId, interviewId, devIds) => {
   const serviceUrl =
     urlConstant.endpoint.selectingDeveloper.accpectDevToInterview;
   const response = await utils.axiosLocalHost.put(serviceUrl, { requestId, interviewId, devIds });
+  return response;
+};
+
+const removeOutOfWaitingInterview = async (requestId, devIds) => {
+  const serviceUrl =
+    urlConstant.endpoint.selectingDeveloper.removeOutOfWaitingInterview
+      .replace("${requestId}", requestId)
+      .replace("${developerId}", devIds);
+  const response = await utils.axiosLocalHost.put(serviceUrl, { requestId, devIds });
   return response;
 };
 
@@ -135,4 +145,5 @@ export default {
   // GetAllSelectedDevByHR,
   getSelectedDevByManager,
   sendDevToHR,
+  removeOutOfWaitingInterview
 };

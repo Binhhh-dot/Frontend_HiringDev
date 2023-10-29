@@ -39,16 +39,41 @@ const getAllInterviewByHRAndPaging = async (companyId, pageSize, pageIndex) => {
     return response;
 }
 
-const getDetailInterviewByInterviewId = async (interviewId) => {
+const getAllInterviewByHRAndRequestIdAndPaging = async (companyId, requestId, pageSize, pageIndex) => {
+    const serviceUrl = urlConstant.endpoint.interview.getAllInterviewByHRAndRequestIdAndPaging
+        .replace("${companyId}", companyId)
+        .replace("${PageSize}", pageSize)
+        .replace("${PageIndex}", pageIndex)
+        .replace("${requestId}", requestId)
+        ;
+    const response = await utils.axiosLocalHost.get(serviceUrl);
+    return response;
+}
+
+const getDetailInterviewByInterviewId = async (interviewId, PageSize, PageIndex) => {
     const serviceUrl = urlConstant.endpoint.interview.getDetailInterviewByInterviewId
-        .replace("${InterviewId}", interviewId);
+        .replace("${InterviewId}", interviewId)
+        .replace("${PageSize}", PageSize)
+        .replace("${PageIndex}", PageIndex);
     const response = await utils.axiosLocalHost.get(serviceUrl, interviewId);
     return response;
 }
+
+const getAllInterviewByManagerAndPaging = async (pageSize, pageIndex) => {
+    const serviceUrl = urlConstant.endpoint.interview.getAllInterviewByManagerAndPaging
+        .replace("${PageSize}", pageSize)
+        .replace("${PageIndex}", pageIndex)
+        ;
+    const response = await utils.axiosLocalHost.get(serviceUrl);
+    return response;
+}
+
 
 export default {
     createAnInterview,
     getListInterviewByRequestId,
     getAllInterviewByHRAndPaging,
-    getDetailInterviewByInterviewId
+    getDetailInterviewByInterviewId,
+    getAllInterviewByHRAndRequestIdAndPaging,
+    getAllInterviewByManagerAndPaging
 }

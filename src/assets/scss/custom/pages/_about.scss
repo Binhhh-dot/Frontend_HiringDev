@@ -3,9 +3,10 @@
 //
 
 .about-feature {
-    box-shadow: $box-shadow;
-    border: 15px;
-    transition: all 0.5s ease;
+  box-shadow: $box-shadow;
+  border: 15px;
+  transition: all 0.5s ease;
+
   .featrue-icon {
     height: 45px;
     width: 45px;
@@ -16,9 +17,10 @@
     color: var(--#{$prefix}primary);
     background: linear-gradient(-45deg, transparent, rgba(var(--#{$prefix}primary-rgb), 0.15));
   }
+
   &:hover {
-      transform: scale(1.02);
-      box-shadow: var(--#{$prefix}box-shadow);
+    transform: scale(1.02);
+    box-shadow: var(--#{$prefix}box-shadow);
   }
 }
 
@@ -28,6 +30,7 @@
       font-size: 17px;
       color: $text-muted;
       transition: all 0.5s ease;
+
       &:hover {
         color: var(--#{$prefix}primary);
       }
@@ -41,6 +44,7 @@
       img {
         max-width: 100%;
       }
+
       .about-testi-bg-overlay {
         position: absolute;
         top: 0;
@@ -54,9 +58,11 @@
         transition: all 0.5s ease;
         opacity: 0;
       }
+
       &.active,
       &:hover {
         background-color: transparent !important;
+
         .about-testi-bg-overlay {
           opacity: 1;
         }
@@ -89,27 +95,30 @@
   height: 2.4rem;
   font-size: 2.4rem;
   font-weight: 600;
+
   &>span {
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 2s ease;
+    transform: translateY(0);
+    line-height: 1;
+
+    span {
+      flex: 0 0 100%;
       height: 100%;
-      transition: transform 2s ease;
-      transform: translateY(0);
-      line-height: 1;
-      span {
-          flex: 0 0 100%;
-          height: 100%;
-      }
+    }
   }
 }
 
-.about-list{
+.about-list {
   li {
     margin-bottom: 14px;
     padding-left: 25px;
+
     &::before {
-      font-family: Material Design Icons;   
+      font-family: Material Design Icons;
       content: '\F0E1E';
       position: absolute;
       left: 12px;
@@ -122,4 +131,92 @@
   @media (min-width: 1200px) {
     width: 180%;
   }
+}
+
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 175px;
+  height: 80px;
+  display: block;
+  margin: auto;
+  background-image: radial-gradient(circle 25px at 25px 25px, #FFF 100%, transparent 0), radial-gradient(circle 50px at 50px 50px, #FFF 100%, transparent 0), radial-gradient(circle 25px at 25px 25px, #FFF 100%, transparent 0), linear-gradient(#FFF 50px, transparent 0);
+  background-size: 50px 50px, 100px 76px, 50px 50px, 120px 40px;
+  background-position: 0px 30px, 37px 0px, 122px 30px, 25px 40px;
+  background-repeat: no-repeat;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.spinner::after {
+  content: '';
+  left: 0;
+  right: 0;
+  margin: auto;
+  bottom: 20px;
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 5px solid transparent;
+  border-color: #028C5D transparent;
+  /* Chỉnh đổi màu đỏ (#FF0000) ở đây */
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  position: absolute;
+  bottom: 385px;
+  /* Điều chỉnh vị trí của văn bản loading dưới tấm ảnh */
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #FFF;
+  /* Màu chữ cho văn bản loading */
+  font-size: 26px;
+  font-weight: bolder;
+  /* Cỡ chữ của văn bản loading */
+}
+
+.job-description-container {
+  max-height: 70px;
+  /* Chiều cao tối đa là 3 dòng */
+  overflow: hidden;
+  position: relative;
+}
+
+.job-description-container::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 1em;
+  /* Độ rộng của dấu "..." */
+  height: 1em;
+  /* Chiều cao của dấu "..." */
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), #fff 50%);
+  /* Hiển thị gradient ở phía cuối */
 }

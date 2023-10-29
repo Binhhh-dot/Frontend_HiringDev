@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Section from "../CreateHiringRequest/Section";
 import Select from "react-select";
 import axios from "axios";
-import { RingLoader } from "react-spinners";
+import { RingLoader, HashLoader } from "react-spinners";
 import skillService from "../../../services/skill.service";
 import typeService from "../../../services/type.service";
 import levelService from "../../../services/level.service";
@@ -452,6 +452,7 @@ const CreateHiringRequest = () => {
               console.log("Job posted successfully:", response);
             }
             setLoading(false);
+            navigate("/signin");
             setSuccessMessage("Đăng công việc thành công");
             localStorage.removeItem("requestId");
             setErrorMessage(null);
@@ -485,6 +486,15 @@ const CreateHiringRequest = () => {
       } else {
         if (!document.getElementById("job-title").value) {
           setJobTitleError("Please enter a job title.");
+          setNumberDevError(null);
+          setTypeError(null);
+          setLevelError(null);
+          setScheduleTypeError(null);
+          setEmploymentTypeError(null);
+          setSkillError(null);
+          setBudgetError(null);
+          setDurationError(null);
+          setDescriptionError(null);
         }
         console.log("Save job...");
         setLoading(true);
@@ -557,6 +567,7 @@ const CreateHiringRequest = () => {
             console.log("Update posted successfully:", response);
           }
           setLoading(false);
+          setJobTitleError(null);
           setSuccessMessage("Save công việc thành công");
           setErrorMessage(null);
         } catch (error) {
@@ -573,6 +584,12 @@ const CreateHiringRequest = () => {
 
   return (
     <React.Fragment>
+      {loading && (
+        <div className="overlay" style={{ zIndex: "2000" }}>
+          <div className="spinner"></div>
+          <div class="loading-text">Loading...</div>
+        </div>
+      )}
       <Section />
       <section class="section">
         <div class="container">
