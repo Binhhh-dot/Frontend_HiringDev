@@ -63,12 +63,13 @@ const DeveloperDetailInCompanyPopup = (
                           Profile Overview
                         </h6>
                         <ul className="list-unstyled mb-0">
-
                           <li>
                             <div className="d-flex">
                               <label className="text-dark">Gender</label>
                               <div>
-                                <p className="text-muted mb-0">{developerInfo.genderName}</p>
+                                <p className="text-muted mb-0">
+                                  {developerInfo.genderName}
+                                </p>
                               </div>
                             </div>
                           </li>
@@ -78,7 +79,9 @@ const DeveloperDetailInCompanyPopup = (
                                 Average Salary
                               </label>
                               <div>
-                                <p className="text-muted mb-0">${developerInfo.averageSalary}</p>
+                                <p className="text-muted mb-0">
+                                  ${developerInfo.averageSalary}
+                                </p>
                               </div>
                             </div>
                           </li>
@@ -88,7 +91,9 @@ const DeveloperDetailInCompanyPopup = (
                                 Year Experience
                               </label>
                               <div>
-                                <p className="text-muted mb-0 ms-2">{developerInfo.yearOfExperience} years</p>
+                                <p className="text-muted mb-0 ms-2">
+                                  {developerInfo.yearOfExperience} years
+                                </p>
                               </div>
                             </div>
                           </li>
@@ -101,7 +106,10 @@ const DeveloperDetailInCompanyPopup = (
                           </h6>
                           <div className="d-flex flex-wrap align-items-start gap-1">
                             {developerInfo.types.map((type) => (
-                              <span key={type.typeId} className="badge bg-success-subtle text-success fs-13 mt-1">
+                              <span
+                                key={type.typeId}
+                                className="badge bg-success-subtle text-success fs-13 mt-1"
+                              >
                                 {type.typeName}
                               </span>
                             ))}
@@ -125,7 +133,10 @@ const DeveloperDetailInCompanyPopup = (
                           </h6>
                           <div className="d-flex flex-wrap align-items-start gap-1">
                             {developerInfo.skills.map((skill) => (
-                              <span key={skill.skillId} className="badge bg-success-subtle text-success fs-13 mt-1">
+                              <span
+                                key={skill.skillId}
+                                className="badge bg-success-subtle text-success fs-13 mt-1"
+                              >
                                 {skill.skillName}
                               </span>
                             ))}
@@ -262,35 +273,3 @@ const DeveloperDetailInCompanyPopup = (
 };
 
 export default DeveloperDetailInCompanyPopup;
-
-//const [devInformationInManager, setDevInformationInManager] = useState(null);
-
-// const fetchGetDeveloperDetailInManager = async () => {
-//   let response;
-
-//   try {
-//     response = await hiringrequestService.getDeveloperDetailInManager(devId);
-//     setDevInformationInManager(response.data.data);
-//     console.log(response);
-//     console.log("AAAAAAAAAAAA");
-
-//     console.log(devId);
-
-//     return response;
-//   } catch (error) {
-//     console.error("Error fetching develper detail:", error);
-//     console.log(response);
-//     console.log("AAAAAAAAAAAA");
-
-//     console.log(devId);
-//   }
-// };
-
-// useEffect(() => {
-//   fetchGetDeveloperDetailInManager();
-// }, []);
-
-// if (!devInformationInManager) {
-//   return null;
-// }
-// thay selectedCandidateInfo bang devInformationInManager

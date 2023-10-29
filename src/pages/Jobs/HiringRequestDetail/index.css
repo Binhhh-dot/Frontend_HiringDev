@@ -772,6 +772,54 @@
   border-radius: 6px;
   transition: all 0.375s;
 }
+/* check box assign task */
+
+.checkbox-all-wrapper-assign-task *,
+.checkbox-all-wrapper-assign-task *::before,
+.checkbox-all-wrapper-assign-task *::after {
+  box-sizing: border-box;
+}
+
+.checkbox-all-wrapper-assign-task label {
+  display: block;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.checkbox-all-wrapper-assign-task input {
+  visibility: hidden;
+  display: none;
+}
+
+.checkbox-all-wrapper-assign-task input:checked ~ .checkbox {
+ transform: rotate(45deg);
+ width: 14px;
+ margin-left: 12px;
+ border-color: #02AF74;
+ border-top-color: transparent;
+ border-left-color: transparent;
+ border-radius: 0;
+}
+
+.checkbox-all-wrapper-assign-task .checkbox {
+  display: block;
+  width: inherit;
+  height: inherit;
+  border: 3px solid #02AF74;
+  border-radius: 6px;
+  transition: all 0.375s;
+
+
+}
+
+
+
+
+
+
+
+/* ------------------------------------------------- */
 
 /* checkbox select all developer */
 .checkbox-all-wrapper-hiring-detail-manager *,
@@ -965,3 +1013,6 @@
   
 }
 
+.avt-company-hiring-detail{
+  object-fit: cover;
+}

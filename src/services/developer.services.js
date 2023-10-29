@@ -61,12 +61,10 @@ const approvalOnboardingByHR = async (requestId, developerId, isApproved) => {
 };
 
 const getListDevWaitingInterview = async (requestId, PageSize, PageIndex) => {
-  const serviceUrl =
-    urlConstant.endpoint.developer.getListDevWaitingInterview
-      .replace("${requestId}", requestId)
-      .replace("${PageIndex}", PageIndex)
-      .replace("${PageSize}", PageSize)
-    ;
+  const serviceUrl = urlConstant.endpoint.developer.getListDevWaitingInterview
+    .replace("${requestId}", requestId)
+    .replace("${PageIndex}", PageIndex)
+    .replace("${PageSize}", PageSize);
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };
@@ -85,7 +83,11 @@ const rejectSelectedDev = async (requestId, developerId) => {
 const appectDevToInterview = async (requestId, interviewId, devIds) => {
   const serviceUrl =
     urlConstant.endpoint.selectingDeveloper.accpectDevToInterview;
-  const response = await utils.axiosLocalHost.put(serviceUrl, { requestId, interviewId, devIds });
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    requestId,
+    interviewId,
+    devIds,
+  });
   return response;
 };
 
@@ -94,7 +96,10 @@ const removeOutOfWaitingInterview = async (requestId, devIds) => {
     urlConstant.endpoint.selectingDeveloper.removeOutOfWaitingInterview
       .replace("${requestId}", requestId)
       .replace("${developerId}", devIds);
-  const response = await utils.axiosLocalHost.put(serviceUrl, { requestId, devIds });
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    requestId,
+    devIds,
+  });
   return response;
 };
 
@@ -134,6 +139,40 @@ const CreateDeveloperAccount = async (
   return response;
 };
 
+const getDeveloperUnofficial = async () => {
+  const serviceUrl = urlConstant.endpoint.developer.getDeveloperUnofficial;
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
+const getDeveloperUnofficialPaging = async (currentPage, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.developer.getDeveloperUnofficial + "?";
+  const pagingUrl = urlConstant.endpoint.developer.getDeveloperUnofficialPaging
+    .replace("${currentPage}", currentPage)
+    .replace("${pageSize}", PageSize);
+  const fullUrl = serviceUrl + pagingUrl;
+  const response = await utils.axiosLocalHost.get(fullUrl);
+  console.log(fullUrl);
+  return response;
+};
+
+const changeStatusDevUnofficialInTaskDetailForStaff = async (
+  developerId,
+  taskId,
+  isApproved
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.developer
+      .changeStatusDevUnofficialInTaskDetailForStaff;
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    developerId,
+    taskId,
+    isApproved,
+  });
+  return response;
+};
+
 export default {
   GetAllSelectedDevByHR,
   approvalInterviewByHR,
@@ -145,5 +184,8 @@ export default {
   // GetAllSelectedDevByHR,
   getSelectedDevByManager,
   sendDevToHR,
-  removeOutOfWaitingInterview
+  getDeveloperUnofficial,
+  getDeveloperUnofficialPaging,
+  changeStatusDevUnofficialInTaskDetailForStaff,
+  removeOutOfWaitingInterview,
 };

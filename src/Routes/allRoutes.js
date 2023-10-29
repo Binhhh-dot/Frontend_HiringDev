@@ -69,6 +69,14 @@ import HiringRequestListInCompanyPartnerDetail from "../pages/Jobs/HiringRequest
 import HiringRequestInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestInHR";
 import HiringRequestDetailInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestDetailInHR";
 import CreateInterview from "../pages/Jobs/CreateInterview/CreateInterview";
+// import AssignTaskList from "../pages/CandidateAndCompany/AssignTask/AssignTaskList";
+import AssignTaskDetail from "../pages/CandidateAndCompany/AssignTaskDetail/AssignTaskDetail";
+import AssignTaskCreate from "../pages/CandidateAndCompany/CreateAssignTask/AssignTaskCreate";
+// import AssignTaskCreateForStaff from "../pages/CandidateAndCompany/CreateAssignTaskForStaff/AssignTaskCreateForStaff";
+import AssignTaskForStaffDetail from "../pages/CandidateAndCompany/AssignTaskForStaffDetail/AssignTaskForStaffDetail";
+import AssignTaskList from "../pages/CandidateAndCompany/AssignTaskListForManager/AssignTaskList";
+import AssignTaskListFS from "../pages/CandidateAndCompany/AssignTaskListForStaff/AssignTaskListFS";
+
 import DetailInterview from "../pages/Jobs/DetailInterview/DetailInterview";
 import DetailInterviewManager from "../pages/Jobs/DetailInterviewManager/DetailInterview";
 import InterviewList from "../pages/Jobs/ListInterviewHR/JobGrid";
@@ -110,9 +118,16 @@ const userRoutes = [
   { path: "/candidatelist", component: <CandidateList /> },
   { path: "/hiringrequestinhr", component: <HiringRequestInHR /> },
   { path: "/hiringrequestdetailinhr", component: <HiringRequestDetailInHR /> },
+  { path: "/assigntaskcreate", component: <AssignTaskCreate /> },
+  { path: "/assigntaskdetail", component: <AssignTaskDetail /> },
+  {
+    path: "/assigntaskforstaffdetail",
+    component: <AssignTaskForStaffDetail />,
+  },
+  { path: "/assigntasklistformanager", component: <AssignTaskList /> },
+  { path: "/assigntasklistforstaff", component: <AssignTaskListFS /> },
   { path: "/listInterview", component: <InterviewListManager /> },
   { path: "/listInterviewHR", component: <InterviewList /> },
-
 
   // {
   //   path: "/developerlistincompanypartner",
@@ -138,7 +153,7 @@ const userRoutes = [
   },
   {
     path: "/hiringRequestListExpiredHR",
-    component: <HiringRequestListExpiredHR />
+    component: <HiringRequestListExpiredHR />,
   },
   {
     path: "/hiringrequestlistincompanypartnerdetail",
@@ -146,14 +161,15 @@ const userRoutes = [
   },
   {
     path: "/createInterview",
-    component: <CreateInterview />
+    component: <CreateInterview />,
   },
   {
     path: "/detailInterview",
-    component: <DetailInterview />
-  }, {
+    component: <DetailInterview />,
+  },
+  {
     path: "/detailInterviewManager",
-    component: <DetailInterviewManager />
+    component: <DetailInterviewManager />,
   },
 
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },

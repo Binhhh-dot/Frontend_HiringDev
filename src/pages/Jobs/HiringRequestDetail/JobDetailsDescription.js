@@ -101,6 +101,10 @@ const JobDetailsDescription = () => {
       return updatedSelectedDev;
     });
   };
+  // console.log("---------------------------------------");
+  // console.log("cac dev matching duoc chon de gui di cho dev chap nhan");
+  // console.log(selectedDev);
+  // console.log("---------------------------------------");
 
   //////////////////////////////////////////////////////////////////////////////////////////
   // chon dev o phan dev accepted
@@ -125,6 +129,7 @@ const JobDetailsDescription = () => {
       //selectedAllDevAccept || selectedDevAccept.length > 0
       !selectedAllDevAccept && selectedDevAccept.length === 0
     );
+    console.log(!selectedAllDevAccept, selectedDevAccept.length);
   };
 
   const toggleDevAcceptSelection = (candidateId) => {
@@ -133,17 +138,29 @@ const JobDetailsDescription = () => {
     );
     //kiem tra xem checkbox co hien thi hay khong
     if (candidate && candidate.selectedDevStatus === "Dev Accepted") {
-      setSelectedDevAccept((prevSelectedDevAccept) =>
-        prevSelectedDevAccept.includes(candidateId)
+      setSelectedDevAccept((prevSelectedDevAccept) => {
+        const selectedDevAccept = prevSelectedDevAccept.includes(candidateId)
           ? prevSelectedDevAccept.filter((id) => id !== candidateId)
-          : [...prevSelectedDevAccept, candidateId]
-      );
+          : [...prevSelectedDevAccept, candidateId];
+        setIsSendButtonAcceptVisible(
+          !selectedAllDevAccept && selectedDevAccept.length > 0
+          // !selectedAllDevAccept && selectedDevAccept.length === 0
+          // true
+        );
+        return selectedDevAccept;
+      });
     }
 
-    setIsSendButtonAcceptVisible(
-      //selectedAllDevAccept || selectedDevAccept.length > 0
-      !selectedAllDevAccept && selectedDevAccept.length === 0
-    );
+    // setIsSendButtonAcceptVisible(
+    //   !selectedAllDevAccept && selectedDevAccept.length > 0
+    //   // !selectedAllDevAccept && selectedDevAccept.length === 0
+    //   // true
+    // );
+
+    console.log("---------------------------------------------------");
+    console.log("cac dev accepted duoc chon de gui di cho HR chap nhan");
+    console.log(selectedDevAccept);
+    console.log("---------------------------------------------------");
   };
 
   /////////////////////////////////////////////////////////////////////////////////////////
@@ -163,11 +180,30 @@ const JobDetailsDescription = () => {
     if (cancelReason.trim() === "") {
       console.log("Please enter a reason for cancellation.");
     } else {
+      // fetchCancelHirringRequestStatus();
       console.log("Cancel Request Reason:", cancelReason);
       closeCancelModal();
     }
   };
 
+  //---------------------------------------------------------------------------------------------------
+  const fetchCancelHirringRequestStatus = async () => {
+    let response;
+    try {
+      response = await hiringrequestService.cancelHirringRequestStatus(
+        state.jobId,
+        cancelReason,
+        false
+      );
+      console.log("li do cancel request:");
+      console.log(cancelReason);
+      return response;
+    } catch (error) {
+      console.error("Error fetching cancel hiring request", error);
+    }
+  };
+
+  //---------------------------------------------------------------------------------------------------
   const fetchHiringRequestDetailInManager = async () => {
     let response;
 
@@ -275,6 +311,23 @@ const JobDetailsDescription = () => {
     }
   };
 
+  //--------------------------------------------------------------------------------
+
+  // const fetchCancelHirringRequestStatus = async () => {
+  //   let response;
+  //   try {
+  //     response = await hiringrequestService.cancelHirringRequestStatus(
+  //       state.jobId,
+  //       cancelReason,
+  //       false
+  //     );
+  //     console.log(cancelReason);
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Error fetching cancel hiring request", error);
+  //   }
+  // };
+
   /////////////////////////////////////////////////////////////////////////////////
   // ham xu li approved hiring request
   const handleAcceptedHirringRequest = () => {
@@ -318,14 +371,16 @@ const JobDetailsDescription = () => {
   };
 
   //////////////////////////////////////////////////////////////////////////////
-  const abc = (id) => {
-    const xyz = devMatching.find((dev) => dev.developerId === id);
-    return xyz.lastName;
+  const getDevNameMatching = (id) => {
+    const fullNameMathcing = devMatching.find((dev) => dev.developerId === id);
+    return fullNameMathcing?.firstName + " " + fullNameMathcing?.lastName;
   };
 
-  const def = (id) => {
-    const atk = devHasBeenSent.find((dev) => dev.developerId === id);
-    return atk.lastName;
+  const getDevNameAccepted = (id) => {
+    const fullNameAccepted = devHasBeenSent.find(
+      (dev) => dev.developerId === id
+    );
+    return fullNameAccepted?.firstName + " " + fullNameAccepted?.lastName;
   };
   /////////////////////////////////////////////////////////////////////////////
   const [showDropdown, setShowDropdown] = useState(false);
@@ -368,9 +423,9 @@ const JobDetailsDescription = () => {
     }
   };
 
-  // if (!state?.jobId) {
-  //   return <Navigate to={"/"}></Navigate>;
-  // }
+  if (!state?.jobId) {
+    return <Navigate to={"/"}></Navigate>;
+  }
 
   if (!hiringRequestDetail) {
     return null;
@@ -380,24 +435,7 @@ const JobDetailsDescription = () => {
     <React.Fragment>
       <Card className="job-detail ">
         <div>
-          {/* <img src={JobDetailImage} alt="" className="img-fluid" /> */}
           <div className="job-details-compnay-profile d-flex justify-content-between">
-            {/* <div className="d-flex">
-              <img
-                src={hiringRequestDetail.companyImage}
-                alt=""
-                className="img-fluid rounded-3 rounded-3"
-                style={{ height: "100px", width: "100px" }}
-              />
-
-              <div
-                className="d-flex align-items-center"
-                style={{ marginLeft: "20px" }}
-              >
-                <h4>{hiringRequestDetail.companyName}</h4>
-              </div>
-            </div> */}
-
             <div
               className="d-flex flex-column align-self-end"
               style={{
@@ -409,7 +447,25 @@ const JobDetailsDescription = () => {
             >
               <div className="d-flex align-items-end gap-2">
                 <span
-                  className="badge bg-warning"
+                  className={
+                    hiringRequestDetail.statusString === "Waiting Approval"
+                      ? "badge bg-warning text-light fs-12 mt-1 mx-1"
+                      : hiringRequestDetail.statusString === "In Progress"
+                      ? "badge bg-blue text-light fs-12 mt-1 mx-1"
+                      : hiringRequestDetail.statusString === "Reject"
+                      ? "badge bg-danger text-light fs-12 mt-1 mx-1"
+                      : hiringRequestDetail.statusString === "Expired"
+                      ? "badge bg-darkcyan text-light fs-12 mt-1 mx-1"
+                      : hiringRequestDetail.statusString === "Cancelled"
+                      ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
+                      : hiringRequestDetail.statusString === "Finished"
+                      ? "badge bg-primary text-light fs-12 mt-1 mx-1"
+                      : hiringRequestDetail.statusString === "Complete"
+                      ? "badge bg-success text-light fs-12 mt-1 mx-1"
+                      : hiringRequestDetail.statusString === "Save"
+                      ? "badge bg-teal text-light fs-12 mt-1 mx-1"
+                      : ""
+                  }
                   company={{ companyMana: hiringRequestDetail.companyId }}
                 >
                   {hiringRequestDetail.statusString}
@@ -426,16 +482,34 @@ const JobDetailsDescription = () => {
                     <FontAwesomeIcon
                       icon={faEllipsisVertical}
                       size="xl"
-                      color="#292526"
+                      color="#909191"
                       // onClick={handleDropdownClick}
                     />
                   </DropdownToggle>
                   <DropdownMenu>
-                    <DropdownItem header>Option</DropdownItem>
-                    <DropdownItem>Content</DropdownItem>
-                    <DropdownItem disabled>Action (disabled)</DropdownItem>
+                    <DropdownItem header style={{ textAlign: "center" }}>
+                      Are you sure?
+                    </DropdownItem>
                     <DropdownItem divider />
-                    <DropdownItem>Another Action</DropdownItem>
+                    <DropdownItem>
+                      <button
+                        className="d-flex justify-content-center"
+                        style={{
+                          width: "100%",
+                          padding: "7px",
+                          fontWeight: "500",
+                        }}
+                        class="btn btn-danger"
+                        role="button"
+                        onClick={openCancelModal}
+                      >
+                        <span style={{ fontSize: "15px" }}>Cancel Request</span>
+                      </button>
+                    </DropdownItem>
+
+                    {/* <DropdownItem disabled>Action (disabled)</DropdownItem> */}
+                    <DropdownItem divider />
+                    {/* <DropdownItem>Another Action</DropdownItem> */}
                   </DropdownMenu>
                 </Dropdown>
               </div>
@@ -468,7 +542,7 @@ const JobDetailsDescription = () => {
               >
                 <div>
                   <p className="text-muted mb-0 fs-13">Type Of Developer</p>
-                  <p className="fw-medium mb-0 badge bg-purple text-light">
+                  <p className="fw-medium mb-0 badge bg-info text-light">
                     {hiringRequestDetail.typeRequireName}
                   </p>
                 </div>
@@ -486,7 +560,7 @@ const JobDetailsDescription = () => {
                         <span
                           key={index}
                           style={{ marginRight: "3px" }}
-                          className="badge bg-primary text-light"
+                          className="badge bg-primary-subtle text-primary"
                         >
                           {skill}
                         </span>
@@ -503,7 +577,7 @@ const JobDetailsDescription = () => {
               >
                 <div>
                   <p className="text-muted fs-13 mb-0">Level Requirement</p>
-                  <p className="fw-medium mb-0 badge bg-info text-light">
+                  <p className="fw-medium mb-0 badge bg-purple text-light">
                     {hiringRequestDetail.levelRequireName}
                   </p>
                 </div>
@@ -595,150 +669,6 @@ const JobDetailsDescription = () => {
             </div>
           </div>
 
-          {/* <div className="candidate-education-details mt-3 pt-3">
-            <h6 className="fs-17 fw-bold mb-0">Education</h6>
-            <div className="candidate-education-content mt-4 d-flex">
-              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                {" "}
-                B{" "}
-              </div>
-              <div className="ms-2">
-                <h6 className="fs-16 mb-1">
-                  BCA - Bachelor of Computer Applications
-                </h6>
-                <p className="mb-2 text-muted">
-                  International University - (2004 - 2010)
-                </p>
-                <p className="text-muted">
-                  There are many variations of passages of available, but the
-                  majority alteration in some form.
-                </p>
-              </div>
-            </div>
-            <div className="candidate-education-content mt-4 d-flex">
-              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                {" "}
-                M{" "}
-              </div>
-              <div className="ms-2">
-                <h6 className="fs-16 mb-1">
-                  MCA - Master of Computer Application
-                </h6>
-                <p className="mb-2 text-muted">
-                  International University - (2010 - 2012)
-                </p>
-                <p className="text-muted">
-                  There are many variations of passages of available, but the
-                  majority alteration in some form.
-                </p>
-              </div>
-            </div>
-            <div className="candidate-education-content mt-4 d-flex">
-              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                {" "}
-                D{" "}
-              </div>
-              <div className="ms-2">
-                <h6 className="fs-16 mb-1">Design Communication Visual</h6>
-                <p className="text-muted mb-2">
-                  International University - (2012-2015)
-                </p>
-                <p className="text-muted">
-                  There are many variations of passages of available, but the
-                  majority alteration in some form.
-                </p>
-              </div>
-            </div>
-          </div> */}
-          {/* <div className="candidate-education-details mt-3 pt-3">
-            <h6 className="fs-17 fw-bold mb-0">Professional Experience</h6>
-            <div className="candidate-education-content mt-4 d-flex">
-              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                {" "}
-                W{" "}
-              </div>
-              <div className="ms-2">
-                <h6 className="fs-16 mb-1">
-                  Web Design & Development Team Leader
-                </h6>
-                <p className="mb-2 text-muted">
-                  Creative Agency - (2013 - 2016)
-                </p>
-                <p className="text-muted">
-                  There are many variations of passages of available, but the
-                  majority alteration in some form.
-                </p>
-              </div>
-            </div>
-            <div className="candidate-education-content mt-4 d-flex">
-              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                {" "}
-                P{" "}
-              </div>
-              <div className="ms-2">
-                <h6 className="fs-16 mb-1">Project Manager</h6>
-                <p className="mb-2 text-muted">
-                  Jobcy Technology Pvt.Ltd - (Pressent)
-                </p>
-                <p className="text-muted mb-0">
-                  There are many variations of passages of available, but the
-                  majority alteration in some form.
-                </p>
-              </div>
-            </div>
-          </div> */}
-
-          {/* <div className="mt-4">
-            <h5 className="mb-3">Qualification </h5>
-            <div className="job-detail-desc mt-2">
-              <ul className="job-detail-list list-unstyled mb-0 text-muted">
-                <li>
-                  <i className="uil uil-circle"></i> B.C.A / M.C.A under
-                  National University course complete.
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> 3 or more years of
-                  professional design experience
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> have already graduated or
-                  are currently in any year of study
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> Advanced degree or
-                  equivalent experience in graphic and web design
-                </li>
-              </ul>
-            </div>
-          </div> */}
-
-          {/* <div className="mt-4">
-            <h5 className="mb-3">Skill & Experience</h5>
-            <div className="job-details-desc">
-              <ul className="job-detail-list list-unstyled mb-0 text-muted">
-                <li>
-                  <i className="uil uil-circle"></i> Understanding of key Design
-                  Principal
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> Proficiency With HTML, CSS,
-                  Bootstrap
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> Wordpress: 1 year
-                  (Required)
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> Experience designing and
-                  developing responsive design websites
-                </li>
-                <li>
-                  <i className="uil uil-circle"></i> web designing: 1 year
-                  (Preferred)
-                </li>
-              </ul>
-            </div>
-          </div> */}
           <div className="mt-4">
             <div className="job-details-desc">
               <ul className="job-detail-list list-unstyled mb-0 ">
@@ -810,7 +740,7 @@ const JobDetailsDescription = () => {
             <span>Show Dev Matching</span>
           </button> */}
 
-          <button
+          {/* <button
             className="d-flex justify-content-center"
             style={{
               width: "50%",
@@ -823,7 +753,7 @@ const JobDetailsDescription = () => {
             onClick={openCancelModal}
           >
             <span>Cancel Request</span>
-          </button>
+          </button> */}
         </div>
       )}
 
@@ -905,6 +835,7 @@ const JobDetailsDescription = () => {
                       </button>
                       {
                         <Modal
+                          style={{ padding: "10px" }}
                           isOpen={isPopConfirmOpen}
                           contentLabel="Confirm Modal"
                           centered
@@ -912,30 +843,19 @@ const JobDetailsDescription = () => {
                         >
                           <div className="modal-header">
                             <h3 style={{ textAlign: "center" }}>
-                              Are you sure?
+                              Confirm sending
                             </h3>
                           </div>
-                          <ModalBody className="p-3">
+                          <ModalBody>
                             <div>
-                              <h6 className="text-secondary">
-                                <FontAwesomeIcon
-                                  icon={faPeopleArrows}
-                                  size="lg"
-                                  style={{ fontWeight: "600px" }}
-                                />{" "}
-                                Confirm: Are you sure you want to send request
-                                to{" "}
+                              <h6 style={{ color: "#969BA5" }}>
+                                Are you sure you would like to send this hirring
+                                request to developer{" "}
                                 <span>
                                   {selectedDev.map((developer, key) => (
-                                    <span
-                                      key={key}
-                                      className="badge bg-blue text-light"
-                                      style={{
-                                        marginRight: "3px",
-                                        marginTop: "6px",
-                                      }}
-                                    >
-                                      {abc(developer)}
+                                    <span key={key}>
+                                      {getDevNameMatching(developer)}? This
+                                      action can not be undone.
                                     </span>
                                   ))}
                                 </span>
@@ -956,7 +876,7 @@ const JobDetailsDescription = () => {
                               className="btn btn-primary"
                               onClick={handleConfirm}
                             >
-                              OK
+                              Send
                             </button>
                           </div>
                         </Modal>
@@ -977,6 +897,7 @@ const JobDetailsDescription = () => {
                       </button>{" "}
                       {
                         <Modal
+                          style={{ padding: "10px" }}
                           isOpen={isPopConfirmOpenHR}
                           contentLabel="Confirm Modal"
                           centered
@@ -984,30 +905,22 @@ const JobDetailsDescription = () => {
                         >
                           <div className="modal-header">
                             <h3 style={{ textAlign: "center" }}>
-                              Are you sure?
+                              Confirm sending
                             </h3>
                           </div>
                           <ModalBody className="p-3">
                             <div>
-                              <h6 className="text-secondary">
-                                <FontAwesomeIcon
-                                  icon={faPeopleArrows}
-                                  size="lg"
-                                  style={{ fontWeight: "600px" }}
-                                />{" "}
-                                Confirm: Are you sure you want to send
-                                <span className="mt-1">
+                              <h6 style={{ color: "#969BA5" }}>
+                                Are you sure you would like to send this
+                                developer{" "}
+                                <span>
                                   {selectedDevAccept.map((developer, key) => (
-                                    <span
-                                      key={key}
-                                      className="badge bg-blue text-light"
-                                      style={{ marginRight: "3px" }}
-                                    >
-                                      {def(developer)}
+                                    <span key={key}>
+                                      {getDevNameAccepted(developer)} to company
+                                      partner?. This action can not be undone.
                                     </span>
                                   ))}
-                                </span>{" "}
-                                developer to HR
+                                </span>
                               </h6>
                             </div>
                           </ModalBody>
@@ -1025,7 +938,7 @@ const JobDetailsDescription = () => {
                               className="btn btn-primary"
                               onClick={handleConfirmHR}
                             >
-                              OK
+                              Send
                             </button>
                           </div>
                         </Modal>
@@ -1110,43 +1023,14 @@ const JobDetailsDescription = () => {
                         </div>
                       </Col>
 
-                      {/* <div className="col-auto">
-                        <div
-                          className="candidate-list-images"
-                          onClick={() => openModal(candidateDetailsNew)}
-                        >
-                          <Link to="#">
-                            <img
-                              src={candidateDetailsNew.userImg}
-                              alt=""
-                              className="avatar-md img-thumbnail rounded-circle"
-                            />
-                          </Link>
-                        </div>
-                      </div> */}
                       <Col lg={5}>
                         <div className="candidate-list-content mt-3 mt-lg-0">
                           <h5
                             className="fs-19 mb-0 d-flex"
                             onClick={() => openModal(candidateDetailsNew)}
                           >
-                            {/* <Link
-                              to="/developerinfo"
-                              className="primary-link d-flex align-items-end"
-                            ></Link> */}
                             {candidateDetailsNew.firstName}{" "}
                             {candidateDetailsNew.lastName}
-                            {/* <div>
-                              <span
-                                className={
-                                  "badge bg-secondary bg-gradient ms-1"
-                                }
-                              >
-                                <i className="mdi mdi-star align-middle"></i>
-                                Year Of Experience:{" "}
-                                {candidateDetailsNew.yearOfExperience}
-                              </span>
-                            </div> */}
                           </h5>
                           <ul className="list-inline mb-0 text-muted">
                             <li className="list-inline-item">
@@ -1608,13 +1492,13 @@ const JobDetailsDescription = () => {
               </div>
               <div className="d-flex justify-content-end">
                 <Button
-                  color="danger"
+                  color="secondary"
                   onClick={closeCancelModal}
                   style={{ marginRight: "10px" }}
                 >
                   Cancel
                 </Button>
-                <Button color="primary" onClick={handleCancelRequest}>
+                <Button color="danger" onClick={handleCancelRequest}>
                   Reject Request
                 </Button>{" "}
               </div>
