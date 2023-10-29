@@ -94,6 +94,7 @@ export default {
         "/Interview/ByHR?companyId=${companyId}&requestId=${requestId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
       getAllInterviewByManagerAndPaging:
         "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}",
+      approvalByManager: "/Interview/ApprovalByManager",
     },
     assignTask: {
       createAssignTask: "/AssignTask",
