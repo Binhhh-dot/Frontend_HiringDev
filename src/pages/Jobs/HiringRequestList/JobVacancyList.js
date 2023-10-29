@@ -69,10 +69,10 @@ const JobVacancyList = (a) => {
       //       skill
       //     );
       // } else {
-        response = await hiringrequestService.getHiringRequestAndPaging(
-          currentPage,
-          5
-        );
+      response = await hiringrequestService.getHiringRequestAndPaging(
+        currentPage,
+        5
+      );
       // }
 
       const data = response.data;
@@ -175,7 +175,7 @@ const JobVacancyList = (a) => {
                 ? "job-box bookmark-post card mt-4"
                 : "job-box card mt-4"
             }
-            // className="job-box card mt-4"
+          // className="job-box card mt-4"
           >
             <div className="bookmark-label text-center">
               <Link to="#" className="align-middle text-white">
@@ -206,9 +206,9 @@ const JobVacancyList = (a) => {
                           jobId: jobVacancyListDetails.id,
                           company: jobVacancyListDetails.companyIdMana,
                         }}
-                        // stateCompany={{
-                        //   company: jobVacancyListDetails.companyIdMana,
-                        // }}
+                      // stateCompany={{
+                      //   company: jobVacancyListDetails.companyIdMana,
+                      // }}
                       >
                         {jobVacancyListDetails.jobDescription}
                       </Link>
@@ -249,22 +249,22 @@ const JobVacancyList = (a) => {
                         jobVacancyListDetails.waitingApproval === true
                           ? "badge bg-warning-subtle text-warning fs-12 mt-1 mx-1"
                           : jobVacancyListDetails.partTime === true
-                          ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.freeLance === true
-                          ? "badge bg-primary-subtle text-primary fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.internship === true
-                          ? "badge bg-blue-subtle text-blue fs-12 mt-1"
-                          : jobVacancyListDetails.lookingForDev === true
-                          ? "badge bg-warning-subtle text-warning fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.interview === true
-                          ? "badge bg-info text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.done === true
-                          ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.outOfTime === true
-                          ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.cancelled === true
-                          ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
-                          : ""
+                            ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
+                            : jobVacancyListDetails.freeLance === true
+                              ? "badge bg-primary-subtle text-primary fs-12 mt-1 mx-1"
+                              : jobVacancyListDetails.internship === true
+                                ? "badge bg-blue-subtle text-blue fs-12 mt-1"
+                                : jobVacancyListDetails.lookingForDev === true
+                                  ? "badge bg-warning-subtle text-warning fs-12 mt-1 mx-1"
+                                  : jobVacancyListDetails.interview === true
+                                    ? "badge bg-info text-light fs-12 mt-1 mx-1"
+                                    : jobVacancyListDetails.done === true
+                                      ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
+                                      : jobVacancyListDetails.outOfTime === true
+                                        ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
+                                        : jobVacancyListDetails.cancelled === true
+                                          ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
+                                          : ""
                       }
                     >
                       {jobVacancyListDetails.timing}
@@ -299,13 +299,12 @@ const JobVacancyList = (a) => {
                         .map((skill, index) => (
                           <span
                             key={index}
-                            className={`badge ${
-                              index === 0
+                            className={`badge ${index === 0
                                 ? "bg-info text-light"
                                 : index === 1
-                                ? "bg-danger-subtle text-danger"
-                                : "bg-primary-subtle text-primary"
-                            }  ms-2`}
+                                  ? "bg-danger-subtle text-danger"
+                                  : "bg-primary-subtle text-primary"
+                              }  ms-2`}
                           >
                             {skill.trim()}
                           </span>
@@ -313,18 +312,18 @@ const JobVacancyList = (a) => {
 
                       {jobVacancyListDetails.experience.split(",").length >
                         6 && (
-                        <Link
-                          to="#"
-                          onClick={() =>
-                            toggleShowFullSkills(jobVacancyListDetails.id)
-                          }
-                        >
-                          {" "}
-                          {showFullSkills[jobVacancyListDetails.id]
-                            ? "less"
-                            : "...more"}
-                        </Link>
-                      )}
+                          <Link
+                            to="#"
+                            onClick={() =>
+                              toggleShowFullSkills(jobVacancyListDetails.id)
+                            }
+                          >
+                            {" "}
+                            {showFullSkills[jobVacancyListDetails.id]
+                              ? "less"
+                              : "...more"}
+                          </Link>
+                        )}
                     </p>
                   </div>
                 </Col>
@@ -351,9 +350,8 @@ const JobVacancyList = (a) => {
               </li>
               {renderPageNumbers()}
               <li
-                className={`page-item ${
-                  currentPage === totalPages ? "disabled" : ""
-                }`}
+                className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                  }`}
               >
                 <Link className="page-link" to="#" onClick={handleNextPage}>
                   <i className="mdi mdi-chevron-double-right fs-15"></i>

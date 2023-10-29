@@ -17,53 +17,61 @@ const DetailInterviewManager = () => {
     const [jobListing, setJobListing] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
-    const navigate = useNavigate();
-    const fetchListDevInterview = async () => {
-        try {
-            const response = await developerServices.getListDevWaitingInterview(state.jobId)
-            const data = response.data;
-            const jobListing = data.data.map((dev) => {
-                return {
-                    developerId: dev.developerId,
-                    userId: dev.userId,
-                    codeName: dev.codeName,
-                    candidateStatusClassName:
-                        "profile-active position-absolute badge rounded-circle bg-success",
-                    yearOfExperience: dev.yearOfExperience + " Years Experience",
-                    averageSalary: dev.averageSalary,
-                    employmentTypeName: dev.employmentTypeName,
-                    devStatusString: dev.devStatusString,
-                    partTime: true,
-                    timing: dev.scheduleTypeName,
-                    badges: [
-                        {
-                            id: 1,
-                            badgeclassName: "bg-primary-subtle text-primary",
-                            badgeName: dev.levelRequireName,
-                        }
-                    ]
-                };
-            });
-            setJobListing(jobListing);
-            const developerIds = jobListing.map((job) => job.developerId);
-            setListDevid(developerIds);
-            console.log(listDevId)
+    let [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [hidingPage, setHidingPage] = useState(false);
+    const pageSize = 4;
+    const handlePageClick = (page) => {
+        setCurrentPage(page);
+    };
 
-            console.log(developerIds)
-        } catch (error) {
-            console.error("Error fetching job vacancies:", error);
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+        const maxPageButtons = 4;
+        let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+        let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+        if (
+            totalPages > maxPageButtons &&
+            currentPage <= Math.floor(maxPageButtons / 2) + 1
+        ) {
+            endPage = maxPageButtons;
+        }
+        for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(
+                <li
+                    key={i}
+                    className={`page-item ${i === currentPage ? "active" : ""}`}
+                >
+                    <p className="page-link" to="#" onClick={() => handlePageClick(i)}>
+                        {i}
+                    </p>
+                </li>
+            );
+        }
+
+        return pageNumbers;
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
         }
     };
 
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
     useEffect(() => {
         // fetchListDevInterview();
         fetchDetailInterview();
-    }, []);
+    }, [currentPage]);
 
     const fetchDetailInterview = async () => {
         try {
-            const response = await interviewServices.getDetailInterviewByInterviewId(state.interviewId)
+            const response = await interviewServices.getDetailInterviewByInterviewId(state.interviewId, 4, currentPage)
             const data = response.data;
             document.getElementById("interview-title").value = data.data.title;
             document.getElementById("description").value = data.data.title;
@@ -93,6 +101,10 @@ const DetailInterviewManager = () => {
                     ]
                 };
             });
+            if (data.paging.total <= 4) {
+                setHidingPage(true);
+            }
+            setTotalPages(Math.ceil(data.paging.total / pageSize));
             setJobListing(jobListing);
             const developerIds = jobListing.map((job) => job.developerId);
             setListDevid(developerIds);
@@ -219,11 +231,38 @@ const DetailInterviewManager = () => {
                                     </form>
                                 </div>
                             </div>
+                            <div className="d-flex justify-content-around mt-4">
+                                <button
+                                    style={{
+                                        width: "45%",
+                                        padding: "12px",
+                                        fontSize: "larger",
+                                        fontWeight: "500",
+                                    }}
+                                    class="btn btn-primary"
+                                    role="button"
+                                >
+                                    <span> Accept Interview</span>
+                                </button>
+
+                                <button
+                                    style={{
+                                        width: "45%",
+                                        padding: "12px",
+                                        fontSize: "larger",
+                                        fontWeight: "500",
+                                    }}
+                                    class="btn btn-danger"
+                                    role="button"
+                                >
+                                    <span>Cancel Interview</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="col-lg-6 mb-4">
                             <Row>
                                 {jobListing.map((jobListingDetails, key) => (
-                                    <Col lg={12} md={6} className="" key={key}>
+                                    <Col lg={12} md={6} className="mb-2" key={key}>
                                         <CardBody className="p-4 rounded shadow bg-white">
                                             <Row>
                                                 <Col lg={1}>
@@ -331,8 +370,35 @@ const DetailInterviewManager = () => {
                                     </Col>
                                 ))}
                             </Row>
-                            <Pagination />
-
+                            {!hidingPage && (
+                                <Row>
+                                    <Col lg={12} className="mt-4 pt-2">
+                                        <nav aria-label="Page navigation example">
+                                            <div className="pagination job-pagination mb-0 justify-content-center">
+                                                <li
+                                                    className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+                                                >
+                                                    <p
+                                                        className="page-link"
+                                                        tabIndex="-1"
+                                                        onClick={handlePrevPage}
+                                                    >
+                                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                                    </p>
+                                                </li>
+                                                {renderPageNumbers()}
+                                                <li
+                                                    className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                                        }`}
+                                                >
+                                                    <p className="page-link" to="#" onClick={handleNextPage}>
+                                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                                    </p>
+                                                </li>
+                                            </div>
+                                        </nav>
+                                    </Col>
+                                </Row>)}
                         </div>
 
                         < div >

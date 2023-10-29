@@ -197,7 +197,7 @@ const JobVacancyList = () => {
               <Row className="align-items-center">
                 <Col md={2}>
                   <div className="text-center mb-4 mb-md-0">
-                    <Link to="/hiringrequestlistincompanypartnerdetail">
+                    <Link to={`/hiringrequestlistincompanypartnerdetail?Id=${jobVacancyListDetails.id}`}>
                       <img
                         src={jobVacancyListDetails.companyImg}
                         alt=""
@@ -211,9 +211,8 @@ const JobVacancyList = () => {
                   <div className="mb-2 mb-md-0">
                     <h5 className="fs-18 mb-0">
                       <Link
-                        to="/hiringrequestlistincompanypartnerdetail"
+                        to={`/hiringrequestlistincompanypartnerdetail?Id=${jobVacancyListDetails.id}`}
                         className="text-dark"
-                        state={{ jobId: jobVacancyListDetails.id }}
                       >
                         {jobVacancyListDetails.jobDescription}
                       </Link>

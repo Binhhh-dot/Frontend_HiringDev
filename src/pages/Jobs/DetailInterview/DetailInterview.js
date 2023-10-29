@@ -15,6 +15,8 @@ const DetailInterview = () => {
     const [listDevId, setListDevid] = useState([]);
     const { state } = useLocation();
     const [jobListing, setJobListing] = useState([]);
+    const { hidingPage, setHingdingPage } = useState(false);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
     const navigate = useNavigate();
@@ -55,22 +57,74 @@ const DetailInterview = () => {
         }
     };
 
+    let [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
+    const pageSize = 5;
+    const handlePageClick = (page) => {
+        setCurrentPage(page);
+    };
+
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+        const maxPageButtons = 4;
+        let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+        let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+        if (
+            totalPages > maxPageButtons &&
+            currentPage <= Math.floor(maxPageButtons / 2) + 1
+        ) {
+            endPage = maxPageButtons;
+        }
+        for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(
+                <li
+                    key={i}
+                    className={`page-item ${i === currentPage ? "active" : ""}`}
+                >
+                    <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
+                        {i}
+                    </Link>
+                </li>
+            );
+        }
+
+        return pageNumbers;
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
     useEffect(() => {
         // fetchListDevInterview();
         fetchDetailInterview();
-    }, []);
+    }, [currentPage]);
 
     const fetchDetailInterview = async () => {
         try {
-            const response = await interviewServices.getDetailInterviewByInterviewId(state.interviewId)
+            const response = await interviewServices.getDetailInterviewByInterviewId(state.interviewId, 8, currentPage)
             const data = response.data;
-            document.getElementById("interview-title").value = data.data.title;
-            document.getElementById("description").value = data.data.title;
-            document.getElementById("date-of-interview").value = data.data.dateOfInterview.split("T")[0];
-            document.getElementById("startTime").value = data.data.startTime;
-            document.getElementById("endTime").value = data.data.endTime;
 
+            document.getElementById("interview-title").innerHTML = data.data.title;
+            document.getElementById("description").innerHTML = data.data.title;
+            document.getElementById("date-of-interview").innerHTML = data.data.dateOfInterview.split("T")[0];
+            document.getElementById("startTime").innerHTML = data.data.startTime;
+            document.getElementById("endTime").innerHTML = data.data.endTime;
+            // var element = document.getElementById("status-interview");
+
+            // if (element) {
+            //     // Thay đổi thuộc tính className
+            //     element.className = "new-class-name"; // Thay thế "new-class-name" bằng tên lớp bạn muốn thêm hoặc thay đổi.
+            // }
+            document.getElementById("status-interview").innerHTML = data.data.statusString;
             const jobListing = data.data.developers.map((dev) => {
                 return {
                     developerId: dev.developerId,
@@ -93,14 +147,47 @@ const DetailInterview = () => {
                     ]
                 };
             });
+            console.log(jobListing.length)
             setJobListing(jobListing);
             const developerIds = jobListing.map((job) => job.developerId);
+            setTotalPages(Math.ceil(data.paging.total / pageSize));
             setListDevid(developerIds);
-
+            if (data.paging.total <= 3) {
+                setHingdingPage(true);
+            }
         } catch (error) {
             console.error("Error fetching job vacancies:", error);
         }
     };
+
+    useEffect(() => {
+        // fetchListDevInterview();
+        changeCss();
+    }, []);
+
+    const changeCss = async () => {
+        const response = await interviewServices.getDetailInterviewByInterviewId(state.interviewId, 8, currentPage)
+        const data = response.data;
+        if (data.paging.total === 1) {
+            // Nếu data.paging.total = 1
+            // Thay đổi thuộc tính class của thẻ có id "col-1"
+            var col1 = document.getElementById("col-1");
+            if (col1) {
+                col1.className = "col-lg-6 ps-5";
+            }
+            // Thay đổi thuộc tính class của thẻ có id "col-2"
+            var col2 = document.getElementById("col-2");
+            if (col2) {
+                col2.className = "col-lg-6 mb-4";
+            }
+            var col3 = document.getElementById("col-3");
+            if (col3) {
+                col3.className = "mb-2 col-lg-12";
+                console.log("thaydoiro")
+            }
+        }
+    };
+
 
     const openModal = (candidateInfo) => {
         setSelectedCandidateInfo(candidateInfo);
@@ -148,17 +235,28 @@ const DetailInterview = () => {
             <section class="section">
                 <div class="">
                     <div class="row  justify-content-center w-100">
-                        <div class="col-lg-4 ps-5" >
+
+                        <div class="col-lg-4 ps-5" id="col-1">
                             <div class="rounded shadow bg-white p-4">
                                 <div class="custom-form">
                                     <div id="message3"></div>
                                     <form method="post" action="php/contact.php" name="contact-form" id="contact-form3">
-                                        <h4 class="text-dark mb-3 ">Detail Interview :</h4>
+                                        <div className="d-flex justify-content-between mb-3">
+
+                                            <h4 class="text-dark ">Detail Interview :</h4>
+                                            <span
+                                                className={
+                                                    "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                                                }
+                                                id="status-interview"
+                                            >
+                                            </span>
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Interview Title</label>
-                                                    <input id="interview-title" type="text" class="form-control resume" placeholder="" required readOnly></input>
+                                                    <div id="interview-title" type="text" class="form-control resume" placeholder="" required readOnly></div>
 
                                                 </div>
                                             </div>
@@ -168,7 +266,7 @@ const DetailInterview = () => {
                                             <div class="col-md-12">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Date of Interview</label>
-                                                    <input id="date-of-interview" type="date" class="form-control resume" placeholder="" readOnly></input>
+                                                    <div id="date-of-interview" type="date" class="form-control resume" placeholder="" readOnly></div>
 
                                                 </div>
                                             </div>
@@ -182,7 +280,7 @@ const DetailInterview = () => {
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Start Time</label>
-                                                    <input id="startTime" type="time" class="form-control resume" placeholder="" readOnly></input>
+                                                    <div id="startTime" type="time" class="form-control resume" placeholder="" readOnly></div>
 
                                                 </div>
                                             </div>
@@ -190,7 +288,7 @@ const DetailInterview = () => {
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">End Time</label>
-                                                    <input id="endTime" type="time" class="form-control resume" placeholder="" readOnly></input>
+                                                    <div id="endTime" type="time" class="form-control resume" placeholder="" readOnly></div>
 
                                                 </div>
                                             </div>
@@ -200,7 +298,7 @@ const DetailInterview = () => {
                                             <div class="col-md-12">
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Description</label>
-                                                    <textarea id="description" class="form-control resume" placeholder="" style={{ height: 125 }} readOnly></textarea>
+                                                    <div id="description" class="form-control resume" placeholder="" style={{ height: 125 }} readOnly></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -220,10 +318,10 @@ const DetailInterview = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-8 mb-4">
+                        <div class="col-lg-8 mb-4" id="col-2">
                             <Row>
                                 {jobListing.map((jobListingDetails, key) => (
-                                    <Col lg={6} md={6} className="" key={key}>
+                                    <Col md={6} className="mb-2 col-lg-6" id="col-3" key={key}>
                                         <CardBody className="p-4 rounded shadow bg-white">
                                             <Row>
                                                 <Col lg={1}>
@@ -331,8 +429,37 @@ const DetailInterview = () => {
                                     </Col>
                                 ))}
                             </Row>
-                            <Pagination />
-
+                            {hidingPage && (
+                                <Row>
+                                    <Col lg={12} className="mt-4 pt-2">
+                                        <nav aria-label="Page navigation example">
+                                            <div className="pagination job-pagination mb-0 justify-content-center">
+                                                <li
+                                                    className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+                                                >
+                                                    <Link
+                                                        className="page-link"
+                                                        to="#"
+                                                        tabIndex="-1"
+                                                        onClick={handlePrevPage}
+                                                    >
+                                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                                    </Link>
+                                                </li>
+                                                {renderPageNumbers()}
+                                                <li
+                                                    className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                                        }`}
+                                                >
+                                                    <Link className="page-link" to="#" onClick={handleNextPage}>
+                                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                                    </Link>
+                                                </li>
+                                            </div>
+                                        </nav>
+                                    </Col>
+                                </Row>
+                            )}
                         </div>
 
                         < div >

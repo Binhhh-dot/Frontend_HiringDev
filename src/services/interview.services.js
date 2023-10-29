@@ -50,9 +50,11 @@ const getAllInterviewByHRAndRequestIdAndPaging = async (companyId, requestId, pa
     return response;
 }
 
-const getDetailInterviewByInterviewId = async (interviewId) => {
+const getDetailInterviewByInterviewId = async (interviewId, PageSize, PageIndex) => {
     const serviceUrl = urlConstant.endpoint.interview.getDetailInterviewByInterviewId
-        .replace("${InterviewId}", interviewId);
+        .replace("${InterviewId}", interviewId)
+        .replace("${PageSize}", PageSize)
+        .replace("${PageIndex}", PageIndex);
     const response = await utils.axiosLocalHost.get(serviceUrl, interviewId);
     return response;
 }

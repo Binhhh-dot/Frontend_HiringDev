@@ -17,7 +17,7 @@ const JobVacancy = () => {
   const [jobVacancyList, setJobVacancyList] = useState([]);
 
   const { state } = useLocation();
-
+  const { hidingPage, setHingdingPage } = useState(false);
 
 
   const renderPageNumbers = () => {
@@ -100,6 +100,15 @@ const JobVacancy = () => {
       console.log(response.data);
       setJobVacancyList(formattedJobVacancies);
       setTotalPages(Math.ceil(data.paging.total / pageSize));
+      if (data.paging.total < 6) {
+        // Lấy tham chiếu đến phần tử có id="paging"
+        var rowElement = document.getElementById("paging");
+
+        // Ẩn phần tử bằng cách đặt style.display thành "none"
+        if (rowElement) {
+          rowElement.style.display = "none";
+        }
+      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -205,8 +214,8 @@ const JobVacancy = () => {
           ))}
         </Col>
 
-      </Row>
-      <Row>
+      </Row >
+      <Row id="paging">
         <Col lg={12} className="mt-4 pt-2">
           <nav aria-label="Page navigation example">
             <div className="pagination job-pagination mb-0 justify-content-center">

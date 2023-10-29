@@ -15,7 +15,6 @@ const DeveloperDetailInCompanyPopup = (
       response = await hiringrequestService.getDeveloperDetailInManager(devId);
       console.log(response.data.data);
       setDeveloperInfo(response.data.data);
-      return response;
     } catch (error) {
       console.error(
         "Error fetching Developer Detail In Manager Popup vacancies:",

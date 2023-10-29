@@ -305,7 +305,7 @@ const NavBar = (props) => {
                                 Interview
                               </span>
 
-                              <Link className="dropdown-item" to="/listInterview">
+                              <Link className="dropdown-item" to="/listInterviewHR" state={{ jobId: null }}>
                                 List Interview
                               </Link>
 
@@ -420,7 +420,7 @@ const NavBar = (props) => {
                               <span className="dropdown-header">
                                 Interview
                               </span>
-                              <Link className="dropdown-item" to="/listInterviewHR">
+                              <Link className="dropdown-item" to="/listInterview">
                                 List Interview
                               </Link>
                               {/* <div>

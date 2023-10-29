@@ -61,6 +61,7 @@ export default {
       getSelectedDevByManager:
         "/SelectingDev/SelectedDevByManager/${requestId}",
       sendDevToHR: "/SelectingDev/SendDevToHR",
+      removeOutOfWaitingInterview: "/SelectingDev/RemoveOutOfWaitingInterview?requestId=${requestId}&developerId=${developerId}",
     },
     company: {
       createCompany: "/CompanyPartner",
@@ -72,7 +73,7 @@ export default {
         "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4",
     },
     developer: {
-      getListDevWaitingInterview: "/Developer/DevWaitingInterview/${requestId}",
+      getListDevWaitingInterview: "/Developer/DevWaitingInterview/${requestId}?PageIndex=${PageIndex}&PageSize=${PageSize}",
       createDeveloper: "/Developer",
 
     },
@@ -80,7 +81,7 @@ export default {
       createAnInterview: "/Interview",
       getListInterviewByRequestId: "/Interview/Request/${requestId}",
       getAllInterviewByHRAndPaging: "/Interview/ByHR?companyId=${companyId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
-      getDetailInterviewByInterviewId: "/Interview/${InterviewId}",
+      getDetailInterviewByInterviewId: "/Interview/${InterviewId}?PageIndex=${PageIndex}&PageSize=${PageSize}",
       getAllInterviewByHRAndRequestIdAndPaging: "/Interview/ByHR?companyId=${companyId}&requestId=${requestId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
       getAllInterviewByManagerAndPaging: "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}",
     },

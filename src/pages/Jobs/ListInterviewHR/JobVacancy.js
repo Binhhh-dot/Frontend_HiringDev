@@ -15,6 +15,7 @@ import interviewServices from "../../../services/interview.services";
 
 const JobVacancy = () => {
   const [jobVacancyList, setJobVacancyList] = useState([]);
+  const { hidingPage, setHingdingPage } = useState(null);
 
   const { state } = useLocation();
 
@@ -35,9 +36,9 @@ const JobVacancy = () => {
           key={i}
           className={`page-item ${i === currentPage ? "active" : ""}`}
         >
-          <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
+          <p className="page-link" to="#" onClick={() => handlePageClick(i)}>
             {i}
-          </Link>
+          </p>
         </li>
       );
     }
@@ -46,7 +47,7 @@ const JobVacancy = () => {
   };
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 8;
+  const pageSize = 6;
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -71,19 +72,20 @@ const JobVacancy = () => {
         response = await interviewServices.getAllInterviewByHRAndRequestIdAndPaging(
           companyId,
           state.jobId,
-          8,
+          6,
           currentPage,
         );
       } else {
         response = await interviewServices.getAllInterviewByHRAndPaging(
           companyId,
-          8,
+          6,
           currentPage,
         );
       }
       const data = response.data;
       const formattedJobVacancies = data.data.map((job) => {
         // Assuming job.typeRequireName and job.levelRequireName are available
+        console.log(job.description.length)
         return {
           interviewId: job.interviewId,
           requestId: job.requestId,
@@ -95,12 +97,20 @@ const JobVacancy = () => {
           endTime: job.endTime,
           statusString: job.statusString,
           addclassNameBookmark: true,
-          description: job.description,
+          description: job.description.length > 70 ? job.description.substring(0, 70).trim() + "..." : job.description,
         };
       });
-      console.log(response.data);
       setJobVacancyList(formattedJobVacancies);
       setTotalPages(Math.ceil(data.paging.total / pageSize));
+      if (data.paging.total < 7) {
+        // Lấy tham chiếu đến phần tử có id="paging"
+        var rowElement = document.getElementById("paging");
+
+        // Ẩn phần tử bằng cách đặt style.display thành "none"
+        if (rowElement) {
+          rowElement.style.display = "none";
+        }
+      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -149,56 +159,65 @@ const JobVacancy = () => {
                       {jobVacancy2Details.title}
                     </h5>
                   </Link>
-                  <p className="text-muted mb-0">{jobVacancy2Details.dateOfInterview} </p>
-                  <p className="text-muted mb-0">{jobVacancy2Details.startTime} to {jobVacancy2Details.endTime}</p>
                 </div>
-                <div className="job-grid-content">
-                  <p className="text-muted">{jobVacancy2Details.description}</p>
-                  <div className="d-flex  mt-4 border-top pt-3">
-                    <div className="p-3 bg-light">
-
-                      <div className="text-md-end">
-                        <Link
-                          to="/detailInterview"
-                          className="primary-link"
-                          state={{ interviewId: jobVacancy2Details.interviewId }}
-                        >
-                          View Details <i className="mdi mdi-chevron-double-right"></i>
-                        </Link>
-                      </div>
+                <div className="d-flex flex-column gap-1 ">
+                  <div className="d-flex mb-0">
+                    <div className="flex-shrink-0">
+                      <i className="uil uil-clock-three text-primary me-1"></i>
                     </div>
+                    <p className="text-muted  mb-0 ">{jobVacancy2Details.startTime} to {jobVacancy2Details.endTime}</p>
+                    <p className="text-muted mb-0 ms-1">|</p>
+                    <p className="text-muted mb-0 ms-1">{jobVacancy2Details.dateOfInterview} </p>
+                  </div>
+                  <p className="text-muted mb-0" style={{ height: "45px" }}>{jobVacancy2Details.description}</p>
+                </div>
 
+                <div className="d-flex align-items-center justify-content-between mt-1 border-top pt-3">
+                  <p className="text-muted float-start mb-0">
+                    ago
+                  </p>
+                  <div className="text-end">
+                    <Link
+                      to="/detailInterview"
+                      state={{ interviewId: jobVacancy2Details.interviewId }}
+                      className="btn btn-sm btn-primary"
+                    >
+                      Read more <i className="uil uil-angle-right-b"></i>
+                    </Link>
                   </div>
                 </div>
+
               </div>
+
             </div>
           </Col>
         ))}
       </Row>
-      <Row>
+
+      <Row id="paging">
         <Col lg={12} className="mt-4 pt-2">
           <nav aria-label="Page navigation example">
             <div className="pagination job-pagination mb-0 justify-content-center">
               <li
                 className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
               >
-                <Link
+                <p
                   className="page-link"
                   to="#"
                   tabIndex="-1"
                   onClick={handlePrevPage}
                 >
                   <i className="mdi mdi-chevron-double-left fs-15"></i>
-                </Link>
+                </p>
               </li>
               {renderPageNumbers()}
               <li
                 className={`page-item ${currentPage === totalPages ? "disabled" : ""
                   }`}
               >
-                <Link className="page-link" to="#" onClick={handleNextPage}>
+                <p className="page-link" to="#" onClick={handleNextPage}>
                   <i className="mdi mdi-chevron-double-right fs-15"></i>
-                </Link>
+                </p>
               </li>
             </div>
           </nav>

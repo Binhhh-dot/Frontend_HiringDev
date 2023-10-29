@@ -11,7 +11,7 @@ import Team from "../pages/Company/Team/Team";
 import Pricing from "../pages/Company/Pricing/Pricing";
 import PrivacyAndPolicy from "../pages/Company/PrivacyAndPolicy/PrivacyAndPolicy";
 import Faqs from "../pages/Company/Faqs/Faqs";
-
+import PaymenAgreement from "../pages/CandidateAndCompany/PaymentAgreement/PrivacyAndPolicy";
 //Jobs Section
 import HiringRequestList from "../pages/Jobs/HiringRequestList/HiringRequestList";
 import CreateHiringRequest from "../pages/Jobs/CreateHiringRequest/CreateHiringRequest";
@@ -110,8 +110,8 @@ const userRoutes = [
   { path: "/candidatelist", component: <CandidateList /> },
   { path: "/hiringrequestinhr", component: <HiringRequestInHR /> },
   { path: "/hiringrequestdetailinhr", component: <HiringRequestDetailInHR /> },
-  { path: "/listInterview", component: <InterviewList /> },
-  { path: "/listInterviewHR", component: <InterviewListManager /> },
+  { path: "/listInterview", component: <InterviewListManager /> },
+  { path: "/listInterviewHR", component: <InterviewList /> },
 
 
   // {
@@ -164,6 +164,7 @@ const userRoutes = [
   { path: "/createcompanyaccount", component: <CreateCompanyAccount /> },
   { path: "/faqs", component: <Faqs /> },
   { path: "/privacyandpolicy", component: <PrivacyAndPolicy /> },
+  { path: "/paymentagreement", component: <PaymenAgreement /> },
   { path: "/pricing", component: <Pricing /> },
   { path: "/team", component: <Team /> },
   { path: "/services", component: <Services /> },

@@ -8,16 +8,72 @@ import interviewServices from "../../../services/interview.services";
 import userImage0 from "../../../assets/images/user/img-00.jpg";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 import { useNavigate } from "react-router-dom";
+import { RingLoader, HashLoader } from "react-spinners";
 
 
 const CreateInterview = () => {
     document.title = "Job Details | Jobcy - Job Listing Template | Themesdesign";
     const [listDevId, setListDevid] = useState([]);
     const { state } = useLocation();
+    const location = useLocation();
+    const [loading, setLoading] = useState(false);
     const [jobListing, setJobListing] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
     const navigate = useNavigate();
+    let [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [interviewTitlError, setInterviewTitlError] = useState(null);
+    const [dateOfInterViewError, setDateOfInterViewError] = useState(null);
+    const [timeStartError, setTimeStartError] = useState(null);
+    const [timeEndError, setTimeEndError] = useState(null);
+    const [desError, setDesError] = useState(null);
+
+    const pageSize = 4;
+    const handlePageClick = (page) => {
+        setCurrentPage(page);
+    };
+
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+        const maxPageButtons = 4;
+        let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+        let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+        if (
+            totalPages > maxPageButtons &&
+            currentPage <= Math.floor(maxPageButtons / 2) + 1
+        ) {
+            endPage = maxPageButtons;
+        }
+        for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(
+                <li
+                    key={i}
+                    className={`page-item ${i === currentPage ? "active" : ""}`}
+                >
+                    <p className="page-link"
+                        onClick={() => handlePageClick(i)}>
+                        {i}
+                    </p>
+                </li>
+            );
+        }
+
+        return pageNumbers;
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
     useEffect(() => {
         const role = localStorage.getItem('role');
         if (role === null) {
@@ -26,9 +82,14 @@ const CreateInterview = () => {
             navigate("/error404");
         }
     });
+
     const fetchListDevInterview = async () => {
+        let response;
         try {
-            const response = await developerServices.getListDevWaitingInterview(state.jobId)
+            const queryParams = new URLSearchParams(location.search);
+            const requestIdState = queryParams.get("requestId");
+            response = await developerServices.getListDevWaitingInterview(requestIdState, 4, currentPage);
+            console.log(response);
             const data = response.data;
             const jobListing = data.data.map((dev) => {
                 return {
@@ -55,18 +116,27 @@ const CreateInterview = () => {
             setJobListing(jobListing);
             const developerIds = jobListing.map((job) => job.developerId);
             setListDevid(developerIds);
-            console.log(listDevId)
+            setTotalPages(Math.ceil(data.paging.total / pageSize));
+            if (data.paging.total < 5) {
+                // Lấy tham chiếu đến phần tử có id="paging"
+                var rowElement = document.getElementById("paging");
 
-            console.log(developerIds)
+                // Ẩn phần tử bằng cách đặt style.display thành "none"
+                if (rowElement) {
+                    rowElement.style.display = "none";
+                }
+            }
+
         } catch (error) {
             console.error("Error fetching job vacancies:", error);
+
         }
     };
 
 
     useEffect(() => {
         fetchListDevInterview();
-    }, []);
+    }, [currentPage]);
 
 
     const openModal = (candidateInfo) => {
@@ -82,35 +152,112 @@ const CreateInterview = () => {
 
 
     const handleCreateInterview = async () => {
-        try {
-            const title = document.getElementById("interview-title").value;
-            const description = document.getElementById("description").value;
-            const dateOfInterview = document.getElementById("date-of-interview").value;
+        let check = true;
+        setLoading(true);
+        if (!document.getElementById("interview-title").value) {
+            setInterviewTitlError("Please enter a interview title");
+            check = false;
+        } else {
+            setInterviewTitlError(null);
+        }
+        if (!document.getElementById("description").value) {
+            setDesError("Please enter a description");
+            check = false;
+        } else {
+            setDesError(null);
+        }
+        if (!document.getElementById("date-of-interview").value) {
+            setDateOfInterViewError("Please enter a date of interview");
+            check = false;
+        } else {
+            setDateOfInterViewError(null);
+        }
+        if (!document.getElementById("startTime").value) {
+            setTimeStartError("Please enter the start time of the interview ");
+            check = false;
+        } else {
+            setTimeStartError(null);
+        }
+        if (!document.getElementById("endTime").value) {
+            setTimeEndError("Please enter the end time of the interview");
+            check = false;
+        } else {
+            setTimeEndError(null);
+        }
+        if (document.getElementById("date-of-interview").value) {
+            const currentDate = new Date();
+            const selectedDate = new Date(
+                document.getElementById("date-of-interview").value
+            );
 
-            const startTime = document.getElementById("startTime").value + ":00";
-            console.log(startTime)
-            const endTime = document.getElementById("endTime").value + ":00";
-
-            const response = await interviewServices.createAnInterview(state.jobId, title, description, dateOfInterview, startTime, endTime);
-            let data = response.data;
-            console.log(data);
-            if (data.code === 201) {
-                try {
-                    const interviewId = data.data.interviewId;
-                    const response = await developerServices.appectDevToInterview(state.jobId, interviewId, listDevId);
-                } catch (error) {
-                    console.error("Error:", error);
-                }
+            if (selectedDate < currentDate) {
+                setDateOfInterViewError(
+                    "Please enter a date greater than the current date"
+                );
+                check = false;
+            } else {
+                setDateOfInterViewError(null);
             }
-            console.log(data)
+        }
+
+        if (document.getElementById("endTime").value && document.getElementById("startTime").value && document.getElementById("startTime") !== document.getElementById("endTime").value) {
+            const startTimeDate = new Date("1970-01-01T" + document.getElementById("startTime").value + "Z");
+            const endTimeDate = new Date("1970-01-01T" + document.getElementById("endTime").value + "Z");
+            if (startTimeDate > endTimeDate) {
+                // Hiển thị thông báo lỗi
+                setTimeStartError("Start Time must be before End Time");
+                // Cập nhật DOM để hiển thị thông báo
+                check = false;
+            } else {
+                setTimeStartError(null);
+            }
+        }
+        if (check) {
+            try {
+                const title = document.getElementById("interview-title").value;
+                const description = document.getElementById("description").value;
+                const dateOfInterview = document.getElementById("date-of-interview").value;
+
+                const startTime = document.getElementById("startTime").value + ":00";
+                console.log(startTime)
+                const endTime = document.getElementById("endTime").value + ":00";
+                const queryParams = new URLSearchParams(location.search);
+                const requestId = queryParams.get("requestId");
+                const response = await interviewServices.createAnInterview(requestId, title, description, dateOfInterview, startTime, endTime);
+                let data = response.data;
+
+                console.log(data)
+                fetchListDevInterview();
+                setLoading(false);
+                navigate(`/hiringrequestlistincompanypartnerdetail?jobId=${requestId}`);
+            } catch (error) {
+                console.error("Error fetching job vacancies:", error);
+                setLoading(false);
+            }
+        }
+        setLoading(false);
+    };
+
+    const removeOutOfWaitingInterview = async (id) => {
+        try {
+            const queryParams = new URLSearchParams(location.search);
+            const requestId = queryParams.get("requestId");
+            const response = await developerServices.removeOutOfWaitingInterview(requestId, id);
+            console.log(response)
             fetchListDevInterview();
         } catch (error) {
             console.error("Error fetching job vacancies:", error);
         }
-    };
-
+    }
     return (
         <React.Fragment>
+            {/* Overlay cho trạng thái loading */}
+            {loading && (
+                <div className="overlay" style={{ zIndex: "2000" }}>
+                    <div className="spinner"></div>
+                    <div class="loading-text">Loading</div>
+                </div>
+            )}
             <Section />
             <section class="section">
                 <div class="">
@@ -126,7 +273,11 @@ const CreateInterview = () => {
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Interview Title</label>
                                                     <input id="interview-title" type="text" class="form-control resume" placeholder="" required></input>
-
+                                                    {interviewTitlError && (
+                                                        <p className="text-danger mt-2">
+                                                            {interviewTitlError}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -136,7 +287,11 @@ const CreateInterview = () => {
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Date of Interview</label>
                                                     <input id="date-of-interview" type="date" class="form-control resume" placeholder=""></input>
-
+                                                    {dateOfInterViewError && (
+                                                        <p className="text-danger mt-2">
+                                                            {dateOfInterViewError}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -150,7 +305,11 @@ const CreateInterview = () => {
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Start Time</label>
                                                     <input id="startTime" type="time" class="form-control resume" placeholder=""></input>
-
+                                                    {timeStartError && (
+                                                        <p className="text-danger mt-2">
+                                                            {timeStartError}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -158,9 +317,14 @@ const CreateInterview = () => {
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">End Time</label>
                                                     <input id="endTime" type="time" class="form-control resume" placeholder=""></input>
-
+                                                    {timeEndError && (
+                                                        <p className="text-danger mt-2">
+                                                            {timeEndError}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
+
                                         </div>
 
                                         <div class="row">
@@ -168,6 +332,11 @@ const CreateInterview = () => {
                                                 <div class="form-group app-label mt-2">
                                                     <label class="text-muted">Description</label>
                                                     <textarea id="description" class="form-control resume" placeholder="" style={{ height: 125 }}></textarea>
+                                                    {desError && (
+                                                        <p className="text-danger mt-2">
+                                                            {desError}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -177,9 +346,15 @@ const CreateInterview = () => {
                                             <div class="col-lg-12 mt-3 d-flex justify-content-end ">
                                                 <button type="button" className="btn btn-primary btn-hover"
                                                     onClick={handleCreateInterview}
+                                                    disabled={loading}
                                                 >
-                                                    Create an interview
+                                                    {loading ? (
+                                                        <RingLoader color="#fff" loading={true} size={20} />
+                                                    ) : (
+                                                        "Create an interview"
+                                                    )}
                                                 </button>
+                                                <span class="loader"></span>
                                             </div>
                                         </div>
 
@@ -195,23 +370,23 @@ const CreateInterview = () => {
                                             <CardBody className="p-4">
                                                 <Row>
                                                     <Col lg={1}>
-                                                        <Link onClick={() => openModal(jobListingDetails)}>
+                                                        <div onClick={() => openModal(jobListingDetails)}>
                                                             <img
                                                                 src={userImage0}
                                                                 alt=""
                                                                 className="img-fluid rounded-3"
                                                             />
-                                                        </Link>
+                                                        </div>
                                                     </Col>
 
                                                     <Col lg={9}>
                                                         <div className="mt-3 mt-lg-0">
                                                             <h5 className="fs-17 mb-1">
-                                                                <Link className="text-dark"
+                                                                <div className="text-dark"
                                                                     onClick={() => openModal(jobListingDetails)}
                                                                 >
                                                                     {jobListingDetails.codeName}
-                                                                </Link>
+                                                                </div>
                                                             </h5>
                                                             <ul className="list-inline mb-0">
                                                                 <li className="list-inline-item">
@@ -270,12 +445,12 @@ const CreateInterview = () => {
                                                                 data-bs-placement="top"
                                                                 title="View More"
                                                             >
-                                                                <Link
+                                                                <div
                                                                     onClick={() => openModal(jobListingDetails)}
                                                                     className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18"
                                                                 >
                                                                     <i className="mdi mdi-eye"></i>
-                                                                </Link>
+                                                                </div>
                                                             </li>
                                                             <li
                                                                 className="list-inline-item"
@@ -283,14 +458,12 @@ const CreateInterview = () => {
                                                                 data-bs-placement="top"
                                                                 title="Delete"
                                                             >
-                                                                <Link
-                                                                    onClick={() => openModal(jobListingDetails)}
-
-                                                                    to="#"
+                                                                <div
+                                                                    onClick={() => removeOutOfWaitingInterview(jobListingDetails.developerId)}
                                                                     className="avatar-sm bg-danger-subtle text-danger d-inline-block text-center rounded-circle fs-18"
                                                                 >
                                                                     <i className="uil uil-trash-alt"></i>
-                                                                </Link>
+                                                                </div>
                                                             </li>
                                                         </ul>
                                                     </Col>
@@ -299,7 +472,36 @@ const CreateInterview = () => {
                                         </Card>
                                     ))}
                                 </Col>
-                                <Pagination />
+
+                            </Row>
+                            <Row id="paging">
+                                <Col lg={12} className="mt-4 pt-2">
+                                    <nav aria-label="Page navigation example">
+                                        <div className="pagination job-pagination mb-0 justify-content-center">
+                                            <li
+                                                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+                                            >
+                                                <p
+                                                    className="page-link"
+                                                    to="#"
+                                                    tabIndex="-1"
+                                                    onClick={handlePrevPage}
+                                                >
+                                                    <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                                </p>
+                                            </li>
+                                            {renderPageNumbers()}
+                                            <li
+                                                className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                                    }`}
+                                            >
+                                                <p className="page-link" to="#" onClick={handleNextPage}>
+                                                    <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                                </p>
+                                            </li>
+                                        </div>
+                                    </nav>
+                                </Col>
                             </Row>
                         </div>
 
