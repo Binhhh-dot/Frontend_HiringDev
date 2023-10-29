@@ -67,7 +67,7 @@ const RightSideContent = () => {
                   style={{ width: "100px", height: "100px" }}
                   src={companyInfoInManager.companyImage}
                   alt=""
-                  className="img-fluid rounded-3"
+                  className="img-fluid rounded-3 avt-company-hiring-detail"
                 />
               </div>
 
@@ -149,7 +149,7 @@ const RightSideContent = () => {
                   </div>
                 </div>
               </li>
-              <li>
+              {/* <li>
                 <div className="d-flex mt-4">
                   <i className="uil uil-star-half-alt icon bg-primary-subtle text-primary"></i>
                   <div className="ms-3">
@@ -157,7 +157,17 @@ const RightSideContent = () => {
                     <p className="text-muted mb-0"> 0-3 Years</p>
                   </div>
                 </div>
-              </li>
+              </li> */}
+              {/* <li>
+                <div className="d-flex mt-4">
+                  <i className="uil uil-location-point icon bg-primary-subtle text-primary"></i>
+                  <div className="ms-3">
+                    <h6 className="fs-14 mb-2">Location</h6>
+                    <p className="text-muted mb-0"> New york</p>
+                  </div>
+                </div>
+              </li> */}
+
               <li>
                 <div className="d-flex mt-4">
                   <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
@@ -171,10 +181,23 @@ const RightSideContent = () => {
               </li>
               <li>
                 <div className="d-flex mt-4">
-                  <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                  <i className="uil uil-clock icon bg-primary-subtle text-primary"></i>
                   <div className="ms-3">
-                    <h6 className="fs-14 mb-2">Qualification</h6>
-                    <p className="text-muted mb-0">Bachelor Degree</p>
+                    <h6 className="fs-14 mb-2">Schedule Type</h6>
+                    <p className="text-muted mb-0">
+                      {hiringRequestDetailOverview.scheduleTypeName}
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div className="d-flex mt-4">
+                  <i className="uil uil-briefcase-alt icon bg-primary-subtle text-primary"></i>
+                  <div className="ms-3">
+                    <h6 className="fs-14 mb-2">Employment Type</h6>
+                    <p className="text-muted mb-0">
+                      {hiringRequestDetailOverview.employmentTypeName}
+                    </p>
                   </div>
                 </div>
               </li>
