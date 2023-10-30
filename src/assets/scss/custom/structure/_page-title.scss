@@ -19,11 +19,29 @@
   left: 0;
   pointer-events: none;
 
-  & > svg {
+  &>svg {
     width: 100%;
     height: auto;
+
     path {
       fill: var(--#{$prefix}body-bg) !important;
+    }
+  }
+}
+
+.shape-agreement {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  pointer-events: none;
+
+  &>svg {
+    width: 100%;
+    height: auto;
+
+    path {
+      fill: rgb(250 255 249) !important;
     }
   }
 }

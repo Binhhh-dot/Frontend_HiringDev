@@ -200,9 +200,10 @@ const JobVacancy = () => {
                   <Col md={4}>
                     <div className="text-md-end">
                       <Link
-                        to="/detailInterviewManager"
+                        to={`/detailInterviewManager?Id=${jobVacancyDetails.interviewId}`}
+
                         className="primary-link"
-                        state={{ interviewId: jobVacancyDetails.interviewId }}
+
                       >
                         View Details <i className="mdi mdi-chevron-double-right"></i>
                       </Link>

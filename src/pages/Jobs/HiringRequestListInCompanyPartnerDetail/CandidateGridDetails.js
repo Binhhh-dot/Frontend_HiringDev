@@ -230,7 +230,6 @@ const CandidateGridDetails = () => {
 
         <div class="row  justify-content-center " style={{ margin: "0px" }}>
           <div class="col-lg-2 " style={{ padding: "0px" }}>
-
           </div>
           <div class="col-lg-7 " style={{ padding: "0px" }}>
             <Container>
@@ -719,9 +718,6 @@ const CandidateGridDetails = () => {
             )}
 
           </div>
-
-
-
         </div>
 
       </section>
