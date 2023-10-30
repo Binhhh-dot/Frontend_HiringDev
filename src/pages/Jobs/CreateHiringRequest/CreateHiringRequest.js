@@ -113,11 +113,10 @@ const CreateHiringRequest = () => {
       }
 
       try {
-        const queryParams = new URLSearchParams(location.search);
-        const companyIdParam = queryParams.get("Id");
-        console.log(companyIdParam)
+        const requestIdParam = location.state.requestId;
+        console.log(requestIdParam);
         const response = await hiringRequestService.getHiringRequestDetailInCompany(
-          companyIdParam
+          requestIdParam
         );
         hiringRequestSaved = response.data.data;
         document.getElementById("job-title").value =
@@ -420,11 +419,13 @@ const CreateHiringRequest = () => {
             const employmentTypeId = selectedOptions5.value;
             const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
             const isSaved = false;
-            const requestId = localStorage.getItem("requestId");
-            if (requestId) {
+
+            const requestIdState = location.state?.requestId || null;
+
+            if (requestIdState) {
               const targetedDev = 0;
               const response = await hiringRequestService.updateHiringRequest(
-                requestId,
+                requestIdState,
                 jobTitle,
                 jobDescription,
                 numberOfDev,
@@ -533,13 +534,12 @@ const CreateHiringRequest = () => {
             : null;
           const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
           const isSaved = true;
-          const requestId = localStorage.getItem("requestId");
-          console.log(requestId);
-          console.log(jobDescription);
-          if (requestId) {
+          const requestIdState = location.state?.requestId || null;
+
+          if (requestIdState) {
             const targetedDev = 0;
             const response = await hiringRequestService.updateHiringRequest(
-              requestId,
+              requestIdState,
               jobTitle,
               jobDescription,
               numberOfDev,
@@ -575,6 +575,7 @@ const CreateHiringRequest = () => {
           setJobTitleError(null);
           setSuccessMessage("Save công việc thành công");
           setErrorMessage(null);
+          navigate("/hiringrequestlistincompanypartner");
         } catch (error) {
           console.error("Error posting job:", error);
           setLoading(false);
