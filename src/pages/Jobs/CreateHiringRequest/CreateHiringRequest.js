@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Input, Modal, ModalBody, Form, FormGroup, Label } from "reactstrap"; // Assuming you are using reactstrap for modal components
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Section from "../CreateHiringRequest/Section";
 import Select from "react-select";
@@ -17,6 +17,7 @@ import { Editor } from "@tinymce/tinymce-react";
 const CreateHiringRequest = () => {
   document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
   let hiringRequestSaved;
+  const location = useLocation();
   const [options, setOptions] = useState([]);
   const [options2, setOptions2] = useState([]);
   const [options3, setOptions3] = useState([]);
@@ -112,11 +113,13 @@ const CreateHiringRequest = () => {
       }
 
       try {
-        const companyId = localStorage.getItem("companyId");
-        const response = await hiringRequestService.getHiringRequestSaved(
-          companyId
+        const queryParams = new URLSearchParams(location.search);
+        const companyIdParam = queryParams.get("Id");
+        console.log(companyIdParam)
+        const response = await hiringRequestService.getHiringRequestDetailInCompany(
+          companyIdParam
         );
-        hiringRequestSaved = response.data.data[0];
+        hiringRequestSaved = response.data.data;
         document.getElementById("job-title").value =
           hiringRequestSaved.jobTitle;
         document.getElementById("number-dev").value =
