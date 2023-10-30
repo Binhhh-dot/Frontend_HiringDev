@@ -133,8 +133,8 @@ const JobVacancyList = () => {
 
   const openDetail = (statusString, id) => {
     if (statusString === "Saved") {
-      console.log("dungroi")
-      navigate(`/createhiringrequest?Id=${id}`);
+      const state = { requestId: id };
+      navigate('/createhiringrequest', { state });
     } else {
       navigate(`/hiringrequestlistincompanypartnerdetail?Id=${id}`);
     }
