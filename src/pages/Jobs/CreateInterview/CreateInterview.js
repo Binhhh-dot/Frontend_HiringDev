@@ -225,11 +225,10 @@ const CreateInterview = () => {
                 const requestId = queryParams.get("requestId");
                 const response = await interviewServices.createAnInterview(requestId, title, description, dateOfInterview, startTime, endTime);
                 let data = response.data;
-
                 console.log(data)
                 fetchListDevInterview();
                 setLoading(false);
-                navigate(`/hiringrequestlistincompanypartnerdetail?jobId=${requestId}`);
+                navigate(`/hiringrequestlistincompanypartnerdetail?Id=${requestId}`);
             } catch (error) {
                 console.error("Error fetching job vacancies:", error);
                 setLoading(false);

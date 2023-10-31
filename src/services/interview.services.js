@@ -68,6 +68,13 @@ const getAllInterviewByManagerAndPaging = async (pageSize, pageIndex) => {
     return response;
 }
 
+const approvalByManager = async (interviewId) => {
+    const isApproved = true;
+    const rejectionReason = "Accpect";
+    const serviceUrl = urlConstant.endpoint.interview.approvalByManager;
+    const response = await utils.axiosLocalHost.put(serviceUrl, { interviewId, isApproved, rejectionReason });
+    return response;
+}
 
 export default {
     createAnInterview,
@@ -75,5 +82,6 @@ export default {
     getAllInterviewByHRAndPaging,
     getDetailInterviewByInterviewId,
     getAllInterviewByHRAndRequestIdAndPaging,
-    getAllInterviewByManagerAndPaging
+    getAllInterviewByManagerAndPaging,
+    approvalByManager
 }

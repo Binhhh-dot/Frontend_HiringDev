@@ -20,6 +20,7 @@ const DetailInterviewManager = () => {
     let [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [hidingPage, setHidingPage] = useState(false);
+    const location = useLocation();
     const pageSize = 4;
     const handlePageClick = (page) => {
         setCurrentPage(page);
@@ -71,7 +72,9 @@ const DetailInterviewManager = () => {
 
     const fetchDetailInterview = async () => {
         try {
-            const response = await interviewServices.getDetailInterviewByInterviewId(state.interviewId, 4, currentPage)
+            const queryParams = new URLSearchParams(location.search);
+            const jobId = queryParams.get("Id");
+            const response = await interviewServices.getDetailInterviewByInterviewId(jobId, 4, currentPage)
             const data = response.data;
             document.getElementById("interview-title").value = data.data.title;
             document.getElementById("description").value = data.data.title;
@@ -114,6 +117,19 @@ const DetailInterviewManager = () => {
         }
     };
 
+    const accpetInterview = async () => {
+        try {
+            const queryParams = new URLSearchParams(location.search);
+            const interviewId = queryParams.get("Id");
+            const response = await interviewServices.approvalByManager(interviewId);
+            fetchDetailInterview();
+            console.log("thanh cong")
+        } catch (error) {
+            console.error("Error fetching job vacancies:", error);
+        }
+    };
+
+
     const openModal = (candidateInfo) => {
         setSelectedCandidateInfo(candidateInfo);
         setIsModalOpen(true);
@@ -125,34 +141,6 @@ const DetailInterviewManager = () => {
         setIsModalOpen(false);
     };
 
-
-    // const handleCreateInterview = async () => {
-    //     try {
-    //         const title = document.getElementById("interview-title").value;
-    //         const description = document.getElementById("description").value;
-    //         const dateOfInterview = document.getElementById("date-of-interview").value;
-
-    //         const startTime = document.getElementById("startTime").value + ":00";
-    //         console.log(startTime)
-    //         const endTime = document.getElementById("endTime").value + ":00";
-
-    //         const response = await interviewServices.createAnInterview(state.jobId, title, description, dateOfInterview, startTime, endTime);
-    //         let data = response.data;
-    //         console.log(data);
-    //         if (data.code === 201) {
-    //             try {
-    //                 const interviewId = data.data.interviewId;
-    //                 const response = await developerServices.appectDevToInterview(state.jobId, interviewId, listDevId);
-    //             } catch (error) {
-    //                 console.error("Error:", error);
-    //             }
-    //         }
-    //         console.log(data)
-    //         fetchListDevInterview();
-    //     } catch (error) {
-    //         console.error("Error fetching job vacancies:", error);
-    //     }
-    // };
 
     return (
         <React.Fragment>
@@ -241,6 +229,7 @@ const DetailInterviewManager = () => {
                                     }}
                                     class="btn btn-primary"
                                     role="button"
+                                    onClick={accpetInterview}
                                 >
                                     <span> Accept Interview</span>
                                 </button>

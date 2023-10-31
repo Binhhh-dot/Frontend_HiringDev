@@ -5,7 +5,7 @@ import axios from "axios";
 import JobType from "../../Home/SubSection/JobType";
 import { Form } from "react-bootstrap";
 import hiringrequestService from "../../../services/hiringrequest.service";
-
+import { useNavigate } from "react-router-dom";
 //Images Import
 import jobImage1 from "../../../assets/images/featured-job/img-01.png";
 import jobImage2 from "../../../assets/images/featured-job/img-02.png";
@@ -18,7 +18,7 @@ import jobImage7 from "../../../assets/images/featured-job/img-07.png";
 const JobVacancyList = () => {
   //Apply Now Model
   const [jobVacancyList, setJobVacancyList] = useState([]);
-
+  const navigate = useNavigate();
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
@@ -118,13 +118,32 @@ const JobVacancyList = () => {
           showFullSkills: false,
           badges: [],
           experience: job.skillRequireStrings.join(", "),
+          statusString: job.statusString,
         };
       });
       console.log(response.data);
       setJobVacancyList(formattedJobVacancies);
       setTotalPages(Math.ceil(data.paging.total / pageSize));
+      if (data.paging.total < 6) {
+        // Lấy tham chiếu đến phần tử có id="paging"
+        var rowElement = document.getElementById("paging");
+
+        // Ẩn phần tử bằng cách đặt style.display thành "none"
+        if (rowElement) {
+          rowElement.style.display = "none";
+        }
+      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
+    }
+  };
+
+  const openDetail = (statusString, id) => {
+    if (statusString === "Saved") {
+      const state = { requestId: id };
+      navigate("/createhiringrequest", { state });
+    } else {
+      navigate(`/hiringrequestlistincompanypartnerdetail?Id=${id}`);
     }
   };
 
@@ -204,9 +223,14 @@ const JobVacancyList = () => {
             <div className="p-4">
               <Row className="align-items-center">
                 <Col md={2}>
-                  <div className="text-center ">
-                    <Link
-                      to={`/hiringrequestlistincompanypartnerdetail?Id=${jobVacancyListDetails.id}`}
+                  <div className="text-center mb-4 mb-md-0">
+                    <div
+                      onClick={() =>
+                        openDetail(
+                          jobVacancyListDetails.statusString,
+                          jobVacancyListDetails.id
+                        )
+                      }
                     >
                       <img
                         style={{
@@ -217,19 +241,24 @@ const JobVacancyList = () => {
                         alt=""
                         className="img-fluid rounded-3 img-avt-hiring-request"
                       />
-                    </Link>
+                    </div>
                   </div>
                 </Col>
 
                 <Col md={3}>
                   <div className="mb-2 mb-md-0">
                     <h5 className="fs-18 mb-0">
-                      <Link
-                        to={`/hiringrequestlistincompanypartnerdetail?Id=${jobVacancyListDetails.id}`}
+                      <div
+                        onClick={() =>
+                          openDetail(
+                            jobVacancyListDetails.statusString,
+                            jobVacancyListDetails.id
+                          )
+                        }
                         className="text-dark"
                       >
                         {jobVacancyListDetails.jobDescription}
-                      </Link>
+                      </div>
                     </h5>
                     <p className="text-muted fs-14 mb-0">
                       {jobVacancyListDetails.companyName}
@@ -343,21 +372,20 @@ const JobVacancyList = () => {
           </div>
         ))}
       </div>
-      <Row>
+      <Row id="paging">
         <Col lg={12} className="mt-4 pt-2">
           <nav aria-label="Page navigation example">
             <div className="pagination job-pagination mb-0 justify-content-center">
               <li
                 className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
               >
-                <Link
+                <div
                   className="page-link"
-                  to="#"
                   tabIndex="-1"
                   onClick={handlePrevPage}
                 >
                   <i className="mdi mdi-chevron-double-left fs-15"></i>
-                </Link>
+                </div>
               </li>
               {renderPageNumbers()}
               <li
@@ -365,9 +393,9 @@ const JobVacancyList = () => {
                   currentPage === totalPages ? "disabled" : ""
                 }`}
               >
-                <Link className="page-link" to="#" onClick={handleNextPage}>
+                <div className="page-link" to="#" onClick={handleNextPage}>
                   <i className="mdi mdi-chevron-double-right fs-15"></i>
-                </Link>
+                </div>
               </li>
             </div>
           </nav>

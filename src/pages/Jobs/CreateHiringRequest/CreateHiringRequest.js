@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Input, Modal, ModalBody, Form, FormGroup, Label } from "reactstrap"; // Assuming you are using reactstrap for modal components
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Section from "../CreateHiringRequest/Section";
 import Select from "react-select";
@@ -17,6 +17,7 @@ import { Editor } from "@tinymce/tinymce-react";
 const CreateHiringRequest = () => {
   document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
   let hiringRequestSaved;
+  const location = useLocation();
   const [options, setOptions] = useState([]);
   const [options2, setOptions2] = useState([]);
   const [options3, setOptions3] = useState([]);
@@ -112,11 +113,13 @@ const CreateHiringRequest = () => {
       }
 
       try {
-        const companyId = localStorage.getItem("companyId");
-        const response = await hiringRequestService.getHiringRequestSaved(
-          companyId
-        );
-        hiringRequestSaved = response.data.data[0];
+        const requestIdParam = location.state.requestId;
+        console.log(requestIdParam);
+        const response =
+          await hiringRequestService.getHiringRequestDetailInCompany(
+            requestIdParam
+          );
+        hiringRequestSaved = response.data.data;
         document.getElementById("job-title").value =
           hiringRequestSaved.jobTitle;
         document.getElementById("number-dev").value =
@@ -291,7 +294,8 @@ const CreateHiringRequest = () => {
       openModal(); // Nếu không có, mở modal signup
     } else {
       const companyIdErr = localStorage.getItem("companyId");
-      if (!companyIdErr) {
+      if (companyIdErr == "null") {
+        console.log("null");
         openModal2();
       } else {
         setLoading(true);
@@ -415,11 +419,13 @@ const CreateHiringRequest = () => {
             const employmentTypeId = selectedOptions5.value;
             const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
             const isSaved = false;
-            const requestId = localStorage.getItem("requestId");
-            if (requestId) {
+
+            const requestIdState = location.state?.requestId || null;
+
+            if (requestIdState) {
               const targetedDev = 0;
               const response = await hiringRequestService.updateHiringRequest(
-                requestId,
+                requestIdState,
                 jobTitle,
                 jobDescription,
                 numberOfDev,
@@ -456,6 +462,7 @@ const CreateHiringRequest = () => {
             setSuccessMessage("Đăng công việc thành công");
             localStorage.removeItem("requestId");
             setErrorMessage(null);
+            navigate("/hiringrequestlistincompanypartner");
           } catch (error) {
             console.log(value);
             console.error("Error posting job:", error);
@@ -528,13 +535,12 @@ const CreateHiringRequest = () => {
             : null;
           const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
           const isSaved = true;
-          const requestId = localStorage.getItem("requestId");
-          console.log(requestId);
-          console.log(jobDescription);
-          if (requestId) {
+          const requestIdState = location.state?.requestId || null;
+
+          if (requestIdState) {
             const targetedDev = 0;
             const response = await hiringRequestService.updateHiringRequest(
-              requestId,
+              requestIdState,
               jobTitle,
               jobDescription,
               numberOfDev,
@@ -570,6 +576,7 @@ const CreateHiringRequest = () => {
           setJobTitleError(null);
           setSuccessMessage("Save công việc thành công");
           setErrorMessage(null);
+          navigate("/hiringrequestlistincompanypartner");
         } catch (error) {
           console.error("Error posting job:", error);
           setLoading(false);
@@ -931,10 +938,10 @@ const CreateHiringRequest = () => {
                           <div className="auth-content">
                             <div className="w-100">
                               <div className="text-center mb-4">
-                                <h5>Sign Up</h5>
+                                <h5>Create Company Account</h5>
                                 <p className="text-muted">
-                                  Sign Up and get access to all the features of
-                                  Jobcy
+                                  Create Company Account and get access to all
+                                  the features of WeHire
                                 </p>
                               </div>
                               <Form action="#" className="auth-form">

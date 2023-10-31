@@ -123,7 +123,7 @@ const RightSideContent = () => {
     const file = fileInput.files[0];
     // Get userId from localStorage
     const userId = localStorage.getItem('userId');
-    if (companyId) {
+    if (companyId != "null") {
       const formData = new FormData();
       formData.append('CompanyId', companyId)
       formData.append('CompanyName', companyName);
@@ -229,6 +229,9 @@ const RightSideContent = () => {
     console.log(updatedUserData2.dayOfBirh)
     updateUserData(updatedUserData2);
   };
+
+
+
 
 
   useEffect(() => {
@@ -850,13 +853,13 @@ const RightSideContent = () => {
                     </Row>
                   </div>
                   <div className="mt-4 text-end">
-                    {companyIdFromLocalStorage ? (
-                      <div to="#" className="btn btn-warning" onClick={handleUpdateCompany}>
-                        Update
+                    {companyIdFromLocalStorage === "null" ? (
+                      <div className="btn btn-primary" onClick={handleUpdateCompany}>
+                        Create
                       </div>
                     ) : (
-                      <div to="#" className="btn btn-primary" onClick={handleUpdateCompany}>
-                        Create
+                      <div className="btn btn-warning" onClick={handleUpdateCompany}>
+                        Update
                       </div>
                     )}
                   </div>
