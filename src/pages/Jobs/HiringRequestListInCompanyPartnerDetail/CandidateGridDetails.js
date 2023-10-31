@@ -13,7 +13,7 @@ import {
 import { Container } from "reactstrap";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
-import { HashLoader } from 'react-spinners';
+import { HashLoader } from "react-spinners";
 import { Link, useLocation } from "react-router-dom";
 import hiringrequestService from "../../../services/hiringrequest.service";
 import userImage0 from "../../../assets/images/user/img-00.jpg";
@@ -57,7 +57,9 @@ const CandidateGridDetails = () => {
     try {
       const queryParams = new URLSearchParams(location.search);
       const jobId = queryParams.get("Id");
-      const response = await interviewServices.getListInterviewByRequestId(jobId)
+      const response = await interviewServices.getListInterviewByRequestId(
+        jobId
+      );
       const data = response.data;
 
       const listInterview = data.data.map((interview) => {
@@ -67,15 +69,13 @@ const CandidateGridDetails = () => {
           dateOfInterview: interview.dateOfInterview.split("T")[0],
           startTime: interview.startTime,
           endTime: interview.endTime,
-        }
+        };
       });
-      setlistInterview(response.data.data)
+      setlistInterview(response.data.data);
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
   };
-
-
 
   const fetchJobVacancies = async () => {
     try {
@@ -112,8 +112,6 @@ const CandidateGridDetails = () => {
   //   // fetchListInterview();
   // }, []);
 
-
-
   const fetchHiringRequestDetailInCompany = async () => {
     let response;
     // const saveData = localStorage.getItem("myData");
@@ -130,7 +128,6 @@ const CandidateGridDetails = () => {
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
-
   };
 
   useEffect(() => {
@@ -147,8 +144,6 @@ const CandidateGridDetails = () => {
     return null;
   }
 
-
-
   const handleInterviewClick = async (id) => {
     setLoadingInterview((prevLoading) => ({
       ...prevLoading,
@@ -161,7 +156,11 @@ const CandidateGridDetails = () => {
       const isApproved = true;
 
       // Gọi API để reject interview
-      const response = await developerServices.approvalInterviewByHR(requestId, id, isApproved);
+      const response = await developerServices.approvalInterviewByHR(
+        requestId,
+        id,
+        isApproved
+      );
       setIsListLoading(true);
 
       // Xử lý kết quả nếu cần thiết
@@ -185,7 +184,6 @@ const CandidateGridDetails = () => {
     }));
     // Replace with the actual duration of your action
   };
-
 
   const rejectInterview2 = async (id) => {
     // Simulate an asynchronous action, e.g., making an API request
@@ -222,17 +220,13 @@ const CandidateGridDetails = () => {
 
     // After the action is completed, you can update the state
     // Replace with the actual duration of your action
-  }
+  };
 
   return (
     <React.Fragment>
       <section class="section">
-
         <div class="row  justify-content-center " style={{ margin: "0px" }}>
-          <div class="col-lg-2 " style={{ padding: "0px" }}>
-
-          </div>
-          <div class="col-lg-7 " style={{ padding: "0px" }}>
+          <div class="col-lg-8 " style={{ padding: "0px" }}>
             <Container>
               <Card className="job-detail overflow-hidden">
                 <div>
@@ -254,38 +248,28 @@ const CandidateGridDetails = () => {
                   <div>
                     <Row>
                       <Col md={8}>
-                        <h5 className="mb-1">{hiringRequestDetail.jobTitle}</h5>
-                        <ul className="list-inline text-muted mb-0">
-                          <li className="list-inline-item">
-                            { }
-                            <i className="mdi mdi-account"></i> {hiringRequestDetail.numberOfDev} Developer
-                          </li>
+                        <h4 className="mb-1">{hiringRequestDetail.jobTitle}</h4>
+                        {/* <ul className="list-inline text-muted mb-0">
                           <li className="list-inline-item text-warning review-rating">
-                            <span className="badge bg-warning">{hiringRequestDetail.statusString}</span>{" "}
+                            <span className="badge bg-warning">
+                              {hiringRequestDetail.statusString}
+                            </span>{" "}
                           </li>
-                        </ul>
+                        </ul> */}
                       </Col>
                       <Col lg={4}>
                         <ul className="list-inline mb-0 text-lg-end mt-3 mt-lg-0">
-                          <li className="list-inline-item">
-                            <div className="favorite-icon">
-                              <p>
-                                Deadline Request
-                                <span> </span>
-                                <span className="badge bg-secondary">{new Intl.DateTimeFormat("en-GB", {
-                                  day: "2-digit",
-                                  month: "2-digit",
-                                  year: "numeric",
-                                }).format(new Date(hiringRequestDetail.duration))}</span>
-                              </p>
-                            </div>
-                          </li>
-                          <li className="list-inline-item">
-                            <div className="favorite-icon"></div>
+                          <li>
+                            <span className="badge bg-warning mb-2">
+                              {hiringRequestDetail.statusString}
+                            </span>{" "}
                           </li>
 
                           <li>
-                            {candidategridDetails.some(dev => dev.selectedDevStatus === 'Waiting Interview') ? (
+                            {candidategridDetails.some(
+                              (dev) =>
+                                dev.selectedDevStatus === "Waiting Interview"
+                            ) ? (
                               <Link
                                 to={`/createInterview?requestId=${hiringRequestDetail.requestId}`}
                                 className="btn btn-success"
@@ -303,18 +287,22 @@ const CandidateGridDetails = () => {
                   </div>
 
                   <div className="mt-4">
-                    <Row className="g-2 " style={{ columnGap: "2px" }}>
-                      <Col lg={3} style={{ maxWidth: "261px" }} className="border p-3">
+                    <Row className="g-2 ">
+                      <Col lg={3} className="border p-3">
                         <div className="rounded-start ">
-                          <p className="text-muted mb-0 fs-13">Type Of Developer</p>
-                          <p className="fw-medium  badge bg-purple mb-0">
+                          <p className="text-muted mb-0 fs-13">
+                            Type Of Developer
+                          </p>
+                          <p className="fw-medium badge bg-info text-light mb-0">
                             {hiringRequestDetail.typeRequireName}
                           </p>
                         </div>
                       </Col>
-                      <Col lg={3} className="border p-3" style={{ maxWidth: "261px" }}>
-                        <div >
-                          <p className="text-muted fs-13 mb-0">Skill Requirement</p>
+                      <Col lg={3} className="border p-3">
+                        <div>
+                          <p className="text-muted fs-13 mb-0">
+                            Skill Requirement
+                          </p>
                           {hiringRequestDetail.skillRequireStrings.map(
                             (skill, index) => (
                               <span
@@ -328,16 +316,22 @@ const CandidateGridDetails = () => {
                           )}
                         </div>
                       </Col>
-                      <Col lg={3} className="border p-3" style={{ maxWidth: "261px" }}>
-                        <div >
-                          <p className="text-muted fs-13 mb-0">Level Requirement</p>
-                          <p className="fw-medium mb-0 badge bg-info">{hiringRequestDetail.levelRequireName}</p>
+                      <Col lg={3} className="border p-3">
+                        <div>
+                          <p className="text-muted fs-13 mb-0">
+                            Level Requirement
+                          </p>
+                          <p className="fw-medium mb-0 badge bg-purple text-light">
+                            {hiringRequestDetail.levelRequireName}
+                          </p>
                         </div>
                       </Col>
-                      <Col lg={3} style={{ maxWidth: "261px" }} className="border p-3">
+                      <Col lg={3} className="border p-3">
                         <div className="  rounded-end">
-                          <p className="text-muted fs-13 mb-0">Budget</p>
-                          <p className="fw-medium mb-0 badge bg-danger">${hiringRequestDetail.salaryPerDev}</p>
+                          <p className="text-muted fs-13 mb-0">Deadline</p>
+                          <p className="fw-medium mb-0 badge bg-orangeRed2 text-light">
+                            {hiringRequestDetail.duration}
+                          </p>
                         </div>
                       </Col>
                     </Row>
@@ -348,7 +342,9 @@ const CandidateGridDetails = () => {
                     <div className="">
                       <p
                         className=""
-                        dangerouslySetInnerHTML={{ __html: hiringRequestDetail.jobDescription }}
+                        dangerouslySetInnerHTML={{
+                          __html: hiringRequestDetail.jobDescription,
+                        }}
                       />
                     </div>
                   </div>
@@ -356,7 +352,9 @@ const CandidateGridDetails = () => {
               </Card>
               <Row>
                 <div style={{ marginTop: "35px" }}>
-                  <h3 style={{ marginBottom: "3px" }}>List Developer Accepted</h3>
+                  <h3 style={{ marginBottom: "3px" }}>
+                    List Developer Accepted
+                  </h3>
                 </div>
               </Row>
               <div className="candidate-list">
@@ -367,10 +365,17 @@ const CandidateGridDetails = () => {
                         <CardBody className="p-4 dev-accepted mt-4">
                           <div className="d-flex mb-4 justify-content-between">
                             <div className="d-flex">
-                              <div className="flex-shrink-0 position-relative"
-                                onClick={() => openModal(candidategridDetailsNew)}>
+                              <div
+                                className="flex-shrink-0 position-relative"
+                                onClick={() =>
+                                  openModal(candidategridDetailsNew)
+                                }
+                              >
                                 <img
-                                  src={candidategridDetailsNew.userImg || userImage0}
+                                  src={
+                                    candidategridDetailsNew.userImg ||
+                                    userImage0
+                                  }
                                   alt=""
                                   className="avatar-md rounded"
                                 />
@@ -382,8 +387,12 @@ const CandidateGridDetails = () => {
                               </div>
                               <div className="ms-3">
                                 <div className="primary-link">
-                                  <h5 className="fs-17"
-                                    onClick={() => openModal(candidategridDetailsNew)}>
+                                  <h5
+                                    className="fs-17"
+                                    onClick={() =>
+                                      openModal(candidategridDetailsNew)
+                                    }
+                                  >
                                     {candidategridDetailsNew.codeName}
                                   </h5>
                                 </div>
@@ -393,7 +402,6 @@ const CandidateGridDetails = () => {
                               </div>
                             </div>
 
-
                             <div
                               className="list-inline-item"
                               data-bs-toggle="tooltip"
@@ -401,28 +409,38 @@ const CandidateGridDetails = () => {
                               onClick={() => openModal(candidategridDetailsNew)}
                               title="View More"
                             >
-                              <div
-                                className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18"
-                              >
+                              <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
                                 <i className="mdi mdi-eye"></i>
                               </div>
                             </div>
-
                           </div>
 
                           <ul className="list-inline d-flex justify-content-between align-items-center">
                             <li>
                               <div className="d-flex flex-wrap align-items-start gap-1">
                                 {candidategridDetailsNew.skills &&
-                                  Array.isArray(candidategridDetailsNew.skills) &&
-                                  candidategridDetailsNew.skills.slice(0, 3).map((skill, skillIndex) => (
-                                    <span key={skillIndex} className="badge bg-success-subtle text-success fs-14 mt-1">
-                                      {skill}
-                                    </span>
-                                  ))}
+                                  Array.isArray(
+                                    candidategridDetailsNew.skills
+                                  ) &&
+                                  candidategridDetailsNew.skills
+                                    .slice(0, 3)
+                                    .map((skill, skillIndex) => (
+                                      <span
+                                        key={skillIndex}
+                                        className="badge bg-success-subtle text-success fs-14 mt-1"
+                                      >
+                                        {skill}
+                                      </span>
+                                    ))}
                                 {candidategridDetailsNew.skills &&
-                                  Array.isArray(candidategridDetailsNew.skills) &&
-                                  candidategridDetailsNew.skills.length > 3 && <span className="badge bg-success-subtle text-success fs-14 mt-1">...</span>}
+                                  Array.isArray(
+                                    candidategridDetailsNew.skills
+                                  ) &&
+                                  candidategridDetailsNew.skills.length > 3 && (
+                                    <span className="badge bg-success-subtle text-success fs-14 mt-1">
+                                      ...
+                                    </span>
+                                  )}
                               </div>
                             </li>
                           </ul>
@@ -444,9 +462,7 @@ const CandidateGridDetails = () => {
                               </Col>
                             </div>
                           </div>
-                          <p className="text-muted">
-
-                          </p>
+                          <p className="text-muted"></p>
 
                           <div
                             className="border border-2 p-3"
@@ -454,11 +470,17 @@ const CandidateGridDetails = () => {
                           >
                             <div className="d-flex justify-content-between">
                               <p>Matching with request</p>
-                              <p className="text-success fw-bold">{candidategridDetailsNew.averagedPercentage}%</p>
+                              <p className="text-success fw-bold">
+                                {candidategridDetailsNew.averagedPercentage}%
+                              </p>
                             </div>
                             <div className="dev-matching-in-company border border-1">
-                              <div className="dev-matching-level-in-company"
-                                style={{ width: `${candidategridDetailsNew.averagedPercentage}% ` }}></div>
+                              <div
+                                className="dev-matching-level-in-company"
+                                style={{
+                                  width: `${candidategridDetailsNew.averagedPercentage}% `,
+                                }}
+                              ></div>
                             </div>
                           </div>
 
@@ -516,16 +538,26 @@ const CandidateGridDetails = () => {
                           </div> */}
 
                           <div className="mt-3">
-
-                            {candidategridDetailsNew.selectedDevStatus === "Waiting HR Approval" ? (
+                            {candidategridDetailsNew.selectedDevStatus ===
+                            "Waiting HR Approval" ? (
                               <>
                                 <button
                                   id="interviewButton"
                                   className="btn btn-primary btn-hover w-100 mt-2"
-                                  onClick={() => handleInterviewClick(candidategridDetailsNew.id)}
+                                  onClick={() =>
+                                    handleInterviewClick(
+                                      candidategridDetailsNew.id
+                                    )
+                                  }
                                 >
-                                  {loadingInterview[candidategridDetailsNew.id] ? (
-                                    <HashLoader size={20} color={'#36D7B7'} loading={true} />
+                                  {loadingInterview[
+                                    candidategridDetailsNew.id
+                                  ] ? (
+                                    <HashLoader
+                                      size={20}
+                                      color={"#36D7B7"}
+                                      loading={true}
+                                    />
                                   ) : (
                                     <>
                                       <i className="mdi mdi-account-check"></i>
@@ -536,40 +568,62 @@ const CandidateGridDetails = () => {
                                 <button
                                   id="rejectButton"
                                   className="btn btn-soft-primary btn-hover w-100 mt-2"
-                                  onClick={() => rejectInterview2(candidategridDetailsNew.id)}
+                                  onClick={() =>
+                                    rejectInterview2(candidategridDetailsNew.id)
+                                  }
                                 >
                                   {loadingReject[candidategridDetailsNew.id] ? (
-                                    <HashLoader size={20} color={'#36D7B7'} loading={true} />
+                                    <HashLoader
+                                      size={20}
+                                      color={"#36D7B7"}
+                                      loading={true}
+                                    />
+                                  ) : isListLoading ? (
+                                    <HashLoader
+                                      size={20}
+                                      color={"#36D7B7"}
+                                      loading={true}
+                                    />
                                   ) : (
-                                    isListLoading ? <HashLoader size={20} color={'#36D7B7'} loading={true} /> : 'Reject'
+                                    "Reject"
                                   )}
                                 </button>
                               </>
-                            ) : candidategridDetailsNew.selectedDevStatus === "HR Rejected" ? (
-                              <div className="btn btn-red w-100 mt-2">Rejected</div>
-                            ) : candidategridDetailsNew.selectedDevStatus === "Waiting Interview" ? (
+                            ) : candidategridDetailsNew.selectedDevStatus ===
+                              "HR Rejected" ? (
+                              <div className="btn btn-red w-100 mt-2">
+                                Rejected
+                              </div>
+                            ) : candidategridDetailsNew.selectedDevStatus ===
+                              "Waiting Interview" ? (
                               <>
-                                <div className="btn btn-primary w-100 mt-2">Waiting Interview</div>
+                                <div className="btn btn-primary w-100 mt-2">
+                                  Waiting Interview
+                                </div>
                                 <button
                                   id="rejectButton"
                                   className="btn btn-soft-primary btn-hover w-100 mt-2"
-                                  onClick={() => rejectInterview2(candidategridDetailsNew.id)}
+                                  onClick={() =>
+                                    rejectInterview2(candidategridDetailsNew.id)
+                                  }
                                 >
                                   {loadingReject[candidategridDetailsNew.id] ? (
-                                    <HashLoader size={20} color={'#36D7B7'} loading={true} />
+                                    <HashLoader
+                                      size={20}
+                                      color={"#36D7B7"}
+                                      loading={true}
+                                    />
                                   ) : (
-                                    <>
-
-                                      Reject
-                                    </>
+                                    <>Reject</>
                                   )}
                                 </button>
                               </>
-                            ) : candidategridDetailsNew.selectedDevStatus === "Interviewing" ? (
-                              <div className="btn btn-primary w-100 mt-2">Interviewing</div>
-                            ) : null
-                            }
-
+                            ) : candidategridDetailsNew.selectedDevStatus ===
+                              "Interviewing" ? (
+                              <div className="btn btn-primary w-100 mt-2">
+                                Interviewing
+                              </div>
+                            ) : null}
                           </div>
                         </CardBody>
                       </div>
@@ -584,11 +638,10 @@ const CandidateGridDetails = () => {
                   />
                 </div>
               </div>
-
-
             </Container>
           </div>
-          <div class="col-lg-3 d-flex flex-column gap-4" style={{ paddingRight: "24px" }}>
+
+          <div class="col-lg-3 d-flex flex-column gap-4">
             <Card className="job-overview ">
               <CardBody className="p-4">
                 <h4>Job Overview</h4>
@@ -598,11 +651,25 @@ const CandidateGridDetails = () => {
                       <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Job Title</h6>
-                        <p className="text-muted mb-0">{hiringRequestDetail.jobTitle}
+                        <p className="text-muted mb-0">
+                          {hiringRequestDetail.jobTitle}
                         </p>
                       </div>
                     </div>
                   </li>
+
+                  <li>
+                    <div className="d-flex mt-4">
+                      <i className="uil uil-user-square icon bg-primary-subtle text-primary"></i>
+                      <div className="ms-3">
+                        <h6 className="fs-14 mb-0">No. Dev</h6>
+                        <p className="text-muted mb-0">
+                          {hiringRequestDetail.numberOfDev}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+
                   <li>
                     <div className="d-flex mt-4">
                       <i className="uil uil-star-half-alt icon bg-primary-subtle text-primary"></i>
@@ -638,8 +705,7 @@ const CandidateGridDetails = () => {
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Date Posted</h6>
                         {hiringRequestDetail.postedTime}
-                        <p className="text-muted mb-0">
-                        </p>
+                        <p className="text-muted mb-0"></p>
                       </div>
                     </div>
                   </li>
@@ -647,8 +713,8 @@ const CandidateGridDetails = () => {
               </CardBody>
             </Card>
             {listInterview.length > 0 ? (
-              <Card className="job-overview ">
-                <CardBody className="p-4">
+              <div className="job-overview ">
+                <div>
                   <div className="d-flex flex-column gap-3">
                     <div className="d-flex justify-content-between align-items-center ">
                       <h4 class="justify-content-center ">List Interviews</h4>
@@ -666,68 +732,78 @@ const CandidateGridDetails = () => {
                     <Row className="d-flex flex-column gap-4">
                       {listInterviewToShow.map((listInterviewDetails, key) => (
                         <Col lg={12} md={12} key={key}>
-                          <div >
-                            <div className="dev-accepted ">
-                              <div
-                              // key={key}
-                              >
-                                <div className="p-4">
-                                  <Row >
-                                    <Col lg={12}>
-                                      <div className="mt-3 mt-lg-0 d-flex flex-column gap-3">
-                                        <div className="d-flex justify-content-between align-items-center">
-                                          <h5 className="mb-0">
-                                            <Link to="/jobdetails" className="text-dark">
-                                              {listInterviewDetails.title}
-                                            </Link>{" "}
-                                          </h5>
-                                          <span
-                                            className={
-                                              "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
-                                            }
-                                          >
-                                            {listInterviewDetails.statusString}
-                                          </span>
-
-                                        </div>
-                                        <div className="d-flex flex-column gap-1">
-                                          <p className="text-muted fs-14 mb-0">
-                                            Date: {listInterviewDetails.dateOfInterview}
-                                          </p>
-                                          <p className="text-muted fs-14 mb-0">
-                                            Time: {listInterviewDetails.startTime} - {listInterviewDetails.endTime}
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </Col>
-                                  </Row>
-                                </div>
-                              </div>
+                          <div className="dev-accepted ">
+                            <div className="px-4 py-3">
+                              <Row>
+                                <Col lg={12}>
+                                  <div className="mt-3 mt-lg-0 d-flex flex-column gap-3">
+                                    <div className="d-flex justify-content-between align-items-center">
+                                      <h5 className="mb-0">
+                                        <Link
+                                          to="/jobdetails"
+                                          className="text-dark"
+                                        >
+                                          {listInterviewDetails.title}
+                                        </Link>{" "}
+                                      </h5>
+                                      <span
+                                        className={
+                                          "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                                        }
+                                      >
+                                        {listInterviewDetails.statusString}
+                                      </span>
+                                    </div>
+                                    <div className="d-flex flex-column gap-1">
+                                      <p className="text-muted fs-14 mb-0">
+                                        Date:{" "}
+                                        {listInterviewDetails.dateOfInterview}
+                                      </p>
+                                      <p className="text-muted fs-14 mb-0">
+                                        Time: {listInterviewDetails.startTime} -{" "}
+                                        {listInterviewDetails.endTime}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </Col>
+                              </Row>
                             </div>
                           </div>
                         </Col>
                       ))}
+                      <Col lg={12} md={12}>
+                        <div className="dev-accepted">
+                          <div className="px-4 py-3 ">
+                            <Row>
+                              <div
+                                className="d-flex justify-content-center align-items-center"
+                                style={{
+                                  height: "50px",
+                                }}
+                              >
+                                <i
+                                  className=" uil uil-plus"
+                                  style={{ fontSize: "20px" }}
+                                ></i>
+                                <span className="ms-1">Add interview</span>
+                              </div>
+                            </Row>
+                          </div>
+                        </div>
+                      </Col>
                     </Row>
                   </div>
-                </CardBody>
-              </Card>
+                </div>
+              </div>
             ) : (
               <div>
                 <p>No interviews available.</p>
-
               </div>
             )}
-
           </div>
-
-
-
         </div>
-
       </section>
-
-
-    </React.Fragment >
+    </React.Fragment>
   );
 };
 

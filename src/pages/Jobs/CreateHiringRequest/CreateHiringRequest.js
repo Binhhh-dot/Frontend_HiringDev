@@ -452,7 +452,7 @@ const CreateHiringRequest = () => {
               console.log("Job posted successfully:", response);
             }
             setLoading(false);
-            navigate("/signin");
+            // navigate("/signin");
             setSuccessMessage("Đăng công việc thành công");
             localStorage.removeItem("requestId");
             setErrorMessage(null);

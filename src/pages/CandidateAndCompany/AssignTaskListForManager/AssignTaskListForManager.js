@@ -137,6 +137,7 @@ const AssignTaskListForManager = (a) => {
       //const data = response.data;
       setAssignTaskList(response.data.data);
       setTotalPages(Math.ceil(response.data.paging.total / pageSize));
+      console.log(response.data.data);
     } catch (error) {
       console.error("Error fetching assign task list for manager :", error);
     }
@@ -221,7 +222,7 @@ const AssignTaskListForManager = (a) => {
                       </Link>
                     </h5>
                     <p className="text-muted fs-14 mb-0">
-                      {/* {jobVacancyListDetails.deadline} */}2 mins ago
+                      {jobVacancyListDetails.postedTime}
                     </p>
                   </div>
                 </Col>
@@ -229,10 +230,10 @@ const AssignTaskListForManager = (a) => {
                 <Col md={3}>
                   <div className="d-flex mb-2">
                     <div className="flex-shrink-0">
-                      <i className="uil uil-receipt-alt text-primary me-1"></i>
+                      <i className="uil uil-user-square text-primary me-1"></i>
                     </div>
                     <p className="text-muted mb-0">
-                      {jobVacancyListDetails.description}
+                      {jobVacancyListDetails.numberOfInterviewee}
                     </p>
                   </div>
                 </Col>
@@ -249,18 +250,18 @@ const AssignTaskListForManager = (a) => {
                   </div>
                 </Col>
 
-                <Col md={3}>
+                <Col md={2}>
                   <div>
                     <span
                       className={
                         jobVacancyListDetails.statusString === "Preparing"
-                          ? "badge bg-info-subtle text-info fs-12 mt-1 mx-1"
+                          ? "badge bg-warning text-light fs-12 "
                           : jobVacancyListDetails.statusString === "InProgress"
-                          ? "badge bg-blue text-light fs-12 mt-1 mx-1"
+                          ? "badge bg-info text-light fs-12 "
                           : jobVacancyListDetails.statusString === "Done"
-                          ? "badge bg-primary-subtle text-primary fs-12 mt-1 mx-1"
+                          ? "badge bg-primary text-light fs-12 "
                           : jobVacancyListDetails.statusString === "Cancelled"
-                          ? "badge bg-danger-subtle text-danger fs-12 mt-1 mx-1"
+                          ? "badge bg-danger text-light fs-12 "
                           : ""
                       }
                     >

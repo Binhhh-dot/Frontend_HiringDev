@@ -47,6 +47,8 @@ const JobDetailsDescription = () => {
   /////////////////////////////////////////////////////////////////////////////////////////
   const [currentListDev, setCurrentListDev] = useState("matching");
   //////////////////////////////////////////////////////////////////////////////////////////
+  const [disableIconCancel, setDisableIconCancel] = useState(false);
+  /////////////////////////////////////////////////////////////////////////////////////////
   const handleTabChange = (tab) => {
     setCurrentListDev(tab);
     console.log(tab);
@@ -165,6 +167,8 @@ const JobDetailsDescription = () => {
 
   /////////////////////////////////////////////////////////////////////////////////////////
 
+  /////////////////////////////////////////////////////////////////////////////////////////
+
   const [cancelReason, setCancelReason] = useState("");
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
@@ -180,7 +184,8 @@ const JobDetailsDescription = () => {
     if (cancelReason.trim() === "") {
       console.log("Please enter a reason for cancellation.");
     } else {
-      // fetchCancelHirringRequestStatus();
+      fetchCancelHirringRequestStatus();
+      //fetchHiringRequestDetailInManager();
       console.log("Cancel Request Reason:", cancelReason);
       closeCancelModal();
     }
@@ -195,6 +200,7 @@ const JobDetailsDescription = () => {
         cancelReason,
         false
       );
+      fetchHiringRequestDetailInManager();
       console.log("li do cancel request:");
       console.log(cancelReason);
       return response;
@@ -230,7 +236,7 @@ const JobDetailsDescription = () => {
       response = await hiringrequestService.getDeveloperMatchingInManager(
         state.jobId
       );
-      // console.log(response.data.data);
+
       setDevMatching(response.data.data);
       console.log("request id: " + state.jobId);
       console.log(response.data.data);
@@ -249,10 +255,7 @@ const JobDetailsDescription = () => {
         selectedDev
       );
 
-      console.log("Send OK");
-      console.log("/////////////");
-      console.log(selectedDev);
-      console.log("/////////////");
+      setIsSendButtonVisibility(false);
       fetchDeveloperMatchingInManager();
       return response;
     } catch (error) {
@@ -260,9 +263,6 @@ const JobDetailsDescription = () => {
         "Error fetching send hiring request to dev matching:",
         error
       );
-      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-      console.log(state.jobId);
-      console.log(selectedDev);
     }
   };
 
@@ -285,10 +285,6 @@ const JobDetailsDescription = () => {
     let response;
     try {
       response = await developer.sendDevToHR(state.jobId, selectedDevAccept);
-      console.log("///////////////////////////////////");
-      console.log("gui cho HR : ");
-      console.log(response.data);
-      console.log("/////////////////////////////////////");
       fetchGetSelectedDevByManager();
       setSelectedAllDevAccept(false);
       return response;
@@ -297,14 +293,33 @@ const JobDetailsDescription = () => {
     }
   };
 
-  const fetchapprovedHirringRequestStatus = async () => {
-    let response;
+  //--------------------------------------------------------------------------------
+  const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+
+  const openAcceptModal = () => {
+    setIsAcceptModalOpen(true);
+  };
+
+  const closeAcceptModal = () => {
+    setIsAcceptModalOpen(false);
+  };
+
+  const handleAcceptModalAccept = async () => {
     try {
-      response = await hiringrequestService.approvedHirringRequestStatus(
+      const response = await hiringrequestService.approvedHirringRequestStatus(
         state.jobId,
         "string",
         true
       );
+
+      if (response.status === 200) {
+        setShowCandidateList(true);
+        fetchHiringRequestDetailInManager();
+        setIsAcceptModalOpen(false);
+      } else {
+        setIsAcceptModalOpen(false);
+      }
+
       return response;
     } catch (error) {
       console.error("Error fetching approved hiring request", error);
@@ -330,10 +345,10 @@ const JobDetailsDescription = () => {
 
   /////////////////////////////////////////////////////////////////////////////////
   // ham xu li approved hiring request
-  const handleAcceptedHirringRequest = () => {
-    setShowCandidateList(true);
-    fetchapprovedHirringRequestStatus();
-  };
+  // const handleAcceptedHirringRequest = () => {
+  //   setShowCandidateList(true);
+  //   fetchapprovedHirringRequestStatus();
+  // };
   ////////////////////////////////////////////////////////////////////////////////
 
   //trang handle nut send
@@ -346,6 +361,9 @@ const JobDetailsDescription = () => {
     // thuc hien chuc nang cua nut send o day
     fetchsendHiringRequestToDevMatching();
     setIsPopupConfirmOpen(false);
+    //setIsSendButtonVisibility(false);
+    //window.location.reload();
+    setSelectedDev([]);
   };
 
   const handleConfirmCancel = () => {
@@ -362,8 +380,11 @@ const JobDetailsDescription = () => {
 
   const handleConfirmHR = () => {
     //thuc hien chuc nang cua nut send o day
+
+    setIsSendButtonAcceptVisible(false);
     fetchsendevToHR();
     setIsPopupConfirmOpenHR(false);
+    setSelectedDevAccept([]);
   };
 
   const handleConfirmCancelHR = () => {
@@ -395,7 +416,44 @@ const JobDetailsDescription = () => {
     setShowDropdown(false);
   };
 
-  ////////////////////////////////////////////////////////////////////////////
+  //----------------------------------------------------------------------------------------
+  //const [cancelReason, setCancelReason] = useState("");
+
+  const [cancelReasonAfter, setCancelReasonAfter] = useState("");
+
+  const fetchCancelHirringRequestStatusAfter = async () => {
+    let response;
+    try {
+      response = await hiringrequestService.cancelHirringRequestStatusAfter(
+        state.jobId,
+        cancelReasonAfter,
+        false
+      );
+    } catch (error) {
+      console.error("Error fetching cancel hiring request after", error);
+    }
+  };
+  //---------------------------------------------------------------------------------------
+  //handle modal cancel request after
+  const [isCancelAfterModalOpen, setIsCancelAfterModalOpen] = useState(false);
+
+  const openCancelAfterModal = () => {
+    setIsCancelAfterModalOpen(true);
+  };
+
+  const closeCancelAfterModal = () => {
+    setIsCancelAfterModalOpen(false);
+  };
+
+  const handleCancelAfterRequest = () => {
+    if (cancelReasonAfter.trim() === "") {
+      console.log("Please enter a reason for cancellation.");
+    } else {
+      fetchCancelHirringRequestStatusAfter();
+      closeCancelAfterModal();
+    }
+  };
+  //----------------------------------------------------------------------------------------
 
   useEffect(() => {
     fetchHiringRequestDetailInManager();
@@ -449,28 +507,86 @@ const JobDetailsDescription = () => {
                 <span
                   className={
                     hiringRequestDetail.statusString === "Waiting Approval"
-                      ? "badge bg-warning text-light fs-12 mt-1 mx-1"
+                      ? "badge bg-warning text-light fs-12"
                       : hiringRequestDetail.statusString === "In Progress"
-                      ? "badge bg-blue text-light fs-12 mt-1 mx-1"
-                      : hiringRequestDetail.statusString === "Reject"
-                      ? "badge bg-danger text-light fs-12 mt-1 mx-1"
+                      ? "badge bg-blue text-light fs-12"
+                      : hiringRequestDetail.statusString === "Rejected"
+                      ? "badge bg-danger text-light fs-12"
                       : hiringRequestDetail.statusString === "Expired"
-                      ? "badge bg-darkcyan text-light fs-12 mt-1 mx-1"
+                      ? "badge bg-darkcyan text-light fs-12"
                       : hiringRequestDetail.statusString === "Cancelled"
-                      ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
+                      ? "badge bg-secondary text-light fs-12"
                       : hiringRequestDetail.statusString === "Finished"
-                      ? "badge bg-primary text-light fs-12 mt-1 mx-1"
+                      ? "badge bg-primary text-light fs-12"
                       : hiringRequestDetail.statusString === "Complete"
-                      ? "badge bg-success text-light fs-12 mt-1 mx-1"
+                      ? "badge bg-success text-light fs-12"
                       : hiringRequestDetail.statusString === "Save"
-                      ? "badge bg-teal text-light fs-12 mt-1 mx-1"
+                      ? "badge bg-teal text-light fs-12"
                       : ""
                   }
                   company={{ companyMana: hiringRequestDetail.companyId }}
                 >
                   {hiringRequestDetail.statusString}
                 </span>
-                <Dropdown isOpen={showDropdown} toggle={toggleDropdown}>
+
+                {hiringRequestDetail.statusString === "Waiting Approval" ? (
+                  <FontAwesomeIcon
+                    icon={faEllipsisVertical}
+                    size="xl"
+                    color="#909191"
+                  />
+                ) : (
+                  <Dropdown
+                    isOpen={showDropdown}
+                    toggle={toggleDropdown}
+                    disabled={disableIconCancel}
+                  >
+                    <DropdownToggle
+                      caret
+                      style={{
+                        padding: "0px",
+                        backgroundColor: "white",
+                        border: "0px",
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        icon={faEllipsisVertical}
+                        size="xl"
+                        color="#909191"
+                        // onClick={handleDropdownClick}
+                      />
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem header style={{ textAlign: "center" }}>
+                        Are you sure?
+                      </DropdownItem>
+                      <DropdownItem divider />
+                      <DropdownItem>
+                        <button
+                          className="d-flex justify-content-center"
+                          style={{
+                            width: "100%",
+                            padding: "7px",
+                            fontWeight: "500",
+                          }}
+                          class="btn btn-danger"
+                          role="button"
+                          onClick={openCancelAfterModal}
+                        >
+                          <span style={{ fontSize: "15px" }}>
+                            Cancel Request
+                          </span>
+                        </button>
+                      </DropdownItem>
+                      <DropdownItem divider />
+                    </DropdownMenu>
+                  </Dropdown>
+                )}
+                {/* <Dropdown
+                  isOpen={showDropdown}
+                  toggle={toggleDropdown}
+                  disabled={disableIconCancel}
+                >
                   <DropdownToggle
                     caret
                     style={{
@@ -501,17 +617,14 @@ const JobDetailsDescription = () => {
                         }}
                         class="btn btn-danger"
                         role="button"
-                        onClick={openCancelModal}
+                        onClick={openCancelAfterModal}
                       >
                         <span style={{ fontSize: "15px" }}>Cancel Request</span>
                       </button>
                     </DropdownItem>
-
-                    {/* <DropdownItem disabled>Action (disabled)</DropdownItem> */}
                     <DropdownItem divider />
-                    {/* <DropdownItem>Another Action</DropdownItem> */}
                   </DropdownMenu>
-                </Dropdown>
+                </Dropdown> */}
               </div>
             </div>
           </div>
@@ -521,14 +634,6 @@ const JobDetailsDescription = () => {
             <Row>
               <Col md={8}>
                 <h3 className="mb-1">{hiringRequestDetail.jobTitle}</h3>
-
-                {/* <ul className="list-inline text-muted mb-0">
-                  <li className="list-inline-item text-warning review-rating">
-                    <span className="badge bg-warning">
-                      {hiringRequestDetail.statusString}
-                    </span>{" "}
-                  </li>
-                </ul> */}
               </Col>
             </Row>
           </div>
@@ -560,7 +665,7 @@ const JobDetailsDescription = () => {
                         <span
                           key={index}
                           style={{ marginRight: "3px" }}
-                          className="badge bg-primary-subtle text-primary"
+                          className="badge bg-primary text-light"
                         >
                           {skill}
                         </span>
@@ -582,47 +687,7 @@ const JobDetailsDescription = () => {
                   </p>
                 </div>
               </Col>
-              {/* <Col
-                lg={3}
-                className="border rounded p-3"
-                style={{ maxWidth: "266px" }}
-              >
-                <div>
-                  <p className="text-muted fs-13 mb-0">Salary of Developer</p>
-                  <p className="fw-medium mb-0 badge bg-money text-light">
-                    {hiringRequestDetail.salaryPerDev} $
-                  </p>
-                </div>
-              </Col> */}
 
-              {/* <Col
-                lg={3}
-                className="border rounded p-3 "
-                style={{ maxWidth: "266px" }}
-              >
-                <div>
-                  <p className="text-muted mb-0 fs-13">
-                    Number Of Developer Required
-                  </p>
-                  <p className="fw-medium mb-0 badge bg-peru text-light">
-                    {hiringRequestDetail.numberOfDev} Developer
-                  </p>
-                </div>
-              </Col> */}
-              {/* <Col
-                lg={3}
-                className="border rounded p-3"
-                style={{ maxWidth: "266px" }}
-              >
-                <div id="standard">
-                  <p className="text-muted fs-13 mb-0">Employment Type</p>
-                  <p className="fw-medium mb-0 ">
-                    <span className="badge bg-darkcyan ">
-                      {hiringRequestDetail.employmentTypeName}
-                    </span>
-                  </p>
-                </div>
-              </Col> */}
               <Col
                 lg={3}
                 className="border rounded p-3"
@@ -631,7 +696,7 @@ const JobDetailsDescription = () => {
                 <div id="standard">
                   <p className="text-muted fs-13 mb-0">Deadline</p>
                   <p className="fw-medium mb-0 ">
-                    <span className="badge bg-orangeRed2">
+                    <span className="badge bg-orangeRed2 text-light">
                       {new Intl.DateTimeFormat("en-GB", {
                         day: "2-digit",
                         month: "2-digit",
@@ -641,20 +706,6 @@ const JobDetailsDescription = () => {
                   </p>
                 </div>
               </Col>
-              {/* <Col
-                lg={3}
-                className="border rounded p-3"
-                style={{ maxWidth: "266px" }}
-              >
-                <div id="standard">
-                  <p className="text-muted fs-13 mb-0">Schedule Type</p>
-                  <p className="fw-medium mb-0 ">
-                    <span className="badge bg-wheat3">
-                      {hiringRequestDetail.scheduleTypeName}
-                    </span>
-                  </p>
-                </div>
-              </Col> */}
             </Row>
           </div>
 
@@ -707,9 +758,8 @@ const JobDetailsDescription = () => {
             }}
             class="btn btn-primary"
             role="button"
-            onClick={() => {
-              handleAcceptedHirringRequest();
-            }}
+            //onClick={handleAcceptedHirringRequest}
+            onClick={openAcceptModal}
           >
             <span> Accept Request</span>
           </button>
@@ -729,32 +779,7 @@ const JobDetailsDescription = () => {
           </button>
         </div>
       ) : (
-        <div className="d-flex justify-content-center mt-3">
-          {/* <button
-            class="btn btn-success"
-            role="button"
-            onClick={() => {
-              handleAcceptedHirringRequest();
-            }}
-          >
-            <span>Show Dev Matching</span>
-          </button> */}
-
-          {/* <button
-            className="d-flex justify-content-center"
-            style={{
-              width: "50%",
-              padding: "12px",
-              fontSize: "larger",
-              fontWeight: "500",
-            }}
-            class="btn btn-danger"
-            role="button"
-            onClick={openCancelModal}
-          >
-            <span>Cancel Request</span>
-          </button> */}
-        </div>
+        <div className="d-flex justify-content-center mt-3"></div>
       )}
 
       {showCandidateList && (
@@ -1172,9 +1197,17 @@ const JobDetailsDescription = () => {
                                     ),
                                   }}
                                 >
-                                  {candidateDetailsNew.averagedPercentage.toFixed(
+                                  {/* {candidateDetailsNew.averagedPercentage.toFixed(
                                     2
                                   )}
+                                  % */}
+                                  {candidateDetailsNew.averagedPercentage.toFixed(
+                                    2
+                                  ) == 100.0
+                                    ? 100
+                                    : candidateDetailsNew.averagedPercentage.toFixed(
+                                        2
+                                      )}
                                   %
                                 </span>
                               </div>
@@ -1233,20 +1266,6 @@ const JobDetailsDescription = () => {
                         )}
                       </Col>
 
-                      {/* <div className="col-auto">
-                        <div
-                          className="candidate-list-images"
-                          onClick={() => openModal(devHasBeenSentNew)}
-                        >
-                          <Link to="#">
-                            <img
-                              src={devHasBeenSentNew.userImg}
-                              alt=""
-                              className="avatar-md img-thumbnail rounded-circle"
-                            />
-                          </Link>
-                        </div>
-                      </div> */}
                       <Col lg={5}>
                         <div className="candidate-list-content mt-3 mt-lg-0">
                           <h5 className="fs-19 mb-0 d-flex">
@@ -1257,21 +1276,8 @@ const JobDetailsDescription = () => {
                               {devHasBeenSentNew.firstName}{" "}
                               {devHasBeenSentNew.lastName}
                             </Link>
-                            {/* <div>
-                              <span
-                                className={
-                                  "badge bg-secondary bg-gradient ms-1"
-                                }
-                              >
-                                <i className="mdi mdi-star align-middle"></i>
-                                Year Of Experience:{" "}
-                                {devHasBeenSentNew.yearOfExperience}
-                              </span>
-                            </div> */}
                           </h5>
-                          <p className="text-muted mb-0">
-                            {devHasBeenSentNew.typeRequireStrings.join(", ")}
-                          </p>
+
                           <ul className="list-inline mb-0 text-muted">
                             <li className="list-inline-item">
                               <i className="uil-keyboard"></i>{" "}
@@ -1283,6 +1289,21 @@ const JobDetailsDescription = () => {
                               {devHasBeenSentNew.averageSalary}$
                             </li>
                           </ul>
+
+                          {/* <p className="text-muted mb-0">
+                            {devHasBeenSentNew.typeRequireStrings.join(", ")}
+                          </p> */}
+
+                          <p className="text-muted mb-0">
+                            {devHasBeenSentNew.typeRequireStrings
+                              .slice(0, 2)
+                              .map((typeDev, key) => (
+                                <span key={key}>{typeDev + ","}</span>
+                              ))}
+                            {devHasBeenSentNew.typeRequireStrings.length >
+                              2 && <span>...</span>}
+                          </p>
+
                           <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
                             {(devHasBeenSentNew.skillRequireStrings || [])
                               .slice(0, 4)
@@ -1376,7 +1397,7 @@ const JobDetailsDescription = () => {
                               className={
                                 devHasBeenSentNew.selectedDevStatus ===
                                 "Waiting HR Approval"
-                                  ? "badge bg-blue text-light"
+                                  ? "badge bg-warning text-light"
                                   : devHasBeenSentNew.selectedDevStatus ===
                                     "Dev Accepted"
                                   ? "badge bg-primary text-light"
@@ -1385,10 +1406,13 @@ const JobDetailsDescription = () => {
                                   ? "badge bg-danger text-light"
                                   : devHasBeenSentNew.selectedDevStatus ===
                                     "Waiting Interview"
-                                  ? "badge bg-info text-light"
+                                  ? "badge bg-warning text-light"
                                   : devHasBeenSentNew.selectedDevStatus ===
                                     "Waiting Dev Approval"
-                                  ? "badge bg-purple text-light"
+                                  ? "badge bg-warning text-light"
+                                  : devHasBeenSentNew.selectedDevStatus ===
+                                    "Interviewing"
+                                  ? "badge bg-info text-light"
                                   : ""
                               }
                             >
@@ -1405,7 +1429,7 @@ const JobDetailsDescription = () => {
                                     fontSize: "15px",
                                   }}
                                 >
-                                  Matching with request
+                                  Matching request total
                                 </p>
                               </div>
                               <div className="matching-rate-dev">
@@ -1419,7 +1443,11 @@ const JobDetailsDescription = () => {
                                 >
                                   {devHasBeenSentNew.averagedPercentage.toFixed(
                                     2
-                                  )}
+                                  ) == 100.0
+                                    ? 100
+                                    : devHasBeenSentNew.averagedPercentage.toFixed(
+                                        2
+                                      )}
                                   %
                                 </span>
                               </div>
@@ -1487,6 +1515,7 @@ const JobDetailsDescription = () => {
                 <textarea
                   style={{ width: "100%", height: "100px" }}
                   value={cancelReason}
+                  placeholder="Type your reason here..."
                   onChange={(e) => setCancelReason(e.target.value)}
                 ></textarea>
               </div>
@@ -1504,6 +1533,102 @@ const JobDetailsDescription = () => {
               </div>
             </div>
           </ModalBody>
+        </Modal>
+
+        {/* -------------------------------------------------------------------------------- */}
+        <Modal
+          isOpen={isCancelAfterModalOpen}
+          toggle={closeCancelAfterModal}
+          size="lg"
+        >
+          <ModalBody>
+            <div>
+              <div className="d-flex flex-column justify-content-center align-items-center">
+                <div className="d-flex flex-column justify-content-center align-items-center">
+                  <FontAwesomeIcon
+                    icon={faBullhorn}
+                    size="2xl"
+                    style={{
+                      color: "#d70f0f",
+                      backgroundColor: "#F8D7DA",
+                      padding: "15px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <h3 style={{ textAlign: "center" }}>
+                    Are you sureAAAAAAAAAAAAAA?
+                  </h3>
+                </div>
+                <div className=" border-3 border-top  p-3">
+                  <p>
+                    Could you kindly provide insights into the reasons behind
+                    this decision?{" "}
+                    <span style={{ fontWeight: "700" }}>
+                      {" "}
+                      Your feedback is valuable for my future improvement.
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div>
+                <textarea
+                  style={{ width: "100%", height: "100px" }}
+                  value={cancelReasonAfter}
+                  placeholder="Type your reason here..."
+                  onChange={(e) => setCancelReasonAfter(e.target.value)}
+                ></textarea>
+              </div>
+              <div className="d-flex justify-content-end">
+                <Button
+                  color="secondary"
+                  onClick={closeCancelAfterModal}
+                  style={{ marginRight: "10px" }}
+                >
+                  Cancel
+                </Button>
+                <Button color="danger" onClick={handleCancelAfterRequest}>
+                  Reject Request
+                </Button>{" "}
+              </div>
+            </div>
+          </ModalBody>
+        </Modal>
+
+        {/* ---------------------------------------------------------------------------------------- */}
+        <Modal
+          style={{ padding: "10px" }}
+          isOpen={isAcceptModalOpen}
+          toggle={closeAcceptModal}
+          contentLabel="Accept Request Modal"
+          centered
+          tabIndex="-1"
+        >
+          <div className="modal-header">
+            <h3 style={{ textAlign: "center" }}>Accept Hiring Request</h3>
+          </div>
+          <ModalBody>
+            <div>
+              <h6 style={{ color: "#969BA5" }}>
+                Are you sure would you like to accept this hiring request?
+              </h6>
+            </div>
+          </ModalBody>
+          <div className="d-flex justify-content-around modal-footer">
+            <button
+              className="btn btn-danger"
+              onClick={closeAcceptModal}
+              style={{ width: "100px" }}
+            >
+              Cancel
+            </button>
+            <button
+              style={{ width: "100px" }}
+              className="btn btn-primary"
+              onClick={handleAcceptModalAccept}
+            >
+              Accept
+            </button>
+          </div>
         </Modal>
       </div>
     </React.Fragment>

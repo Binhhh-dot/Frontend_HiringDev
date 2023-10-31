@@ -128,7 +128,7 @@ const AssignTaskListForStaff = (a) => {
     try {
       response = await assignTaskServices.getPagingAssignTaskForStaffWithId(
         //3,
-        48,
+        4,
         currentPage,
         5
       );
@@ -247,9 +247,9 @@ const AssignTaskListForStaff = (a) => {
                     <span
                       className={
                         jobVacancyListDetails.statusString === "Preparing"
-                          ? "badge bg-info-subtle text-info fs-12"
+                          ? "badge bg-warning-subtle text-warning fs-12"
                           : jobVacancyListDetails.statusString === "InProgress"
-                          ? "badge bg-blue text-light fs-12"
+                          ? "badge bg-info-subtle text-info fs-12"
                           : jobVacancyListDetails.statusString === "Done"
                           ? "badge bg-primary-subtle text-primary fs-12"
                           : jobVacancyListDetails.statusString === "Cancelled"

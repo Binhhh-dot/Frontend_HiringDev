@@ -13,7 +13,7 @@ const JobVacancyList = (a) => {
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [skill, setSkill] = useState([]);
-  const pageSize = 5;
+  const pageSize = 7;
   const handlePageClick = (page) => {
     setCurrentPage(page);
   };
@@ -71,7 +71,7 @@ const JobVacancyList = (a) => {
       // } else {
       response = await hiringrequestService.getHiringRequestAndPaging(
         currentPage,
-        5
+        7
       );
       // }
 
@@ -183,17 +183,11 @@ const JobVacancyList = (a) => {
                 ? "job-box bookmark-post card mt-4"
                 : "job-box card mt-4"
             }
-            // className="job-box card mt-4"
           >
-            <div className="bookmark-label text-center">
-              <Link to="#" className="align-middle text-white">
-                <i className="mdi mdi-star"></i>
-              </Link>
-            </div>
             <div className="p-4">
               <Row className="align-items-center">
                 <Col md={2}>
-                  <div className="text-center mb-4 mb-md-0">
+                  <div>
                     <Link to="/companydetails">
                       <img
                         style={{
@@ -208,8 +202,8 @@ const JobVacancyList = (a) => {
                   </div>
                 </Col>
 
-                <Col md={3}>
-                  <div className="mb-2 mb-md-0">
+                <Col md={3} className="px-0">
+                  <div>
                     <h5 className="fs-18 mb-0">
                       <Link
                         to="/hiringrequestdetails"
@@ -218,9 +212,6 @@ const JobVacancyList = (a) => {
                           jobId: jobVacancyListDetails.id,
                           company: jobVacancyListDetails.companyIdMana,
                         }}
-                        // stateCompany={{
-                        //   company: jobVacancyListDetails.companyIdMana,
-                        // }}
                       >
                         {jobVacancyListDetails.jobDescription}
                       </Link>
@@ -259,84 +250,26 @@ const JobVacancyList = (a) => {
                     <span
                       className={
                         jobVacancyListDetails.waitingApproval === true
-                          ? "badge bg-warning text-light fs-12 mt-1 mx-1"
+                          ? "badge bg-warning text-light fs-12"
                           : jobVacancyListDetails.inProgress === true
-                          ? "badge bg-blue text-light fs-12 mt-1 mx-1"
+                          ? "badge bg-blue text-light fs-12"
                           : jobVacancyListDetails.rejected === true
-                          ? "badge bg-danger text-light fs-12 mt-1 mx-1"
+                          ? "badge bg-danger text-light fs-12"
                           : jobVacancyListDetails.expired === true
-                          ? "badge bg-darkcyan text-light fs-12 mt-1 mx-1"
+                          ? "badge bg-danger text-light fs-12"
                           : jobVacancyListDetails.cancelled === true
-                          ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
+                          ? "badge bg-danger text-light fs-12"
                           : jobVacancyListDetails.finished === true
-                          ? "badge bg-primary text-light fs-12 mt-1 mx-1"
+                          ? "badge bg-primary text-light fs-12"
                           : jobVacancyListDetails.completed === true
-                          ? "badge bg-success text-light fs-12 mt-1 mx-1"
+                          ? "badge bg-primary text-light fs-12"
                           : jobVacancyListDetails.save === true
-                          ? "badge bg-teal text-light fs-12 mt-1 mx-1"
+                          ? "badge bg-info text-light fs-12"
                           : ""
                       }
                     >
                       {jobVacancyListDetails.timing}
                     </span>
-                    {/* {(jobVacancyListDetails.badges || []).map(
-                      (badgeInner, key) => (
-                        <span
-                          className={`badge ${badgeInner.badgeclassName} fs-13 mt-1`}
-                          key={key}
-                        >
-                          {badgeInner.badgeName}
-                        </span>
-                      )
-                    )} */}
-                  </div>
-                </Col>
-              </Row>
-            </div>
-            <div className="p-3 bg-light">
-              <Row className="justify-content-between">
-                <Col md={12}>
-                  <div>
-                    <p className="text-muted mb-0 ">
-                      {jobVacancyListDetails.experience
-                        .split(",")
-                        .slice(
-                          0,
-                          showFullSkills[jobVacancyListDetails.id]
-                            ? undefined
-                            : 6
-                        )
-                        .map((skill, index) => (
-                          <span
-                            key={index}
-                            className={`badge ${
-                              index === 0
-                                ? "bg-info text-light"
-                                : index === 1
-                                ? "bg-purple text-light"
-                                : "bg-primary-subtle text-primary"
-                            }  ms-2`}
-                          >
-                            {skill.trim()}
-                          </span>
-                        ))}
-
-                      {jobVacancyListDetails.experience.split(",").length >
-                        6 && (
-                        <Link
-                          style={{ color: "#A3A6AD" }}
-                          to="#"
-                          onClick={() =>
-                            toggleShowFullSkills(jobVacancyListDetails.id)
-                          }
-                        >
-                          {" "}
-                          {showFullSkills[jobVacancyListDetails.id]
-                            ? "less"
-                            : "...more"}
-                        </Link>
-                      )}
-                    </p>
                   </div>
                 </Col>
               </Row>

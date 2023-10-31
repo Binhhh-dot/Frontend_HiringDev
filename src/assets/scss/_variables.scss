@@ -84,6 +84,7 @@ $peru : #CD853F;
 $Wheat3: #CDBA96;
 $OrangeRed2: #EE4000;
 $money: #8FBB21;
+$green-bland: #D9F3EA;
 
 // scss-docs-end color-variables
 
@@ -133,6 +134,7 @@ $OrangeRed2: $OrangeRed2;
 $money: $money;
 $teal: $teal;
 
+
 // scss-docs-end theme-color-variables
 $theme-colors: (
   "primary": $primary,
@@ -154,7 +156,9 @@ $theme-colors: (
   "wheat3": $Wheat3,
   "orangeRed2": $OrangeRed2,
   "money": $money,
-  "teal": $teal
+  "teal": $teal,
+  "gray":$gray-600,
+  "greenBland":$green-bland
 );
 
 // scss-docs-end theme-colors-map

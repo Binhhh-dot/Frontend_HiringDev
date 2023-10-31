@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 import assignTaskServices from "../../../services/assignTask.services";
 import developerServices from "../../../services/developer.services";
-import userServices from "../../../services/user.services";
+import userSerrvices from "../../../services/user.serrvices";
 import Select from "react-select";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -129,7 +129,7 @@ const AssignTaskForStaffDetailInfo = () => {
   const fetchGetAssignTaskDetail = async () => {
     let response;
     try {
-      response = await assignTaskServices.getAssignTaskDetail(10);
+      response = await assignTaskServices.getAssignTaskDetail(3);
       setAssignTaskDetail(response.data.data);
       setStaffDetail(response.data.data.staff);
       setDevDetail(response.data.data.devs);
@@ -204,6 +204,7 @@ const AssignTaskForStaffDetailInfo = () => {
     try {
       response = await assignTaskServices.handleApproveAssignTask(
         assignTaskDetail.taskId,
+        "string",
         true
       );
       fetchGetAssignTaskDetail();
@@ -214,14 +215,19 @@ const AssignTaskForStaffDetailInfo = () => {
     }
   };
 
+  //-------------------------------------------------------------------------------------
+  const [rejectReason, setRejectReason] = useState("");
   const fetchHandleRejectApproveAsignTask = async () => {
     let response;
     try {
       response = await assignTaskServices.handleApproveAssignTask(
         assignTaskDetail.taskId,
+        rejectReason,
         false
       );
+      fetchGetAssignTaskDetail();
       console.log("Reject OK");
+      console.log(rejectReason);
     } catch (error) {
       console.error("Error fetching handle reject approve task:", error);
     }
@@ -261,6 +267,7 @@ const AssignTaskForStaffDetailInfo = () => {
     if (allSuccess) {
       fetchHandleCompleteTask();
       setIsModalCompleteOpen(false);
+      setCompleteButtonVisible(false);
     } else {
       // setMessageCheckNoDone(true);
       // setTimeout(() => {
@@ -298,16 +305,22 @@ const AssignTaskForStaffDetailInfo = () => {
   const handleCancelModalAccept = () => {
     setIsModalAcceptOpen(false);
   };
-  //-------------------------------------------
-  const [rejectReason, setRejectReason] = useState("");
+  //---------------------------------------------------------
+  //--------------------------------------------------------
+
   const openModalReject = () => {
     setIsModalRejectOpen(true);
   };
 
   const handleOKModalReject = () => {
     // cho viet api
-    fetchHandleRejectApproveAsignTask();
-    setIsModalRejectOpen(false);
+    if (rejectReason.trim() === "") {
+      console.log("Reason not blank");
+    } else {
+      fetchHandleRejectApproveAsignTask();
+      setIsModalRejectOpen(false);
+      setCompleteButtonVisible(false);
+    }
   };
 
   const handleCancelModalReject = () => {
@@ -335,15 +348,13 @@ const AssignTaskForStaffDetailInfo = () => {
                   <span
                     className={
                       assignTaskDetail.statusString === "Preparing"
-                        ? "badge bg-info-subtle text-info fs-13 mt-1 mx-1"
-                        : assignTaskDetail.statusString === "Success"
-                        ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                        : assignTaskDetail.statusString === "Fail"
-                        ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                        : assignTaskDetail.statusString === "In Progress"
                         ? "badge bg-warning-subtle text-warning fs-13 mt-1 mx-1"
+                        : assignTaskDetail.statusString === "In Progress"
+                        ? "badge bg-info-subtle text-info fs-13 mt-1 mx-1"
                         : assignTaskDetail.statusString === "Done"
-                        ? "badge bg-blue text-light fs-13 mt-1 mx-1"
+                        ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                        : assignTaskDetail.statusString === "Cancelled"
+                        ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
                         : ""
                     }
                   >
@@ -609,7 +620,7 @@ const AssignTaskForStaffDetailInfo = () => {
                             <div className="mt-1">
                               <span
                                 className={
-                                  "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                                  "badge bg-peru text-light fs-13 mt-1 mx-1"
                                 }
                               >
                                 {devDetailNew.scheduleTypeId === 1
@@ -622,7 +633,7 @@ const AssignTaskForStaffDetailInfo = () => {
                               </span>
                               <span
                                 className={
-                                  "badge bg-info-subtle text-blue fs-13 mt-1 mx-1"
+                                  "badge bg-purple text-light fs-13 mt-1 mx-1"
                                 }
                               >
                                 {devDetailNew.levelId === 1
@@ -653,15 +664,15 @@ const AssignTaskForStaffDetailInfo = () => {
                             <span
                               className={
                                 devDetailNew.devTaskStatus === "Preparing"
-                                  ? "badge bg-info-subtle text-info fs-13 mt-1 mx-1"
+                                  ? "badge bg-warning-subtle text-warning fs-13 mt-1 mx-1"
                                   : devDetailNew.devTaskStatus === "Success"
                                   ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
                                   : devDetailNew.devTaskStatus === "Fail"
                                   ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
                                   : devDetailNew.devTaskStatus === "In Progress"
-                                  ? "badge bg-warning-subtle text-warning fs-13 mt-1 mx-1"
+                                  ? "badge bg-info-subtle text-info fs-13 mt-1 mx-1"
                                   : devDetailNew.devTaskStatus === "Done"
-                                  ? "badge bg-blue text-light fs-13 mt-1 mx-1"
+                                  ? "badge bg-success text-light fs-13 mt-1 mx-1"
                                   : ""
                               }
                             >

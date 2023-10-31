@@ -27,7 +27,7 @@ const JobVacancyList = () => {
   const handlePageClick = (page) => {
     setCurrentPage(page);
   };
-  const companyId = localStorage.getItem('companyId');
+  const companyId = localStorage.getItem("companyId");
   const renderPageNumbers = () => {
     const pageNumbers = [];
     const maxPageButtons = 4;
@@ -101,10 +101,18 @@ const JobVacancyList = () => {
           companyName: job.companyName,
           location: job.numberOfDev + " Developer",
           jobPostTime: new Date(job.duration).toLocaleDateString(),
-          cancelled: job.statusString.includes("Cancelled"),
+
           done: job.statusString.includes("Done"),
-          outOfTime: job.statusString.includes("Expired"),
-          fullTime: job.statusString.includes("Waiting Approval"),
+
+          save: job.statusString.includes("Saved"),
+          waitingApproval: job.statusString.includes("Waiting Approval"),
+          inProgress: job.statusString.includes("In Progress"),
+          rejected: job.statusString.includes("Rejected"),
+          expired: job.statusString.includes("Expired"),
+          cancelled: job.statusString.includes("Cancelled"),
+          finished: job.statusString.includes("Finished"),
+          completed: job.statusString.includes("Completed"),
+
           timing: job.statusString,
           addclassNameBookmark: false,
           showFullSkills: false,
@@ -186,7 +194,7 @@ const JobVacancyList = () => {
                 ? "job-box bookmark-post card mt-4"
                 : "job-box card mt-4"
             }
-          // className="job-box card mt-4"
+            // className="job-box card mt-4"
           >
             <div className="bookmark-label text-center">
               <Link to="#" className="align-middle text-white">
@@ -196,12 +204,18 @@ const JobVacancyList = () => {
             <div className="p-4">
               <Row className="align-items-center">
                 <Col md={2}>
-                  <div className="text-center mb-4 mb-md-0">
-                    <Link to={`/hiringrequestlistincompanypartnerdetail?Id=${jobVacancyListDetails.id}`}>
+                  <div className="text-center ">
+                    <Link
+                      to={`/hiringrequestlistincompanypartnerdetail?Id=${jobVacancyListDetails.id}`}
+                    >
                       <img
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                        }}
                         src={jobVacancyListDetails.companyImg}
                         alt=""
-                        className="img-fluid rounded-3"
+                        className="img-fluid rounded-3 img-avt-hiring-request"
                       />
                     </Link>
                   </div>
@@ -250,25 +264,23 @@ const JobVacancyList = () => {
                   <div>
                     <span
                       className={
-                        jobVacancyListDetails.fullTime === true
-                          ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.partTime === true
-                            ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
-                            : jobVacancyListDetails.freeLance === true
-                              ? "badge bg-primary-subtle text-primary fs-12 mt-1 mx-1"
-                              : jobVacancyListDetails.internship === true
-                                ? "badge bg-blue-subtle text-blue fs-12 mt-1"
-                                : jobVacancyListDetails.lookingForDev === true
-                                  ? "badge bg-warning-subtle text-warning fs-12 mt-1 mx-1"
-                                  : jobVacancyListDetails.interview === true
-                                    ? "badge bg-info text-light fs-12 mt-1 mx-1"
-                                    : jobVacancyListDetails.done === true
-                                      ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
-                                      : jobVacancyListDetails.outOfTime === true
-                                        ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
-                                        : jobVacancyListDetails.cancelled === true
-                                          ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
-                                          : ""
+                        jobVacancyListDetails.waitingApproval === true
+                          ? "badge bg-warning text-light fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.inProgress === true
+                          ? "badge bg-blue text-light fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.rejected === true
+                          ? "badge bg-danger text-light fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.expired === true
+                          ? "badge bg-darkcyan text-light fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.cancelled === true
+                          ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.finished === true
+                          ? "badge bg-primary text-light fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.completed === true
+                          ? "badge bg-success text-light fs-12 mt-1 mx-1"
+                          : jobVacancyListDetails.save === true
+                          ? "badge bg-teal text-light fs-12 mt-1 mx-1"
+                          : ""
                       }
                     >
                       {jobVacancyListDetails.timing}
@@ -303,31 +315,26 @@ const JobVacancyList = () => {
                         .map((skill, index) => (
                           <span
                             key={index}
-                            className={`badge ${index === 0
-                              ? "bg-info text-light"
-                              : index === 1
+                            className={`badge ${
+                              index === 0
+                                ? "bg-info text-light"
+                                : index === 1
                                 ? "bg-danger-subtle text-danger"
                                 : "bg-primary-subtle text-primary"
-                              }  ms-2`}
+                            }  ms-2`}
                           >
                             {skill.trim()}
                           </span>
                         ))}
 
                       {jobVacancyListDetails.experience.split(",").length >
-                        6 && (
-                          <Link
-                            to="#"
-                            onClick={() =>
-                              toggleShowFullSkills(jobVacancyListDetails.id)
-                            }
-                          >
-                            {" "}
-                            {showFullSkills[jobVacancyListDetails.id]
-                              ? "less"
-                              : "...more"}
-                          </Link>
-                        )}
+                      4 ? (
+                        <span className="badge bg-primary-subtle text-primary ms-2">
+                          ...
+                        </span>
+                      ) : (
+                        ""
+                      )}
                     </p>
                   </div>
                 </Col>
@@ -354,8 +361,9 @@ const JobVacancyList = () => {
               </li>
               {renderPageNumbers()}
               <li
-                className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                  }`}
+                className={`page-item ${
+                  currentPage === totalPages ? "disabled" : ""
+                }`}
               >
                 <Link className="page-link" to="#" onClick={handleNextPage}>
                   <i className="mdi mdi-chevron-double-right fs-15"></i>
