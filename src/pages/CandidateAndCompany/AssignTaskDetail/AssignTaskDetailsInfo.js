@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { CardBody, Col, Row, Card } from "reactstrap";
 import assignTaskServices from "../../../services/assignTask.services";
 import developerServices from "../../../services/developer.services";
-import userServices from "../../../services/user.services";
+import userSerrvices from "../../../services/user.serrvices";
 
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 //Import images
@@ -121,7 +121,7 @@ const AssignTaskDetailsInfo = () => {
   const fetchGetStaff = async () => {
     let response;
     try {
-      response = await userServices.getStaff(currentStaffPage, 50);
+      response = await userSerrvices.getStaff(currentStaffPage, 50);
       setStaffInAssignTask(response.data.data);
 
       const formattedStaff = response.data.data.map((staffAS) => ({
@@ -516,7 +516,7 @@ const AssignTaskDetailsInfo = () => {
                               <div className="mt-1">
                                 <span
                                   className={
-                                    "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                                    "badge bg-peru text-light fs-13 mt-1 mx-1"
                                   }
                                 >
                                   {devDetailNew.scheduleTypeId === 1
@@ -529,7 +529,7 @@ const AssignTaskDetailsInfo = () => {
                                 </span>
                                 <span
                                   className={
-                                    "badge bg-info-subtle text-blue fs-13 mt-1 mx-1"
+                                    "badge bg-purple text-light fs-13 mt-1 mx-1"
                                   }
                                 >
                                   {devDetailNew.levelId === 1

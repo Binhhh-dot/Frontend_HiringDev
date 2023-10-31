@@ -14,13 +14,11 @@ const AssignTaskDetail = () => {
       <Section />
       <section className="section">
         <Container className="custom-container-assign-task">
-          {/* <JobFilters /> */}
           <Row>
             <Col lg={12}>
               <AssignTaskDetailsInfo />
             </Col>
           </Row>
-          {/* <Pagination /> */}
         </Container>
       </section>
     </React.Fragment>
