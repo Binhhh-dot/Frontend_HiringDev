@@ -1,27 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Button, CardBody, Col, Row, Card } from "reactstrap";
+import { Link } from "react-router-dom";
+import { CardBody, Col, Row, Card } from "reactstrap";
 import assignTaskServices from "../../../services/assignTask.services";
 import developerServices from "../../../services/developer.services";
-import userServices from "../../../services/user.services";
+import userSerrvices from "../../../services/user.serrvices";
 import Select from "react-select";
 //Import images
-import userImage1 from "../../../assets/images/user/img-01.jpg";
-import userImage2 from "../../../assets/images/user/img-02.jpg";
-import userImage3 from "../../../assets/images/user/img-03.jpg";
-import userImage4 from "../../../assets/images/user/img-04.jpg";
-import userImage5 from "../../../assets/images/user/img-05.jpg";
-import userImage6 from "../../../assets/images/user/img-06.jpg";
-import userImage7 from "../../../assets/images/user/img-07.jpg";
-import userImage8 from "../../../assets/images/user/img-08.jpg";
+import userImage0 from "../../../assets/images/user/img-00.jpg";
 
 const AssignTaskCreateDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectDevInfo, setSelectDevInfo] = useState([]);
   const [selectStaffInfo, setSelectStaffInfo] = useState({});
-  //---------------------------------------------------------------
-  const [options3, setOptions3] = useState([]);
-  const [selectedOptions3, setSelectedOptions3] = useState([]);
+
   //---------------------------------------------------------------
   const [devInAssignTask, setDevInAssignTask] = useState([]);
 
@@ -80,14 +71,10 @@ const AssignTaskCreateDetails = () => {
         currentPage,
         5
       );
-      console.log("danh sach dev unofficial");
-      console.log(response.data);
 
       setDevInAssignTask(response.data.data);
 
       setTotalPages(Math.ceil(response.data.paging.total / pageSize));
-      console.log("total page");
-      console.log(totalPages);
 
       return response;
     } catch (error) {
@@ -100,7 +87,6 @@ const AssignTaskCreateDetails = () => {
   }, [currentPage]);
 
   //--------------------------------------------------------------------
-  //  const [selectedDev, setSelectedDev] = useState([]);
 
   // chon developer checkbox
   const toggleDevAssignSelection = (candidateId) => () => {
@@ -115,9 +101,10 @@ const AssignTaskCreateDetails = () => {
     }
   };
 
-  console.log("developer duoc chon");
-  console.log(selectedDev);
   //---------------------------------------------------------------
+  const [options3, setOptions3] = useState([]);
+  const [selectedOptions3, setSelectedOptions3] = useState([]);
+
   const [staffInAssignTask, setStaffInAssignTask] = useState([]);
   const [currentStaffPage, setCurrentStaffPage] = useState(1);
   const [selectedStaff, setSelectedStaff] = useState([]);
@@ -125,7 +112,7 @@ const AssignTaskCreateDetails = () => {
   const fetchGetStaff = async () => {
     let response;
     try {
-      response = await userServices.getStaff(currentStaffPage, 50);
+      response = await userSerrvices.getStaffPaging(currentStaffPage, 50);
       setStaffInAssignTask(response.data.data);
 
       const formattedStaff = response.data.data.map((staffAS) => ({
@@ -149,7 +136,6 @@ const AssignTaskCreateDetails = () => {
   useEffect(() => {
     fetchGetStaff();
   }, [currentStaffPage]);
-  //---------------------------------------------------------------
 
   //---------------------------------------------------------------
 
@@ -192,15 +178,16 @@ const AssignTaskCreateDetails = () => {
 
       const data = response.data;
       console.log("Tao Assign Task ÔK");
+
       return data;
     } catch (error) {
       console.error("Error fetching create task in manager:", error);
     }
   };
 
-  useEffect(() => {
-    fetchCreateAssignTask();
-  }, []);
+  // useEffect(() => {
+  //   fetchCreateAssignTask();
+  // }, []);
 
   //-----------------------------------------------------------------------------------
 
@@ -256,7 +243,7 @@ const AssignTaskCreateDetails = () => {
                         id="description"
                         class="form-control resume"
                         placeholder=""
-                        style={{ height: 400 }}
+                        style={{ height: 250 }}
                       ></textarea>
                     </div>
                   </div>
@@ -318,7 +305,7 @@ const AssignTaskCreateDetails = () => {
                                 >
                                   <Link onClick={() => {}}>
                                     <img
-                                      src={userImage1}
+                                      src={userImage0}
                                       alt=""
                                       className="img-fluid rounded-3"
                                     />
@@ -396,11 +383,7 @@ const AssignTaskCreateDetails = () => {
             {/* list developer */}
             <Row style={{ gap: "9px" }}>
               {devInAssignTask.map((devInAssignTaskNew, key) => (
-                <div
-                  key={key}
-                  className="d-flex flex-column gap-2"
-                  // style={{ maxHeight: "400px", overflowY: "auto" }}
-                >
+                <div key={key} className="d-flex flex-column gap-2">
                   <div>
                     <Card className="job-box card ">
                       <CardBody className="p-2">
@@ -462,7 +445,7 @@ const AssignTaskCreateDetails = () => {
                               <div className="mt-1">
                                 <span
                                   className={
-                                    "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                                    "badge bg-peru text-light fs-13 mt-1 mx-1"
                                   }
                                 >
                                   {devInAssignTaskNew.scheduleTypeId === 1
@@ -475,7 +458,7 @@ const AssignTaskCreateDetails = () => {
                                 </span>
                                 <span
                                   className={
-                                    "badge bg-info-subtle text-blue fs-13 mt-1 mx-1"
+                                    "badge bg-purple text-light fs-13 mt-1 mx-1"
                                   }
                                 >
                                   {devInAssignTaskNew.levelId === 1

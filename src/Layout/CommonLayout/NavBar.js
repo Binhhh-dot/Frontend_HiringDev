@@ -614,6 +614,7 @@ const NavBar = (props) => {
               </NavItem>
             </ul>
           </Collapse>
+
           {userId ? (
             <ul className="header-menu list-inline d-flex align-items-center mb-0">
               <Dropdown

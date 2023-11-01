@@ -46,6 +46,7 @@ export default {
         "/HiringRequest/ByCompany?companyId=${companyId}",
       approvedHirringRequestStatus: "/HiringRequestStatus/ChangeWaitingStatus",
       cancelHirringRequestStatus: "/HiringRequestStatus/ChangeWaitingStatus",
+      cancelHirringRequestStatusAfter: "/HiringRequestStatus/Cancel",
       getHiringRequestByRequestId: "/HiringRequest?requestId=${requestId}",
     },
 
@@ -112,12 +113,12 @@ export default {
 
       handleApproveAssignTask: "/AssignTask/Approval",
     },
-    user: {
-      getStaff: "/User/Staff?PageIndex=${currentPage}&PageSize=${pageSize}",
-    },
+
     user: {
       getUserById: "/User/${userId}",
       updateUser: "/User/${userId}",
+      getStaff: "/User/Staff",
+      getStaffPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
     },
   },
 };

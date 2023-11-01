@@ -153,7 +153,6 @@ const getDeveloperUnofficialPaging = async (currentPage, PageSize) => {
     .replace("${pageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
   const response = await utils.axiosLocalHost.get(fullUrl);
-  console.log(fullUrl);
   return response;
 };
 

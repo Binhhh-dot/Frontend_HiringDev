@@ -115,9 +115,10 @@ const CreateHiringRequest = () => {
       try {
         const requestIdParam = location.state.requestId;
         console.log(requestIdParam);
-        const response = await hiringRequestService.getHiringRequestDetailInCompany(
-          requestIdParam
-        );
+        const response =
+          await hiringRequestService.getHiringRequestDetailInCompany(
+            requestIdParam
+          );
         hiringRequestSaved = response.data.data;
         document.getElementById("job-title").value =
           hiringRequestSaved.jobTitle;
@@ -294,9 +295,8 @@ const CreateHiringRequest = () => {
     } else {
       const companyIdErr = localStorage.getItem("companyId");
       if (companyIdErr == "null") {
-        console.log("null")
+        console.log("null");
         openModal2();
-
       } else {
         setLoading(true);
         let check = true;
@@ -458,6 +458,7 @@ const CreateHiringRequest = () => {
               console.log("Job posted successfully:", response);
             }
             setLoading(false);
+            // navigate("/signin");
             setSuccessMessage("Đăng công việc thành công");
             localStorage.removeItem("requestId");
             setErrorMessage(null);
@@ -942,8 +943,8 @@ const CreateHiringRequest = () => {
                               <div className="text-center mb-4">
                                 <h5>Create Company Account</h5>
                                 <p className="text-muted">
-                                  Create Company Account and get access to all the features of
-                                  WeHire
+                                  Create Company Account and get access to all
+                                  the features of WeHire
                                 </p>
                               </div>
                               <Form action="#" className="auth-form">

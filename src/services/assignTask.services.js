@@ -83,10 +83,11 @@ const handleCompleteTask = async (taskId) => {
 
 //------------------------------------------------------------------------------
 
-const handleApproveAssignTask = async (taskId, isApproval) => {
+const handleApproveAssignTask = async (taskId, rejectionReason, isApproval) => {
   const serviceUrl = urlConstant.endpoint.assignTask.handleApproveAssignTask;
   const response = await utils.axiosLocalHost.put(serviceUrl, {
     taskId,
+    rejectionReason,
     isApproval,
   });
   return response;

@@ -229,17 +229,15 @@ const getHiringRequestByidAndPaging = async (
   const pagingUrl = urlConstant.endpoint.hiringRequest.paging
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", pageSize);
-  const statusUrls = urlConstant.endpoint.hiringRequest.searchStatusHiringRequest.replace(
-    "${Status}",
-    status
-  );
+  const statusUrls =
+    urlConstant.endpoint.hiringRequest.searchStatusHiringRequest.replace(
+      "${Status}",
+      status
+    );
   const fullUrl = serviceUrl + pagingUrl + statusUrls;
   const response = await utils.axiosLocalHost.get(fullUrl);
   return response;
 };
-
-
-
 
 const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   companyId,
@@ -322,6 +320,22 @@ const cancelHirringRequestStatus = async (
   return response;
 };
 
+//----------------------------------------------------------------------------------
+const cancelHirringRequestStatusAfter = async (
+  requestId,
+  rejectionReason,
+  isCompanyPartner
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.cancelHirringRequestStatusAfter;
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    requestId,
+    rejectionReason,
+    isCompanyPartner,
+  });
+  return response;
+};
+
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -340,4 +354,5 @@ export default {
   getHiringRequestSaved,
   updateHiringRequest,
   cancelHirringRequestStatus,
+  cancelHirringRequestStatusAfter,
 };
