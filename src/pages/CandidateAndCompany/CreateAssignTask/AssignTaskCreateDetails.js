@@ -177,8 +177,10 @@ const AssignTaskCreateDetails = () => {
       );
 
       const data = response.data;
-      console.log("Tao Assign Task ÔK");
 
+      console.log("Tao Assign Task ÔK");
+      fetchGetStaff();
+      fetchGetDeveloperUnofficialPaging();
       return data;
     } catch (error) {
       console.error("Error fetching create task in manager:", error);
