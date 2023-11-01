@@ -255,23 +255,23 @@ const DetailInterviewManager = () => {
                                         <CardBody className="p-4 rounded shadow bg-white">
                                             <Row>
                                                 <Col lg={1}>
-                                                    <Link onClick={() => openModal(jobListingDetails)}>
+                                                    <div onClick={() => openModal(jobListingDetails)}>
                                                         <img
                                                             src={userImage0}
                                                             alt=""
                                                             className="img-fluid rounded-3"
                                                         />
-                                                    </Link>
+                                                    </div>
                                                 </Col>
 
                                                 <Col lg={9}>
                                                     <div className="mt-3 mt-lg-0">
                                                         <h5 className="fs-17 mb-1">
-                                                            <Link className="text-dark"
+                                                            <div className="text-dark"
                                                                 onClick={() => openModal(jobListingDetails)}
                                                             >
                                                                 {jobListingDetails.codeName}
-                                                            </Link>
+                                                            </div>
                                                         </h5>
                                                         <ul className="list-inline mb-0">
                                                             <li className="list-inline-item">
@@ -330,12 +330,12 @@ const DetailInterviewManager = () => {
                                                             data-bs-placement="top"
                                                             title="View More"
                                                         >
-                                                            <Link
+                                                            <div
                                                                 onClick={() => openModal(jobListingDetails)}
                                                                 className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18"
                                                             >
                                                                 <i className="mdi mdi-eye"></i>
-                                                            </Link>
+                                                            </div>
                                                         </li>
                                                         {/* <li
                                                                 className="list-inline-item"

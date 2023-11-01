@@ -652,7 +652,8 @@ const CreateHiringRequest = () => {
                               options={options2}
                               value={selectedOptions2}
                               onChange={handleChange2}
-                              className="Select Select--level-highest "
+                              className="Select Select--level-highest"
+                              style={{ maxHeight: '2000px', overflowY: 'auto' }}
                             />
                           </div>
 
@@ -786,8 +787,10 @@ const CreateHiringRequest = () => {
                               setValue(newValue);
                             }}
                             init={{
-                              plugins:
-                                "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
+                              plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                              //   plugins:
+                              //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
+                              // 
                             }}
                           />
                           {descriptionError && (

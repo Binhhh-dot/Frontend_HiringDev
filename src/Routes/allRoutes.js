@@ -47,6 +47,7 @@ import Contact from "../pages/Contact/Contact";
 import SignIn from "../pages/ExtraPages/SignIn";
 import SignUp from "../pages/ExtraPages/SignUp";
 import SignOut from "../pages/ExtraPages/SignOut";
+import SignCompany from "../pages/ExtraPages/SignCompany";
 import ResetPassword from "../pages/ExtraPages/ResetPassword";
 import ComingSoon from "../pages/ExtraPages/ComingSoon";
 import Error404 from "../pages/ExtraPages/Error404";
@@ -199,5 +200,6 @@ const authRoutes = [
   { path: "/signout", component: <SignOut /> },
   { path: "/signup", component: <SignUp /> },
   { path: "/signin", component: <SignIn /> },
+  { path: "/signcompany", component: <SignCompany /> },
 ];
 export { userRoutes, authRoutes };
