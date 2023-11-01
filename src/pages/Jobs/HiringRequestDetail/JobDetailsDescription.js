@@ -209,6 +209,7 @@ const JobDetailsDescription = () => {
   };
 
   //---------------------------------------------------------------------------------------------------
+
   const fetchHiringRequestDetailInManager = async () => {
     let response;
 
@@ -226,9 +227,8 @@ const JobDetailsDescription = () => {
       }
 
       if (response.data.data.statusString === "Rejected") {
-        if (devHasBeenSent.length !== 0) {
-          setIsVisibleListDevAfter(true);
-        }
+        setShowCandidateList(false);
+        setIsVisibleListDevAfter(true);
       }
 
       return response;
