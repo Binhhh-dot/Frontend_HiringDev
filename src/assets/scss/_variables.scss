@@ -85,6 +85,9 @@ $Wheat3: #CDBA96;
 $OrangeRed2: #EE4000;
 $money: #8FBB21;
 $green-bland: #D9F3EA;
+$purplel: #e1dffd;
+$OrangeRed2l: #ffe5db;
+
 
 // scss-docs-end color-variables
 
@@ -110,7 +113,9 @@ $colors: (
   "peru" : $peru,
   "wheat3": $Wheat3,
   "orangeRed2": $OrangeRed2,
-  "money": $money
+  "money": $money,
+  "purplel": $purplel,
+  "orangeRed2l": $OrangeRed2l
 );
 // scss-docs-end colors-map
 // scss-docs-start theme-color-variables
@@ -133,6 +138,8 @@ $Wheat3: $Wheat3;
 $OrangeRed2: $OrangeRed2;
 $money: $money;
 $teal: $teal;
+$purplel: $purplel;
+$OrangeRed2l: $OrangeRed2l;
 
 
 // scss-docs-end theme-color-variables
@@ -158,7 +165,9 @@ $theme-colors: (
   "money": $money,
   "teal": $teal,
   "gray":$gray-600,
-  "greenBland":$green-bland
+  "greenBland":$green-bland,
+  "purplel": $purplel,
+  "orangeRed2l": $OrangeRed2l
 );
 
 // scss-docs-end theme-colors-map

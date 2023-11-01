@@ -129,7 +129,7 @@ const AssignTaskForStaffDetailInfo = () => {
   const fetchGetAssignTaskDetail = async () => {
     let response;
     try {
-      response = await assignTaskServices.getAssignTaskDetail(3);
+      response = await assignTaskServices.getAssignTaskDetail(8);
       setAssignTaskDetail(response.data.data);
       setStaffDetail(response.data.data.staff);
       setDevDetail(response.data.data.devs);
