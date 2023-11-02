@@ -6,19 +6,17 @@ import JobVacancyList from "./JobVacancyList";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
-
 const HiringRequestListInCompanyPartner = () => {
   document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
   const navigate = useNavigate();
   useEffect(() => {
-    const role = localStorage.getItem('role');
+    const role = localStorage.getItem("role");
     if (role === null) {
       navigate("/signin");
-    } else if (role === 'manager') {
+    } else if (role === "manager") {
       navigate("/error404");
     }
   });
-
 
   return (
     <React.Fragment>

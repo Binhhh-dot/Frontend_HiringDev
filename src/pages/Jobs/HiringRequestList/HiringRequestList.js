@@ -12,10 +12,10 @@ const HiringRequestList = () => {
   document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
   const navigate = useNavigate();
   useEffect(() => {
-    const role = localStorage.getItem('role');
+    const role = localStorage.getItem("role");
     if (role === null) {
       navigate("/signin");
-    } else if (role === 'HR') {
+    } else if (role === "HR") {
       navigate("/error404");
     }
   });
@@ -25,15 +25,14 @@ const HiringRequestList = () => {
       <section className="section">
         <Container>
           <Row>
-            <Col lg={9}>
-              <div className="me-lg-5">
+            <Col lg={12}>
+              <div className="me-lg-6">
                 <h3>Hiring Request List</h3>
 
                 <JobVacancyList />
-
               </div>
             </Col>
-            <Sidebar />
+            {/* <Sidebar /> */}
           </Row>
         </Container>
       </section>
