@@ -260,7 +260,33 @@ const CandidateGridDetails = () => {
                       <Col lg={4}>
                         <ul className="list-inline mb-0 text-lg-end mt-3 mt-lg-0">
                           <li>
-                            <span className="badge bg-warning mb-2">
+                            <span
+                              className={
+                                hiringRequestDetail.statusString === "Rejected"
+                                  ? "badge bg-danger text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "Waiting Approval"
+                                  ? "badge bg-warning text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "In Progress"
+                                  ? "badge bg-blue text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "Expired"
+                                  ? "badge bg-danger text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "Cancelled"
+                                  ? "badge bg-danger text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "Finished"
+                                  ? "badge bg-primary text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "Complete"
+                                  ? "badge bg-primary text-light mb-2"
+                                  : hiringRequestDetail.statusString === "Saved"
+                                  ? "badge bg-info text-light mb-2"
+                                  : ""
+                              }
+                            >
                               {hiringRequestDetail.statusString}
                             </span>{" "}
                           </li>
@@ -543,7 +569,7 @@ const CandidateGridDetails = () => {
                               <>
                                 <button
                                   id="interviewButton"
-                                  className="btn btn-primary btn-hover w-100 mt-2"
+                                  className="btn btn-primary btn-hover w-100 mt-2 fw-bold"
                                   onClick={() =>
                                     handleInterviewClick(
                                       candidategridDetailsNew.id
@@ -567,7 +593,7 @@ const CandidateGridDetails = () => {
                                 </button>
                                 <button
                                   id="rejectButton"
-                                  className="btn btn-soft-primary btn-hover w-100 mt-2"
+                                  className="btn btn-soft-danger btn-danger w-100 mt-2 fw-bold"
                                   onClick={() =>
                                     rejectInterview2(candidategridDetailsNew.id)
                                   }
