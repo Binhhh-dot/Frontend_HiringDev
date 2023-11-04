@@ -2054,6 +2054,13 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.2.0.tgz#2cbcf822bf3764c9658c4d2e568bd0c0cb748016"
   integrity sha512-+OJ9konv95ClSTOJCmMZqpd5+YGsB2S+x6w3E1oaM8UuR5j8nTNHYSz8c9BEPGDOCMQYIEEGlVPj/VY64iTbGw==
 
+"@daypilot/daypilot-lite-react@^3.18.0":
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/@daypilot/daypilot-lite-react/-/daypilot-lite-react-3.18.0.tgz#33c5aa3c6039ca4c47ba905323a9e9b109f255e1"
+  integrity sha512-P+du189qA1l8HcGuHj8978DUG1a9QdIaGjmP4X0t5zGd6xmNJL5pbCOq9naiyHokAbxBuKsI2upsp03Zfh8yZA==
+  dependencies:
+    create-react-class ">=15.0.0"
+
 "@emotion/babel-plugin@^11.10.6":
   version "11.10.6"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.10.6.tgz#a68ee4b019d661d6f37dec4b8903255766925ead"
@@ -5145,7 +5152,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@^15.6.2:
+create-react-class@>=15.0.0, create-react-class@^15.6.2:
   version "15.7.0"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.7.0.tgz#7499d7ca2e69bb51d13faf59bd04f0c65a1d6c1e"
   integrity sha512-QZv4sFWG9S5RUvkTYWbflxeZX+JG7Cz0Tn33rQBJ+WFQTqTfUTjMjiv9tnfXazjsO5r0KhPs+AqCjyrQX6h2ng==

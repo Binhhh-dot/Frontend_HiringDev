@@ -457,6 +457,10 @@ const NavBar = (props) => {
                               >
                                 Task List For Staff
                               </Link>
+
+                              <Link className="dropdown-item" to="/developer">
+                                Developer
+                              </Link>
                             </Col>
                             <Col lg={3}>
                               <span className="dropdown-header">Interview</span>
