@@ -185,12 +185,8 @@ const RightSideContent = () => {
     const lastName = document.getElementById('lastNameTab2').value;
     const phoneNumber = document.getElementById('phoneNumberTab2').value;
     const fileInput = document.getElementById('profile-img-file-input-2');
-    console.log(fileInput);
-    console.log(fileInput.value);
-
     const dateOfBirth = document.getElementById('dayOfBirhTab2').value;
     const file = fileInput.files[0];
-    console.log(file);
     // Get userId from localStorage
     const userId = localStorage.getItem('userId');
     const formData = new FormData();
@@ -200,34 +196,68 @@ const RightSideContent = () => {
     formData.append('PhoneNumber', phoneNumber);
     formData.append('DateOfBirth', dateOfBirth);
     formData.append('file', file || null);
-    // try {
-    //   // Make API request
-    //   const response = await userSerrvices.updateUser(formData, userId);
-    //   // Handle the response (you can show a success message or redirect to another page)
+    try {
+      // Make API request
+      const response = await userSerrvices.updateUser(formData, userId);
+      // Handle the response (you can show a success message or redirect to another page)
+      console.log("thanh cong")
+    } catch (error) {
+      // Handle errors (show an error message or log the error)
+      console.error('Error creating company:', error);
+      console.log(error)
+    }
 
-    // } catch (error) {
-    //   // Handle errors (show an error message or log the error)
-    //   console.error('Error creating company:', error);
-    //   console.log(error)
-    // }
-    // On successful API response, update user data in both components
+    if (!document.getElementById("profile-img-file-input-2").files[0]) {
+      console.log("deotontai")
+    } else {
+      console.log("tontai")
 
+    }
 
     const file3 = document.getElementById("profile-img-file-input-2").files[0];
     if (file3) {
       file3.preview = URL.createObjectURL(file3);
+    } else {
     }
 
-    const updatedUserData2 = {
-      lastName: document.getElementById("firstNameTab2").value,
-      firstName: document.getElementById("lastNameTab2").value,
-      email: userData.email,
-      phoneNumber: document.getElementById("phoneNumberTab2").value,
-      dayOfBirh: document.getElementById("dayOfBirhTab2").value,
-      userImage: file3.preview,
+
+    // Lấy giá trị ban đầu từ phần tử HTML
+    var inputDate = document.getElementById("dayOfBirhTab2").value;
+
+    // Tách ngày thành các phần tử riêng lẻ
+    var dateParts = inputDate.split("-");
+
+    // Sắp xếp lại các phần tử theo thứ tự "dd-mm-yyyy"
+    var formattedDate = dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0];
+
+    // Gán giá trị đã định dạng lại cho phần tử HTML
+    console.log(formattedDate)
+    console.log(userData.userImage)
+    if (file3) {
+      const updatedUserData2 = {
+        lastName: document.getElementById("firstNameTab2").value,
+        firstName: document.getElementById("lastNameTab2").value,
+        email: userData.email,
+        phoneNumber: document.getElementById("phoneNumberTab2").value,
+        dateOfBirth: formattedDate,
+        userImage: file3.preview,
+      }
+      updateUserData(updatedUserData2);
+    } else {
+      console.log(userData.userImage)
+      const tempUserImage = userData.userImage;
+      const updatedUserData2 = {
+        lastName: document.getElementById("firstNameTab2").value,
+        firstName: document.getElementById("lastNameTab2").value,
+        email: userData.email,
+        phoneNumber: document.getElementById("phoneNumberTab2").value,
+        dateOfBirth: formattedDate,
+        userImage: tempUserImage,
+      }
+      updateUserData(updatedUserData2);
+
     }
-    console.log(updatedUserData2.dayOfBirh)
-    updateUserData(updatedUserData2);
+
   };
 
 
@@ -239,7 +269,7 @@ const RightSideContent = () => {
       const userId = localStorage.getItem("userId");
       if (userId) {
         try {
-          const response = await userSerrvices.getUserById(userId); // Sửa lỗi chính tả ở đây
+          const response = await userSerrvices.getUserById(userId);
           const { lastName, firstName, email, phoneNumber, dateOfBirth, userImage } = response.data.data;
 
           updateUserData({
@@ -250,10 +280,25 @@ const RightSideContent = () => {
             dateOfBirth,
             userImage
           });
+
           document.getElementById("firstNameTab2").value = response.data.data.firstName;
           document.getElementById("lastNameTab2").value = response.data.data.lastName;
           document.getElementById("phoneNumberTab2").value = response.data.data.phoneNumber;
-          document.getElementById("dayOfBirhTab2").value = response.data.data.dateOfBirth;
+
+          var parts = response.data.data.dateOfBirth.split('-');
+          if (parts.length === 3) {
+            var day = parts[1];
+            var month = parts[0];
+            var year = parts[2];
+            // Format the date as "yyyy-dd-mm"
+            var formattedDate = year + '-' + day + '-' + month;
+            // Set the value of the input field
+            document.getElementById("dayOfBirhTab2").value = formattedDate;
+            console.log(formattedDate)
+          } else {
+            console.error("Invalid date format");
+          }
+
           if (response.data.data.userImage) {
             setUserImage3(response.data.data.userImage);
           } else {
@@ -536,7 +581,7 @@ const RightSideContent = () => {
                     </Row>
                   </div>
 
-                  <div className="mt-4">
+                  {/* <div className="mt-4">
                     <h5 className="fs-17 fw-semibold mb-3">Profile</h5>
                     <Row>
                       <Col lg={12}>
@@ -742,7 +787,7 @@ const RightSideContent = () => {
                         </div>
                       </Col>
                     </Row>
-                  </div>
+                  </div> */}
                   <div className="mt-4 text-end">
                     <Link to="#" className="btn btn-primary" onClick={handleUpdateUserData}>
                       Update

@@ -11,6 +11,7 @@ import axios from "axios"; // Import Axios
 import loginService from "../../services/login.service";
 import userImage2 from "../../assets/images/user/img-02.jpg";
 import Select from "react-select";
+import companyServices from "../../services/company.services";
 
 
 const SignCompany = () => {
@@ -21,11 +22,13 @@ const SignCompany = () => {
 
     const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
+        companyName: "",
+        companyEmail: "",
         phoneNumber: "",
+        address: "",
+        country: "",
+        userId: "",
+        file: "",
     });
 
     useEffect(() => {
@@ -62,21 +65,35 @@ const SignCompany = () => {
             file.preview = URL.createObjectURL(file);
             setAvatar2(file);
         }
+
     };
+
     const handleSignUp = async (e) => {
         e.preventDefault();
+        const formData2 = new FormData();
+        const userId = localStorage.getItem('userId');
+        formData2.append('companyName', formData.companyName);
+        formData2.append('companyEmail', formData.companyEmail);
+        formData2.append('phoneNumber', formData.phoneNumber);
+        formData2.append('address', formData.address);
+        formData2.append('country', formData.country);
+        formData2.append('userId', userId);
+        formData2.append('file', avatar2);
 
         try {
-            const response = await loginService.signUp(formData);
+            // Make API request
+            const response = await companyServices.createCompany(formData2);
 
-            if (response.status === 201) {
-                // Đăng ký thành công, chuyển hướng đến trang đăng nhập
-                navigate("/signin")
-            }
+            // Handle the response (you can show a success message or redirect to another page)
+            console.log('API Response:', response.data);
+            const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+            const userData = responseUser.data;
+            localStorage.setItem('companyId', userData.data.companyId);
+            navigate("/layout3");
         } catch (error) {
-            console.error("Lỗi khi đăng ký:", error);
-            // Xử lý lỗi tại đây nếu cần thiết
-            setError(error.response.data.message);
+            // Handle errors (show an error message or log the error)
+            console.error('Error creating company:', error);
+            console.log(error.response.data);
         }
     };
 
@@ -194,7 +211,7 @@ const SignCompany = () => {
                                                                         id="firstnameInput"
                                                                         placeholder="Enter your first name"
                                                                         value={formData.firstName}
-                                                                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                                                                        onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                                                                         onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
                                                                         onInvalid={(e) => e.target.setCustomValidity("Please enter your company name")}
                                                                     />
@@ -213,7 +230,9 @@ const SignCompany = () => {
                                                                         id="lastnameInput"
                                                                         placeholder="Enter your last name"
                                                                         value={formData.lastName}
-                                                                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                                                        onChange={(e) => {
+                                                                            setFormData({ ...formData, companyEmail: e.target.value });
+                                                                        }}
                                                                         onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
                                                                         onInvalid={(e) => e.target.setCustomValidity("Please enter your email")}
                                                                     />
@@ -286,7 +305,10 @@ const SignCompany = () => {
                                                                         }}
                                                                         options={countries}
                                                                         value={selectedCountry}
-                                                                        onChange={(selectedOption) => setSelectedCountry(selectedOption)}
+                                                                        onChange={(selectedOption) => {
+                                                                            setSelectedCountry(selectedOption);
+                                                                            setFormData({ ...formData, country: selectedOption.value });
+                                                                        }}
                                                                     />
                                                                 </div>
                                                                 <div className="mb-3">
@@ -297,13 +319,13 @@ const SignCompany = () => {
                                                                         Address
                                                                     </label>
                                                                     <Input
-                                                                        type="password"
+                                                                        type="text"
                                                                         className="form-control"
                                                                         id="passwordInput"
                                                                         placeholder="Enter your password"
                                                                         value={formData.password}
                                                                         required
-                                                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                                                                         onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
                                                                         onInvalid={(e) => e.target.setCustomValidity("Please enter your address")}
                                                                     />
@@ -316,6 +338,19 @@ const SignCompany = () => {
                                                                     >
                                                                         Create
                                                                     </button>
+                                                                </div>
+                                                                <div className="mt-3 me-2
+                                                                 text-end">
+                                                                    <p className="mb-0">
+                                                                        {" "}
+                                                                        <Link
+                                                                            to="/layout3"
+                                                                            className="fw-medium text-white text-decoration-underline"
+                                                                        >
+                                                                            {" "}
+                                                                            Skip{" "}
+                                                                        </Link>
+                                                                    </p>
                                                                 </div>
                                                             </Form>
                                                         </div>

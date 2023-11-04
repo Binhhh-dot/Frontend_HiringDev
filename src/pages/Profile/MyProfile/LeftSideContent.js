@@ -10,7 +10,6 @@ import { useUser } from "./UserContext";
 
 const LeftSideContent = () => {
   const { userData, updateUserData } = useUser();
-  console.log(userData)
   return (
     <Col lg={4}>
       <Card className="profile-sidebar me-lg-4">
