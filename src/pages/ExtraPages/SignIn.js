@@ -38,7 +38,6 @@ const SignIn = () => {
           localStorage.setItem("userId", userId);
           localStorage.setItem("role", role)
           // Navigate to "/layout3"
-          navigate("/layout3");
         }
       }
     } catch (error) {
@@ -48,9 +47,19 @@ const SignIn = () => {
 
     const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
     const userData = responseUser.data;
-    if (userData.data.companyId != null) {
-      localStorage.setItem('companyId', userData.data.companyId);
+    console.log(userData.data.companyId)
+    console.log(role)
+    if (role == "Manager") {
+      navigate("/layout3")
+    } else {
+      if (userData.data.companyId != null) {
+        localStorage.setItem('companyId', userData.data.companyId);
+        navigate("/layout3")
+      } else {
+        navigate("/signcompany")
+      }
     }
+
   };
 
   const saveTokenToLocalStorage = (token) => {

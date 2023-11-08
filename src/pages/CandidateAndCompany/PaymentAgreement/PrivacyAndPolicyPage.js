@@ -104,19 +104,6 @@ const PrivacyAndPolicyPage = () => {
                 <p>Signature</p>
               </div>
             </div>
-
-            {/* {privacyandpolicyPage.map((privacyandpolicyDetails, key) => (
-              <Col lg={12} key={key}>
-                <h5 className="mb-4">{privacyandpolicyDetails.policyTitle}</h5>
-                <ul className="about-list list-unstyled text-muted mb-4 pb-2">
-                  {privacyandpolicyDetails.policyRules.map(
-                    (privacyandpolicyInner, key) => (
-                      <li key={key}>{privacyandpolicyInner.policyInnerRule}</li>
-                    )
-                  )}
-                </ul>
-              </Col>
-            ))} */}
             <div className="text-end">
               <Link to="#" className="btn btn-primary">
                 <i className="uil uil-print"></i> Print

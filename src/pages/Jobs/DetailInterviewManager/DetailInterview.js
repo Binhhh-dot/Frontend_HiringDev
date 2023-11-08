@@ -168,7 +168,7 @@ const DetailInterviewManager = () => {
   const ModalCancelInterViewClose = () => {
     setIsModalCancelInterViewOpen(false);
   };
-  const handleModalCancelInterView = () => {};
+  const handleModalCancelInterView = () => { };
   //-----------------------------------------------------------------------------------
   return (
     <React.Fragment>
@@ -429,12 +429,12 @@ const DetailInterviewManager = () => {
                                   jobListingDetails.fullTime === true
                                     ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
                                     : jobListingDetails.partTime === true
-                                    ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                                    : jobListingDetails.freeLance === true
-                                    ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                                    : jobListingDetails.internship === true
-                                    ? "badge bg-blue-subtle text-blue fs-13 mt-1"
-                                    : ""
+                                      ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                                      : jobListingDetails.freeLance === true
+                                        ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                                        : jobListingDetails.internship === true
+                                          ? "badge bg-blue-subtle text-blue fs-13 mt-1"
+                                          : ""
                                 }
                               >
                                 {jobListingDetails.timing}
@@ -499,9 +499,8 @@ const DetailInterviewManager = () => {
                     <nav aria-label="Page navigation example">
                       <div className="pagination job-pagination mb-0 justify-content-center">
                         <li
-                          className={`page-item ${
-                            currentPage === 1 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === 1 ? "disabled" : ""
+                            }`}
                         >
                           <p
                             className="page-link"
@@ -513,9 +512,8 @@ const DetailInterviewManager = () => {
                         </li>
                         {renderPageNumbers()}
                         <li
-                          className={`page-item ${
-                            currentPage === totalPages ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                            }`}
                         >
                           <p
                             className="page-link"

@@ -4,7 +4,7 @@
 
 .bg-auth {
     padding: 40px 0;
-    background-color: rgba(var(--#{$prefix}primary-rgb), 0.1);
+    background-color: #02af7421;
     align-items: center;
     display: flex;
     min-height: 100vh;
@@ -21,7 +21,7 @@
     overflow: hidden;
 
     .auth-content {
-        background-color: var(--#{$prefix}primary-text);
+        background-color: #028c5d;
         display: flex;
         flex-direction: column;
         align-items: center;

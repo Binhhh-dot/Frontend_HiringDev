@@ -13,6 +13,7 @@ import hiringRequestService from "../../../services/hiringrequest.service";
 import scheduleTypeService from "../../../services/scheduleType";
 import employmentTypeServices from "../../../services/employmentType.services";
 import { Editor } from "@tinymce/tinymce-react";
+import companyServices from "../../../services/company.services";
 
 const CreateHiringRequest = () => {
   document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
@@ -43,15 +44,42 @@ const CreateHiringRequest = () => {
   const [descriptionError, setDescriptionError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [text, setText] = useState("");
   const [value, setValue] = useState("");
+  const [avatar2, setAvatar2] = useState();
+  const [userImage3, setUserImage3] = useState(null);
+  const [companyNameFormCreateCompany, setCompanyNameFormCreateCompany] = useState(null);
+  const [emailFormCreateCompany, setEmailFormCreateCompany] = useState(null);
+  const [companyPhoneNumberFormCreateCompany, setCompanyPhoneNumberFormCreateCompany] = useState(null);
+  const [addressFormCreateCompany, setAddressFormCreateCompany] = useState(null);
+
 
   const openModal = () => {
     setModal(!modal);
   };
   const openModal2 = () => {
     setModal2(!modal2);
+  };
+
+  const handleCompanyNameChange = (event) => {
+    const newValue = event.target.value;
+    setCompanyNameFormCreateCompany(newValue);
+  };
+
+  const handleEmailChange = (event) => {
+    const newValue = event.target.value;
+    setEmailFormCreateCompany(newValue);
+  };
+  const handleCompanyPhoneNumberChange = (event) => {
+    const newValue = event.target.value;
+    setCompanyPhoneNumberFormCreateCompany(newValue);
+  };
+  const handleAddressChange = (event) => {
+    const newValue = event.target.value;
+    setAddressFormCreateCompany(newValue);
   };
 
   const handleChange = (selected) => {
@@ -80,6 +108,53 @@ const CreateHiringRequest = () => {
     }
   });
 
+
+  const createCompany = async () => {
+    const formData = new FormData();
+    const userId = localStorage.getItem('userId');
+    formData.append('companyName', companyNameFormCreateCompany);
+    formData.append('companyEmail', emailFormCreateCompany);
+    formData.append('phoneNumber', companyPhoneNumberFormCreateCompany);
+    formData.append('address', addressFormCreateCompany);
+    formData.append('country', selectedCountry);
+    formData.append('userId', userId);
+    formData.append('file', avatar2);
+
+    try {
+      // Make API request
+      const response = await companyServices.createCompany(formData);
+
+      // Handle the response (you can show a success message or redirect to another page)
+      console.log('API Response:', response.data);
+      const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+      const userData = responseUser.data;
+      localStorage.setItem('companyId', userData.data.companyId);
+      console.log("thanh cong roi yeahh")
+    } catch (error) {
+      // Handle errors (show an error message or log the error)
+      console.error('Error creating company:', error);
+      console.log(error.response.data);
+    }
+  };
+
+
+  useEffect(() => {
+    fetch(
+      "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedCountries = data.map((country) => ({
+          value: country.name.common,
+          label: country.name.common,
+        }));
+        setCountries(formattedCountries);
+      })
+      .catch((error) => {
+        console.error("Error fetching data", error);
+      });
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -105,7 +180,8 @@ const CreateHiringRequest = () => {
         // Lấy userId từ localStorage
         const userId = localStorage.getItem("userId");
         const companyId = localStorage.getItem("companyId");
-        if (userId && !companyId) {
+        if (userId && companyId == "null") {
+
           openModal2();
         }
       } catch (error) {
@@ -119,6 +195,7 @@ const CreateHiringRequest = () => {
           await hiringRequestService.getHiringRequestDetailInCompany(
             requestIdParam
           );
+        console.log(response)
         hiringRequestSaved = response.data.data;
         document.getElementById("job-title").value =
           hiringRequestSaved.jobTitle;
@@ -126,6 +203,7 @@ const CreateHiringRequest = () => {
           hiringRequestSaved.numberOfDev;
         document.getElementById("budget").value =
           hiringRequestSaved.salaryPerDev;
+        console.log(hiringRequestSaved.salaryPerDev)
         localStorage.setItem("requestId", hiringRequestSaved.requestId);
         const formattedDuration = hiringRequestSaved.duration.split("T")[0];
         const editor = window.tinymce.get("description"); // Giả sử 'description' là id của Editor
@@ -135,7 +213,7 @@ const CreateHiringRequest = () => {
 
         // Đặt giá trị cho input duration
         document.getElementById("duration").value = formattedDuration;
-        console.log(hiringRequestSaved);
+
       } catch (error) {
         console.error("Error:", error);
       }
@@ -295,7 +373,6 @@ const CreateHiringRequest = () => {
     } else {
       const companyIdErr = localStorage.getItem("companyId");
       if (companyIdErr == "null") {
-        console.log("null");
         openModal2();
       } else {
         setLoading(true);
@@ -488,7 +565,8 @@ const CreateHiringRequest = () => {
       openModal(); // Nếu không có, mở modal signup
     } else {
       const companyIdErr = localStorage.getItem("companyId");
-      if (!companyIdErr) {
+      if (companyIdErr == "null") {
+
         openModal2();
       } else {
         if (!document.getElementById("job-title").value) {
@@ -544,8 +622,8 @@ const CreateHiringRequest = () => {
               jobTitle,
               jobDescription,
               numberOfDev,
-              salaryPerDev,
               targetedDev,
+              salaryPerDev,
               duration,
               typeRequireId,
               levelRequireId,
@@ -589,6 +667,18 @@ const CreateHiringRequest = () => {
     }
   };
 
+  const handleChooseAvatar2 = () => {
+    const inputElement = document.getElementById('profile-img-file-input-2');
+    inputElement.click();
+  };
+  const handlePreviewAvatar2 = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      file.preview = URL.createObjectURL(file);
+      setAvatar2(file);
+    }
+
+  };
   return (
     <React.Fragment>
       {loading && (
@@ -653,7 +743,8 @@ const CreateHiringRequest = () => {
                               options={options2}
                               value={selectedOptions2}
                               onChange={handleChange2}
-                              className="Select Select--level-highest "
+                              className="Select Select--level-highest"
+                              style={{ maxHeight: '2000px', overflowY: 'auto' }}
                             />
                           </div>
 
@@ -787,8 +878,10 @@ const CreateHiringRequest = () => {
                               setValue(newValue);
                             }}
                             init={{
-                              plugins:
-                                "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
+                              plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                              //   plugins:
+                              //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
+                              // 
                             }}
                           />
                           {descriptionError && (
@@ -937,14 +1030,47 @@ const CreateHiringRequest = () => {
                           </div>
                           <div className="auth-content">
                             <div className="w-100">
-                              <div className="text-center mb-4">
-                                <h5>Create Company Account</h5>
+                              <div className="text-center ">
                                 <p className="text-muted">
                                   Create Company Account and get access to all
                                   the features of WeHire
                                 </p>
                               </div>
                               <Form action="#" className="auth-form">
+                                <div style={{ textAlign: "center" }}>
+
+                                  <div className="mb-4 profile-user">
+                                    {avatar2 ? (
+                                      <img
+
+                                        src={avatar2.preview}
+                                        className="rounded-circle img-thumbnail profile-img"
+                                        id="profile-img"
+                                        alt=""
+                                      />
+                                    ) : (
+                                      <img
+                                        src={userImage3}  // Giá trị mặc định là "userImage2"
+                                        className="rounded-circle img-thumbnail profile-img"
+                                        id="profile-img-2"
+                                        alt=""
+                                      />
+                                    )}
+                                    <div className="p-0 rounded-circle profile-photo-edit">
+                                      <label
+                                        className="profile-photo-edit avatar-xs"
+                                      >
+                                        <i className="uil uil-edit" onClick={handleChooseAvatar2}></i>
+                                      </label>
+                                      <input
+                                        type="file"
+                                        id="profile-img-file-input-2"
+                                        onChange={handlePreviewAvatar2}
+                                        style={{ display: 'none' }}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
                                 <FormGroup className="mb-3">
                                   <Label
                                     htmlFor="emailInput"
@@ -953,10 +1079,12 @@ const CreateHiringRequest = () => {
                                     Company Name
                                   </Label>
                                   <Input
-                                    type="email"
+                                    type="text"
                                     className="form-control"
-                                    id="companyNameInput"
+                                    id="companyNameInputFormCreate"
                                     placeholder="Enter your company name"
+                                    value={companyNameFormCreateCompany}
+                                    onChange={handleCompanyNameChange}
                                   />
                                 </FormGroup>
                                 <FormGroup className="mb-3">
@@ -964,13 +1092,15 @@ const CreateHiringRequest = () => {
                                     htmlFor="emailInput"
                                     className="form-label"
                                   >
-                                    Company Name
+                                    Email
                                   </Label>
                                   <Input
                                     type="email"
                                     className="form-control"
-                                    id="companyNameInput"
-                                    placeholder="Enter your company name"
+                                    id="emailInputFormCreate"
+                                    placeholder="Enter your email company"
+                                    value={emailFormCreateCompany}
+                                    onChange={handleEmailChange}
                                   />
                                 </FormGroup>
                                 <FormGroup className="mb-3">
@@ -978,13 +1108,15 @@ const CreateHiringRequest = () => {
                                     htmlFor="emailInput"
                                     className="form-label"
                                   >
-                                    Company Name
+                                    Company Phone Number
                                   </Label>
                                   <Input
                                     type="email"
                                     className="form-control"
-                                    id="companyNameInput"
-                                    placeholder="Enter your company name"
+                                    id="companyPhoneNumberInputFormCreate"
+                                    placeholder="Enter your company phone number"
+                                    value={companyPhoneNumberFormCreateCompany}
+                                    onChange={handleCompanyPhoneNumberChange}
                                   />
                                 </FormGroup>
                                 <FormGroup className="mb-3">
@@ -992,27 +1124,42 @@ const CreateHiringRequest = () => {
                                     htmlFor="emailInput"
                                     className="form-label"
                                   >
-                                    Company Name
+                                    Country
                                   </Label>
-                                  <Input
-                                    type="email"
-                                    className="form-control"
-                                    id="companyNameInput"
-                                    placeholder="Enter your company name"
-                                  />
-                                </FormGroup>
-                                <FormGroup className="mb-3">
-                                  <Label
-                                    htmlFor="emailInput"
-                                    className="form-label"
-                                  >
-                                    Company Name
-                                  </Label>
-                                  <Input
-                                    type="email"
-                                    className="form-control"
-                                    id="companyNameInput"
-                                    placeholder="Enter your company name"
+                                  <Select
+                                    className="Select Select--level-highest "
+                                    styles={{
+                                      control: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        border: "1px solid #ede8e8",
+                                      }),
+                                      singleValue: (provided) => ({
+                                        ...provided,
+                                        color: "black",
+                                      }),
+                                      placeholder: (provided) => ({
+                                        ...provided,
+                                        color: "red",
+                                      }),
+                                      menu: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: "white",
+                                      }),
+                                      option: (provided, state) => ({
+                                        ...provided,
+                                        color: "black",
+                                      }),
+                                      menuList: (provided) => ({
+                                        ...provided,
+                                        height: "150px", // Đặt chiều cao 150px cho menu list
+                                      }),
+                                    }}
+                                    options={countries}
+                                    onChange={(selectedOption) => {
+                                      setSelectedCountry(selectedOption);
+                                    }}
+                                    value={selectedCountry}
                                   />
                                 </FormGroup>
                                 <FormGroup className="mb-3">
@@ -1020,36 +1167,26 @@ const CreateHiringRequest = () => {
                                     htmlFor="passwordInput"
                                     className="form-label"
                                   >
-                                    Password
+                                    Address
                                   </label>
                                   <Input
-                                    type="password"
                                     className="form-control"
-                                    id="s"
-                                    placeholder="Password"
+                                    id="addressInputFormCreate"
+                                    placeholder="Enter your address"
+                                    value={addressFormCreateCompany}
+                                    onChange={handleAddressChange}
                                   />
                                 </FormGroup>
                                 <div className="text-center">
                                   <button
                                     type="submit"
                                     className="btn btn-primary w-100"
+                                    onClick={createCompany}
                                   >
-                                    Sign In
+                                    Create
                                   </button>
                                 </div>
                               </Form>
-                              <div className="mt-3 text-center">
-                                <p className="mb-0">
-                                  Don't have an account ?{" "}
-                                  <Link
-                                    to="/signup"
-                                    className="form-text text-primary text-decoration-underline"
-                                  >
-                                    {" "}
-                                    Sign-up{" "}
-                                  </Link>
-                                </p>
-                              </div>
                             </div>
                           </div>
                         </ModalBody>
