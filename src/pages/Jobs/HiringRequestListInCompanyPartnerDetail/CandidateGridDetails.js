@@ -266,25 +266,25 @@ const CandidateGridDetails = () => {
                                   ? "badge bg-danger text-light mb-2"
                                   : hiringRequestDetail.statusString ===
                                     "Waiting Approval"
-                                  ? "badge bg-warning text-light mb-2"
-                                  : hiringRequestDetail.statusString ===
-                                    "In Progress"
-                                  ? "badge bg-blue text-light mb-2"
-                                  : hiringRequestDetail.statusString ===
-                                    "Expired"
-                                  ? "badge bg-danger text-light mb-2"
-                                  : hiringRequestDetail.statusString ===
-                                    "Cancelled"
-                                  ? "badge bg-danger text-light mb-2"
-                                  : hiringRequestDetail.statusString ===
-                                    "Finished"
-                                  ? "badge bg-primary text-light mb-2"
-                                  : hiringRequestDetail.statusString ===
-                                    "Complete"
-                                  ? "badge bg-primary text-light mb-2"
-                                  : hiringRequestDetail.statusString === "Saved"
-                                  ? "badge bg-info text-light mb-2"
-                                  : ""
+                                    ? "badge bg-warning text-light mb-2"
+                                    : hiringRequestDetail.statusString ===
+                                      "In Progress"
+                                      ? "badge bg-blue text-light mb-2"
+                                      : hiringRequestDetail.statusString ===
+                                        "Expired"
+                                        ? "badge bg-danger text-light mb-2"
+                                        : hiringRequestDetail.statusString ===
+                                          "Cancelled"
+                                          ? "badge bg-danger text-light mb-2"
+                                          : hiringRequestDetail.statusString ===
+                                            "Finished"
+                                            ? "badge bg-primary text-light mb-2"
+                                            : hiringRequestDetail.statusString ===
+                                              "Complete"
+                                              ? "badge bg-primary text-light mb-2"
+                                              : hiringRequestDetail.statusString === "Saved"
+                                                ? "badge bg-info text-light mb-2"
+                                                : ""
                               }
                             >
                               {hiringRequestDetail.statusString}
@@ -565,7 +565,7 @@ const CandidateGridDetails = () => {
 
                           <div className="mt-3">
                             {candidategridDetailsNew.selectedDevStatus ===
-                            "Waiting HR Approval" ? (
+                              "Waiting HR Approval" ? (
                               <>
                                 <button
                                   id="interviewButton"
@@ -826,6 +826,8 @@ const CandidateGridDetails = () => {
                 <p>No interviews available.</p>
               </div>
             )}
+          </div>
+          <div class="col-lg-1 " style={{ padding: "0px" }}>
           </div>
         </div>
       </section>

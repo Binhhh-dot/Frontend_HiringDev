@@ -4,6 +4,7 @@
 
 .team-box {
     overflow: hidden;
+
     .team-img {
         img {
             position: relative;
@@ -11,7 +12,8 @@
             height: 215px;
             border-radius: 50%;
         }
-        .team-social{
+
+        .team-social {
             position: absolute;
             top: 58px;
             left: 25px;
@@ -19,6 +21,7 @@
             opacity: 0;
             transform: translate(-20px, -20px);
             transition: all 0.3s ease-out;
+
             a {
                 display: inline-block;
                 width: 30px;
@@ -31,6 +34,7 @@
             }
         }
     }
+
     &:hover {
         .team-social {
             opacity: 1;
@@ -38,4 +42,8 @@
             transition-delay: 0.15s;
         }
     }
+}
+
+.ant-layout-sider-children {
+    background-color: white;
 }

@@ -47,11 +47,12 @@ import Contact from "../pages/Contact/Contact";
 import SignIn from "../pages/ExtraPages/SignIn";
 import SignUp from "../pages/ExtraPages/SignUp";
 import SignOut from "../pages/ExtraPages/SignOut";
+import SignCompany from "../pages/ExtraPages/SignCompany";
 import ResetPassword from "../pages/ExtraPages/ResetPassword";
 import ComingSoon from "../pages/ExtraPages/ComingSoon";
 import Error404 from "../pages/ExtraPages/Error404";
 import Components from "../pages/ExtraPages/Components/Components";
-
+import Test from "../pages/Admin/test";
 //profile section(User Profile)
 import BookMarkJobPost from "../pages/Profile/BookMarkJobPost/BookMarkJobPost";
 import ManageJobs from "../pages/Profile/ManageJobs/ManageJobs";
@@ -201,5 +202,7 @@ const authRoutes = [
   { path: "/signout", component: <SignOut /> },
   { path: "/signup", component: <SignUp /> },
   { path: "/signin", component: <SignIn /> },
+  { path: "/signcompany", component: <SignCompany /> },
+  { path: "/test", component: <Test /> }
 ];
 export { userRoutes, authRoutes };
