@@ -14,7 +14,7 @@ const StyleSwitcher = () => {
 
   useEffect(() => {
     document.body.setAttribute("data-bs-theme", "light");
-    document.body.setAttribute("data-theme", "green"); 
+    document.body.setAttribute("data-theme", "green");
   });
 
   // Dark/Light mode
@@ -69,8 +69,12 @@ const StyleSwitcher = () => {
             </div>
           </div>
         </div>
-        <div className="bottom">
-          <Link onClick={toggleSwitcher} className="settings rounded-end">
+        <div className="bottom ">
+          <Link
+            onClick={toggleSwitcher}
+            className="settings rounded-end "
+            style={{ marginTop: "220px" }}
+          >
             <i className="mdi mdi-cog mdi-spin"></i>
           </Link>
         </div>

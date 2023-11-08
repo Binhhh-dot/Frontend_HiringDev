@@ -68,7 +68,37 @@
   }
 }
 
+//----------------------------------------------------------------------------
 .job-box-dev-in-assigntask-detail-forstaff{
+  transition: all 0.5s ease;
+
+  .bookmark-label {
+    width: 200px;
+    position: absolute;
+    top: -5px;
+    left: -84px;
+    transform: rotate(-45deg);
+    z-index: 1;
+    color: $white;
+    background: rgba(var(--#{$prefix}primary-rgb), 0.15);
+    transition: all 0.5s ease;
+    padding: 6px;
+    font-size: 20px;
+    padding-top: 8px;
+  }
+
+  &:hover {
+    // transform: translateY(-8px);
+    border-color: var(--#{$prefix}primary);
+
+    .bookmark-label {
+      background-color: var(--#{$prefix}primary);
+    }
+  }
+}
+
+//--------------------------------------------------------------------
+.job-box-dev-in-list-hiringRequest-for-dev{
   transition: all 0.5s ease;
 
   .bookmark-label {
@@ -99,9 +129,7 @@
 
 
 
-
-
-
+//---------------------------------------------------------------------
 //job-list page
 
 .filler-job-form {

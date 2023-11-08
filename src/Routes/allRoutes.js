@@ -82,6 +82,7 @@ import DetailInterviewManager from "../pages/Jobs/DetailInterviewManager/DetailI
 import InterviewList from "../pages/Jobs/ListInterviewHR/JobGrid";
 import InterviewListManager from "../pages/Jobs/ListInterviewManager/JobGrid";
 import HiringRequestListExpiredHR from "../pages/Jobs/HiringRequestListExpiredHR/HiringRequestListExpiredHR";
+import Developer from "../pages/Jobs/Developer/Developer";
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -173,6 +174,7 @@ const userRoutes = [
   },
 
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },
+  { path: "/developer", component: <Developer /> },
 
   //Company Section
   { path: "/createstaffaccount", component: <CreateStaffAccount /> },
