@@ -102,10 +102,10 @@ const JobDetailsDescription = () => {
       return updatedSelectedDev;
     });
   };
-  // console.log("---------------------------------------");
-  // console.log("cac dev matching duoc chon de gui di cho dev chap nhan");
-  // console.log(selectedDev);
-  // console.log("---------------------------------------");
+  console.log("---------------------------------------");
+  console.log("cac dev matching duoc chon de gui di cho dev chap nhan");
+  console.log(selectedDev);
+  console.log("---------------------------------------");
 
   //////////////////////////////////////////////////////////////////////////////////////////
   // chon dev o phan dev accepted
@@ -987,7 +987,7 @@ const JobDetailsDescription = () => {
           </div>
 
           <div className="d-flex mt-4">
-            {currentListDev === "matching" ? (
+            {currentListDev === "matching" && devMatching.length > 0 ? (
               <div className="d-flex">
                 <div className="checkbox-all-wrapper-hiring-detail-manager">
                   <label>
@@ -1006,7 +1006,7 @@ const JobDetailsDescription = () => {
                   </h4>
                 </div>
               </div>
-            ) : (
+            ) : currentListDev === "sent" && devHasBeenSent.length > 0 ? (
               <div className="d-flex">
                 <div className="checkbox-all-wrapper-hiring-detail-manager">
                   <label>
@@ -1025,6 +1025,8 @@ const JobDetailsDescription = () => {
                   </h4>
                 </div>
               </div>
+            ) : (
+              <div></div>
             )}
           </div>
 
@@ -1498,9 +1500,9 @@ const JobDetailsDescription = () => {
             >
               <CardBody className="p-4">
                 <Row className="align-items-center">
-                  <Col lg={1}>
+                  {/* <Col lg={1}>
                     <div></div>
-                  </Col>
+                  </Col> */}
 
                   <Col lg={5}>
                     <div className="candidate-list-content mt-3 mt-lg-0">
@@ -1552,7 +1554,7 @@ const JobDetailsDescription = () => {
                     </div>
                   </Col>
 
-                  <Col lg={3}>
+                  <Col lg={4}>
                     <div className="d-flex flex-column">
                       <div className=" d-flex mb-2">
                         <span className=" fs-14" style={{ width: "38px" }}>
