@@ -6,6 +6,7 @@ import JobVacancyList from "./JobVacancyList";
 import Interview from "./Interview";
 import Profile from "./Profile";
 import Register from "./Register";
+import Interview2 from "./Interview2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -141,7 +142,8 @@ const Developer = () => {
                   <Row>
                     <Col>
                       <div className="me-lg-6">
-                        <Interview />
+                        {/* <Interview /> */}
+                        <Interview2 />
                       </div>
                     </Col>
                   </Row>
