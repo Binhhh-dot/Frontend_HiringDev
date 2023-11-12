@@ -14,6 +14,20 @@ const createProject = async (formData) => {
     return response
 }
 
+const getAllProjectByCompanyId = async (companyId) => {
+    const serviceUrl = urlConstant.endpoint.project.getAllProjectByCompanyId.replace("${companyId}", companyId);
+    const response = await utils.axiosLocalHost.get(serviceUrl);
+    return response;
+};
+
+const getProjectDetailByProjectId = async (projectId) => {
+    const serviceUrl = urlConstant.endpoint.project.getProjectDetailByProjectId.replace("${projectId}", projectId);
+    const response = await utils.axiosLocalHost.get(serviceUrl);
+    return response;
+}
+
 export default {
-    createProject
+    createProject,
+    getAllProjectByCompanyId,
+    getProjectDetailByProjectId
 }

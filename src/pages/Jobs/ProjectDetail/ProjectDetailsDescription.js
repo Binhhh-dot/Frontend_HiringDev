@@ -19,153 +19,62 @@ import {
   faBullhorn,
   faEllipsisVertical,
 } from "@fortawesome/free-solid-svg-icons";
-
-//Import Images
-// import JobDetailImage from "../../../assets/images/job-detail.jpg";
-// import JobImage10 from "../../../assets/images/featured-job/img-10.png";
-// import userImage1 from "../../../assets/images/user/img-01.jpg";
-// import userImage2 from "../../../assets/images/user/img-02.jpg";
-// import userImage3 from "../../../assets/images/user/img-03.jpg";
-// import userImage4 from "../../../assets/images/user/img-04.jpg";
-// import userImage5 from "../../../assets/images/user/img-05.jpg";
-//import { Link } from "react-router-dom";
 import "./index.css";
-import hiringrequestService from "../../../services/hiringrequest.service";
-import developer from "../../../services/developer.services";
+import projectServices from "../../../services/project.services";
 
 const ProjectDetailDesciption = () => {
-  const { state } = useLocation();
+  const location = useLocation();
 
-  const [hiringRequestDetail, setHiringRequestDetail] = useState(null);
-  const [devMatching, setDevMatching] = useState([]);
-  ////////////////////////////////////////////////////////////////////////////////////////
-  const [devHasBeenSent, setDevHasBeenSent] = useState([]);
-  /////////////////////////////////////////////////////////////////////////////////////////
-  const [currentListDev, setCurrentListDev] = useState("matching");
-  //////////////////////////////////////////////////////////////////////////////////////////
-  const [disableIconCancel, setDisableIconCancel] = useState(false);
-  /////////////////////////////////////////////////////////////////////////////////////////
-  const [isVisibleListDevAfter, setIsVisibleListDevAfter] = useState(false);
-  const [listDevAfterReject, setListDevAfterReject] = useState([]);
-  ////////////////////////////////////////////////////////////////////////////////////////
-  const handleTabChange = (tab) => {
-    setCurrentListDev(tab);
-    console.log(tab);
-  };
+  // const fetchProjectDetails2 = async () => {
+  //   try {
+  //     const queryParams = new URLSearchParams(location.search);
+  //     const jobId = queryParams.get("Id");
+  //     const response = await developerServices.GetAllSelectedDevByHR(jobId);
+  //     const data = response.data;
+  //     const candidategridDetails = data.data.map((dev) => {
+  //       return {
+  //         id: dev.developerId,
+  //         userImg: dev.userImage,
+  //         candidateName: dev.firstName + " " + dev.lastName,
+  //         candidateStatusClassName:
+  //           "profile-active position-absolute badge rounded-circle bg-success",
+  //         experience: dev.yearOfExperience + " Years",
+  //         jobType: dev.levelRequireName,
+  //         codeName: dev.codeName,
+  //         salary: dev.averageSalary,
+  //         addclassNameBookmark: false,
+  //         label: false,
+  //         skills: dev.skillRequireStrings,
+  //         averagedPercentage: dev.averagedPercentage.toFixed(2),
+  //         selectedDevStatus: dev.selectedDevStatus,
+  //       };
+  //     });
+  //     setCandidategridDetails(candidategridDetails);
+  //   } catch (error) {
+  //     console.error("Error fetching job vacancies:", error);
+  //   }
+  // };
 
-  /////////////////////////////////////////////////////////////////////////////////////////
-  const [showCandidateList, setShowCandidateList] = useState(false);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
-
-
-
-  ////////////////////////////////////////////////////////////////////////////////////////
-  const [selectAllDevMatching, setSelectAllDevAllMatching] = useState(false);
-  const [selectedDev, setSelectedDev] = useState([]);
-  const [isSendButtonVisible, setIsSendButtonVisibility] = useState(false);
-
-
-  // console.log("---------------------------------------");
-  // console.log("cac dev matching duoc chon de gui di cho dev chap nhan");
-  // console.log(selectedDev);
-  // console.log("---------------------------------------");
-
-  //////////////////////////////////////////////////////////////////////////////////////////
-  // chon dev o phan dev accepted
-  const [selectedAllDevAccept, setSelectedAllDevAccept] = useState(false);
-  const [selectedDevAccept, setSelectedDevAccept] = useState([]);
-  const [isSendButtonAcceptVisible, setIsSendButtonAcceptVisible] =
-    useState(false);
-
-
-
-  /////////////////////////////////////////////////////////////////////////////////////////
-
-  /////////////////////////////////////////////////////////////////////////////////////////
-
-  const [cancelReason, setCancelReason] = useState("");
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
-
-
-
-
-
-  //---------------------------------------------------------------------------------------------------
-
-
-  //---------------------------------------------------------------------------------------------------
-
-  const fetchHiringRequestDetailInManager = async () => {
+  const fetchProjectDetails = async () => {
     let response;
+    // const saveData = localStorage.getItem("myData");
 
     try {
-      response = await hiringrequestService.getHiringRequestDetailInManager(
-        state.jobId
+      const queryParams = new URLSearchParams(location.search);
+      const projectId = queryParams.get("Id");
+      response = await projectServices.getProjectDetailByProjectId(
+        projectId
       );
-
-      setHiringRequestDetail(response.data.data);
-      if (
-        response.data.data.statusString !== "Waiting Approval" &&
-        response.data.data.statusString !== "Rejected"
-      ) {
-        setShowCandidateList(true);
-      }
-
-      if (response.data.data.statusString === "Rejected") {
-        setShowCandidateList(false);
-        setIsVisibleListDevAfter(true);
-      }
-
+      console.log(response.data.data)
       return response;
     } catch (error) {
-      console.error("Error fetching hiring request:", error);
+      console.error("Error fetching job vacancies:", error);
     }
   };
 
-
-
-
-  //////////////////////////////////////////////////////////////////////////////
-
-  /////////////////////////////////////////////////////////////////////////////
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  const toggleDropdown = () => setShowDropdown((prevState) => !prevState);
-
-  //----------------------------------------------------------------------------------------
-  //const [cancelReason, setCancelReason] = useState("");
-
-  const [cancelReasonAfter, setCancelReasonAfter] = useState("");
-
-
-  //---------------------------------------------------------------------------------------
-  //handle modal cancel request after
-  const [isCancelAfterModalOpen, setIsCancelAfterModalOpen] = useState(false);
-
-  const openCancelAfterModal = () => {
-    setIsCancelAfterModalOpen(true);
-  };
-
-
-
-
   useEffect(() => {
-    fetchHiringRequestDetailInManager();
+    fetchProjectDetails();
   }, []);
-
-
-  const candidateDetails = devMatching;
-
-
-  if (!state?.jobId) {
-    return <Navigate to={"/"}></Navigate>;
-  }
-
-  if (!hiringRequestDetail) {
-    return null;
-  }
 
   return (
     <React.Fragment>
@@ -183,127 +92,30 @@ const ProjectDetailDesciption = () => {
             >
               <div className="d-flex align-items-end gap-2">
                 <span
-                  className={
-                    hiringRequestDetail.statusString === "Waiting Approval"
-                      ? "badge bg-warning text-light fs-12"
-                      : hiringRequestDetail.statusString === "In Progress"
-                        ? "badge bg-blue text-light fs-12"
-                        : hiringRequestDetail.statusString === "Rejected"
-                          ? "badge bg-danger text-light fs-12"
-                          : hiringRequestDetail.statusString === "Expired"
-                            ? "badge bg-danger text-light fs-12"
-                            : hiringRequestDetail.statusString === "Cancelled"
-                              ? "badge bg-danger text-light fs-12"
-                              : hiringRequestDetail.statusString === "Finished"
-                                ? "badge bg-primary text-light fs-12"
-                                : hiringRequestDetail.statusString === "Complete"
-                                  ? "badge bg-primary text-light fs-12"
-                                  : hiringRequestDetail.statusString === "Saved"
-                                    ? "badge bg-info text-light fs-12"
-                                    : ""
-                  }
-                  company={{ companyMana: hiringRequestDetail.companyId }}
+                // className={
+                //   hiringRequestDetail.statusString === "Waiting Approval"
+                //     ? "badge bg-warning text-light fs-12"
+                //     : hiringRequestDetail.statusString === "In Progress"
+                //       ? "badge bg-blue text-light fs-12"
+                //       : hiringRequestDetail.statusString === "Rejected"
+                //         ? "badge bg-danger text-light fs-12"
+                //         : hiringRequestDetail.statusString === "Expired"
+                //           ? "badge bg-danger text-light fs-12"
+                //           : hiringRequestDetail.statusString === "Cancelled"
+                //             ? "badge bg-danger text-light fs-12"
+                //             : hiringRequestDetail.statusString === "Finished"
+                //               ? "badge bg-primary text-light fs-12"
+                //               : hiringRequestDetail.statusString === "Complete"
+                //                 ? "badge bg-primary text-light fs-12"
+                //                 : hiringRequestDetail.statusString === "Saved"
+                //                   ? "badge bg-info text-light fs-12"
+                //                   : ""
+                // }
+                // company={{ companyMana: hiringRequestDetail.companyId }}
                 >
-                  {hiringRequestDetail.statusString}
+                  status
+                  {/* {hiringRequestDetail.statusString} */}
                 </span>
-
-                {hiringRequestDetail.statusString === "Waiting Approval" ||
-                  hiringRequestDetail.statusString === "Rejected" ? (
-                  <FontAwesomeIcon
-                    icon={faEllipsisVertical}
-                    size="xl"
-                    color="#909191"
-                  />
-                ) : (
-                  <Dropdown
-                    isOpen={showDropdown}
-                    toggle={toggleDropdown}
-                    disabled={disableIconCancel}
-                  >
-                    <DropdownToggle
-                      caret
-                      style={{
-                        padding: "0px",
-                        backgroundColor: "white",
-                        border: "0px",
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faEllipsisVertical}
-                        size="xl"
-                        color="#909191"
-                      // onClick={handleDropdownClick}
-                      />
-                    </DropdownToggle>
-                    <DropdownMenu>
-                      <DropdownItem header style={{ textAlign: "center" }}>
-                        Are you sure?
-                      </DropdownItem>
-                      <DropdownItem divider />
-                      <DropdownItem>
-                        <button
-                          className="d-flex justify-content-center"
-                          style={{
-                            width: "100%",
-                            padding: "7px",
-                            fontWeight: "500",
-                          }}
-                          class="btn btn-danger"
-                          role="button"
-                          onClick={openCancelAfterModal}
-                        >
-                          <span style={{ fontSize: "15px" }}>
-                            Cancel Request
-                          </span>
-                        </button>
-                      </DropdownItem>
-                      <DropdownItem divider />
-                    </DropdownMenu>
-                  </Dropdown>
-                )}
-                {/* <Dropdown
-                  isOpen={showDropdown}
-                  toggle={toggleDropdown}
-                  disabled={disableIconCancel}
-                >
-                  <DropdownToggle
-                    caret
-                    style={{
-                      padding: "0px",
-                      backgroundColor: "white",
-                      border: "0px",
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      icon={faEllipsisVertical}
-                      size="xl"
-                      color="#909191"
-                      // onClick={handleDropdownClick}
-                    />
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem header style={{ textAlign: "center" }}>
-                      Are you sure?
-                    </DropdownItem>
-                    <DropdownItem divider />
-                    <DropdownItem>
-                      <button
-                        className="d-flex justify-content-center"
-                        style={{
-                          width: "100%",
-                          padding: "7px",
-                          fontWeight: "500",
-                        }}
-                        class="btn btn-danger"
-                        role="button"
-                        onClick={openCancelAfterModal}
-                      >
-                        <span style={{ fontSize: "15px" }}>Cancel Request</span>
-                      </button>
-                    </DropdownItem>
-                    <DropdownItem divider />
-                  </DropdownMenu>
-                </Dropdown> */}
               </div>
             </div>
           </div>
@@ -312,7 +124,11 @@ const ProjectDetailDesciption = () => {
           <div>
             <Row>
               <Col md={8}>
-                <h3 className="mb-1">{hiringRequestDetail.jobTitle}</h3>
+                <h3 className="mb-1">
+                  {/* {hiringRequestDetail.jobTitle}
+                   */}
+                  title
+                </h3>
               </Col>
             </Row>
           </div>
@@ -327,7 +143,8 @@ const ProjectDetailDesciption = () => {
                 <div>
                   <p className="text-muted mb-0 fs-13">Type Of Developer</p>
                   <p className="fw-medium mb-0 badge bg-info-subtle text-info">
-                    {hiringRequestDetail.typeRequireName}
+                    {/* {hiringRequestDetail.typeRequireName} */}
+                    type
                   </p>
                 </div>
               </Col>
@@ -339,7 +156,7 @@ const ProjectDetailDesciption = () => {
                 <div id="standard">
                   <p className="text-muted fs-13 mb-0">Skill Requirement</p>
                   <p className="fw-medium mb-0 ">
-                    {hiringRequestDetail.skillRequireStrings.map(
+                    {/* {hiringRequestDetail.skillRequireStrings.map(
                       (skill, index) => (
                         <span
                           key={index}
@@ -349,7 +166,8 @@ const ProjectDetailDesciption = () => {
                           {skill}
                         </span>
                       )
-                    )}
+                    )} */}
+                    skill
                   </p>
                 </div>
               </Col>
@@ -362,7 +180,9 @@ const ProjectDetailDesciption = () => {
                 <div>
                   <p className="text-muted fs-13 mb-0">Level Requirement</p>
                   <p className="fw-medium mb-0 badge bg-purplel text-purple">
-                    {hiringRequestDetail.levelRequireName}
+                    {/* {hiringRequestDetail.levelRequireName}
+                     */}
+                    level
                   </p>
                 </div>
               </Col>
@@ -376,11 +196,12 @@ const ProjectDetailDesciption = () => {
                   <p className="text-muted fs-13 mb-0">Deadline</p>
                   <p className="fw-medium mb-0 ">
                     <span className="badge bg-orangeRed2l text-orangeRed2">
-                      {new Intl.DateTimeFormat("en-GB", {
+                      {/* {new Intl.DateTimeFormat("en-GB", {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
-                      }).format(new Date(hiringRequestDetail.duration))}
+                      }).format(new Date(hiringRequestDetail.duration))} */}
+                      duration
                     </span>
                   </p>
                 </div>
@@ -392,10 +213,11 @@ const ProjectDetailDesciption = () => {
             <div className="job-detail-desc">
               <p
                 className=""
-                dangerouslySetInnerHTML={{
-                  __html: hiringRequestDetail.jobDescription,
-                }}
+              // dangerouslySetInnerHTML={{
+              //   __html: hiringRequestDetail.jobDescription,
+              // }}
               />
+              des
             </div>
           </div>
 
@@ -405,20 +227,22 @@ const ProjectDetailDesciption = () => {
                 <h5>Level Require</h5>
                 <li className="mb-3">
                   <i className="uil uil-circle"></i>{" "}
-                  {hiringRequestDetail.levelRequireName}
+                  {/* {hiringRequestDetail.levelRequireName} */}
+                  level
                 </li>
 
                 <h5>Skill & Type Require</h5>
-                {hiringRequestDetail.skillRequireStrings.map((skill, index) => (
+                {/* {hiringRequestDetail.skillRequireStrings.map((skill, index) => (
                   <li key={index}>
                     <i className="uil uil-circle"></i>
                     {skill}
                   </li>
-                ))}
+                ))} */}
 
                 <li>
                   <i className="uil uil-circle"></i>{" "}
-                  {hiringRequestDetail.typeRequireName}
+                  {/* {hiringRequestDetail.typeRequireName} */}
+                  type
                 </li>
               </ul>
             </div>

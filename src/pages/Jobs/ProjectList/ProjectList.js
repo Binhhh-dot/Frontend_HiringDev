@@ -23,12 +23,11 @@ const ProjectList = () => {
       <section className="section">
         <Container>
           <Row>
-            <Col lg={9}>
+            <Col lg={12}>
               <div className="me-lg-5">
                 <ProjectVacancyList />
               </div>
             </Col>
-            <Sidebar />
           </Row>
         </Container>
       </section>

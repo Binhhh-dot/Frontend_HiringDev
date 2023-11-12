@@ -40,6 +40,7 @@ const CandidateGridDetails = () => {
   const [loadingInterview, setLoadingInterview] = useState(false);
   const [loadingReject, setLoadingReject] = useState(false);
   const [isListLoading, setIsListLoading] = useState(false);
+
   const openModal = (candidateInfo) => {
     setSelectedCandidateInfo(candidateInfo);
     setIsModalOpen(true);

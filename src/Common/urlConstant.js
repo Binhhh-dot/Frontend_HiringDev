@@ -125,6 +125,8 @@ export default {
     },
     project: {
       createProject: "/Project",
+      getAllProjectByCompanyId: "/Project/ByCompany/${companyId}",
+      getProjectDetailByProjectId: "/Project/${projectId}",
     }
   },
 };

@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Col, Container, Row } from "reactstrap";
 import ProjectDetailDesciption from "./ProjectDetailsDescription";
-import RightSideContent from "./RightSideContent";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
 
@@ -15,11 +14,8 @@ const ProjectDetail = () => {
       <section className="section">
         <Container className="custom-container-hiring-detail">
           <Row>
-            <Col lg={8}>
+            <Col lg={12}>
               <ProjectDetailDesciption />
-            </Col>
-            <Col lg={4} className="mt-lg-0">
-              <RightSideContent />
             </Col>
           </Row>
         </Container>

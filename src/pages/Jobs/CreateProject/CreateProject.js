@@ -749,37 +749,6 @@ const CreateProject = () => {
                       <div class="col-lg-12 mt-2 d-flex justify-content-end gap-2">
                         <button
                           type="button"
-                          className=" btn btn-info "
-                          style={{ backgroundColor: "#0051ffe0" }}
-                          onClick={handleSavePostJob}
-                          disabled={loading}
-                        >
-                          {loading ? (
-                            <RingLoader color="#fff" loading={true} size={20} />
-                          ) : (
-                            "Save"
-                          )}
-                        </button>
-                        <div>
-                          <button onClick={notify}>Notify !</button>
-                          <ToastContainer
-                            position="top-right"
-                            autoClose={5000}
-                            hideProgressBar={false}
-                            newestOnTop={false}
-                            closeOnClick
-                            rtl={false}
-                            pauseOnFocusLoss
-                            draggable
-                            pauseOnHover
-                            theme="light"
-                          />
-                          {/* Same as */}
-                          <ToastContainer />
-
-                        </div>
-                        <button
-                          type="button"
                           className="btn btn-primary"
                           onClick={handlePostJob}
                           disabled={loading}
