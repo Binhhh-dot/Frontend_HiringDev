@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import hiringrequestService from "../../../services/hiringrequest.service";
 import { Row, Col, Card, CardBody, Modal, ModalBody, Button } from "reactstrap";
+import userImage0 from "../../../assets/images/user/img-00.jpg";
 
 const DeveloperDetailInCompanyPopup = (
   { isModalOpen, closeModal, devId },
@@ -49,7 +50,10 @@ const DeveloperDetailInCompanyPopup = (
                       <CardBody className="p-4">
                         <div className="candidate-profile text-center">
                           <img
-                            src={developerInfo.userImg}
+                            src={
+                              developerInfo.userImg ||
+                              userImage0
+                            }
                             alt=""
                             className="avatar-lg rounded-circle"
                           />

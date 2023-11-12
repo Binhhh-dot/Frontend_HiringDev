@@ -15,13 +15,14 @@ import PaymenAgreement from "../pages/CandidateAndCompany/PaymentAgreement/Priva
 //Jobs Section
 import HiringRequestList from "../pages/Jobs/HiringRequestList/HiringRequestList";
 import CreateHiringRequest from "../pages/Jobs/CreateHiringRequest/CreateHiringRequest";
+import CreateProject from "../pages/Jobs/CreateProject/CreateProject";
 import JobList from "../pages/Jobs/JobList/JobList";
 import JobList2 from "../pages/Jobs/JobList2/JobList2";
 import JobGrid from "../pages/Jobs/JobGrid/JobGrid";
 import JobGrid2 from "../pages/Jobs/JobGrid2/JobGrid2";
 import JobDetails from "../pages/Jobs/JobDetails/JobDetails";
 import JobsCategories from "../pages/Jobs/JobsCategories/JobsCategories";
-
+import ProjectList from "../pages/Jobs/ProjectList/ProjectList";
 //Candidate and Company Section
 
 import CreateStaffAccount from "../pages/CandidateAndCompany/CreateStaffAccount/CreateStaffAcount";
@@ -77,6 +78,7 @@ import AssignTaskCreate from "../pages/CandidateAndCompany/CreateAssignTask/Assi
 import AssignTaskForStaffDetail from "../pages/CandidateAndCompany/AssignTaskForStaffDetail/AssignTaskForStaffDetail";
 import AssignTaskList from "../pages/CandidateAndCompany/AssignTaskListForManager/AssignTaskList";
 import AssignTaskListFS from "../pages/CandidateAndCompany/AssignTaskListForStaff/AssignTaskListFS";
+import ProjectDetail from "../pages/Jobs/ProjectDetail/ProjectDetail";
 
 import DetailInterview from "../pages/Jobs/DetailInterview/DetailInterview";
 import DetailInterviewManager from "../pages/Jobs/DetailInterviewManager/DetailInterview";
@@ -154,6 +156,14 @@ const userRoutes = [
     component: <HiringRequestListInCompanyPartner />,
   },
   {
+    path: "/projectlist",
+    component: <ProjectList />,
+  },
+  {
+    path: "/projectdetail",
+    component: <ProjectDetail />,
+  },
+  {
     path: "/hiringRequestListExpiredHR",
     component: <HiringRequestListExpiredHR />,
   },
@@ -175,6 +185,7 @@ const userRoutes = [
   },
 
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },
+  { path: "/createproject", component: <CreateProject /> },
   { path: "/developer", component: <Developer /> },
 
   //Company Section

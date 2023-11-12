@@ -9,16 +9,14 @@ import signInImage from "../../assets/images/auth/sign-in.png";
 import { Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
-import jwtDecode from 'jwt-decode';
 import loginService from "../../services/login.service";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
   document.title = "Sign In | Jobcy - Job Listing Template | Themesdesign";
 
   const handleSignIn = async (e) => {
@@ -41,8 +39,16 @@ const SignIn = () => {
         }
       }
     } catch (error) {
-      console.log("Error during login:", error.response.data.message);
-      setError(error.response.data.message);
+      toast.error(error.response.data.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
 
     const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
@@ -54,18 +60,13 @@ const SignIn = () => {
     } else {
       if (userData.data.companyId != null) {
         localStorage.setItem('companyId', userData.data.companyId);
+        toast.success('Logged in successfully!');
         navigate("/layout3")
       } else {
         navigate("/signcompany")
       }
     }
 
-  };
-
-  const saveTokenToLocalStorage = (token) => {
-    // Implement your logic to save the token to local storage
-    // For example:
-    localStorage.setItem("accessToken", token);
   };
   return (
     <React.Fragment>
@@ -225,6 +226,7 @@ const SignIn = () => {
         </div>
       </div>
     </React.Fragment>
+
   );
 };
 

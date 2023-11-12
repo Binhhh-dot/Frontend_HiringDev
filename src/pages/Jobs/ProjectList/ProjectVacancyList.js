@@ -15,7 +15,7 @@ import jobImage5 from "../../../assets/images/featured-job/img-05.png";
 import jobImage6 from "../../../assets/images/featured-job/img-06.png";
 import jobImage7 from "../../../assets/images/featured-job/img-07.png";
 
-const JobVacancyList = () => {
+const ProjectVacancyList = () => {
   //Apply Now Model
   const [jobVacancyList, setJobVacancyList] = useState([]);
   const navigate = useNavigate();
@@ -138,12 +138,18 @@ const JobVacancyList = () => {
     }
   };
 
-  const openDetail = (statusString, id) => {
+  const openDetail = (statusString, id, companyId) => {
     if (statusString === "Saved") {
       const state = { requestId: id };
       navigate("/createhiringrequest", { state });
     } else {
-      navigate(`/hiringrequestlistincompanypartnerdetail?Id=${id}`);
+      navigate("/projectdetail");
+      navigate('/projectdetail', {
+        state: {
+          jobId: id,
+          company: companyId,
+        },
+      });
     }
   };
 
@@ -229,7 +235,9 @@ const JobVacancyList = () => {
                       onClick={() =>
                         openDetail(
                           jobVacancyListDetails.statusString,
-                          jobVacancyListDetails.id
+                          jobVacancyListDetails.id,
+                          jobVacancyListDetails.companyId,
+
                         )
                       }
                     >
@@ -253,7 +261,9 @@ const JobVacancyList = () => {
                         onClick={() =>
                           openDetail(
                             jobVacancyListDetails.statusString,
-                            jobVacancyListDetails.id
+                            jobVacancyListDetails.id,
+                            jobVacancyListDetails.companyId,
+
                           )
                         }
                         className="text-dark"
@@ -346,10 +356,10 @@ const JobVacancyList = () => {
                           <span
                             key={index}
                             className={`badge ${index === 0
-                                ? "bg-info text-light"
-                                : index === 1
-                                  ? "bg-danger-subtle text-danger"
-                                  : "bg-primary-subtle text-primary"
+                              ? "bg-info text-light"
+                              : index === 1
+                                ? "bg-danger-subtle text-danger"
+                                : "bg-primary-subtle text-primary"
                               }  ms-2`}
                           >
                             {skill.trim()}
@@ -404,4 +414,4 @@ const JobVacancyList = () => {
   );
 };
 
-export default JobVacancyList;
+export default ProjectVacancyList;

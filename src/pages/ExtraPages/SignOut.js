@@ -6,6 +6,8 @@ import darkLogo from "../../assets/images/logo-dark.png";
 import signInImage from "../../assets/images/auth/sign-in.png";
 import { Card, CardBody, Col, Container, Row } from "reactstrap";
 import { Link } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignOut = () => {
   document.title = "Sign Out | Jobcy - Job Listing Template | Themesdesign";
