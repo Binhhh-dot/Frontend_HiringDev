@@ -38,8 +38,11 @@ export default {
       searchDuration:
         "&StartSalaryPerDev=${StartSalaryPerDev}&EndSalaryPerDev=${EndSalaryPerDev}",
       getAllStatus: "/HiringRequest/Status",
+
+      //-----------------------------------------------------------------------
       getHiringRequestDetailInManager: "/HiringRequest/${hiringRequestId}",
       getHiringRequestDetailInCompany: "/HiringRequest/${hiringRequestId}",
+      //-----------------------------------------------------------------------
       getDeveloperMatchingInManager: "/Developer/DevMatching/${devMatching}",
       sendHiringRequestToDevMatching: "/SelectingDev",
       getDevMatchingHasBeenSent:
@@ -124,9 +127,12 @@ export default {
       getStaffPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
     },
     project: {
+      getProjectList: "/Project",
+      getProjectListPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
+
       createProject: "/Project",
       getAllProjectByCompanyId: "/Project/ByCompany/${companyId}",
       getProjectDetailByProjectId: "/Project/${projectId}",
-    }
+    },
   },
 };

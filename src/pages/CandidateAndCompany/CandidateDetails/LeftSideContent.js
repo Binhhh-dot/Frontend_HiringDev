@@ -118,6 +118,7 @@ const LeftSideContent = () => {
               </li>
             </ul>
           </CardBody>
+
           <CardBody className="p-4 border-top">
             <h6 className="fs-17 fw-semibold mb-3">Professional Skills</h6>
             <div className="d-flex flex-wrap align-items-start gap-1">
