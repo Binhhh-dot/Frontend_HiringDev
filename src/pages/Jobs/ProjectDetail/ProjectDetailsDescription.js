@@ -15,7 +15,7 @@ import {
   NavLink,
   Nav,
   TabPane,
-  TabContent
+  TabContent,
 } from "reactstrap";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
@@ -122,10 +122,8 @@ const ProjectDetailDesciption = () => {
       const queryParams = new URLSearchParams(location.search);
       const projectId = queryParams.get("Id");
       setProjectId(projectId);
-      response = await projectServices.getProjectDetailByProjectId(
-        projectId
-      );
-      console.log(response.data.data)
+      response = await projectServices.getProjectDetailByProjectId(projectId);
+      console.log(response.data.data);
       setHiringRequestDetail(response.data.data);
       return response;
     } catch (error) {
@@ -221,21 +219,22 @@ const ProjectDetailDesciption = () => {
 
   const createHiringRequest = async () => {
     const state = { projectId: projectId };
-    console.log(projectId)
+    console.log(projectId);
     navigate("/createhiringrequest", { state });
-  }
+  };
 
   return (
     <React.Fragment>
-      <div style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px", borderRadius: "15px" }} className="job-detail">
+      <div className="job-detail ">
         <CardBody className="">
           <div className="d-flex justify-content-between">
             <div className="d-flex p-3">
-              <div style={{ fontWeight: "bold" }}>{hiringRequestDetail.projectName}</div>
+              <div style={{ fontWeight: "bold" }}>
+                {hiringRequestDetail.projectName}
+              </div>
               <span
                 style={{ height: "fit-content" }}
                 className={
-
                   hiringRequestDetail.statusString === "Preparing"
                     ? "badge bg-warning text-light fs-12"
                     : hiringRequestDetail.statusString === "In Progress"
@@ -268,8 +267,10 @@ const ProjectDetailDesciption = () => {
             </div>
           </div>
 
-          <Card className="profile-content-page mt-4 mt-lg-0"
-            style={{ borderTop: "none" }}>
+          <Card
+            className="profile-content-page mt-4 mt-lg-0"
+            style={{ borderTop: "none" }}
+          >
             <Nav
               className="profile-content-nav nav-pills border-bottom"
               id="pills-tab"
@@ -487,12 +488,9 @@ const ProjectDetailDesciption = () => {
               </TabContent>
             </CardBody>
           </Card>
-
-
-
-        </CardBody >
-      </div >
-    </React.Fragment >
+        </CardBody>
+      </div>
+    </React.Fragment>
   );
 };
 
