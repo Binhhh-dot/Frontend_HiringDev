@@ -185,7 +185,13 @@ const NewListInterviewInfo = () => {
                   >
                     <Row>
                       <Col lg={6} className="border-end">
-                        <h4>Interview Detail</h4>
+                        <h4 className="mb-0">Interview Detail</h4>
+                        <div className="d-flex justify-content-end">
+                          <p className="mb-0 badge bg-success-subtle text-success fs-13 ">
+                            {newInterviewListInManagerDetail.devStatusString}{" "}
+                            AAA
+                          </p>
+                        </div>
                         <div className="mt-4">
                           <p className="mb-0 text-muted">Title </p>
                           <div
@@ -310,7 +316,7 @@ const NewListInterviewInfo = () => {
                         </div>
                       </Col>
                       <Col lg={6} className="border-start ">
-                        <h4>Interviewee</h4>
+                        <h4 className="mb-0">Interviewee</h4>
                         {/* ------------------------------------------------------ */}
                         <Row>
                           <Col lg={6}>
@@ -436,7 +442,7 @@ const NewListInterviewInfo = () => {
                                   (skillRequire, key) => (
                                     <span
                                       key={key}
-                                      className="badge bg-success-subtle text-success fs-13 mt-1"
+                                      className="badge bg-blue text-light fs-13 mt-1"
                                     >
                                       {skillRequire}
                                     </span>

@@ -267,25 +267,25 @@ const CandidateGridDetails = () => {
                                   ? "badge bg-danger text-light mb-2"
                                   : hiringRequestDetail.statusString ===
                                     "Waiting Approval"
-                                    ? "badge bg-warning text-light mb-2"
-                                    : hiringRequestDetail.statusString ===
-                                      "In Progress"
-                                      ? "badge bg-blue text-light mb-2"
-                                      : hiringRequestDetail.statusString ===
-                                        "Expired"
-                                        ? "badge bg-danger text-light mb-2"
-                                        : hiringRequestDetail.statusString ===
-                                          "Cancelled"
-                                          ? "badge bg-danger text-light mb-2"
-                                          : hiringRequestDetail.statusString ===
-                                            "Finished"
-                                            ? "badge bg-primary text-light mb-2"
-                                            : hiringRequestDetail.statusString ===
-                                              "Complete"
-                                              ? "badge bg-primary text-light mb-2"
-                                              : hiringRequestDetail.statusString === "Saved"
-                                                ? "badge bg-info text-light mb-2"
-                                                : ""
+                                  ? "badge bg-warning text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "In Progress"
+                                  ? "badge bg-blue text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "Expired"
+                                  ? "badge bg-danger text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "Cancelled"
+                                  ? "badge bg-danger text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "Finished"
+                                  ? "badge bg-primary text-light mb-2"
+                                  : hiringRequestDetail.statusString ===
+                                    "Complete"
+                                  ? "badge bg-primary text-light mb-2"
+                                  : hiringRequestDetail.statusString === "Saved"
+                                  ? "badge bg-info text-light mb-2"
+                                  : ""
                               }
                             >
                               {hiringRequestDetail.statusString}
@@ -423,32 +423,33 @@ const CandidateGridDetails = () => {
                                     {candidategridDetailsNew.codeName}
                                   </h5>
                                 </div>
-
                                 <span
                                   className={
-                                    candidategridDetailsNew.selectedDevStatus === "HR Rejected"
+                                    candidategridDetailsNew.selectedDevStatus ===
+                                    "HR Rejected"
                                       ? "badge bg-danger text-light mb-2"
                                       : candidategridDetailsNew.selectedDevStatus ===
                                         "Waiting HR Approval"
-                                        ? "badge bg-warning text-light mb-2"
-                                        : candidategridDetailsNew.selectedDevStatus ===
-                                          "Interviewing"
-                                          ? "badge bg-blue text-light mb-2"
-                                          : candidategridDetailsNew.selectedDevStatus ===
-                                            "Expired"
-                                            ? "badge bg-danger text-light mb-2"
-                                            : candidategridDetailsNew.selectedDevStatus ===
-                                              "Cancelled"
-                                              ? "badge bg-danger text-light mb-2"
-                                              : candidategridDetailsNew.selectedDevStatus ===
-                                                "Waiting Interview"
-                                                ? "badge bg-primary text-light mb-2"
-                                                : candidategridDetailsNew.selectedDevStatus ===
-                                                  "Complete"
-                                                  ? "badge bg-primary text-light mb-2"
-                                                  : candidategridDetailsNew.selectedDevStatus === "Saved"
-                                                    ? "badge bg-info text-light mb-2"
-                                                    : ""
+                                      ? "badge bg-warning text-light mb-2"
+                                      : candidategridDetailsNew.selectedDevStatus ===
+                                        "Interviewing"
+                                      ? "badge bg-blue text-light mb-2"
+                                      : candidategridDetailsNew.selectedDevStatus ===
+                                        "Expired"
+                                      ? "badge bg-danger text-light mb-2"
+                                      : candidategridDetailsNew.selectedDevStatus ===
+                                        "Cancelled"
+                                      ? "badge bg-danger text-light mb-2"
+                                      : candidategridDetailsNew.selectedDevStatus ===
+                                        "Waiting Interview"
+                                      ? "badge bg-primary text-light mb-2"
+                                      : candidategridDetailsNew.selectedDevStatus ===
+                                        "Complete"
+                                      ? "badge bg-primary text-light mb-2"
+                                      : candidategridDetailsNew.selectedDevStatus ===
+                                        "Saved"
+                                      ? "badge bg-info text-light mb-2"
+                                      : ""
                                   }
                                 >
                                   {candidategridDetailsNew.selectedDevStatus}
@@ -593,7 +594,7 @@ const CandidateGridDetails = () => {
 
                           <div className="mt-3">
                             {candidategridDetailsNew.selectedDevStatus ===
-                              "Waiting HR Approval" ? (
+                            "Waiting HR Approval" ? (
                               <>
                                 <button
                                   id="interviewButton"
@@ -643,41 +644,41 @@ const CandidateGridDetails = () => {
                                   )}
                                 </button>
                               </>
-                              // ) : candidategridDetailsNew.selectedDevStatus ===
-                              //   "HR Rejected" ? (
-                              //   <div className="btn btn-red w-100 mt-2">
-                              //     Rejected
-                              //   </div>
-                              // ) : candidategridDetailsNew.selectedDevStatus ===
-                              //   "Waiting Interview" ? (
-                              //   <>
-                              //     {/* <div className="btn btn-primary w-100 mt-2">
-                              //       Waiting Interview
-                              //     </div> */}
-                              //     <button
-                              //       id="rejectButton"
-                              //       className="btn btn-soft-primary btn-hover w-100 mt-2"
-                              //       onClick={() =>
-                              //         rejectInterview2(candidategridDetailsNew.id)
-                              //       }
-                              //     >
-                              //       {loadingReject[candidategridDetailsNew.id] ? (
-                              //         <HashLoader
-                              //           size={20}
-                              //           color={"#36D7B7"}
-                              //           loading={true}
-                              //         />
-                              //       ) : (
-                              //         <>Reject</>
-                              //       )}
-                              //     </button>
-                              //   </>
-                              // ) : candidategridDetailsNew.selectedDevStatus ===
-                              //   "Interviewing" ? (
-                              //   <div className="btn btn-primary w-100 mt-2">
-                              //     Interviewing
-                              //   </div>
-                            ) : null}
+                            ) : // ) : candidategridDetailsNew.selectedDevStatus ===
+                            //   "HR Rejected" ? (
+                            //   <div className="btn btn-red w-100 mt-2">
+                            //     Rejected
+                            //   </div>
+                            // ) : candidategridDetailsNew.selectedDevStatus ===
+                            //   "Waiting Interview" ? (
+                            //   <>
+                            //     {/* <div className="btn btn-primary w-100 mt-2">
+                            //       Waiting Interview
+                            //     </div> */}
+                            //     <button
+                            //       id="rejectButton"
+                            //       className="btn btn-soft-primary btn-hover w-100 mt-2"
+                            //       onClick={() =>
+                            //         rejectInterview2(candidategridDetailsNew.id)
+                            //       }
+                            //     >
+                            //       {loadingReject[candidategridDetailsNew.id] ? (
+                            //         <HashLoader
+                            //           size={20}
+                            //           color={"#36D7B7"}
+                            //           loading={true}
+                            //         />
+                            //       ) : (
+                            //         <>Reject</>
+                            //       )}
+                            //     </button>
+                            //   </>
+                            // ) : candidategridDetailsNew.selectedDevStatus ===
+                            //   "Interviewing" ? (
+                            //   <div className="btn btn-primary w-100 mt-2">
+                            //     Interviewing
+                            //   </div>
+                            null}
                           </div>
                         </CardBody>
                       </div>
@@ -854,8 +855,6 @@ const CandidateGridDetails = () => {
                 <p>No interviews available.</p>
               </div>
             )}
-          </div>
-          <div class="col-lg-1 " style={{ padding: "0px" }}>
           </div>
         </div>
       </section>

@@ -88,7 +88,7 @@ import HiringRequestListExpiredHR from "../pages/Jobs/HiringRequestListExpiredHR
 import Developer from "../pages/Jobs/Developer/Developer";
 //import NewListInterview from "../pages/NewAdmin/NewListInterview";
 import NewHiringRequestDetail from "../pages/Admin/NewHiringRequestDetail";
-//import ProjectDetail from "../pages/Admin/ProjectDetail";
+import ProjectDetail from "../pages/Admin/ProjectDetail";
 
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
