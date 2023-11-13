@@ -67,7 +67,7 @@ const ProjectVacancyList = () => {
   };
 
   const openProjectDetail = (id) => {
-    navigate('/projectdetail?Id=' + id)
+    navigate('/projectdetailhr?Id=' + id)
   };
 
 
