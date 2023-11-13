@@ -11,7 +11,7 @@ const createHiringRequest = async (
   levelRequireId,
   skillIds,
   isSaved,
-  companyId,
+  projectId,
   employmentTypeId,
   scheduleTypeId
 ) => {
@@ -26,7 +26,7 @@ const createHiringRequest = async (
     levelRequireId,
     skillIds,
     isSaved,
-    companyId,
+    projectId,
     scheduleTypeId,
     employmentTypeId,
   });
@@ -242,10 +242,10 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   companyId,
   currentPage,
   pageSize,
-  status,
   jobTitle,
   skill,
-  level
+
+
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace(
@@ -265,25 +265,28 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
     );
     fullUrl += searchUrl;
   }
-  if (level) {
-    const levelUrl = urlConstant.endpoint.hiringRequest.searchLevel.replace(
-      "${LevelRequireId}",
-      level
-    );
-    fullUrl += levelUrl;
-  }
+  // if (level) {
+  //   const levelUrl = urlConstant.endpoint.hiringRequest.searchLevel.replace(
+  //     "${LevelRequireId}",
+  //     level
+  //   );
+  //   fullUrl += levelUrl;
+  // }
 
   if (skill && skill.length > 0) {
     const skillUrls = skill.map((item) => "&SkillIds=" + item.value);
     const fullUrls = skillUrls.join("&");
     fullUrl += fullUrls;
   }
-  const statusUrls =
-    urlConstant.endpoint.hiringRequest.searchStatusHiringRequest.replace(
-      "${Status}",
-      status
-    );
-  fullUrl += statusUrls;
+  //   if (status) {
+
+  //     const statusUrls =
+  //       urlConstant.endpoint.hiringRequest.searchStatusHiringRequest.replace(
+  //         "${Status}",
+  //         status
+  //       );
+  //     fullUrl += statusUrls;
+  //   }
   const response = await utils.axiosLocalHost.get(fullUrl);
   console.log(fullUrl);
   return response;

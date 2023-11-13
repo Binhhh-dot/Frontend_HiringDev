@@ -152,6 +152,7 @@ const JobVacancyList = () => {
   }, [currentPage]);
 
   const onSearch = () => {
+    setCurrentPage(1);
     fetchJobVacancies();
   };
 
@@ -213,7 +214,7 @@ const JobVacancyList = () => {
                 ? "job-box bookmark-post card mt-4"
                 : "job-box card mt-4"
             }
-            // className="job-box card mt-4"
+          // className="job-box card mt-4"
           >
             <div className="bookmark-label text-center">
               <Link to="#" className="align-middle text-white">
@@ -296,20 +297,20 @@ const JobVacancyList = () => {
                         jobVacancyListDetails.waitingApproval === true
                           ? "badge bg-warning text-light fs-12 mt-1 mx-1"
                           : jobVacancyListDetails.inProgress === true
-                          ? "badge bg-blue text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.rejected === true
-                          ? "badge bg-danger text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.expired === true
-                          ? "badge bg-darkcyan text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.cancelled === true
-                          ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.finished === true
-                          ? "badge bg-primary text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.completed === true
-                          ? "badge bg-success text-light fs-12 mt-1 mx-1"
-                          : jobVacancyListDetails.save === true
-                          ? "badge bg-teal text-light fs-12 mt-1 mx-1"
-                          : ""
+                            ? "badge bg-blue text-light fs-12 mt-1 mx-1"
+                            : jobVacancyListDetails.rejected === true
+                              ? "badge bg-danger text-light fs-12 mt-1 mx-1"
+                              : jobVacancyListDetails.expired === true
+                                ? "badge bg-darkcyan text-light fs-12 mt-1 mx-1"
+                                : jobVacancyListDetails.cancelled === true
+                                  ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
+                                  : jobVacancyListDetails.finished === true
+                                    ? "badge bg-primary text-light fs-12 mt-1 mx-1"
+                                    : jobVacancyListDetails.completed === true
+                                      ? "badge bg-success text-light fs-12 mt-1 mx-1"
+                                      : jobVacancyListDetails.save === true
+                                        ? "badge bg-teal text-light fs-12 mt-1 mx-1"
+                                        : ""
                       }
                     >
                       {jobVacancyListDetails.timing}
@@ -344,20 +345,19 @@ const JobVacancyList = () => {
                         .map((skill, index) => (
                           <span
                             key={index}
-                            className={`badge ${
-                              index === 0
+                            className={`badge ${index === 0
                                 ? "bg-info text-light"
                                 : index === 1
-                                ? "bg-danger-subtle text-danger"
-                                : "bg-primary-subtle text-primary"
-                            }  ms-2`}
+                                  ? "bg-danger-subtle text-danger"
+                                  : "bg-primary-subtle text-primary"
+                              }  ms-2`}
                           >
                             {skill.trim()}
                           </span>
                         ))}
 
                       {jobVacancyListDetails.experience.split(",").length >
-                      4 ? (
+                        4 ? (
                         <span className="badge bg-primary-subtle text-primary ms-2">
                           ...
                         </span>
@@ -389,9 +389,8 @@ const JobVacancyList = () => {
               </li>
               {renderPageNumbers()}
               <li
-                className={`page-item ${
-                  currentPage === totalPages ? "disabled" : ""
-                }`}
+                className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                  }`}
               >
                 <div className="page-link" to="#" onClick={handleNextPage}>
                   <i className="mdi mdi-chevron-double-right fs-15"></i>

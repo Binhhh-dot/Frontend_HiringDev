@@ -23,6 +23,9 @@ export default {
       getAll: "/Type",
       searchName: "",
     },
+    projectType: {
+      getAll: "/ProjectType?Status=${status}",
+    },
     hiringRequest: {
       getAll: "/HiringRequest",
       createHiringRequest: "/HiringRequest",
@@ -126,6 +129,10 @@ export default {
     project: {
       getProjectList: "/Project",
       getProjectListPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
+
+      createProject: "/Project",
+      getAllProjectByCompanyId: "/Project/ByCompany/${companyId}",
+      getProjectDetailByProjectId: "/Project/${projectId}",
     },
   },
 };
