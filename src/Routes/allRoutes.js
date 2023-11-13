@@ -78,7 +78,7 @@ import AssignTaskCreate from "../pages/CandidateAndCompany/CreateAssignTask/Assi
 import AssignTaskForStaffDetail from "../pages/CandidateAndCompany/AssignTaskForStaffDetail/AssignTaskForStaffDetail";
 import AssignTaskList from "../pages/CandidateAndCompany/AssignTaskListForManager/AssignTaskList";
 import AssignTaskListFS from "../pages/CandidateAndCompany/AssignTaskListForStaff/AssignTaskListFS";
-import ProjectDetail from "../pages/Jobs/ProjectDetail/ProjectDetail";
+import ProjectDetailHR from "../pages/Jobs/ProjectDetail/ProjectDetail";
 
 import DetailInterview from "../pages/Jobs/DetailInterview/DetailInterview";
 import DetailInterviewManager from "../pages/Jobs/DetailInterviewManager/DetailInterview";
@@ -164,8 +164,8 @@ const userRoutes = [
     component: <ProjectList />,
   },
   {
-    path: "/projectdetail",
-    component: <ProjectDetail />,
+    path: "/projectdetailhr",
+    component: <ProjectDetailHR />,
   },
   {
     path: "/hiringRequestListExpiredHR",
