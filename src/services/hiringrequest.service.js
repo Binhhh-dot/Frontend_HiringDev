@@ -133,20 +133,19 @@ const getAllHiringRequestByJobTitleAndSkill = async (
   return response;
 };
 
+//-------------------------------------------------------------------------------------
 const getHiringRequestDetailInManager = async (hiringRequestId) => {
   const serviceUrl =
-    urlConstant.endpoint.hiringRequest.getHiringRequestDetailInCompany.replace(
+    urlConstant.endpoint.hiringRequest.getHiringRequestDetailInManager.replace(
       "${hiringRequestId}",
       hiringRequestId
     );
 
   const response = await utils.axiosLocalHost.get(serviceUrl);
 
-  // localStorage.setItem("myData", hiringRequestId);
-
   return response;
 };
-
+//----------------------------------------------------------------------------------------
 const getHiringRequestDetailInCompany = async (hiringRequestId) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.getHiringRequestDetailInManager.replace(
@@ -157,7 +156,7 @@ const getHiringRequestDetailInCompany = async (hiringRequestId) => {
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };
-
+//-----------------------------------------------------------------------------------------
 const getHiringRequestSaved = async (companyId) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace(
