@@ -11,7 +11,7 @@ const createHiringRequest = async (
   levelRequireId,
   skillIds,
   isSaved,
-  companyId,
+  projectId,
   employmentTypeId,
   scheduleTypeId
 ) => {
@@ -26,7 +26,7 @@ const createHiringRequest = async (
     levelRequireId,
     skillIds,
     isSaved,
-    companyId,
+    projectId,
     scheduleTypeId,
     employmentTypeId,
   });

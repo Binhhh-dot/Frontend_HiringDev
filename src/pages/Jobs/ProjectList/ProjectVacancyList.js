@@ -66,6 +66,11 @@ const ProjectVacancyList = () => {
     navigate("/createproject")
   };
 
+  const openProjectDetail = (id) => {
+    navigate('/projectdetail?Id=' + id)
+  };
+
+
 
 
   const handlePrevPage = () => {
@@ -205,6 +210,7 @@ const ProjectVacancyList = () => {
             <Col lg={3} md={6} className="mt-4" key={key}>
               <div
                 key={key}
+                onClick={() => openProjectDetail(jobVacancyListDetails.id)}
                 style={{ height: "180px" }}
                 className={
                   jobVacancyListDetails.addclassNameBookmark === true
@@ -215,7 +221,7 @@ const ProjectVacancyList = () => {
               >
                 <div className="p-4">
                   <div className="d-flex justify-content-between">
-                    <div style={{ fontWeight: "bold" }}>{jobVacancyListDetails.projectName}</div>
+                    <div style={{ fontWeight: "bold", fontSize: "18px" }}>{jobVacancyListDetails.projectName}</div>
                     <span
                       style={{ height: "fit-content" }}
                       className={
@@ -242,7 +248,7 @@ const ProjectVacancyList = () => {
                     </span>
                   </div>
 
-                  <div>{jobVacancyListDetails.projectCode}</div>
+                  <div style={{ fontSize: "13px" }}>{jobVacancyListDetails.projectCode}</div>
 
                   {/* <Row className="align-items-center">
                     <Col md={3}>
@@ -330,7 +336,7 @@ const ProjectVacancyList = () => {
                     </Col>
                   </Row> */}
                 </div>
-                <div className="p-3 bg-light">
+                {/* <div className="p-3 bg-light">
                   <Row className="justify-content-between">
                     <Col md={12}>
                       <div>
@@ -339,7 +345,7 @@ const ProjectVacancyList = () => {
                       </div>
                     </Col>
                   </Row>
-                </div>
+                </div> */}
               </div>
             </Col>
           ))}

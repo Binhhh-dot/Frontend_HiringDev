@@ -190,29 +190,35 @@ const CreateHiringRequest = () => {
 
       try {
         const requestIdParam = location.state.requestId;
+        const projectIdState = location.state?.projectId;
         console.log(requestIdParam);
-        const response =
-          await hiringRequestService.getHiringRequestDetailInCompany(
-            requestIdParam
-          );
-        console.log(response)
-        hiringRequestSaved = response.data.data;
-        document.getElementById("job-title").value =
-          hiringRequestSaved.jobTitle;
-        document.getElementById("number-dev").value =
-          hiringRequestSaved.numberOfDev;
-        document.getElementById("budget").value =
-          hiringRequestSaved.salaryPerDev;
-        console.log(hiringRequestSaved.salaryPerDev)
-        localStorage.setItem("requestId", hiringRequestSaved.requestId);
-        const formattedDuration = hiringRequestSaved.duration.split("T")[0];
-        const editor = window.tinymce.get("description"); // Giả sử 'description' là id của Editor
-        if (editor) {
-          editor.setContent(hiringRequestSaved.jobDescription);
+        console.log(projectIdState);
+        if (requestIdParam) {
+
+          const response =
+            await hiringRequestService.getHiringRequestDetailInCompany(
+              requestIdParam
+            );
+          console.log(response)
+          hiringRequestSaved = response.data.data;
+          document.getElementById("job-title").value =
+            hiringRequestSaved.jobTitle;
+          document.getElementById("number-dev").value =
+            hiringRequestSaved.numberOfDev;
+          document.getElementById("budget").value =
+            hiringRequestSaved.salaryPerDev;
+          console.log(hiringRequestSaved.salaryPerDev)
+          localStorage.setItem("requestId", hiringRequestSaved.requestId);
+          const formattedDuration = hiringRequestSaved.duration.split("T")[0];
+          const editor = window.tinymce.get("description"); // Giả sử 'description' là id của Editor
+          if (editor) {
+            editor.setContent(hiringRequestSaved.jobDescription);
+          }
+
+          // Đặt giá trị cho input duration
+          document.getElementById("duration").value = formattedDuration;
         }
 
-        // Đặt giá trị cho input duration
-        document.getElementById("duration").value = formattedDuration;
 
       } catch (error) {
         console.error("Error:", error);
@@ -498,6 +504,7 @@ const CreateHiringRequest = () => {
             const isSaved = false;
 
             const requestIdState = location.state?.requestId || null;
+            const projectIdState = location.state?.projectId || null;
 
             if (requestIdState) {
               const targetedDev = 0;
@@ -528,18 +535,17 @@ const CreateHiringRequest = () => {
                 levelRequireId,
                 skillIds,
                 isSaved,
-                companyId,
+                projectIdState,
                 scheduleTypeId,
                 employmentTypeId
               );
               console.log("Job posted successfully:", response);
             }
             setLoading(false);
-            // navigate("/signin");
             setSuccessMessage("Đăng công việc thành công");
             localStorage.removeItem("requestId");
             setErrorMessage(null);
-            navigate("/hiringrequestlistincompanypartner");
+            navigate('/projectdetail?Id=' + projectIdState);
           } catch (error) {
             console.log(value);
             console.error("Error posting job:", error);
