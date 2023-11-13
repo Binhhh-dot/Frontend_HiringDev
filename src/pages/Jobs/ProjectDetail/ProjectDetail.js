@@ -12,9 +12,9 @@ const ProjectDetail = () => {
     <React.Fragment>
       <Section />
       <section className="section">
-        <Container className="custom-container-hiring-detail">
+        <Container className="custom-container-project-detail">
           <Row>
-            <Col lg={12}>
+            <Col lg={12} className="px-0">
               <ProjectDetailDesciption />
             </Col>
           </Row>
