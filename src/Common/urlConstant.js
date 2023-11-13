@@ -54,6 +54,8 @@ export default {
       cancelHirringRequestStatus: "/HiringRequestStatus/ChangeWaitingStatus",
       cancelHirringRequestStatusAfter: "/HiringRequestStatus/Cancel",
       getHiringRequestByRequestId: "/HiringRequest?requestId=${requestId}",
+      getAllHiringRequestByProjectId:
+        "/HiringRequest/ByProject?projectId=${projectId}",
     },
 
     selectingDeveloper: {

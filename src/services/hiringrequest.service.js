@@ -244,8 +244,6 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   pageSize,
   jobTitle,
   skill,
-
-
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace(
@@ -338,6 +336,24 @@ const cancelHirringRequestStatusAfter = async (
   return response;
 };
 
+const getHiringRequestByProjectIdAndPaging = async (
+  projectId,
+  currentPage,
+  pageSize,
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getAllHiringRequestByProjectId.replace(
+      "${projectId}",
+      projectId
+    ) + "&";
+  const pagingUrl = urlConstant.endpoint.hiringRequest.paging
+    .replace("${currentPage}", currentPage)
+    .replace("${pageSize}", pageSize);
+  const fullUrl = serviceUrl + pagingUrl;
+  const response = await utils.axiosLocalHost.get(fullUrl);
+  return response;
+};
+
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -357,4 +373,5 @@ export default {
   updateHiringRequest,
   cancelHirringRequestStatus,
   cancelHirringRequestStatusAfter,
+  getHiringRequestByProjectIdAndPaging
 };

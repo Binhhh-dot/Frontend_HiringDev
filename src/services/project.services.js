@@ -52,6 +52,8 @@ const getProjectDetailByProjectId = async (projectId) => {
   return response;
 };
 
+
+
 export default {
   createProject,
   getAllProjectByCompanyId,
