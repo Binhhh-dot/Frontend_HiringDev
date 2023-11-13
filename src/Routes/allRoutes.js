@@ -86,6 +86,10 @@ import InterviewList from "../pages/Jobs/ListInterviewHR/JobGrid";
 import InterviewListManager from "../pages/Jobs/ListInterviewManager/JobGrid";
 import HiringRequestListExpiredHR from "../pages/Jobs/HiringRequestListExpiredHR/HiringRequestListExpiredHR";
 import Developer from "../pages/Jobs/Developer/Developer";
+//import NewListInterview from "../pages/NewAdmin/NewListInterview";
+import NewHiringRequestDetail from "../pages/Admin/NewHiringRequestDetail";
+import ProjectDetail from "../pages/Admin/ProjectDetail";
+
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -187,6 +191,7 @@ const userRoutes = [
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },
   { path: "/createproject", component: <CreateProject /> },
   { path: "/developer", component: <Developer /> },
+  //{ path: "/listinterviewnew", component: <NewListInterview /> },
 
   //Company Section
   { path: "/createstaffaccount", component: <CreateStaffAccount /> },
@@ -214,6 +219,8 @@ const authRoutes = [
   { path: "/signup", component: <SignUp /> },
   { path: "/signin", component: <SignIn /> },
   { path: "/signcompany", component: <SignCompany /> },
-  { path: "/test", component: <Test /> }
+  { path: "/test", component: <Test /> },
+  { path: "/newhiringrequestdetail", component: <NewHiringRequestDetail /> },
+  { path: "/projectdetail", component: <ProjectDetail /> },
 ];
 export { userRoutes, authRoutes };

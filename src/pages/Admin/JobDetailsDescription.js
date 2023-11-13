@@ -13,25 +13,20 @@ import {
   DropdownItem,
 } from "reactstrap";
 import { Link, Navigate, useLocation } from "react-router-dom";
-import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
+// import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
+import DeveloperDetailInManagerPopup from "../Home/SubSection/DeveloperDetailInManager";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBullhorn,
   faEllipsisVertical,
 } from "@fortawesome/free-solid-svg-icons";
 
-//Import Images
-// import JobDetailImage from "../../../assets/images/job-detail.jpg";
-// import JobImage10 from "../../../assets/images/featured-job/img-10.png";
-// import userImage1 from "../../../assets/images/user/img-01.jpg";
-// import userImage2 from "../../../assets/images/user/img-02.jpg";
-// import userImage3 from "../../../assets/images/user/img-03.jpg";
-// import userImage4 from "../../../assets/images/user/img-04.jpg";
-// import userImage5 from "../../../assets/images/user/img-05.jpg";
 //import { Link } from "react-router-dom";
 import "./index.css";
-import hiringrequestService from "../../../services/hiringrequest.service";
-import developer from "../../../services/developer.services";
+// import hiringrequestService from "../../../services/hiringrequest.service";
+import hiringrequestService from "../../services/hiringrequest.service";
+// import developer from "../../../services/developer.services";
+import developer from "../../services/developer.services";
 
 const JobDetailsDescription = () => {
   const { state } = useLocation();
@@ -166,8 +161,6 @@ const JobDetailsDescription = () => {
 
   /////////////////////////////////////////////////////////////////////////////////////////
 
-  /////////////////////////////////////////////////////////////////////////////////////////
-
   const [cancelReason, setCancelReason] = useState("");
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
@@ -195,7 +188,7 @@ const JobDetailsDescription = () => {
     let response;
     try {
       response = await hiringrequestService.cancelHirringRequestStatus(
-        state.jobId,
+        state.hiringRequestId,
         cancelReason,
         false
       );
@@ -215,10 +208,12 @@ const JobDetailsDescription = () => {
 
     try {
       response = await hiringrequestService.getHiringRequestDetailInManager(
-        state.jobId
+        state.hiringRequestId
       );
 
       setHiringRequestDetail(response.data.data);
+      console.log("hiring request detail in manager");
+      console.log(response.data.data);
       if (
         response.data.data.statusString !== "Waiting Approval" &&
         response.data.data.statusString !== "Rejected"
@@ -242,11 +237,11 @@ const JobDetailsDescription = () => {
 
     try {
       response = await hiringrequestService.getDeveloperMatchingInManager(
-        state.jobId
+        state.hiringRequestId
       );
 
       setDevMatching(response.data.data);
-      console.log("request id: " + state.jobId);
+      console.log("request id: " + state.hiringRequestId);
       console.log(response.data.data);
       return response;
     } catch (error) {
@@ -259,7 +254,7 @@ const JobDetailsDescription = () => {
 
     try {
       response = await hiringrequestService.sendHiringRequestToDevMatching(
-        state.jobId,
+        state.hiringRequestId,
         selectedDev
       );
 
@@ -277,7 +272,7 @@ const JobDetailsDescription = () => {
   const fetchGetSelectedDevByManager = async () => {
     let response;
     try {
-      response = await developer.getSelectedDevByManager(state.jobId);
+      response = await developer.getSelectedDevByManager(state.hiringRequestId);
       setDevHasBeenSent(response.data.data);
       console.log(" dev vua duoc gui la");
       console.log(response.data.data);
@@ -292,7 +287,10 @@ const JobDetailsDescription = () => {
   const fetchsendevToHR = async () => {
     let response;
     try {
-      response = await developer.sendDevToHR(state.jobId, selectedDevAccept);
+      response = await developer.sendDevToHR(
+        state.hiringRequestId,
+        selectedDevAccept
+      );
       fetchGetSelectedDevByManager();
       setSelectedAllDevAccept(false);
       return response;
@@ -315,7 +313,7 @@ const JobDetailsDescription = () => {
   const handleAcceptModalAccept = async () => {
     try {
       const response = await hiringrequestService.approvedHirringRequestStatus(
-        state.jobId,
+        state.hiringRequestId,
         "string",
         true
       );
@@ -433,7 +431,7 @@ const JobDetailsDescription = () => {
     let response;
     try {
       response = await hiringrequestService.cancelHirringRequestStatusAfter(
-        state.jobId,
+        state.hiringRequestId,
         cancelReasonAfter,
         false
       );
@@ -491,7 +489,7 @@ const JobDetailsDescription = () => {
     }
   };
 
-  if (!state?.jobId) {
+  if (!state?.hiringRequestId) {
     return <Navigate to={"/"}></Navigate>;
   }
 
@@ -501,7 +499,12 @@ const JobDetailsDescription = () => {
 
   return (
     <React.Fragment>
-      <Card className="job-detail ">
+      <Card
+        className="job-detail "
+        style={{
+          boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+        }}
+      >
         <div>
           <div className="job-details-compnay-profile d-flex justify-content-between">
             <div
@@ -640,7 +643,7 @@ const JobDetailsDescription = () => {
             </div>
           </div>
         </div>
-        <CardBody className="p-3">
+        <CardBody className="p-3 ">
           <div>
             <Row>
               <Col md={8}>
@@ -676,7 +679,7 @@ const JobDetailsDescription = () => {
                         <span
                           key={index}
                           style={{ marginRight: "3px" }}
-                          className="badge bg-primary-subtle text-primary"
+                          className="badge bg-success-subtle text-success"
                         >
                           {skill}
                         </span>
@@ -708,11 +711,7 @@ const JobDetailsDescription = () => {
                   <p className="text-muted fs-13 mb-0">Deadline</p>
                   <p className="fw-medium mb-0 ">
                     <span className="badge bg-orangeRed2l text-orangeRed2">
-                      {new Intl.DateTimeFormat("en-GB", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      }).format(new Date(hiringRequestDetail.duration))}
+                      {hiringRequestDetail.duration}
                     </span>
                   </p>
                 </div>
@@ -1505,7 +1504,7 @@ const JobDetailsDescription = () => {
                   </Col> */}
 
                   <Col lg={5}>
-                    <div className="candidate-list-content mt-3 mt-lg-0">
+                    <div className="candidate-list-content mt-lg-0 d-flex flex-column gap-1">
                       <h5 className="fs-19 mb-0 d-flex">
                         <Link
                           to="/developerinfo"
@@ -1516,19 +1515,17 @@ const JobDetailsDescription = () => {
                         </Link>
                       </h5>
 
-                      <ul className="list-inline mb-0 text-muted">
-                        <li className="list-inline-item">
-                          <i className="uil-keyboard"></i>{" "}
-                          {devHasBeenSentNew.levelRequireName}
-                        </li>
-                        <br />
-                        <li className="list-inline-item">
-                          <i className="uil uil-wallet"></i>{" "}
-                          {devHasBeenSentNew.averageSalary}$
-                        </li>
-                      </ul>
+                      <p className="fs-14 text-muted list-inline-item mb-0">
+                        <i className="uil-keyboard"></i>{" "}
+                        {devHasBeenSentNew.levelRequireName}
+                      </p>
 
-                      <p className="text-muted mb-0">
+                      <p className="fs-14 text-muted list-inline-item mb-0">
+                        <i className="uil uil-wallet"></i>{" "}
+                        {devHasBeenSentNew.averageSalary}$
+                      </p>
+
+                      <p className="text-muted mb-1">
                         {devHasBeenSentNew.typeRequireStrings
                           .slice(0, 2)
                           .map((typeDev, key) => (
@@ -1588,7 +1585,10 @@ const JobDetailsDescription = () => {
                       </div>
                       <div className="d-flex mb-2 align-items-center">
                         <span className=" fs-14">Salary</span>
-                        <div className="devmatching-bar-salary border border-1 ms-3">
+                        <div
+                          className="devmatching-bar-salary border border-1"
+                          style={{ marginLeft: "17px" }}
+                        >
                           <div
                             className="devmatch-level-salary"
                             style={{
@@ -1601,10 +1601,13 @@ const JobDetailsDescription = () => {
                         </div>
                       </div>
                       <div className="d-flex mb-2 align-items-center">
-                        <span className=" fs-14" style={{ width: "41px" }}>
+                        <span className=" fs-14" style={{ width: "30px" }}>
                           Skill
                         </span>
-                        <div className="devmatching-bar-skill border border-1 ms-3">
+                        <div
+                          className="devmatching-bar-skill border border-1 "
+                          style={{ marginLeft: "23px" }}
+                        >
                           <div
                             className="devmatch-level-skill"
                             style={{
@@ -1708,13 +1711,13 @@ const JobDetailsDescription = () => {
       </div>
       {/* ----------------------------------------------------------------------------------------------------- */}
 
-      <div>
+      {/* <div>
         <DeveloperDetailInManagerPopup
           isModalOpen={isModalOpen}
           closeModal={closeModal}
           devId={selectedCandidateInfo.developerId}
         />
-      </div>
+      </div> */}
 
       <div>
         <Modal isOpen={isCancelModalOpen} toggle={closeCancelModal} size="lg">
