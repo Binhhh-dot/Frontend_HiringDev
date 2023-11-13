@@ -23,6 +23,8 @@ import jobImage4 from "../../assets/images/featured-job/img-04.png";
 import userImage1 from "../../assets/images/user/img-01.jpg";
 import jobImage from "../../assets/images/featured-job/img-01.png";
 import profileImage from "../../assets/images/profile.jpg";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const NavBar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,6 +51,23 @@ const NavBar = (props) => {
     const role = localStorage.getItem("role");
     setRole(role);
   });
+
+  const signout = () => {
+    // Giả sử error là một tham số được truyền vào từ nơi gọi hàm
+    toast.info("Logout thanh cong", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+    // Thực hiện các bước đăng xuất, chẳng hạn như xóa thông tin xác thực
+    // Ví dụ: authService.signOut();
+  };
 
   function scrollNavigation() {
     var scrollup = window.pageYOffset;
@@ -377,6 +396,20 @@ const NavBar = (props) => {
                                 to="/createhiringrequest"
                               >
                                 Create Hiring Request
+                              </Link>
+
+                              <Link
+                                className="dropdown-item"
+                                to="/createproject"
+                              >
+                                Create Project
+                              </Link>
+
+                              <Link
+                                className="dropdown-item"
+                                to="/projectlist"
+                              >
+                                Project List
                               </Link>
 
                               {/* <div>
@@ -810,7 +843,7 @@ const NavBar = (props) => {
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/signout">
+                    <Link className="dropdown-item" to="/signout" onClick={signout}>
                       Logout
                     </Link>
                   </li>

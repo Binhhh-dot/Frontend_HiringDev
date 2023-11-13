@@ -29,7 +29,7 @@ const StyleSwitcher = () => {
 
   return (
     <React.Fragment>
-      <div id="style-switcher" style={{ left: switcher ? "0px" : "-165px" }}>
+      <div id="style-switcher" style={{ left: switcher ? "0px" : "-165px", display: "none" }}>
         <div>
           <h6>Select your color</h6>
           <ul className="pattern list-unstyled mb-0">
