@@ -90,7 +90,23 @@ const ProjectList = () => {
           >
             <div className="p-2">
               <Row className="align-items-center">
-                <Col md={3}>
+                <Col md={2}>
+                  <div>
+                    <Link to="#">
+                      <img
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                        }}
+                        src={projectListDetail.backgroundImage}
+                        alt=""
+                        className="img-fluid rounded-3 img-avt-hiring-request"
+                      />
+                    </Link>
+                  </div>
+                </Col>
+
+                <Col md={2}>
                   <div>
                     <h5 className="fs-18 mb-0">
                       <Link
@@ -104,12 +120,12 @@ const ProjectList = () => {
                       </Link>
                     </h5>
                     <p className="text-muted fs-14 mb-0">
-                      {projectListDetail.companyName}
+                      {projectListDetail.projectCode}
                     </p>
                   </div>
                 </Col>
 
-                <Col md={2}>
+                <Col md={1}>
                   <div className="d-flex align-items-center mb-0">
                     <div className="flex-shrink-0">
                       <i
@@ -139,6 +155,12 @@ const ProjectList = () => {
                   </div>
                 </Col>
 
+                <Col md={2}>
+                  <div>
+                    <span>{projectListDetail.postedTime}</span>
+                  </div>
+                </Col>
+
                 <Col md={2} className="d-flex justify-content-around">
                   <div className="d-flex align-items-center">
                     <span
@@ -165,10 +187,6 @@ const ProjectList = () => {
                       {projectListDetail.statusString}
                     </span>
                   </div>
-                </Col>
-
-                <Col md={2}>
-                  <div>Posted: {projectListDetail.postedTime}</div>
                 </Col>
               </Row>
             </div>

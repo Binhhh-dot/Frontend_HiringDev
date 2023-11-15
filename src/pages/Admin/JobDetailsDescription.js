@@ -11,6 +11,11 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  NavItem,
+  NavLink,
+  Nav,
+  TabPane,
+  TabContent,
 } from "reactstrap";
 import { Link, Navigate, useLocation } from "react-router-dom";
 // import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
@@ -27,6 +32,7 @@ import "./index.css";
 import hiringrequestService from "../../services/hiringrequest.service";
 // import developer from "../../../services/developer.services";
 import developer from "../../services/developer.services";
+import { Progress, Space } from "antd";
 
 const JobDetailsDescription = () => {
   const { state } = useLocation();
@@ -41,8 +47,9 @@ const JobDetailsDescription = () => {
   const [disableIconCancel, setDisableIconCancel] = useState(false);
   /////////////////////////////////////////////////////////////////////////////////////////
   const [isVisibleListDevAfter, setIsVisibleListDevAfter] = useState(false);
-  const [listDevAfterReject, setListDevAfterReject] = useState([]);
+  //const [listDevAfterReject, setListDevAfterReject] = useState([]);
   ////////////////////////////////////////////////////////////////////////////////////////
+
   const handleTabChange = (tab) => {
     setCurrentListDev(tab);
     console.log(tab);
@@ -97,67 +104,58 @@ const JobDetailsDescription = () => {
       return updatedSelectedDev;
     });
   };
-  console.log("---------------------------------------");
+  console.log("------------------------------------------------------");
   console.log("cac dev matching duoc chon de gui di cho dev chap nhan");
   console.log(selectedDev);
-  console.log("---------------------------------------");
+  console.log("------------------------------------------------------");
 
   //////////////////////////////////////////////////////////////////////////////////////////
   // chon dev o phan dev accepted
-  const [selectedAllDevAccept, setSelectedAllDevAccept] = useState(false);
-  const [selectedDevAccept, setSelectedDevAccept] = useState([]);
-  const [isSendButtonAcceptVisible, setIsSendButtonAcceptVisible] =
-    useState(false);
+  //const [selectedAllDevAccept, setSelectedAllDevAccept] = useState(false);
+  //const [selectedDevAccept, setSelectedDevAccept] = useState([]);
+  // const [isSendButtonAcceptVisible, setIsSendButtonAcceptVisible] =
+  //   useState(false);
 
-  const toggleSelectedAllDevAccept = () => {
-    setSelectedAllDevAccept(!selectedAllDevAccept);
+  // const toggleSelectedAllDevAccept = () => {
+  //   setSelectedAllDevAccept(!selectedAllDevAccept);
 
-    if (!selectedAllDevAccept) {
-      const waitingDevAccept = devHasBeenSent
-        .filter((candidate) => candidate.selectedDevStatus === "Dev Accepted")
-        .map((candidate) => candidate.developerId);
-      setSelectedDevAccept(waitingDevAccept);
-    } else {
-      setSelectedDevAccept([]);
-    }
+  //   if (!selectedAllDevAccept) {
+  //     const waitingDevAccept = devHasBeenSent
+  //       .filter((candidate) => candidate.selectedDevStatus === "Dev Accepted")
+  //       .map((candidate) => candidate.developerId);
+  //     setSelectedDevAccept(waitingDevAccept);
+  //   } else {
+  //     setSelectedDevAccept([]);
+  //   }
 
-    setIsSendButtonAcceptVisible(
-      //selectedAllDevAccept || selectedDevAccept.length > 0
-      !selectedAllDevAccept && selectedDevAccept.length === 0
-    );
-    console.log(!selectedAllDevAccept, selectedDevAccept.length);
-  };
+  //   setIsSendButtonAcceptVisible(
+  //     !selectedAllDevAccept && selectedDevAccept.length === 0
+  //   );
+  //   console.log(!selectedAllDevAccept, selectedDevAccept.length);
+  // };
 
-  const toggleDevAcceptSelection = (candidateId) => {
-    const candidate = devHasBeenSent.find(
-      (candidate) => candidate.developerId === candidateId
-    );
-    //kiem tra xem checkbox co hien thi hay khong
-    if (candidate && candidate.selectedDevStatus === "Dev Accepted") {
-      setSelectedDevAccept((prevSelectedDevAccept) => {
-        const selectedDevAccept = prevSelectedDevAccept.includes(candidateId)
-          ? prevSelectedDevAccept.filter((id) => id !== candidateId)
-          : [...prevSelectedDevAccept, candidateId];
-        setIsSendButtonAcceptVisible(
-          !selectedAllDevAccept && selectedDevAccept.length > 0
-          // !selectedAllDevAccept && selectedDevAccept.length === 0
-          // true
-        );
-        return selectedDevAccept;
-      });
-    }
+  // const toggleDevAcceptSelection = (candidateId) => {
+  //   const candidate = devHasBeenSent.find(
+  //     (candidate) => candidate.developerId === candidateId
+  //   );
+  //   //kiem tra xem checkbox co hien thi hay khong
+  //   if (candidate && candidate.selectedDevStatus === "Dev Accepted") {
+  //     setSelectedDevAccept((prevSelectedDevAccept) => {
+  //       const selectedDevAccept = prevSelectedDevAccept.includes(candidateId)
+  //         ? prevSelectedDevAccept.filter((id) => id !== candidateId)
+  //         : [...prevSelectedDevAccept, candidateId];
+  //       setIsSendButtonAcceptVisible(
+  //         !selectedAllDevAccept && selectedDevAccept.length > 0
+  //       );
+  //       return selectedDevAccept;
+  //     });
+  //   }
 
-    // setIsSendButtonAcceptVisible(
-    //   !selectedAllDevAccept && selectedDevAccept.length > 0
-    //   // !selectedAllDevAccept && selectedDevAccept.length === 0
-    //   // true
-    // );
-
-    console.log("---------------------------------------------------");
-    console.log("cac dev accepted duoc chon de gui di cho HR chap nhan");
-    console.log(selectedDevAccept);
-    console.log("---------------------------------------------------");
-  };
+  //   console.log("---------------------------------------------------");
+  //   console.log("cac dev accepted duoc chon de gui di cho HR chap nhan");
+  //   console.log(selectedDevAccept);
+  //   console.log("---------------------------------------------------");
+  // };
 
   /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -242,6 +240,7 @@ const JobDetailsDescription = () => {
 
       setDevMatching(response.data.data);
       console.log("request id: " + state.hiringRequestId);
+      console.log("danh sach dev matching");
       console.log(response.data.data);
       return response;
     } catch (error) {
@@ -249,23 +248,38 @@ const JobDetailsDescription = () => {
     }
   };
 
-  const fetchsendHiringRequestToDevMatching = async () => {
-    let response;
+  // const fetchsendHiringRequestToDevMatching = async () => {
+  //   let response;
 
+  //   try {
+  //     response = await hiringrequestService.sendHiringRequestToDevMatching(
+  //       state.hiringRequestId,
+  //       selectedDev
+  //     );
+
+  //     setIsSendButtonVisibility(false);
+  //     fetchDeveloperMatchingInManager();
+  //     return response;
+  //   } catch (error) {
+  //     console.error(
+  //       "Error fetching send hiring request to dev matching:",
+  //       error
+  //     );
+  //   }
+  // };
+  // gio gui 1 phat cho ca HR va dev luon [hien dev matching -> gui phat -> hiện nhung thang dc gui từ manager]
+
+  const fetchSendDevToHRNew = async () => {
+    let response;
     try {
-      response = await hiringrequestService.sendHiringRequestToDevMatching(
+      response = await developer.sendDevToHRNew(
         state.hiringRequestId,
         selectedDev
       );
-
       setIsSendButtonVisibility(false);
       fetchDeveloperMatchingInManager();
-      return response;
     } catch (error) {
-      console.error(
-        "Error fetching send hiring request to dev matching:",
-        error
-      );
+      console.error("Error fetching send dev to HR:", error);
     }
   };
 
@@ -284,20 +298,20 @@ const JobDetailsDescription = () => {
     }
   };
 
-  const fetchsendevToHR = async () => {
-    let response;
-    try {
-      response = await developer.sendDevToHR(
-        state.hiringRequestId,
-        selectedDevAccept
-      );
-      fetchGetSelectedDevByManager();
-      setSelectedAllDevAccept(false);
-      return response;
-    } catch (error) {
-      console.error("Error fetching send dev to HR", error);
-    }
-  };
+  // const fetchsendevToHR = async () => {
+  //   let response;
+  //   try {
+  //     response = await developer.sendDevToHR(
+  //       state.hiringRequestId,
+  //       selectedDevAccept
+  //     );
+  //     fetchGetSelectedDevByManager();
+  //     setSelectedAllDevAccept(false);
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Error fetching send dev to HR", error);
+  //   }
+  // };
 
   //--------------------------------------------------------------------------------
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
@@ -365,10 +379,9 @@ const JobDetailsDescription = () => {
   };
   const handleConfirm = () => {
     // thuc hien chuc nang cua nut send o day
-    fetchsendHiringRequestToDevMatching();
+    //fetchsendHiringRequestToDevMatching();
+    fetchSendDevToHRNew();
     setIsPopupConfirmOpen(false);
-    //setIsSendButtonVisibility(false);
-    //window.location.reload();
     setSelectedDev([]);
   };
 
@@ -378,24 +391,24 @@ const JobDetailsDescription = () => {
   // fetchsendHiringRequestToDevMatching();
   ///////////////////////////////////////////////////////////////////////////////
   //trang handle nut send cancel
-  const [isPopConfirmOpenHR, setIsPopupConfirmOpenHR] = useState(false);
+  // const [isPopConfirmOpenHR, setIsPopupConfirmOpenHR] = useState(false);
 
-  const handleSendToHR = () => {
-    setIsPopupConfirmOpenHR(true);
-  };
+  // const handleSendToHR = () => {
+  //   setIsPopupConfirmOpenHR(true);
+  // };
 
-  const handleConfirmHR = () => {
-    //thuc hien chuc nang cua nut send o day
+  // const handleConfirmHR = () => {
+  //   //thuc hien chuc nang cua nut send o day
 
-    setIsSendButtonAcceptVisible(false);
-    fetchsendevToHR();
-    setIsPopupConfirmOpenHR(false);
-    setSelectedDevAccept([]);
-  };
+  //   setIsSendButtonAcceptVisible(false);
+  //   fetchsendevToHR();
+  //   setIsPopupConfirmOpenHR(false);
+  //   setSelectedDevAccept([]);
+  // };
 
-  const handleConfirmCancelHR = () => {
-    setIsPopupConfirmOpenHR(false);
-  };
+  // const handleConfirmCancelHR = () => {
+  //   setIsPopupConfirmOpenHR(false);
+  // };
 
   //////////////////////////////////////////////////////////////////////////////
   const getDevNameMatching = (id) => {
@@ -596,49 +609,6 @@ const JobDetailsDescription = () => {
                     </DropdownMenu>
                   </Dropdown>
                 )}
-                {/* <Dropdown
-                  isOpen={showDropdown}
-                  toggle={toggleDropdown}
-                  disabled={disableIconCancel}
-                >
-                  <DropdownToggle
-                    caret
-                    style={{
-                      padding: "0px",
-                      backgroundColor: "white",
-                      border: "0px",
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      icon={faEllipsisVertical}
-                      size="xl"
-                      color="#909191"
-                      // onClick={handleDropdownClick}
-                    />
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem header style={{ textAlign: "center" }}>
-                      Are you sure?
-                    </DropdownItem>
-                    <DropdownItem divider />
-                    <DropdownItem>
-                      <button
-                        className="d-flex justify-content-center"
-                        style={{
-                          width: "100%",
-                          padding: "7px",
-                          fontWeight: "500",
-                        }}
-                        class="btn btn-danger"
-                        role="button"
-                        onClick={openCancelAfterModal}
-                      >
-                        <span style={{ fontSize: "15px" }}>Cancel Request</span>
-                      </button>
-                    </DropdownItem>
-                    <DropdownItem divider />
-                  </DropdownMenu>
-                </Dropdown> */}
               </div>
             </div>
           </div>
@@ -794,65 +764,65 @@ const JobDetailsDescription = () => {
 
       {showCandidateList && (
         <div className="candidate-list">
-          <div className="mt-4">
-            {currentListDev === "matching" ? (
-              <h4>List Developer Matching Request</h4>
-            ) : (
-              <h4>List Selected Developer</h4>
-            )}
-          </div>
-          {/* nút Send và nút chuyển trang */}
           <div
-            className="d-flex justify-content-between border border-3"
+            className="d-flex justify-content-between border border-3 border-dark-subtle"
             style={{ padding: "15px", borderRadius: "10px" }}
           >
-            <div className="d-flex">
+            <div className="d-flex ">
               {currentListDev === "matching" ? (
-                <button
-                  class="btn btn-primary rounded-start-pill Dev Matching"
-                  role="button"
+                <div
+                  class="Dev Matching d-flex align-items-center fs-17 border-bottom border-primary border-3 pb-1"
                   onClick={() => {
                     handleTabChange("matching");
                   }}
                 >
-                  <span style={{ fontWeight: "600" }}>Dev Matching</span>
-                </button>
+                  <span
+                    style={{ fontWeight: "600" }}
+                    className="text-primary pb-1"
+                  >
+                    Matching
+                  </span>
+                </div>
               ) : (
-                <button
-                  class="btn btn-outline-primary rounded-start-pill Dev Matching"
-                  role="button"
+                <div
+                  class="Dev Matching d-flex align-items-center fs-17 pb-1"
                   onClick={() => {
                     handleTabChange("matching");
                   }}
                 >
-                  <span style={{ fontWeight: "600" }}>Dev Matching</span>
-                </button>
+                  <span style={{ fontWeight: "600" }} className="pb-1">
+                    Matching
+                  </span>
+                </div>
               )}
 
-              <div
-                className="border border-3"
-                style={{ margin: "0px 5px" }}
-              ></div>
+              <div style={{ margin: "0px 10px" }}></div>
+
               {currentListDev === "sent" ? (
-                <button
-                  class="btn btn-primary rounded-end-pill Dev Accepted"
-                  role="button"
+                <div
+                  class="Dev Accepted d-flex align-items-center fs-17 border-bottom border-primary border-3 pb-1"
                   onClick={() => {
                     handleTabChange("sent");
                   }}
                 >
-                  <span style={{ fontWeight: "600" }}>Dev Accepted</span>
-                </button>
+                  <span
+                    style={{ fontWeight: "600" }}
+                    className="text-primary pb-1"
+                  >
+                    Accepted
+                  </span>
+                </div>
               ) : (
-                <button
-                  class="btn btn-outline-primary rounded-end-pill Dev Accepted"
-                  role="button"
+                <div
+                  class="Dev Accepted d-flex align-items-center fs-17 pb-1"
                   onClick={() => {
                     handleTabChange("sent");
                   }}
                 >
-                  <span style={{ fontWeight: "600" }}>Dev Accepted</span>
-                </button>
+                  <span style={{ fontWeight: "600" }} className="pb-1">
+                    Accepted
+                  </span>
+                </div>
               )}
             </div>
 
@@ -866,7 +836,7 @@ const JobDetailsDescription = () => {
                         role="button"
                         onClick={handleSendToDev}
                       >
-                        <span>Send To Dev</span>
+                        <span className="fs-17">Send To Dev</span>
                       </button>
                       {
                         <Modal
@@ -921,7 +891,7 @@ const JobDetailsDescription = () => {
                 </div>
               ) : (
                 <div>
-                  {isSendButtonAcceptVisible && (
+                  {/* {isSendButtonAcceptVisible && (
                     <div>
                       <button
                         class="btn btn-primary"
@@ -979,10 +949,11 @@ const JobDetailsDescription = () => {
                         </Modal>
                       }
                     </div>
-                  )}
+                  )} */}
                 </div>
               )}
             </div>
+            {/* ------------------------------------------------------------------------------------------------------------ */}
           </div>
 
           <div className="d-flex mt-4">
@@ -1001,13 +972,13 @@ const JobDetailsDescription = () => {
 
                 <div className="d-flex align-items-center ms-2">
                   <h4 style={{ display: "contents" }}>
-                    Select All Developer Matching
+                    All Developer Matching
                   </h4>
                 </div>
               </div>
             ) : currentListDev === "sent" && devHasBeenSent.length > 0 ? (
               <div className="d-flex">
-                <div className="checkbox-all-wrapper-hiring-detail-manager">
+                {/* <div className="checkbox-all-wrapper-hiring-detail-manager">
                   <label>
                     <input
                       type="checkbox"
@@ -1016,11 +987,11 @@ const JobDetailsDescription = () => {
                     />
                     <span className="checkbox"></span>
                   </label>
-                </div>
+                </div> */}
 
                 <div className="d-flex align-items-center ms-2">
                   <h4 style={{ display: "contents" }}>
-                    Select All Developer Accepted
+                    All Developer Accepted
                   </h4>
                 </div>
               </div>
@@ -1145,39 +1116,42 @@ const JobDetailsDescription = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="d-flex  align-items-center">
+                          <div className="d-flex  align-items-center justify-content-between">
                             <span className=" fs-14">Salary</span>
-                            <div className="devmatching-bar-salary border border-1 ms-3">
-                              <div
-                                className="devmatch-level-salary"
-                                style={{
-                                  width: `${candidateDetailsNew.salaryPerDevPercentage}%`,
-                                  backgroundColor: getBarColor(
+
+                            <div>
+                              <Space size={30} wrap>
+                                <Progress
+                                  steps={5}
+                                  percent={candidateDetailsNew.salaryPerDevPercentage.toFixed(
+                                    1
+                                  )}
+                                  strokeColor={getBarColor(
                                     candidateDetailsNew.salaryPerDevPercentage
-                                  ),
-                                }}
-                              ></div>
+                                  )}
+                                />
+                              </Space>
                             </div>
                           </div>
-                          <div className="d-flex  align-items-center">
-                            <span className=" fs-14" style={{ width: "41px" }}>
-                              Skill
-                            </span>
-                            <div className="devmatching-bar-skill border border-1 ms-3">
-                              <div
-                                className="devmatch-level-skill"
-                                style={{
-                                  width: `${candidateDetailsNew.skillPercentage}%`,
-                                  backgroundColor: getBarColor(
+                          <div className="d-flex  align-items-center justify-content-between">
+                            <span className=" fs-14">Skill</span>
+
+                            <div>
+                              <Space size={30} wrap>
+                                <Progress
+                                  steps={5}
+                                  percent={candidateDetailsNew.skillPercentage.toFixed(
+                                    1
+                                  )}
+                                  strokeColor={getBarColor(
                                     candidateDetailsNew.skillPercentage
-                                  ),
-                                }}
-                              ></div>
+                                  )}
+                                />
+                              </Space>
                             </div>
                           </div>
                           <div>
                             <span>
-                              {/* <i className="mdi mdi-star align-middle"></i> */}
                               Experience: {candidateDetailsNew.yearOfExperience}{" "}
                               years
                             </span>
@@ -1186,9 +1160,9 @@ const JobDetailsDescription = () => {
                       </Col>
 
                       <Col lg={3} className="border-start border-3">
-                        <div style={{ height: "100px" }}>
-                          <div className="left-side-matching ">
-                            <div className="d-flex w-100 justify-content-between">
+                        <div style={{ height: "100%" }}>
+                          <div className="left-side-matching">
+                            {/* <div className="d-flex w-100 justify-content-center mb-3">
                               <div className="d-flex align-items-center">
                                 <p
                                   style={{
@@ -1200,42 +1174,21 @@ const JobDetailsDescription = () => {
                                   Matching request total
                                 </p>
                               </div>
-                              <div className="matching-rate-dev">
-                                <span
-                                  className="percent-matching-dev"
-                                  style={{
-                                    color: getBarColor(
-                                      candidateDetailsNew.averagedPercentage
-                                    ),
-                                  }}
-                                >
-                                  {/* {candidateDetailsNew.averagedPercentage.toFixed(
-                                    2
-                                  )}
-                                  % */}
-                                  {candidateDetailsNew.averagedPercentage.toFixed(
-                                    2
-                                  ) == 100.0
-                                    ? 100
-                                    : candidateDetailsNew.averagedPercentage.toFixed(
-                                        2
-                                      )}
-                                  %
-                                </span>
-                              </div>
-                            </div>
+                            </div> */}
 
-                            <div className="devmatching-bar border border-1">
-                              <div
-                                className="devmatch-level"
-                                style={{
-                                  width: `${candidateDetailsNew.averagedPercentage}%`,
-                                  backgroundColor: getBarColor(
-                                    candidateDetailsNew.averagedPercentage
-                                  ),
-                                }}
-                              ></div>
-                            </div>
+                            <Space size={10}>
+                              <Progress
+                                type="circle"
+                                percent={candidateDetailsNew.averagedPercentage.toFixed(
+                                  2
+                                )}
+                                size={97}
+                                strokeWidth={9}
+                                strokeColor={getBarColor(
+                                  candidateDetailsNew.averagedPercentage
+                                )}
+                              />
+                            </Space>
                           </div>
                         </div>
                       </Col>
@@ -1254,7 +1207,7 @@ const JobDetailsDescription = () => {
                 >
                   <CardBody className="p-4">
                     <Row className="align-items-center">
-                      <Col lg={1}>
+                      {/* <Col lg={1}>
                         {devHasBeenSentNew.selectedDevStatus ===
                         "Dev Accepted" ? (
                           <div className="checkbox-wrapper-hiring-detail-manager d-flex justify-content-center">
@@ -1276,9 +1229,9 @@ const JobDetailsDescription = () => {
                         ) : (
                           <div></div>
                         )}
-                      </Col>
+                      </Col> */}
 
-                      <Col lg={5}>
+                      <Col lg={6}>
                         <div className="candidate-list-content mt-3 mt-lg-0">
                           <h5 className="fs-19 mb-0 d-flex">
                             <Link
@@ -1359,34 +1312,38 @@ const JobDetailsDescription = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="d-flex mb-2 align-items-center">
+                          <div className="d-flex mb-2 align-items-center justify-content-between">
                             <span className=" fs-14">Salary</span>
-                            <div className="devmatching-bar-salary border border-1 ms-3">
-                              <div
-                                className="devmatch-level-salary"
-                                style={{
-                                  width: `${devHasBeenSentNew.salaryPerDevPercentage}%`,
-                                  backgroundColor: getBarColor(
+
+                            <div>
+                              <Space size={30} wrap>
+                                <Progress
+                                  steps={5}
+                                  percent={devHasBeenSentNew.salaryPerDevPercentage.toFixed(
+                                    1
+                                  )}
+                                  strokeColor={getBarColor(
                                     devHasBeenSentNew.salaryPerDevPercentage
-                                  ),
-                                }}
-                              ></div>
+                                  )}
+                                />
+                              </Space>
                             </div>
                           </div>
-                          <div className="d-flex mb-2 align-items-center">
-                            <span className=" fs-14" style={{ width: "41px" }}>
-                              Skill
-                            </span>
-                            <div className="devmatching-bar-skill border border-1 ms-3">
-                              <div
-                                className="devmatch-level-skill"
-                                style={{
-                                  width: `${devHasBeenSentNew.skillPercentage}%`,
-                                  backgroundColor: getBarColor(
+                          <div className="d-flex mb-2 align-items-center justify-content-between">
+                            <span className=" fs-14">Skill</span>
+
+                            <div>
+                              <Space size={30} wrap>
+                                <Progress
+                                  steps={5}
+                                  percent={devHasBeenSentNew.skillPercentage.toFixed(
+                                    1
+                                  )}
+                                  strokeColor={getBarColor(
                                     devHasBeenSentNew.skillPercentage
-                                  ),
-                                }}
-                              ></div>
+                                  )}
+                                />
+                              </Space>
                             </div>
                           </div>
                           <div>
@@ -1399,18 +1356,18 @@ const JobDetailsDescription = () => {
                       </Col>
 
                       <Col lg={3} className="border-start border-3">
-                        <div style={{ height: "100px" }}>
-                          <div className="d-flex justify-content-end">
+                        <div style={{ height: "100%" }}>
+                          <div className="d-flex justify-content-end mb-3">
                             <span
                               className={
                                 devHasBeenSentNew.selectedDevStatus ===
                                 "Waiting HR Approval"
                                   ? "badge bg-warning text-light"
                                   : devHasBeenSentNew.selectedDevStatus ===
-                                    "Dev Accepted"
+                                    "Interview Scheduled"
                                   ? "badge bg-primary text-light"
                                   : devHasBeenSentNew.selectedDevStatus ===
-                                    "HR Rejected"
+                                    "Rejected"
                                   ? "badge bg-danger text-light"
                                   : devHasBeenSentNew.selectedDevStatus ===
                                     "Waiting Interview"
@@ -1421,6 +1378,9 @@ const JobDetailsDescription = () => {
                                   : devHasBeenSentNew.selectedDevStatus ===
                                     "Interviewing"
                                   ? "badge bg-info text-light"
+                                  : devHasBeenSentNew.selectedDevStatus ===
+                                    "Under Consideration"
+                                  ? "badge bg-blue text-light"
                                   : ""
                               }
                             >
@@ -1428,50 +1388,19 @@ const JobDetailsDescription = () => {
                             </span>
                           </div>
                           <div className="right-side-percen-matching-devaccepted">
-                            <div className="d-flex w-100 justify-content-between">
-                              <div className="d-flex align-items-center">
-                                <p
-                                  style={{
-                                    display: "contents",
-                                    fontFamily: "Tahoma",
-                                    fontSize: "15px",
-                                  }}
-                                >
-                                  Matching request total
-                                </p>
-                              </div>
-                              <div className="matching-rate-dev">
-                                <span
-                                  className="percent-matching-dev"
-                                  style={{
-                                    color: getBarColor(
-                                      devHasBeenSentNew.averagedPercentage
-                                    ),
-                                  }}
-                                >
-                                  {devHasBeenSentNew.averagedPercentage.toFixed(
-                                    2
-                                  ) == 100.0
-                                    ? 100
-                                    : devHasBeenSentNew.averagedPercentage.toFixed(
-                                        2
-                                      )}
-                                  %
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="devmatching-bar border border-1">
-                              <div
-                                className="devmatch-level"
-                                style={{
-                                  width: `${devHasBeenSentNew.averagedPercentage}%`,
-                                  backgroundColor: getBarColor(
-                                    devHasBeenSentNew.averagedPercentage
-                                  ),
-                                }}
-                              ></div>
-                            </div>
+                            <Space size={10}>
+                              <Progress
+                                type="circle"
+                                percent={devHasBeenSentNew.averagedPercentage.toFixed(
+                                  2
+                                )}
+                                size={97}
+                                strokeWidth={9}
+                                strokeColor={getBarColor(
+                                  devHasBeenSentNew.averagedPercentage
+                                )}
+                              />
+                            </Space>
                           </div>
                         </div>
                       </Col>
@@ -1481,7 +1410,7 @@ const JobDetailsDescription = () => {
               ))}
         </div>
       )}
-      {/* ------------------------------------------------------------------------------------------------- */}
+      {/* ------------------------------------------------------------------------------------------------------*/}
       {/* LIST DEV ACCEPT AFTER REJECT */}
 
       <div>
@@ -1499,10 +1428,6 @@ const JobDetailsDescription = () => {
             >
               <CardBody className="p-4">
                 <Row className="align-items-center">
-                  {/* <Col lg={1}>
-                    <div></div>
-                  </Col> */}
-
                   <Col lg={5}>
                     <div className="candidate-list-content mt-lg-0 d-flex flex-column gap-1">
                       <h5 className="fs-19 mb-0 d-flex">
@@ -1628,15 +1553,15 @@ const JobDetailsDescription = () => {
                   </Col>
 
                   <Col lg={3} className="border-start border-3">
-                    <div style={{ height: "100px" }}>
-                      <div className="d-flex justify-content-end">
+                    <div style={{ height: "100%" }}>
+                      <div className="d-flex justify-content-end mb-2">
                         <span
                           className={
                             devHasBeenSentNew.selectedDevStatus ===
                             "Waiting HR Approval"
                               ? "badge bg-warning text-light"
                               : devHasBeenSentNew.selectedDevStatus ===
-                                "Dev Accepted"
+                                "Interview Scheduled"
                               ? "badge bg-primary text-light"
                               : devHasBeenSentNew.selectedDevStatus ===
                                 "HR Rejected"
@@ -1657,7 +1582,7 @@ const JobDetailsDescription = () => {
                         </span>
                       </div>
                       <div className="right-side-percen-matching-devaccepted">
-                        <div className="d-flex w-100 justify-content-between">
+                        {/* <div className="d-flex w-100 justify-content-center mb-2">
                           <div className="d-flex align-items-center">
                             <p
                               style={{
@@ -1669,38 +1594,21 @@ const JobDetailsDescription = () => {
                               Matching request total
                             </p>
                           </div>
-                          <div className="matching-rate-dev">
-                            <span
-                              className="percent-matching-dev"
-                              style={{
-                                color: getBarColor(
-                                  devHasBeenSentNew.averagedPercentage
-                                ),
-                              }}
-                            >
-                              {devHasBeenSentNew.averagedPercentage.toFixed(
-                                2
-                              ) == 100.0
-                                ? 100
-                                : devHasBeenSentNew.averagedPercentage.toFixed(
-                                    2
-                                  )}
-                              %
-                            </span>
-                          </div>
-                        </div>
+                        </div> */}
 
-                        <div className="devmatching-bar border border-1">
-                          <div
-                            className="devmatch-level"
-                            style={{
-                              width: `${devHasBeenSentNew.averagedPercentage}%`,
-                              backgroundColor: getBarColor(
-                                devHasBeenSentNew.averagedPercentage
-                              ),
-                            }}
-                          ></div>
-                        </div>
+                        <Space size={10}>
+                          <Progress
+                            type="circle"
+                            percent={devHasBeenSentNew.averagedPercentage.toFixed(
+                              2
+                            )}
+                            size={90}
+                            strokeWidth={8}
+                            strokeColor={getBarColor(
+                              devHasBeenSentNew.averagedPercentage
+                            )}
+                          />
+                        </Space>
                       </div>
                     </div>
                   </Col>
@@ -1792,9 +1700,7 @@ const JobDetailsDescription = () => {
                       borderRadius: "50%",
                     }}
                   />
-                  <h3 style={{ textAlign: "center" }}>
-                    Are you sureAAAAAAAAAAAAAA?
-                  </h3>
+                  <h3 style={{ textAlign: "center" }}>Are you sure?</h3>
                 </div>
                 <div className=" border-3 border-top  p-3">
                   <p>

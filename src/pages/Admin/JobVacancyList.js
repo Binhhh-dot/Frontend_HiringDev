@@ -79,40 +79,6 @@ const JobVacancyList = (a) => {
         7
       );
 
-      // const data = response.data;
-      // const formattedJobVacancies = data.data.map((job) => {
-      //   // Assuming job.typeRequireName and job.levelRequireName are available
-      //   job.skillRequireStrings.unshift(
-      //     job.typeRequireName,
-      //     job.levelRequireName
-      //   );
-      //   return {
-      //     id: job.requestId,
-      //     companyIdMana: job.companyId,
-      //     companyImg: job.companyImage,
-      //     jobDescription: job.jobTitle,
-      //     companyName: job.companyName,
-      //     location: job.numberOfDev + " Developer",
-      //     jobPostTime: new Date(job.duration).toLocaleDateString(),
-
-      //     done: job.statusString.includes("Done"),
-
-      //     save: job.statusString.includes("Saved"),
-      //     waitingApproval: job.statusString.includes("Waiting Approval"),
-      //     inProgress: job.statusString.includes("In Progress"),
-      //     rejected: job.statusString.includes("Rejected"),
-      //     expired: job.statusString.includes("Expired"),
-      //     cancelled: job.statusString.includes("Cancelled"),
-      //     finished: job.statusString.includes("Finished"),
-      //     completed: job.statusString.includes("Completed"),
-
-      //     timing: job.statusString,
-      //     addclassNameBookmark: false,
-      //     showFullSkills: false,
-      //     badges: [],
-      //     experience: job.skillRequireStrings.join(", "),
-      //   };
-      // });
       console.log(response.data.data);
       console.log(response.data.paging.total);
 
@@ -130,21 +96,6 @@ const JobVacancyList = (a) => {
   const onSearch = () => {
     fetchJobVacancies();
   };
-
-  //Set initial state  for showFulSkill using object id
-  // const initialSkillsState = jobVacancyList.reduce(
-  //   (acc, job) => ({ ...acc, [job.id]: false }),
-  //   {}
-  // );
-
-  // const [showFullSkills, setShowFullSkills] = useState(initialSkillsState);
-
-  // const toggleShowFullSkills = (id) => {
-  //   setShowFullSkills((prevState) => ({
-  //     ...prevState,
-  //     [id]: !prevState[id],
-  //   }));
-  // };
 
   //--------------------------------------------------------------------------------------------
 
@@ -235,9 +186,9 @@ const JobVacancyList = (a) => {
                   <div className="d-flex align-items-center">
                     <span
                       className={
-                        jobVacancyListDetail.statusString === "waitingApproval"
+                        jobVacancyListDetail.statusString === "Waiting Approval"
                           ? "badge bg-warning text-light fs-12"
-                          : jobVacancyListDetail.statusString === "InProgress"
+                          : jobVacancyListDetail.statusString === "In Progress"
                           ? "badge bg-blue text-light fs-12"
                           : jobVacancyListDetail.statusString === "Rejected"
                           ? "badge bg-danger text-light fs-12"
