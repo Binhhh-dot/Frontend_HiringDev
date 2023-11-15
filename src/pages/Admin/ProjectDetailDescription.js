@@ -19,6 +19,9 @@ const ProjectDetailDescription = () => {
   const { state } = useLocation();
   //--------------------------------------------------------------------------------
   const [projectDetail, setProjectDetail] = useState([]);
+  const [devInProject, setDevInProject] = useState([]);
+
+  //--------------------------------------------------------------------------------
 
   const fetchGetProjectDetailByProjectId = async () => {
     let response;
@@ -36,6 +39,8 @@ const ProjectDetailDescription = () => {
   useEffect(() => {
     fetchGetProjectDetailByProjectId();
   }, []);
+  //--------------------------------------------------------------------------------
+
   //--------------------------------------------------------------------------------
   return (
     <React.Fragment>
