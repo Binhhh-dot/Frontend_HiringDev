@@ -131,6 +131,299 @@ const NewListInterviewInfo = () => {
         <Input placeholder="Search" style={{ height: "40px" }} />
       </div>
 
+      <Modal
+        centered
+        open={showPopup}
+        onOk={() => setShowPopup(false)}
+        onCancel={() => setShowPopup(false)}
+        width={1100}
+        footer={null}
+      >
+        <Row className="p-3">
+          <Col lg={6} className="border-end ">
+            <div
+              className="d-flex justify-content-between"
+              style={{ width: "98%" }}
+            >
+              <h4 className="mb-0">Interview Detail</h4>
+              <p className="badge bg-success text-light fs-13 ">
+                {selectInterviewDetail.statusString}
+              </p>
+            </div>
+            <div className="mt-3">
+              <p className="mb-0 text-muted">Title </p>
+              <div
+                className="p-2 border border-2"
+                style={{
+                  width: "98%",
+                  fontWeight: "500",
+                  borderRadius: "10px",
+                }}
+              >
+                {selectInterviewDetail.title}
+              </div>
+            </div>
+            <div className="mt-3">
+              <p className="mb-0 text-muted">Description </p>
+              <div
+                className="p-2 border border-2 "
+                style={{
+                  width: "98%",
+                  fontWeight: "500",
+                  borderRadius: "10px",
+                }}
+              >
+                {selectInterviewDetail.description}
+              </div>
+            </div>
+
+            <div className="mt-3">
+              <p className="mb-0 text-muted">Date Of Interview </p>
+              <div
+                className="p-2 border border-2"
+                style={{
+                  width: "98%",
+                  fontWeight: "500",
+                  borderRadius: "10px",
+                }}
+              >
+                {selectInterviewDetail.dateOfInterview}
+              </div>
+            </div>
+            <div
+              className="d-flex  justify-content-between"
+              style={{ gap: "20px", width: "98%" }}
+            >
+              <div className="mt-3" style={{ width: "50%" }}>
+                <p className="mb-0 text-muted">Start Time </p>
+                <div
+                  className="p-2 border border-2"
+                  style={{
+                    // width: "fit-content",
+                    fontWeight: "500",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {selectInterviewDetail.startTime}
+                </div>
+              </div>
+
+              <div className="mt-3" style={{ width: "50%" }}>
+                <p className="mb-0 text-muted">End Time </p>
+                <div
+                  className="p-2 border border-2"
+                  style={{
+                    // width: "fit-content",
+                    fontWeight: "500",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {selectInterviewDetail.endTime}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3">
+              <p className="mb-0 text-muted">Posted Time</p>
+              <div
+                className="p-2 border border-2"
+                style={{
+                  width: "98%",
+                  fontWeight: "500",
+                  borderRadius: "10px",
+                }}
+              >
+                {selectInterviewDetail.postedTime}
+              </div>
+            </div>
+
+            {selectInterviewDetail.meetingLink == null ? (
+              <div></div>
+            ) : (
+              <div className="mt-3">
+                <p className="mb-0 text-muted">Meeting Link </p>
+                <div
+                  className="p-2 border border-2"
+                  style={{
+                    width: "99%",
+                    fontWeight: "500",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {selectInterviewDetail.meetingLink == null ? (
+                    <span>None</span>
+                  ) : (
+                    selectInterviewDetail.meetingLink
+                  )}
+                </div>
+              </div>
+            )}
+          </Col>
+          <Col lg={6} className="border-start ">
+            {/* ------------------------------------------------------ */}
+            <Row>
+              <Col lg={6}>
+                <div className="p-2">
+                  <div className="candidate-profile text-center">
+                    <img
+                      src={img0}
+                      alt=""
+                      className="avatar-lg rounded-circle"
+                    />
+                    <h6 className="fs-18 mb-0 mt-4">
+                      {devInterviewDetail.firstName}{" "}
+                      {devInterviewDetail.lastName}
+                    </h6>
+                    <p className="text-muted mb-4">
+                      {devInterviewDetail.codeName}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="candidate-profile-overview p-2">
+                  <h6 className="fs-17 fw-semibold mb-3">Profile Overview</h6>
+                  <ul className="list-unstyled mb-0">
+                    <li>
+                      <div className="d-flex justify-content-start">
+                        <label className="text-dark">Gender</label>
+                        <div>
+                          <p className="text-muted mb-0">
+                            {devInterviewDetail.genderString}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="d-flex justify-content-start">
+                        <label className="text-dark">Email</label>
+                        <div>
+                          <p className="text-muted mb-0 ">
+                            {devInterviewDetail.email}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="d-flex justify-content-start">
+                        <label className="text-dark">Phone</label>
+                        <div>
+                          <p className="text-muted mb-0">0123456789</p>
+                        </div>
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="d-flex justify-content-start">
+                        <label className="text-dark">Experience</label>
+                        <div>
+                          <p className="text-muted mb-0 ">
+                            {devInterviewDetail.yearOfExperience} Year
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="d-flex justify-content-start">
+                        <label className="text-dark">Salary</label>
+                        <div>
+                          <p className="text-muted mb-0">
+                            {devInterviewDetail.averageSalary}$
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </Col>
+              <Col lg={6}>
+                <div className="p-2 ">
+                  <h6 className="fs-17 fw-semibold mb-2">Level</h6>
+                  <div className="d-flex flex-wrap align-items-start gap-1">
+                    <span className="badge bg-warning text-light fs-12">
+                      {devInterviewDetail.levelRequireName}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-2 ">
+                  <h6 className="fs-17 fw-semibold mb-2">Type</h6>
+                  <div className="d-flex flex-wrap align-items-start gap-1">
+                    {devInterviewDetail.typeRequireStrings?.map(
+                      (skillRequire, key) => (
+                        <span
+                          key={key}
+                          className="badge bg-info-subtle text-info fs-13 mt-1"
+                        >
+                          {skillRequire}
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div className="p-2 ">
+                  <h6 className="fs-17 fw-semibold mb-2">
+                    Professional Skills
+                  </h6>
+                  <div className="d-flex flex-wrap align-items-start gap-1">
+                    {devInterviewDetail.skillRequireStrings?.map(
+                      (skillRequire, key) => (
+                        <span
+                          key={key}
+                          className="badge bg-success-subtle text-success fs-13"
+                        >
+                          {skillRequire}
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div className="candidate-contact-details p-2">
+                  <h6 className="fs-17 fw-semibold mb-3">Work Arrangement</h6>
+                  <ul className="list-unstyled mb-0">
+                    <div className="d-flex gap-1">
+                      <p className="mb-0 badge bg-purplel text-purple fs-13">
+                        {devInterviewDetail.scheduleTypeName}
+                      </p>
+                      <p className="mb-0 badge bg-orangeRed2l text-orangeRed2 fs-13">
+                        {devInterviewDetail.employmentTypeName}
+                      </p>
+                    </div>
+                  </ul>
+                </div>
+              </Col>
+            </Row>
+            {/* ------------------------------------------------------ */}
+          </Col>
+          <Row>
+            {selectInterviewDetail.rejectionReason == null ? (
+              <div></div>
+            ) : (
+              <div className="mt-3 ">
+                <p className="mb-0 text-muted">Rejection Reason</p>
+                <div
+                  className="p-2 border border-2"
+                  style={{
+                    width: "100%",
+                    fontWeight: "500",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {selectInterviewDetail.rejectionReason == null ? (
+                    <span></span>
+                  ) : (
+                    selectInterviewDetail.rejectionReason
+                  )}
+                </div>
+              </div>
+            )}
+          </Row>
+        </Row>
+      </Modal>
+
       <div>
         {newInterviewListInManager.map(
           (newInterviewListInManagerDetail, key) => (
@@ -175,359 +468,7 @@ const NewListInterviewInfo = () => {
                     </div>
                   </Col>
                   {/* ------------------ */}
-                  <Modal
-                    centered
-                    open={showPopup}
-                    onOk={() => setShowPopup(false)}
-                    onCancel={() => setShowPopup(false)}
-                    width={1100}
-                    footer={null}
-                  >
-                    <Row>
-                      <Col lg={6} className="border-end">
-                        <h4 className="mb-0">Interview Detail</h4>
-                        <div className="d-flex justify-content-end">
-                          <p className="mb-0 badge bg-success-subtle text-success fs-13 ">
-                            {newInterviewListInManagerDetail.devStatusString}{" "}
-                            AAA
-                          </p>
-                        </div>
-                        <div className="mt-4">
-                          <p className="mb-0 text-muted">Title </p>
-                          <div
-                            className="p-2 border border-2"
-                            style={{
-                              width: "100%",
-                              fontWeight: "500",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            {selectInterviewDetail.title}
-                          </div>
-                        </div>
-                        <div className="mt-4">
-                          <p className="mb-0 text-muted">Description </p>
-                          <div
-                            className="p-2 border border-2 "
-                            style={{
-                              width: "100%",
-                              fontWeight: "500",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            {selectInterviewDetail.description}
-                          </div>
-                        </div>
 
-                        <div className="mt-4">
-                          <p className="mb-0 text-muted">Date Of Interview </p>
-                          <div
-                            className="p-2 border border-2"
-                            style={{
-                              width: "100%",
-                              fontWeight: "500",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            {selectInterviewDetail.dateOfInterview}
-                          </div>
-                        </div>
-                        <div
-                          className="d-flex  align-items-center"
-                          style={{ gap: "100px" }}
-                        >
-                          <div className="mt-4">
-                            <p className="mb-0 text-muted">Start Time </p>
-                            <div
-                              className="p-2 border border-2"
-                              style={{
-                                width: "fit-content",
-                                fontWeight: "500",
-                                borderRadius: "10px",
-                              }}
-                            >
-                              {selectInterviewDetail.startTime}
-                            </div>
-                          </div>
-
-                          <div className="mt-4">
-                            <p className="mb-0 text-muted">End Time </p>
-                            <div
-                              className="p-2 border border-2"
-                              style={{
-                                width: "fit-content",
-                                fontWeight: "500",
-                                borderRadius: "10px",
-                              }}
-                            >
-                              {selectInterviewDetail.endTime}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="mt-4">
-                          <p className="mb-0 text-muted">Posted Time</p>
-                          <div
-                            className="p-2 border border-2"
-                            style={{
-                              width: "100%",
-                              fontWeight: "500",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            {selectInterviewDetail.postedTime}
-                          </div>
-                        </div>
-
-                        <div className="mt-4">
-                          <p className="mb-0 text-muted">Meeting Link </p>
-                          <div
-                            className="p-2 border border-2"
-                            style={{
-                              width: "100%",
-                              fontWeight: "500",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            {selectInterviewDetail.meetingLink == null ? (
-                              <span className="text-muted">Blank</span>
-                            ) : (
-                              selectInterviewDetail.meetingLink
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="mt-4">
-                          <p className="mb-0 text-muted">Rejection Reason</p>
-                          <div
-                            className="p-2 border border-2"
-                            style={{
-                              width: "100%",
-                              fontWeight: "500",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            {selectInterviewDetail.rejectionReason == null ? (
-                              <span className="text-muted">Blank</span>
-                            ) : (
-                              selectInterviewDetail.rejectionReason
-                            )}
-                          </div>
-                        </div>
-                      </Col>
-                      <Col lg={6} className="border-start ">
-                        <h4 className="mb-0">Interviewee</h4>
-                        {/* ------------------------------------------------------ */}
-                        <Row>
-                          <Col lg={6}>
-                            <div className="p-2">
-                              <div className="candidate-profile text-center">
-                                <img
-                                  src={img0}
-                                  alt=""
-                                  className="avatar-lg rounded-circle"
-                                />
-                                <h6 className="fs-18 mb-0 mt-4">
-                                  {selectInterviewDetail.firstName}{" "}
-                                  {selectInterviewDetail.lastName}
-                                  Gabriel Palmer
-                                </h6>
-                                <p className="text-muted mb-4">
-                                  {devInterviewDetail.codeName}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="candidate-profile-overview p-2">
-                              <h6 className="fs-17 fw-semibold mb-3">
-                                Profile Overview
-                              </h6>
-                              <ul className="list-unstyled mb-0">
-                                <li>
-                                  <div className="d-flex justify-content-start">
-                                    <label className="text-dark">Email</label>
-                                    <div>
-                                      <p className="text-muted mb-0 ">
-                                        {devInterviewDetail.email}
-                                        null
-                                      </p>
-                                    </div>
-                                  </div>
-                                </li>
-
-                                <li>
-                                  <div className="d-flex justify-content-start">
-                                    <label className="text-dark">Phone</label>
-                                    <div>
-                                      <p className="text-muted mb-0">
-                                        0123456789
-                                      </p>
-                                    </div>
-                                  </div>
-                                </li>
-
-                                <li>
-                                  <div className="d-flex justify-content-start">
-                                    <label className="text-dark">
-                                      Year Experience
-                                    </label>
-                                    <div>
-                                      <p className="text-muted mb-0 ">
-                                        {devInterviewDetail.yearOfExperience}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div className="d-flex justify-content-start">
-                                    <label className="text-dark">
-                                      Average Salary
-                                    </label>
-                                    <div>
-                                      <p className="text-muted mb-0">
-                                        {devInterviewDetail.averageSalary}$
-                                      </p>
-                                    </div>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div className="d-flex justify-content-start">
-                                    <label className="text-dark">
-                                      Developer Status
-                                    </label>
-                                    <div>
-                                      <p className="text-muted mb-0">
-                                        {devInterviewDetail.devStatusString}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </li>
-
-                                {/* <li>
-                                  <div className="d-flex justify-content-start">
-                                    <label className="text-dark">
-                                      Type Require
-                                    </label>
-                                    <div>
-                                      {devInterviewDetail.typeRequireStrings?.map(
-                                        (typeRequire, key) => (
-                                          <p
-                                            key={key}
-                                            className="text-muted mb-0"
-                                          >
-                                            {typeRequire},
-                                          </p>
-                                        )
-                                      )}
-                                    </div>
-                                  </div>
-                                </li> */}
-                              </ul>
-                            </div>
-                          </Col>
-                          <Col lg={6}>
-                            <div className="p-2 ">
-                              <h6 className="fs-17 fw-semibold mb-3">
-                                Professional Skills
-                              </h6>
-                              <div className="d-flex flex-wrap align-items-start gap-1">
-                                {devInterviewDetail.skillRequireStrings?.map(
-                                  (skillRequire, key) => (
-                                    <span
-                                      key={key}
-                                      className="badge bg-success-subtle text-success fs-13 mt-1"
-                                    >
-                                      {skillRequire}
-                                    </span>
-                                  )
-                                )}
-                              </div>
-                            </div>
-
-                            <div className="p-2 ">
-                              <h6 className="fs-17 fw-semibold mb-3">
-                                Developer Type
-                              </h6>
-                              <div className="d-flex flex-wrap align-items-start gap-1">
-                                {devInterviewDetail.typeRequireStrings?.map(
-                                  (skillRequire, key) => (
-                                    <span
-                                      key={key}
-                                      className="badge bg-info-subtle text-info fs-13 mt-1"
-                                    >
-                                      {skillRequire}
-                                    </span>
-                                  )
-                                )}
-                              </div>
-                            </div>
-
-                            <div className="candidate-contact-details p-2 border-top">
-                              <h6 className="fs-17 fw-semibold mb-3">
-                                Contact Details
-                              </h6>
-                              <ul className="list-unstyled mb-0">
-                                {/* <li>
-                                  <div className="d-flex align-items-center mt-4">
-                                    <div className="icon bg-primary-subtle text-primary flex-shrink-0">
-                                      <i className="uil uil-envelope-alt"></i>
-                                    </div>
-                                    <div className="ms-3">
-                                      <h6 className="fs-14 mb-1">Email</h6>
-                                      <p className="text-muted mb-0">
-                                        {devInterviewDetail.email}
-                                        null
-                                      </p>
-                                    </div>
-                                  </div>
-                                </li> */}
-                                <li>
-                                  <div className="d-flex align-items-center mt-4">
-                                    <div className="icon bg-primary-subtle text-primary flex-shrink-0">
-                                      <i className="uil uil-clock icon"></i>
-                                    </div>
-                                    <div className="ms-3">
-                                      <h6 className="fs-14 mb-1">
-                                        Schedule Type
-                                      </h6>
-                                      <p className="text-muted mb-0">null</p>
-                                    </div>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div className="d-flex align-items-center mt-4">
-                                    <div className="icon bg-primary-subtle text-primary flex-shrink-0">
-                                      <i className="uil uil-briefcase-alt icon"></i>
-                                    </div>
-                                    <div className="ms-3">
-                                      <h6 className="fs-14 mb-1">
-                                        Employment Type
-                                      </h6>
-                                      <p className="text-muted mb-0">null</p>
-                                    </div>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div className="d-flex align-items-center mt-4">
-                                    <div className="icon bg-primary-subtle text-primary flex-shrink-0">
-                                      <i className="uil uil-arrow-growth icon"></i>
-                                    </div>
-                                    <div className="ms-3">
-                                      <h6 className="fs-14 mb-1">
-                                        Level Require
-                                      </h6>
-                                      <p className="text-muted mb-0">null</p>
-                                    </div>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </Col>
-                        </Row>
-                        {/* ------------------------------------------------------ */}
-                      </Col>
-                    </Row>
-                  </Modal>
                   {/* -------------------*/}
 
                   <Col md={2} className="d-flex  gap-2">
