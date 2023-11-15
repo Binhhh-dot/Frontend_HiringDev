@@ -202,8 +202,8 @@ const ProjectVacancyList = () => {
               }
             // className="job-box card mt-4"
             >
-              <div style={{ fontSize: "40px", color: "blue", height: "45px" }}>+</div>
-              <div style={{ color: "blue" }} >Add Project</div>
+              <div style={{ fontSize: "40px", color: "#0000bc", height: "45px" }}>+</div>
+              <div style={{ color: "#0000bc" }} >Add Project</div>
             </div>
           </Col>
           {jobVacancyList.map((jobVacancyListDetails, key) => (
@@ -211,7 +211,7 @@ const ProjectVacancyList = () => {
               <div
                 key={key}
                 onClick={() => openProjectDetail(jobVacancyListDetails.id)}
-                style={{ height: "180px" }}
+                style={{ height: "180px", transform: "none" }}
                 className={
                   jobVacancyListDetails.addclassNameBookmark === true
                     ? "job-box bookmark-post card "

@@ -736,7 +736,7 @@ const HiringRequestDetails = () => {
             </ModalBody>
           </Modal>
 
-          <div class="col-lg-4 d-flex flex-column gap-4">
+          <div class="col-lg-3 d-flex flex-column gap-4">
             <Card className="job-overview ">
               <CardBody className="p-4">
                 <h4>Job Overview</h4>
@@ -895,7 +895,7 @@ const HiringRequestDetails = () => {
             )} */}
 
           </div>
-          <div class="col-lg-12">
+          <div class="col-lg-11">
             <Card
               className="profile-content-page mt-4 mt-lg-0"
               style={{ borderTop: "none" }}
@@ -1153,35 +1153,6 @@ const HiringRequestDetails = () => {
                                         )}
                                       </button>
                                     </>
-                                    // ) : candidategridDetailsNew.selectedDevStatus ===
-                                    //   "HR Rejected" ? (
-                                    //   <div className="btn btn-red w-100 mt-2">
-                                    //     Rejected
-                                    //   </div>
-                                    // ) : candidategridDetailsNew.selectedDevStatus ===
-                                    //   "Waiting Interview" ? (
-                                    //   <>
-                                    //     {/* <div className="btn btn-primary w-100 mt-2">
-                                    //       Waiting Interview
-                                    //     </div> */}
-                                    //     <button
-                                    //       id="rejectButton"
-                                    //       className="btn btn-soft-primary btn-hover w-100 mt-2"
-                                    //       onClick={() =>
-                                    //         rejectInterview2(candidategridDetailsNew.id)
-                                    //       }
-                                    //     >
-                                    //       {loadingReject[candidategridDetailsNew.id] ? (
-                                    //         <HashLoader
-                                    //           size={20}
-                                    //           color={"#36D7B7"}
-                                    //           loading={true}
-                                    //         />
-                                    //       ) : (
-                                    //         <>Reject</>
-                                    //       )}
-                                    //     </button>
-                                    //   </>
                                   ) : candidategridDetailsNew.selectedDevStatus ===
                                     "Waiting Interview" ? (
                                     <>

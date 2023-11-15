@@ -333,6 +333,7 @@ const ProjectDetailDesciption = () => {
                         <div
                           onClick={() => openHiringRequestDetail(jobVacancyListDetails.id)}
                           key={key}
+                          style={{ transform: "none" }}
                           className={
                             jobVacancyListDetails.addclassNameBookmark === true
                               ? "job-box bookmark-post card mt-4"
