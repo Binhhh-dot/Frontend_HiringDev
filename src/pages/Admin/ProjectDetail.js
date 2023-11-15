@@ -214,7 +214,7 @@ const ProjectDetail = () => {
               backgroundColor: "#FFFF",
               height: "70px",
               display: "flex",
-              justifyContent: "space-between",
+              // justifyContent: "space-between",
               alignItems: "center",
               borderRadius: "7px",
               boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
@@ -222,9 +222,9 @@ const ProjectDetail = () => {
               marginRight: "30px",
               marginBottom: "0px",
             }}
-            className="mt-4"
+            className="mt-4 justify-content-end"
           >
-            <div style={{ backgroundColor: "white", width: "30%" }}>
+            {/* <div style={{ backgroundColor: "white", width: "30%" }}>
               <Search
                 className="ms-3"
                 placeholder="Type here to search"
@@ -232,7 +232,7 @@ const ProjectDetail = () => {
                   console.log(value);
                 }}
               />
-            </div>
+            </div> */}
 
             <div
               className="d-flex gap-4 align-items-center"

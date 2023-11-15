@@ -86,8 +86,20 @@ const RightSideContent = () => {
               </div>
             </div>
             <ul className="list-unstyled mt-4">
-              <li>
+              <li className="mt-3">
                 <div className="d-flex">
+                  <i className="uil uil-user-square text-primary fs-4"></i>
+                  <div className="ms-3">
+                    <h6 className="fs-14 mb-2">Human Resource</h6>
+                    <p className="text-muted fs-14 mb-0">
+                      {companyInfoInManager.hrFullName}
+                    </p>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <div className="d-flex mt-3">
                   <i className="uil uil-phone-volume text-primary fs-4"></i>
                   <div className="ms-3">
                     <h6 className="fs-14 mb-2">Phone</h6>
@@ -127,18 +139,6 @@ const RightSideContent = () => {
                     <p className="text-muted fs-14 mb-0">
                       {companyInfoInManager.address}{" "}
                       {companyInfoInManager.country}
-                    </p>
-                  </div>
-                </div>
-              </li>
-
-              <li className="mt-3">
-                <div className="d-flex">
-                  <i className="uil uil-user-square text-primary fs-4"></i>
-                  <div className="ms-3">
-                    <h6 className="fs-14 mb-2">Name HR</h6>
-                    <p className="text-muted fs-14 mb-0">
-                      {companyInfoInManager.hrFullName}
                     </p>
                   </div>
                 </div>

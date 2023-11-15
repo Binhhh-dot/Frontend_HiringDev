@@ -89,6 +89,7 @@ import Developer from "../pages/Jobs/Developer/Developer";
 //import NewListInterview from "../pages/NewAdmin/NewListInterview";
 import NewHiringRequestDetail from "../pages/Admin/NewHiringRequestDetail";
 import ProjectDetail from "../pages/Admin/ProjectDetail";
+import SideBarManager from "../pages/Admin/SideBarManager";
 
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
@@ -222,5 +223,6 @@ const authRoutes = [
   { path: "/test", component: <Test /> },
   { path: "/newhiringrequestdetail", component: <NewHiringRequestDetail /> },
   { path: "/projectdetail", component: <ProjectDetail /> },
+  { path: "/sidebarmanager", component: <SideBarManager /> },
 ];
 export { userRoutes, authRoutes };
