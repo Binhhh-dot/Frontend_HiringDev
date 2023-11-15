@@ -3,6 +3,7 @@ import utils from "../utils/customAxios";
 
 const createAnInterview = async (
   requestId,
+  developerId,
   title,
   description,
   dateOfInterview,
@@ -12,6 +13,7 @@ const createAnInterview = async (
   const serviceUrl = urlConstant.endpoint.interview.createAnInterview;
   const response = await utils.axiosLocalHost.post(serviceUrl, {
     requestId,
+    developerId,
     title,
     description,
     dateOfInterview,
@@ -33,11 +35,12 @@ const getListInterviewByRequestId = async (requestId) => {
   return response;
 };
 
-const getAllInterviewByHRAndPaging = async (companyId, pageSize, pageIndex) => {
+const getAllInterviewByHRAndPaging = async (companyId, requestId, pageSize, pageIndex) => {
   const serviceUrl = urlConstant.endpoint.interview.getAllInterviewByHRAndPaging
     .replace("${companyId}", companyId)
     .replace("${PageSize}", pageSize)
-    .replace("${PageIndex}", pageIndex);
+    .replace("${PageIndex}", pageIndex)
+    .replace("${requestId}", requestId);
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };
@@ -59,15 +62,11 @@ const getAllInterviewByHRAndRequestIdAndPaging = async (
 };
 
 const getDetailInterviewByInterviewId = async (
-  interviewId,
-  PageIndex,
-  PageSize
+  interviewId
 ) => {
   const serviceUrl =
     urlConstant.endpoint.interview.getDetailInterviewByInterviewId
       .replace("${InterviewId}", interviewId)
-      .replace("${PageIndex}", PageIndex)
-      .replace("${PageSize}", PageSize);
 
   const response = await utils.axiosLocalHost.get(serviceUrl, interviewId);
   return response;

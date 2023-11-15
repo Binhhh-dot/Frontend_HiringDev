@@ -545,7 +545,7 @@ const CreateHiringRequest = () => {
             setSuccessMessage("Đăng công việc thành công");
             localStorage.removeItem("requestId");
             setErrorMessage(null);
-            navigate('/projectdetail?Id=' + projectIdState);
+            navigate('/projectdetailhr?Id=' + projectIdState);
           } catch (error) {
             console.log(value);
             console.error("Error posting job:", error);

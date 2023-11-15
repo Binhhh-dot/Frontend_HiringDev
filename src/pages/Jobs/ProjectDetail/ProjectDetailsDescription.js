@@ -29,7 +29,10 @@ import projectServices from "../../../services/project.services";
 import classnames from "classnames";
 import { useNavigate } from "react-router-dom";
 import hiringrequestService from "../../../services/hiringrequest.service";
-
+import {
+  CheckSquareOutlined,
+  UserOutlined
+} from "@ant-design/icons";
 const ProjectDetailDesciption = () => {
   const location = useLocation();
   const [hiringRequestDetail, setHiringRequestDetail] = useState([]);
@@ -148,7 +151,11 @@ const ProjectDetailDesciption = () => {
       //       skill
       //     );
       // } else {
-      response = await hiringrequestService.getHiringRequestByidAndPaging(
+      const queryParams = new URLSearchParams(location.search);
+      const projectId2 = queryParams.get("Id");
+
+      response = await hiringrequestService.getHiringRequestByProjectIdAndPaging(
+        projectId2,
         currentPage,
         5
       );
@@ -167,8 +174,8 @@ const ProjectDetailDesciption = () => {
           jobDescription: job.jobTitle,
           companyName: job.companyName,
           location: job.numberOfDev + " Developer",
-          jobPostTime: new Date(job.duration).toLocaleDateString(),
-
+          duration: job.duration,
+          numberOfDev: job.numberOfDev,
           done: job.statusString.includes("Done"),
 
           save: job.statusString.includes("Saved"),
@@ -219,19 +226,14 @@ const ProjectDetailDesciption = () => {
     navigate("/createhiringrequest", { state });
   };
 
+  const openHiringRequestDetail = (id) => {
+    navigate('/hiringrequestlistincompanypartnerdetail?Id=' + id)
+  };
+
   return (
     <React.Fragment>
       <div className="job-detail ">
         <CardBody className="">
-          {/* <div className="d-flex align-items-center justify-content-center">
-            <img
-              style={{ width: "80%", height: "300px", objectFit: "cover" }}
-              src={hiringRequestDetail.backgroundImage}  // Giá trị mặc định là "userImage2"
-              className=""
-              id="profile-img-2"
-              alt=""
-            />
-          </div> */}
           <div className="d-flex justify-content-between">
             <div className="d-flex p-3">
               <div style={{ fontWeight: "bold" }}>
@@ -243,20 +245,20 @@ const ProjectDetailDesciption = () => {
                   hiringRequestDetail.statusString === "Preparing"
                     ? "badge bg-warning text-light fs-12"
                     : hiringRequestDetail.statusString === "In Progress"
-                    ? "badge bg-blue text-light fs-12"
-                    : hiringRequestDetail.statusString === "Rejected"
-                    ? "badge bg-danger text-light fs-12"
-                    : hiringRequestDetail.statusString === "Expired"
-                    ? "badge bg-danger text-light fs-12"
-                    : hiringRequestDetail.statusString === "Cancelled"
-                    ? "badge bg-danger text-light fs-12"
-                    : hiringRequestDetail.statusString === "Finished"
-                    ? "badge bg-primary text-light fs-12"
-                    : hiringRequestDetail.statusString === "Complete"
-                    ? "badge bg-primary text-light fs-12"
-                    : hiringRequestDetail.statusString === "Saved"
-                    ? "badge bg-info text-light fs-12"
-                    : ""
+                      ? "badge bg-blue text-light fs-12"
+                      : hiringRequestDetail.statusString === "Rejected"
+                        ? "badge bg-danger text-light fs-12"
+                        : hiringRequestDetail.statusString === "Expired"
+                          ? "badge bg-danger text-light fs-12"
+                          : hiringRequestDetail.statusString === "Cancelled"
+                            ? "badge bg-danger text-light fs-12"
+                            : hiringRequestDetail.statusString === "Finished"
+                              ? "badge bg-primary text-light fs-12"
+                              : hiringRequestDetail.statusString === "Complete"
+                                ? "badge bg-primary text-light fs-12"
+                                : hiringRequestDetail.statusString === "Saved"
+                                  ? "badge bg-info text-light fs-12"
+                                  : ""
                 }
               >
                 {hiringRequestDetail.statusString}
@@ -325,168 +327,84 @@ const ProjectDetailDesciption = () => {
                   <div>1</div>
                 </TabPane>
                 <TabPane tabId="2">
-                  <div>
+                  <Row>
                     {jobVacancyList.map((jobVacancyListDetails, key) => (
-                      <div
-                        key={key}
-                        className={
-                          jobVacancyListDetails.addclassNameBookmark === true
-                            ? "job-box bookmark-post card mt-4"
-                            : "job-box card mt-4"
-                        }
+                      <Col lg={3} md={6} className="mt-4" key={key}>
+                        <div
+                          onClick={() => openHiringRequestDetail(jobVacancyListDetails.id)}
+                          key={key}
+                          style={{ transform: "none" }}
+                          className={
+                            jobVacancyListDetails.addclassNameBookmark === true
+                              ? "job-box bookmark-post card mt-4"
+                              : "job-box card mt-4"
+                          }
                         // className="job-box card mt-4"
-                      >
-                        <div className="bookmark-label text-center">
-                          <Link to="#" className="align-middle text-white">
-                            <i className="mdi mdi-star"></i>
-                          </Link>
-                        </div>
-                        <div className="p-4">
-                          <Row className="align-items-center">
-                            <Col md={2}>
-                              <div className="text-center mb-4 mb-md-0">
-                                <Link to="/hiringrequestlistincompanypartnerdetail">
-                                  <img
-                                    src={jobVacancyListDetails.companyImg}
-                                    alt=""
-                                    className="img-fluid rounded-3"
-                                  />
-                                </Link>
+                        >
+                          <div className="p-3">
+                            {/* <Row className="align-items-center"> */}
+                            {/* <Col md={3}> */}
+                            <div className="mb-2 mb-md-0 d-flex">
+                              <div className="d-flex">
+                                <CheckSquareOutlined style={{ fontSize: "20px" }} />
                               </div>
-                            </Col>
-
-                            <Col md={3}>
-                              <div className="mb-2 mb-md-0">
-                                <h5 className="fs-18 mb-0">
-                                  <Link
-                                    to="/hiringrequestlistincompanypartnerdetail"
-                                    className="text-dark"
-                                    state={{ jobId: jobVacancyListDetails.id }}
-                                  >
-                                    {jobVacancyListDetails.jobDescription}
-                                  </Link>
-                                </h5>
-                                <p className="text-muted fs-14 mb-0">
-                                  {jobVacancyListDetails.companyName}
-                                </p>
+                              <div
+                                className="text-dark mx-2"
+                                style={{ fontWeight: "bold" }}
+                              >
+                                {jobVacancyListDetails.jobDescription}
                               </div>
-                            </Col>
-
-                            <Col md={3}>
-                              <div className="d-flex mb-2">
-                                <div className="flex-shrink-0">
-                                  <i className="uil uil-user-check text-primary me-1"></i>
+                              <p className="text-muted fs-14 mb-0">
+                                {jobVacancyListDetails.companyName}
+                              </p>
+                            </div>
+                            <div>
+                              <span
+                                className={
+                                  jobVacancyListDetails.waitingApproval === true
+                                    ? "badge bg-warning text-light fs-12 mt-3"
+                                    : jobVacancyListDetails.inProgress === true
+                                      ? "badge bg-blue text-light fs-12 mt-3"
+                                      : jobVacancyListDetails.rejected === true
+                                        ? "badge bg-danger text-light fs-12 mt-3"
+                                        : jobVacancyListDetails.expired === true
+                                          ? "badge bg-darkcyan text-light fs-12 mt-3"
+                                          : jobVacancyListDetails.cancelled === true
+                                            ? "badge bg-secondary text-light fs-12 mt-3"
+                                            : jobVacancyListDetails.finished === true
+                                              ? "badge bg-primary text-light fs-12 mt-3"
+                                              : jobVacancyListDetails.completed === true
+                                                ? "badge bg-success text-light fs-12 mt-3"
+                                                : jobVacancyListDetails.save === true
+                                                  ? "badge bg-teal text-light fs-12 mt-3"
+                                                  : ""
+                                }
+                              >
+                                {jobVacancyListDetails.timing}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="p-3 bg-light">
+                            <Row className="justify-content-between">
+                              <Col md={12}>
+                                <div className="d-flex justify-content-between">
+                                  <div className="mb-0 " style={{ fontWeight: "bold" }}>
+                                    {jobVacancyListDetails.duration}
+                                  </div>
+                                  <div className="d-flex justify-content-center align-items-center">
+                                    <UserOutlined style={{ fontSize: "18px" }} />
+                                    <div style={{ marginLeft: "4px" }}>
+                                      {jobVacancyListDetails.numberOfDev}
+                                    </div>
+                                  </div>
                                 </div>
-                                <p className="text-muted mb-0">
-                                  {jobVacancyListDetails.location}
-                                </p>
-                              </div>
-                            </Col>
-
-                            <Col md={2}>
-                              <div className="d-flex mb-0">
-                                <div className="flex-shrink-0">
-                                  <i className="uil uil-clock-three text-primary me-1"></i>
-                                </div>
-                                <p className="text-muted mb-0">
-                                  {" "}
-                                  {jobVacancyListDetails.jobPostTime}
-                                </p>
-                              </div>
-                            </Col>
-
-                            <Col md={2}>
-                              <div>
-                                <span
-                                  className={
-                                    jobVacancyListDetails.fullTime === true
-                                      ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
-                                      : jobVacancyListDetails.partTime === true
-                                      ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
-                                      : jobVacancyListDetails.freeLance === true
-                                      ? "badge bg-primary-subtle text-primary fs-12 mt-1 mx-1"
-                                      : jobVacancyListDetails.internship ===
-                                        true
-                                      ? "badge bg-blue-subtle text-blue fs-12 mt-1"
-                                      : jobVacancyListDetails.lookingForDev ===
-                                        true
-                                      ? "badge bg-warning-subtle text-warning fs-12 mt-1 mx-1"
-                                      : jobVacancyListDetails.interview === true
-                                      ? "badge bg-info text-light fs-12 mt-1 mx-1"
-                                      : jobVacancyListDetails.done === true
-                                      ? "badge bg-success-subtle text-success fs-12 mt-1 mx-1"
-                                      : jobVacancyListDetails.outOfTime === true
-                                      ? "badge bg-danger-subtle text-light fs-12 mt-1 mx-1"
-                                      : jobVacancyListDetails.cancelled === true
-                                      ? "badge bg-secondary text-light fs-12 mt-1 mx-1"
-                                      : ""
-                                  }
-                                >
-                                  {jobVacancyListDetails.timing}
-                                </span>
-                                {(jobVacancyListDetails.badges || []).map(
-                                  (badgeInner, key) => (
-                                    <span
-                                      className={`badge ${badgeInner.badgeclassName} fs-13 mt-1`}
-                                      key={key}
-                                    >
-                                      {badgeInner.badgeName}
-                                    </span>
-                                  )
-                                )}
-                              </div>
-                            </Col>
-                          </Row>
+                              </Col>
+                            </Row>
+                          </div>
                         </div>
-                        <div className="p-3 bg-light">
-                          <Row className="justify-content-between">
-                            <Col md={12}>
-                              <div>
-                                <p className="text-muted mb-0 ">
-                                  {/* {jobVacancyListDetails.experience
-                                    .split(",")
-                                    .slice(
-                                      0,
-                                      showFullSkills[jobVacancyListDetails.id]
-                                        ? undefined
-                                        : 6
-                                    )
-                                    .map((skill, index) => (
-                                      <span
-                                        key={index}
-                                        className={`badge ${index === 0
-                                          ? "bg-info text-light"
-                                          : index === 1
-                                            ? "bg-danger-subtle text-danger"
-                                            : "bg-primary-subtle text-primary"
-                                          }  ms-2`}
-                                      >
-                                        {skill.trim()}
-                                      </span>
-                                    ))} */}
-
-                                  {/* {jobVacancyListDetails.experience.split(",").length >
-                                    6 && (
-                                      <Link
-                                        to="#"
-                                        onClick={() =>
-                                          toggleShowFullSkills(jobVacancyListDetails.id)
-                                        }
-                                      >
-                                        {" "}
-                                        {showFullSkills[jobVacancyListDetails.id]
-                                          ? "less"
-                                          : "...more"}
-                                      </Link>
-                                    )} */}
-                                </p>
-                              </div>
-                            </Col>
-                          </Row>
-                        </div>
-                      </div>
+                      </Col>
                     ))}
-                  </div>
+                  </Row>
                 </TabPane>
                 <TabPane tabId="3">
                   <div>3</div>

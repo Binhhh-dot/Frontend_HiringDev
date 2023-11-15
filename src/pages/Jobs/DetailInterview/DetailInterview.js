@@ -13,50 +13,12 @@ const DetailInterview = () => {
   document.title = "Job Details | Jobcy - Job Listing Template | Themesdesign";
   const [listDevId, setListDevid] = useState([]);
   const { state } = useLocation();
-  const [jobListing, setJobListing] = useState([]);
+  const [developerInfo, setDeveloperInfo] = useState([]);
   const { hidingPage, setHingdingPage } = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
   const navigate = useNavigate();
-  const fetchListDevInterview = async () => {
-    try {
-      const response = await developerServices.getListDevWaitingInterview(
-        state.jobId
-      );
-      const data = response.data;
-      const jobListing = data.data.map((dev) => {
-        return {
-          developerId: dev.developerId,
-          userId: dev.userId,
-          codeName: dev.codeName,
-          candidateStatusClassName:
-            "profile-active position-absolute badge rounded-circle bg-success",
-          yearOfExperience: dev.yearOfExperience + " Years Experience",
-          averageSalary: dev.averageSalary,
-          employmentTypeName: dev.employmentTypeName,
-          devStatusString: dev.devStatusString,
-          partTime: true,
-          timing: dev.scheduleTypeName,
-          badges: [
-            {
-              id: 1,
-              badgeclassName: "bg-primary-subtle text-primary",
-              badgeName: dev.levelRequireName,
-            },
-          ],
-        };
-      });
-      setJobListing(jobListing);
-      const developerIds = jobListing.map((job) => job.developerId);
-      setListDevid(developerIds);
-      console.log(listDevId);
-
-      console.log(developerIds);
-    } catch (error) {
-      console.error("Error fetching job vacancies:", error);
-    }
-  };
 
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -112,14 +74,12 @@ const DetailInterview = () => {
   const fetchDetailInterview = async () => {
     try {
       const response = await interviewServices.getDetailInterviewByInterviewId(
-        state.interviewId,
-        8,
-        currentPage
+        state.interviewId
       );
       const data = response.data;
 
       document.getElementById("interview-title").innerHTML = data.data.title;
-      document.getElementById("description").innerHTML = data.data.title;
+      document.getElementById("description").innerHTML = data.data.description;
       document.getElementById("date-of-interview").innerHTML =
         data.data.dateOfInterview.split("T")[0];
       document.getElementById("startTime").innerHTML = data.data.startTime;
@@ -132,36 +92,8 @@ const DetailInterview = () => {
       // }
       document.getElementById("status-interview").innerHTML =
         data.data.statusString;
-      const jobListing = data.data.developers.map((dev) => {
-        return {
-          developerId: dev.developerId,
-          userId: dev.userId,
-          codeName: dev.codeName,
-          candidateStatusClassName:
-            "profile-active position-absolute badge rounded-circle bg-success",
-          yearOfExperience: dev.yearOfExperience + " Years Experience",
-          averageSalary: dev.averageSalary,
-          employmentTypeName: dev.employmentTypeName,
-          devStatusString: dev.devStatusString,
-          partTime: true,
-          timing: dev.scheduleTypeName,
-          badges: [
-            {
-              id: 1,
-              badgeclassName: "bg-primary-subtle text-primary",
-              badgeName: dev.levelRequireName,
-            },
-          ],
-        };
-      });
-      console.log(jobListing.length);
-      setJobListing(jobListing);
-      const developerIds = jobListing.map((job) => job.developerId);
-      setTotalPages(Math.ceil(data.paging.total / pageSize));
-      setListDevid(developerIds);
-      if (data.paging.total <= 3) {
-        setHingdingPage(true);
-      }
+      setDeveloperInfo(data.data.developer);
+
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -244,7 +176,7 @@ const DetailInterview = () => {
       <section class="section">
         <div class="">
           <div class="row  justify-content-center w-100">
-            <div class="col-lg-4 ps-5" id="col-1">
+            <div class="col-lg-6 ps-5" id="col-1">
               <div class="rounded shadow bg-white p-4">
                 <div class="custom-form">
                   <div id="message3"></div>
@@ -348,173 +280,108 @@ const DetailInterview = () => {
                         </div>
                       </div>
                     </div>
-
-                    {/* <div class="row">
-                                            <div class="col-lg-12 mt-3 d-flex justify-content-end ">
-                                                <button type="button" className="btn btn-primary btn-hover"
-                                                // onClick={handleCreateInterview}
-                                                >
-                                                    Create an interview
-                                                </button>
-                                            </div>
-                                        </div> */}
                   </form>
                 </div>
               </div>
             </div>
-            <div class="col-lg-8 mb-4" id="col-2">
+            <div class="col-lg-6 mb-4" id="col-2">
               <Row>
-                {jobListing.map((jobListingDetails, key) => (
-                  <Col md={6} className="mb-2 col-lg-6" id="col-3" key={key}>
-                    <CardBody className="p-3 rounded shadow bg-white">
-                      <Row className="d-flex align-items-center">
-                        <Col lg={2}>
-                          <Link onClick={() => openModal(jobListingDetails)}>
-                            <img
-                              src={userImage0}
-                              alt=""
-                              className="img-fluid rounded-3"
-                            />
-                          </Link>
-                        </Col>
+                <Col md={12} className="mb-2 col-lg-12" id="col-3" >
+                  <CardBody className="p-3 rounded shadow bg-white">
+                    <Row className="d-flex align-items-center">
+                      <Col lg={2}>
+                        <Link onClick={() => openModal(developerInfo)}>
+                          <img
+                            src={userImage0}
+                            alt=""
+                            className="img-fluid rounded-3"
+                          />
+                        </Link>
+                      </Col>
 
-                        <Col lg={8}>
-                          <div className="mt-3 mt-lg-0">
-                            <h5 className="fs-17 mb-1">
-                              <Link
-                                className="text-dark"
-                                onClick={() => openModal(jobListingDetails)}
-                              >
-                                {jobListingDetails.codeName}
-                              </Link>
-                            </h5>
-                            <ul className="list-inline mb-0">
-                              <li className="list-inline-item">
-                                <p className="text-muted fs-14 mb-0">
-                                  {jobListingDetails.yearOfExperience}
-                                </p>
-                              </li>
-                              <li className="list-inline-item">
-                                <p className="text-muted fs-14 mb-0">
-                                  <i className="mdi mdi-map-marker"></i>{" "}
-                                  {jobListingDetails.employmentTypeName}
-                                </p>
-                              </li>
-                              <li className="list-inline-item">
-                                <p className="text-muted fs-14 mb-0">
-                                  <i className="uil uil-wallet"></i>{" "}
-                                  {jobListingDetails.averageSalary}$
-                                </p>
-                              </li>
-                            </ul>
-                            <div className="mt-2">
-                              <span
-                                className={
-                                  jobListingDetails.fullTime === true
-                                    ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
-                                    : jobListingDetails.partTime === true
-                                    ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                                    : jobListingDetails.freeLance === true
-                                    ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                                    : jobListingDetails.internship === true
-                                    ? "badge bg-blue-subtle text-blue fs-13 mt-1"
-                                    : ""
-                                }
-                              >
-                                {jobListingDetails.timing}
-                              </span>
-                              {(jobListingDetails.badges || []).map(
-                                (badgeInner, key) => (
-                                  <span
-                                    className={`badge ${badgeInner.badgeclassName} fs-13 mt-1`}
-                                    key={key}
-                                  >
-                                    {badgeInner.badgeName}
-                                  </span>
-                                )
-                              )}
-                            </div>
-                          </div>
-                        </Col>
-
-                        <Col
-                          lg={2}
-                          className="d-flex justify-content-center align-self-center"
-                        >
-                          <ul className="list-inline mt-3 mb-0">
-                            <li
-                              className="list-inline-item"
-                              data-bs-toggle="tooltip"
-                              data-bs-placement="top"
-                              title="View More"
+                      <Col lg={8}>
+                        <div className="mt-3 mt-lg-0">
+                          <h5 className="fs-17 mb-1">
+                            <Link
+                              className="text-dark"
+                              onClick={() => openModal(developerInfo)}
                             >
-                              <Link
-                                onClick={() => openModal(jobListingDetails)}
-                                className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18"
-                              >
-                                <i className="mdi mdi-eye"></i>
-                              </Link>
+                              {developerInfo.codeName}
+                            </Link>
+                          </h5>
+                          <ul className="list-inline mb-0">
+                            <li className="list-inline-item">
+                              <p className="text-muted fs-14 mb-0">
+                                {developerInfo.yearOfExperience}
+                              </p>
                             </li>
-                            {/* <li
-                                                                className="list-inline-item"
-                                                                data-bs-toggle="tooltip"
-                                                                data-bs-placement="top"
-                                                                title="Delete"
-                                                            >
-                                                                <Link
-                                                                    onClick={() => openModal(jobListingDetails)}
-
-                                                                    to="#"
-                                                                    className="avatar-sm bg-danger-subtle text-danger d-inline-block text-center rounded-circle fs-18"
-                                                                >
-                                                                    <i className="uil uil-trash-alt"></i>
-                                                                </Link>
-                                                            </li> */}
+                            <li className="list-inline-item">
+                              <p className="text-muted fs-14 mb-0">
+                                <i className="mdi mdi-map-marker"></i>{" "}
+                                {developerInfo.employmentTypeName}
+                              </p>
+                            </li>
+                            <li className="list-inline-item">
+                              <p className="text-muted fs-14 mb-0">
+                                <i className="uil uil-wallet"></i>{" "}
+                                {developerInfo.averageSalary}$
+                              </p>
+                            </li>
                           </ul>
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </Col>
-                ))}
+                          <div className="mt-2">
+                            <span
+                              className={
+                                developerInfo.fullTime === true
+                                  ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                                  : developerInfo.partTime === true
+                                    ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                                    : developerInfo.freeLance === true
+                                      ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                                      : developerInfo.internship === true
+                                        ? "badge bg-blue-subtle text-blue fs-13 mt-1"
+                                        : ""
+                              }
+                            >
+                              {developerInfo.timing}
+                            </span>
+                            {(developerInfo.badges || []).map(
+                              (badgeInner, key) => (
+                                <span
+                                  className={`badge ${badgeInner.badgeclassName} fs-13 mt-1`}
+                                  key={key}
+                                >
+                                  {badgeInner.badgeName}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </Col>
+
+                      <Col
+                        lg={2}
+                        className="d-flex justify-content-center align-self-center"
+                      >
+                        <ul className="list-inline mt-3 mb-0">
+                          <li
+                            className="list-inline-item"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="View More"
+                          >
+                            <Link
+                              onClick={() => openModal(developerInfo)}
+                              className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18"
+                            >
+                              <i className="mdi mdi-eye"></i>
+                            </Link>
+                          </li>
+                        </ul>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                </Col>
               </Row>
-              {hidingPage && (
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPage === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPage}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbers()}
-                        <li
-                          className={`page-item ${
-                            currentPage === totalPages ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPage}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
-                      </div>
-                    </nav>
-                  </Col>
-                </Row>
-              )}
             </div>
 
             <div>

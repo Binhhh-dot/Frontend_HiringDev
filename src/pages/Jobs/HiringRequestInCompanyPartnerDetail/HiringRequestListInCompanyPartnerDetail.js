@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Container } from "reactstrap";
 //import JobFilters from "../CandidateList/JobFilters";
-import CandidateGridDetails from "./CandidateGridDetails";
+import HiringRequestDetails from "./HiringRequestDetails";
 import Section from "./Section";
 import { useNavigate } from "react-router-dom";
 
@@ -21,10 +21,8 @@ const HiringRequestListInCompanyPartnerDetail = () => {
   return (
     <React.Fragment>
       <Section />
-
-
       {/* <JobFilters /> */}
-      <CandidateGridDetails />
+      <HiringRequestDetails />
       {/* <Pagination /> */}
 
     </React.Fragment>

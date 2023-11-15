@@ -96,9 +96,7 @@ const NewListInterviewInfo = () => {
 
     try {
       response = await interviewServices.getDetailInterviewByInterviewId(
-        id,
-        currentPage,
-        7
+        id
       );
       console.log("----------------------------------");
       console.log(response.data.data);
@@ -509,30 +507,30 @@ const NewListInterviewInfo = () => {
                     <span
                       className={
                         newInterviewListInManagerDetail.statusString ===
-                        "Waiting Approval"
+                          "Waiting Approval"
                           ? "badge bg-warning text-light fs-12"
                           : newInterviewListInManagerDetail.statusString ===
                             "Interviewing"
-                          ? "badge bg-blue text-light fs-12"
-                          : newInterviewListInManagerDetail.statusString ===
-                            "Rejected"
-                          ? "badge bg-danger text-light fs-12"
-                          : newInterviewListInManagerDetail.statusString ===
-                            "Expired"
-                          ? "badge bg-danger text-light fs-12"
-                          : newInterviewListInManagerDetail.statusString ===
-                            "Cancelled"
-                          ? "badge bg-danger text-light fs-12"
-                          : newInterviewListInManagerDetail.statusString ===
-                            "Approved"
-                          ? "badge bg-success text-light fs-12"
-                          : newInterviewListInManagerDetail.statusString ===
-                            "Complete"
-                          ? "badge bg-primary text-light fs-12"
-                          : newInterviewListInManagerDetail.statusString ===
-                            "Saved"
-                          ? "badge bg-info text-light fs-12"
-                          : ""
+                            ? "badge bg-blue text-light fs-12"
+                            : newInterviewListInManagerDetail.statusString ===
+                              "Rejected"
+                              ? "badge bg-danger text-light fs-12"
+                              : newInterviewListInManagerDetail.statusString ===
+                                "Expired"
+                                ? "badge bg-danger text-light fs-12"
+                                : newInterviewListInManagerDetail.statusString ===
+                                  "Cancelled"
+                                  ? "badge bg-danger text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Approved"
+                                    ? "badge bg-success text-light fs-12"
+                                    : newInterviewListInManagerDetail.statusString ===
+                                      "Complete"
+                                      ? "badge bg-primary text-light fs-12"
+                                      : newInterviewListInManagerDetail.statusString ===
+                                        "Saved"
+                                        ? "badge bg-info text-light fs-12"
+                                        : ""
                       }
                     >
                       {newInterviewListInManagerDetail.statusString}
@@ -565,9 +563,8 @@ const NewListInterviewInfo = () => {
               </li>
               {renderPageNumbers()}
               <li
-                className={`page-item ${
-                  currentPage === totalPages ? "disabled" : ""
-                }`}
+                className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                  }`}
               >
                 <Link className="page-link" to="#" onClick={handleNextPage}>
                   <i className="mdi mdi-chevron-double-right fs-15"></i>
