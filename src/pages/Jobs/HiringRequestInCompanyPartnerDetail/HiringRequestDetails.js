@@ -17,6 +17,7 @@ import {
   TabPane,
   TabContent
 } from "reactstrap";
+import { Modal as AntdModal } from "antd";
 import { Container } from "reactstrap";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
@@ -36,6 +37,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import classnames from "classnames";
 import jobImage1 from "../../../assets/images/featured-job/img-01.png";
+import img0 from "../../../assets/images/user/img-00.jpg";
 
 
 const HiringRequestDetails = () => {
@@ -65,7 +67,9 @@ const HiringRequestDetails = () => {
   let [currentPageInterview, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 6;
-
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectInterviewDetail, setSelectInterviewDetail] = useState({});
+  const [devInterviewDetail, setDevInterviewDetail] = useState([]);
 
   const openModalCreateInterview = (developerId) => {
     setInterviewTitlError(null);
@@ -449,7 +453,24 @@ const HiringRequestDetails = () => {
     }
   };
 
+  const midleSelect = (id) => {
+    fetchGetDetailInterviewByInterviewId(id);
+    setShowPopup(true);
+  };
 
+  const fetchGetDetailInterviewByInterviewId = async (id) => {
+    let response;
+
+    try {
+      response = await interviewServices.getDetailInterviewByInterviewId(
+        id
+      );
+      setSelectInterviewDetail(response.data.data);
+      setDevInterviewDetail(response.data.data.developer);
+    } catch (error) {
+      console.error("Error fetching interview detail in manager list :", error);
+    }
+  };
 
 
   return (
@@ -736,6 +757,299 @@ const HiringRequestDetails = () => {
             </ModalBody>
           </Modal>
 
+          <AntdModal
+            centered
+            open={showPopup}
+            onOk={() => setShowPopup(false)}
+            onCancel={() => setShowPopup(false)}
+            width={1100}
+            footer={null}
+          >
+            <Row className="p-3">
+              <Col lg={6} className="border-end ">
+                <div
+                  className="d-flex justify-content-between"
+                  style={{ width: "98%" }}
+                >
+                  <h4 className="mb-0">Interview Detail</h4>
+                  <p className="badge bg-success text-light fs-13 ">
+                    {selectInterviewDetail.statusString}
+                  </p>
+                </div>
+                <div className="mt-3">
+                  <p className="mb-0 text-muted">Title </p>
+                  <div
+                    className="p-2 border border-2"
+                    style={{
+                      width: "98%",
+                      fontWeight: "500",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    {selectInterviewDetail.title}
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <p className="mb-0 text-muted">Description </p>
+                  <div
+                    className="p-2 border border-2 "
+                    style={{
+                      width: "98%",
+                      fontWeight: "500",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    {selectInterviewDetail.description}
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <p className="mb-0 text-muted">Date Of Interview </p>
+                  <div
+                    className="p-2 border border-2"
+                    style={{
+                      width: "98%",
+                      fontWeight: "500",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    {selectInterviewDetail.dateOfInterview}
+                  </div>
+                </div>
+                <div
+                  className="d-flex  justify-content-between"
+                  style={{ gap: "20px", width: "98%" }}
+                >
+                  <div className="mt-3" style={{ width: "50%" }}>
+                    <p className="mb-0 text-muted">Start Time </p>
+                    <div
+                      className="p-2 border border-2"
+                      style={{
+                        // width: "fit-content",
+                        fontWeight: "500",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      {selectInterviewDetail.startTime}
+                    </div>
+                  </div>
+
+                  <div className="mt-3" style={{ width: "50%" }}>
+                    <p className="mb-0 text-muted">End Time </p>
+                    <div
+                      className="p-2 border border-2"
+                      style={{
+                        // width: "fit-content",
+                        fontWeight: "500",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      {selectInterviewDetail.endTime}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <p className="mb-0 text-muted">Posted Time</p>
+                  <div
+                    className="p-2 border border-2"
+                    style={{
+                      width: "98%",
+                      fontWeight: "500",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    {selectInterviewDetail.postedTime}
+                  </div>
+                </div>
+
+                {selectInterviewDetail.meetingLink == null ? (
+                  <div></div>
+                ) : (
+                  <div className="mt-3">
+                    <p className="mb-0 text-muted">Meeting Link </p>
+                    <div
+                      className="p-2 border border-2"
+                      style={{
+                        width: "99%",
+                        fontWeight: "500",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      {selectInterviewDetail.meetingLink == null ? (
+                        <span>None</span>
+                      ) : (
+                        selectInterviewDetail.meetingLink
+                      )}
+                    </div>
+                  </div>
+                )}
+              </Col>
+              <Col lg={6} className="border-start ">
+                {/* ------------------------------------------------------ */}
+                <Row>
+                  <Col lg={6}>
+                    <div className="p-2">
+                      <div className="candidate-profile text-center">
+                        <img
+                          src={img0}
+                          alt=""
+                          className="avatar-lg rounded-circle"
+                        />
+                        <h6 className="fs-18 mb-0 mt-4">
+                          {devInterviewDetail.firstName}{" "}
+                          {devInterviewDetail.lastName}
+                        </h6>
+                        <p className="text-muted mb-4">
+                          {devInterviewDetail.codeName}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="candidate-profile-overview p-2">
+                      <h6 className="fs-17 fw-semibold mb-3">Profile Overview</h6>
+                      <ul className="list-unstyled mb-0">
+                        <li>
+                          <div className="d-flex justify-content-start">
+                            <label className="text-dark">Gender</label>
+                            <div>
+                              <p className="text-muted mb-0">
+                                {devInterviewDetail.genderString}
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+
+                        <li>
+                          <div className="d-flex justify-content-start">
+                            <label className="text-dark">Email</label>
+                            <div>
+                              <p className="text-muted mb-0 ">
+                                {devInterviewDetail.email}
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+
+                        <li>
+                          <div className="d-flex justify-content-start">
+                            <label className="text-dark">Phone</label>
+                            <div>
+                              <p className="text-muted mb-0">0123456789</p>
+                            </div>
+                          </div>
+                        </li>
+
+                        <li>
+                          <div className="d-flex justify-content-start">
+                            <label className="text-dark">Experience</label>
+                            <div>
+                              <p className="text-muted mb-0 ">
+                                {devInterviewDetail.yearOfExperience} Year
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="d-flex justify-content-start">
+                            <label className="text-dark">Salary</label>
+                            <div>
+                              <p className="text-muted mb-0">
+                                {devInterviewDetail.averageSalary}$
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </Col>
+                  <Col lg={6}>
+                    <div className="p-2 ">
+                      <h6 className="fs-17 fw-semibold mb-2">Level</h6>
+                      <div className="d-flex flex-wrap align-items-start gap-1">
+                        <span className="badge bg-warning text-light fs-12">
+                          {devInterviewDetail.levelRequireName}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-2 ">
+                      <h6 className="fs-17 fw-semibold mb-2">Type</h6>
+                      <div className="d-flex flex-wrap align-items-start gap-1">
+                        {devInterviewDetail.typeRequireStrings?.map(
+                          (skillRequire, key) => (
+                            <span
+                              key={key}
+                              className="badge bg-info-subtle text-info fs-13 mt-1"
+                            >
+                              {skillRequire}
+                            </span>
+                          )
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="p-2 ">
+                      <h6 className="fs-17 fw-semibold mb-2">
+                        Professional Skills
+                      </h6>
+                      <div className="d-flex flex-wrap align-items-start gap-1">
+                        {devInterviewDetail.skillRequireStrings?.map(
+                          (skillRequire, key) => (
+                            <span
+                              key={key}
+                              className="badge bg-success-subtle text-success fs-13"
+                            >
+                              {skillRequire}
+                            </span>
+                          )
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="candidate-contact-details p-2">
+                      <h6 className="fs-17 fw-semibold mb-3">Work Arrangement</h6>
+                      <ul className="list-unstyled mb-0">
+                        <div className="d-flex gap-1">
+                          <p className="mb-0 badge bg-purplel text-purple fs-13">
+                            {devInterviewDetail.scheduleTypeName}
+                          </p>
+                          <p className="mb-0 badge bg-orangeRed2l text-orangeRed2 fs-13">
+                            {devInterviewDetail.employmentTypeName}
+                          </p>
+                        </div>
+                      </ul>
+                    </div>
+                  </Col>
+                </Row>
+                {/* ------------------------------------------------------ */}
+              </Col>
+              <Row>
+                {selectInterviewDetail.rejectionReason == null ? (
+                  <div></div>
+                ) : (
+                  <div className="mt-3 ">
+                    <p className="mb-0 text-muted">Rejection Reason</p>
+                    <div
+                      className="p-2 border border-2"
+                      style={{
+                        width: "100%",
+                        fontWeight: "500",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      {selectInterviewDetail.rejectionReason == null ? (
+                        <span></span>
+                      ) : (
+                        selectInterviewDetail.rejectionReason
+                      )}
+                    </div>
+                  </div>
+                )}
+              </Row>
+            </Row>
+          </AntdModal>
+
           <div class="col-lg-3 d-flex flex-column gap-4">
             <Card className="job-overview ">
               <CardBody className="p-4">
@@ -895,7 +1209,7 @@ const HiringRequestDetails = () => {
             )} */}
 
           </div>
-          <div class="col-lg-11">
+          <div class="col-lg-11 p-0">
             <Card
               className="profile-content-page mt-4 mt-lg-0"
               style={{ borderTop: "none" }}
@@ -1215,6 +1529,9 @@ const HiringRequestDetails = () => {
                       {listInterview.map((jobVacancy2Details, key) => (
                         <Col lg={3} md={6} className="mt-4" key={key}>
                           <div
+                            onClick={() =>
+                              midleSelect(jobVacancy2Details.interviewId)
+                            }
                             className={
                               jobVacancy2Details.addclassNameBookmark === true
                                 ? "card job-grid-box bookmark-post"
@@ -1232,20 +1549,20 @@ const HiringRequestDetails = () => {
                                 </span>
                               </div>
                               <div>
-                                <Link to="/companydetails">
+                                <div>
                                   <img
                                     src={jobImage1}
                                     alt=""
                                     className="img-fluid rounded-3"
                                   />
-                                </Link>
+                                </div>
                               </div>
                               <div className="mt-4">
-                                <Link to="/jobdetails" className="primary-link">
+                                <div className="primary-link">
                                   <h5 className="fs-17">
                                     {jobVacancy2Details.title}
                                   </h5>
-                                </Link>
+                                </div>
                               </div>
                               <div className="d-flex flex-column gap-1 ">
                                 <div className="d-flex mb-0">
@@ -1267,13 +1584,14 @@ const HiringRequestDetails = () => {
                                   {jobVacancy2Details.postedTime}
                                 </p>
                                 <div className="text-end">
-                                  <Link
-                                    to="/detailInterview"
-                                    state={{ interviewId: jobVacancy2Details.interviewId }}
+                                  <div
+                                    onClick={() =>
+                                      midleSelect(jobVacancy2Details.interviewId)
+                                    }
                                     className="btn btn-sm btn-primary"
                                   >
                                     Read more <i className="uil uil-angle-right-b"></i>
-                                  </Link>
+                                  </div>
                                 </div>
                               </div>
 
