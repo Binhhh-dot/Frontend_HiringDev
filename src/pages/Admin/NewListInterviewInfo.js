@@ -345,6 +345,29 @@ const NewListInterviewInfo = () => {
                               <ul className="list-unstyled mb-0">
                                 <li>
                                   <div className="d-flex justify-content-start">
+                                    <label className="text-dark">Email</label>
+                                    <div>
+                                      <p className="text-muted mb-0 ">
+                                        {devInterviewDetail.email}
+                                        null
+                                      </p>
+                                    </div>
+                                  </div>
+                                </li>
+
+                                <li>
+                                  <div className="d-flex justify-content-start">
+                                    <label className="text-dark">Phone</label>
+                                    <div>
+                                      <p className="text-muted mb-0">
+                                        0123456789
+                                      </p>
+                                    </div>
+                                  </div>
+                                </li>
+
+                                <li>
+                                  <div className="d-flex justify-content-start">
                                     <label className="text-dark">
                                       Year Experience
                                     </label>
@@ -375,18 +398,6 @@ const NewListInterviewInfo = () => {
                                     <div>
                                       <p className="text-muted mb-0">
                                         {devInterviewDetail.devStatusString}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div className="d-flex justify-content-start">
-                                    <label className="text-dark">
-                                      RoleString
-                                    </label>
-                                    <div>
-                                      <p className="text-muted mb-0">
-                                        {devInterviewDetail.roleString}
                                       </p>
                                     </div>
                                   </div>
@@ -442,7 +453,7 @@ const NewListInterviewInfo = () => {
                                   (skillRequire, key) => (
                                     <span
                                       key={key}
-                                      className="badge bg-blue text-light fs-13 mt-1"
+                                      className="badge bg-info-subtle text-info fs-13 mt-1"
                                     >
                                       {skillRequire}
                                     </span>
@@ -456,7 +467,7 @@ const NewListInterviewInfo = () => {
                                 Contact Details
                               </h6>
                               <ul className="list-unstyled mb-0">
-                                <li>
+                                {/* <li>
                                   <div className="d-flex align-items-center mt-4">
                                     <div className="icon bg-primary-subtle text-primary flex-shrink-0">
                                       <i className="uil uil-envelope-alt"></i>
@@ -469,7 +480,7 @@ const NewListInterviewInfo = () => {
                                       </p>
                                     </div>
                                   </div>
-                                </li>
+                                </li> */}
                                 <li>
                                   <div className="d-flex align-items-center mt-4">
                                     <div className="icon bg-primary-subtle text-primary flex-shrink-0">
@@ -519,10 +530,18 @@ const NewListInterviewInfo = () => {
                   </Modal>
                   {/* -------------------*/}
 
-                  <Col md={3} className="d-flex  gap-2">
+                  <Col md={2} className="d-flex  gap-2">
                     <div className="d-flex flex-column gap-2">
-                      <FontAwesomeIcon icon={faCalendarDays} size="lg" />
-                      <FontAwesomeIcon icon={faClock} size="lg" />
+                      <FontAwesomeIcon
+                        icon={faCalendarDays}
+                        size="lg"
+                        className="text-primary"
+                      />
+                      <FontAwesomeIcon
+                        icon={faClock}
+                        size="lg"
+                        className="text-primary"
+                      />
                     </div>
 
                     <div>
@@ -545,7 +564,7 @@ const NewListInterviewInfo = () => {
                     </p>
                   </Col>
 
-                  <Col md={2} className="d-flex justify-content-center">
+                  <Col md={3} className="d-flex justify-content-center">
                     <span
                       className={
                         newInterviewListInManagerDetail.statusString ===

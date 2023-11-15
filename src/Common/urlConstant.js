@@ -69,6 +69,7 @@ export default {
       sendDevToHR: "/SelectingDev/SendDevToHR",
       removeOutOfWaitingInterview:
         "/SelectingDev/RemoveOutOfWaitingInterview?requestId=${requestId}&developerId=${developerId}",
+      sendDevToHRNew: "/SelectingDev/SendDevToHR",
     },
     company: {
       createCompany: "/CompanyPartner",
