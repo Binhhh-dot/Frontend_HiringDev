@@ -67,7 +67,7 @@ import DeveloperInfo from "../pages/CandidateAndCompany/DeveloperInfo/DeveloperI
 // import DeveloperListInCompanyPartnerDetail from "../pages/CandidateAndCompany/DeveloperListInCompanyPartner/DeveloperListInCompanyPartnerDetail";
 import CreateCompanyAccount from "../pages/CandidateAndCompany/CreateCompanyAccount/CreateCompanyAcount";
 import HiringRequestListInCompanyPartner from "../pages/Jobs/HiringRequestListInCompanyPartner/HiringRequestListInCompanyPartner";
-import HiringRequestListInCompanyPartnerDetail from "../pages/Jobs/HiringRequestListInCompanyPartnerDetail/HiringRequestListInCompanyPartnerDetail";
+import HiringRequestListInCompanyPartnerDetail from "../pages/Jobs/HiringRequestInCompanyPartnerDetail/HiringRequestListInCompanyPartnerDetail";
 import HiringRequestInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestInHR";
 import HiringRequestDetailInHR from "../pages/CandidateAndCompany/HiringRequestDetailInHR/HiringRequestDetailInHR";
 import CreateInterview from "../pages/Jobs/CreateInterview/CreateInterview";

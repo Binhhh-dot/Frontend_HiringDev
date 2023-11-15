@@ -8,8 +8,6 @@ const DeveloperDetailInCompanyPopup = (
   ...props
 ) => {
   const [developerInfo, setDeveloperInfo] = useState(null);
-  console.log(devId);
-
   const fetchGetDeveloperDetailInManager = async () => {
     let response;
     try {

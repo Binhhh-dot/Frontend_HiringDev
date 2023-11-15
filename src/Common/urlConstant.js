@@ -96,9 +96,9 @@ export default {
       createAnInterview: "/Interview",
       getListInterviewByRequestId: "/Interview/Request/${requestId}",
       getAllInterviewByHRAndPaging:
-        "/Interview/ByHR?companyId=${companyId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
+        "/Interview/ByHR?companyId=${companyId}&requestId=${requestId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
       getDetailInterviewByInterviewId:
-        "/Interview/${InterviewId}?PageIndex=${PageIndex}&PageSize=${PageSize}",
+        "/Interview/${InterviewId}",
       getAllInterviewByHRAndRequestIdAndPaging:
         "/Interview/ByHR?companyId=${companyId}&requestId=${requestId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
       getAllInterviewByManagerAndPaging:
