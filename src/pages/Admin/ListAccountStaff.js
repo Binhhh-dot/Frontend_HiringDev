@@ -56,14 +56,14 @@ const items = [
         icon: <DesktopOutlined />,
         className: "option-2",
     },
-    {
+    {   
         label: "User",
         key: "menu-key/sub-menu-key",
         icon: <UserOutlined />,
         children: [
-            { label: "Tom", key: "menu-key/sub-menu-key/3" },
-            { label: "Bill", key: "menu-key/sub-menu-key/4" },
-            { label: "Alex", key: "menu-key/sub-menu-key/5" },
+            { label: "Manager", key: "/listAccountManager" },
+            { label: "Staff", key: "menu-key/sub-menu-key/4" },
+            { label: "Hr", key: "menu-key/sub-menu-key/5" },
         ],
         className: "option-2",
     },
@@ -103,7 +103,7 @@ const items = [
     },
 ];
 
-const ListAccountManager = () => {
+const ListAccountStaff = () => {
     const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]); // Định nghĩa selectedKeys
     const [isLeftIcon, setIsLeftIcon] = useState(true);
     const [showWeHire, setShowWeHire] = useState(true);
@@ -193,12 +193,12 @@ const ListAccountManager = () => {
 
     //API
 
-    const [ManagerPaging, setManagerPaging] = useState([]);
+    const [StaffPaging, setStaffPaging] = useState([]);
 
-    const fetchManagerPaging = async () => {
+    const fetchStaffPaging = async () => {
         try {
-            const response = await userSerrvices.getListManager();
-            setManagerPaging(response.data.data);
+            const response = await userSerrvices.getListStaff();
+            setStaffPaging(response.data.data);
             return response;
         } catch (error) {
             console.error("Error fetching user paging:", error);
@@ -207,7 +207,7 @@ const ListAccountManager = () => {
     };
 
     useEffect(() => {
-        fetchManagerPaging().then((data) => {
+        fetchStaffPaging().then((data) => {
             // setUserPaging(data); // This line is not necessary, as it's already set in fetchUserPaging
             console.log("User paging data:", data);
         });
@@ -218,7 +218,7 @@ const ListAccountManager = () => {
     const [hRInfo, setHrInfo] =
         useState(null);
     const handleRowClick = (userId) => {
-        fetchManagerById(userId);
+        fetchStaffById(userId);
         showModal3();
     };
 
@@ -235,10 +235,10 @@ const ListAccountManager = () => {
     };
 
 
-    const fetchManagerById = async (userId) => {
+    const fetchStaffById = async (userId) => {
         let response;
         try {
-            response = await userSerrvices.getManagerById(
+            response = await userSerrvices.getStaffById(
                 userId
             );
             setHrInfo(response.data.data);
@@ -249,7 +249,7 @@ const ListAccountManager = () => {
         }
     };
     useEffect(() => {
-        fetchManagerById();
+        fetchStaffById();
     }, [hRInfo]);
 
 
@@ -266,7 +266,7 @@ const ListAccountManager = () => {
         form
             .validateFields()
             .then(async (values) => {
-                await createManager(values);
+                await createStaff(values);
                 form.resetFields();
                 setVisibleModal1(false);
             })
@@ -282,9 +282,9 @@ const ListAccountManager = () => {
 
 
 
-    const createManager = async (values) => {
+    const createStaff = async (values) => {
         try {
-            const response = await userSerrvices.createManager(values.firstName, values.lastName, values.email, values.password, values.phoneNumber, values.dateOfBirth, 3);
+            const response = await userSerrvices.createStaff(values.firstName, values.lastName, values.email, values.password, values.phoneNumber, values.dateOfBirth, 4);
             let data = response.data;
 
             console.log('Save posted successfully:', data);
@@ -328,7 +328,7 @@ const ListAccountManager = () => {
     const fetchUserDetail = async (userId) => {
         if (userId) {
             try {
-                const response = await userSerrvices.getManagerById(userId);
+                const response = await userSerrvices.getHRById(userId);
                 const {
                     lastName,
                     firstName,
@@ -361,7 +361,7 @@ const ListAccountManager = () => {
     //Delete 
     const handleDeleteConfirm = async (userId) => {
         try {
-            await userSerrvices.deleteManager(userId);
+            await userSerrvices.deleteHR(userId);
             message.success({
                 content: 'Account deleted successfully',
                 duration: 2,
@@ -428,7 +428,7 @@ const ListAccountManager = () => {
             formData.append('DateOfBirth', values.dateOfBirth);
 
             // Call your update function here
-            const response = await userSerrvices.updateManager(userId, formData);
+            const response = await userSerrvices.updateStaff(userId, formData);
 
             // Handle the response as needed
             console.log('Update response:', response);
@@ -638,13 +638,13 @@ const ListAccountManager = () => {
                             </a>
                             <div
                                 style={{
-                                    padding: 20,
+                                    padding: 10,
                                     minHeight: 360,
                                 }}
                             >
                                 <div style={{ height: '600px', overflow: 'auto' }}>
 
-                                    <Table className='custom-table' dataSource={ManagerPaging} pagination={page} size='middle' components={{
+                                    <Table className='custom-table' dataSource={StaffPaging} pagination={page} size='middle' components={{
                                         header: {
                                             cell: (props) => <th {...props} style={{ background: 'hsl(253deg 61% 85%)', border: 'none' }} />,
                                         },
@@ -1017,4 +1017,4 @@ const ListAccountManager = () => {
     );
 };
 
-export default ListAccountManager;
+export default ListAccountStaff;
