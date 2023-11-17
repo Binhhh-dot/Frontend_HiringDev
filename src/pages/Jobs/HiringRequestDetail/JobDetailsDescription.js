@@ -519,20 +519,20 @@ const JobDetailsDescription = () => {
                     hiringRequestDetail.statusString === "Waiting Approval"
                       ? "badge bg-warning text-light fs-12"
                       : hiringRequestDetail.statusString === "In Progress"
-                      ? "badge bg-blue text-light fs-12"
-                      : hiringRequestDetail.statusString === "Rejected"
-                      ? "badge bg-danger text-light fs-12"
-                      : hiringRequestDetail.statusString === "Expired"
-                      ? "badge bg-danger text-light fs-12"
-                      : hiringRequestDetail.statusString === "Cancelled"
-                      ? "badge bg-danger text-light fs-12"
-                      : hiringRequestDetail.statusString === "Finished"
-                      ? "badge bg-primary text-light fs-12"
-                      : hiringRequestDetail.statusString === "Complete"
-                      ? "badge bg-primary text-light fs-12"
-                      : hiringRequestDetail.statusString === "Saved"
-                      ? "badge bg-info text-light fs-12"
-                      : ""
+                        ? "badge bg-blue text-light fs-12"
+                        : hiringRequestDetail.statusString === "Rejected"
+                          ? "badge bg-danger text-light fs-12"
+                          : hiringRequestDetail.statusString === "Expired"
+                            ? "badge bg-danger text-light fs-12"
+                            : hiringRequestDetail.statusString === "Cancelled"
+                              ? "badge bg-danger text-light fs-12"
+                              : hiringRequestDetail.statusString === "Finished"
+                                ? "badge bg-primary text-light fs-12"
+                                : hiringRequestDetail.statusString === "Complete"
+                                  ? "badge bg-primary text-light fs-12"
+                                  : hiringRequestDetail.statusString === "Saved"
+                                    ? "badge bg-info text-light fs-12"
+                                    : ""
                   }
                   company={{ companyMana: hiringRequestDetail.companyId }}
                 >
@@ -540,7 +540,7 @@ const JobDetailsDescription = () => {
                 </span>
 
                 {hiringRequestDetail.statusString === "Waiting Approval" ||
-                hiringRequestDetail.statusString === "Rejected" ? (
+                  hiringRequestDetail.statusString === "Rejected" ? (
                   <FontAwesomeIcon
                     icon={faEllipsisVertical}
                     size="xl"
@@ -564,7 +564,7 @@ const JobDetailsDescription = () => {
                         icon={faEllipsisVertical}
                         size="xl"
                         color="#909191"
-                        // onClick={handleDropdownClick}
+                      // onClick={handleDropdownClick}
                       />
                     </DropdownToggle>
                     <DropdownMenu>
@@ -593,49 +593,6 @@ const JobDetailsDescription = () => {
                     </DropdownMenu>
                   </Dropdown>
                 )}
-                {/* <Dropdown
-                  isOpen={showDropdown}
-                  toggle={toggleDropdown}
-                  disabled={disableIconCancel}
-                >
-                  <DropdownToggle
-                    caret
-                    style={{
-                      padding: "0px",
-                      backgroundColor: "white",
-                      border: "0px",
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      icon={faEllipsisVertical}
-                      size="xl"
-                      color="#909191"
-                      // onClick={handleDropdownClick}
-                    />
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem header style={{ textAlign: "center" }}>
-                      Are you sure?
-                    </DropdownItem>
-                    <DropdownItem divider />
-                    <DropdownItem>
-                      <button
-                        className="d-flex justify-content-center"
-                        style={{
-                          width: "100%",
-                          padding: "7px",
-                          fontWeight: "500",
-                        }}
-                        class="btn btn-danger"
-                        role="button"
-                        onClick={openCancelAfterModal}
-                      >
-                        <span style={{ fontSize: "15px" }}>Cancel Request</span>
-                      </button>
-                    </DropdownItem>
-                    <DropdownItem divider />
-                  </DropdownMenu>
-                </Dropdown> */}
               </div>
             </div>
           </div>
@@ -1032,454 +989,454 @@ const JobDetailsDescription = () => {
 
           {currentListDev === "matching"
             ? candidateDetails.map((candidateDetailsNew, key) => (
-                <div
-                  key={key}
-                  className={
-                    candidateDetailsNew.addclassNameBookmark === true
-                      ? "candidate-list-box bookmark-post card mt-4"
-                      : "candidate-list-box card mt-4"
-                  }
-                >
-                  <CardBody className="p-4">
-                    <Row className="align-items-center">
-                      <Col lg={1}>
+              <div
+                key={key}
+                className={
+                  candidateDetailsNew.addclassNameBookmark === true
+                    ? "candidate-list-box bookmark-post card mt-4"
+                    : "candidate-list-box card mt-4"
+                }
+              >
+                <CardBody className="p-4">
+                  <Row className="align-items-center">
+                    <Col lg={1}>
+                      <div className="checkbox-wrapper-hiring-detail-manager d-flex justify-content-center">
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={selectedDev.includes(
+                              candidateDetailsNew.developerId
+                            )}
+                            onChange={() =>
+                              toggleDevMatchingSelection(
+                                candidateDetailsNew.developerId
+                              )
+                            }
+                          />
+                          <span className="checkbox"></span>
+                        </label>
+                      </div>
+                    </Col>
+
+                    <Col lg={5}>
+                      <div className="candidate-list-content mt-3 mt-lg-0">
+                        <h5
+                          className="fs-19 mb-0 d-flex"
+                          onClick={() => openModal(candidateDetailsNew)}
+                        >
+                          {candidateDetailsNew.firstName}{" "}
+                          {candidateDetailsNew.lastName}
+                        </h5>
+                        <ul className="list-inline mb-0 text-muted">
+                          <li className="list-inline-item">
+                            <i className="uil-keyboard"></i>{" "}
+                            {candidateDetailsNew.levelRequireName}
+                          </li>
+                          <br />
+                          <li className="list-inline-item">
+                            <i className="uil uil-wallet"></i>{" "}
+                            {candidateDetailsNew.averageSalary}$
+                          </li>
+                        </ul>
+                        <p className="text-muted mb-0">
+                          {candidateDetailsNew.typeRequireStrings
+
+                            .slice(0, 2)
+                            .map((typeDev, key) => (
+                              <span key={key}>{typeDev + ", "} </span>
+                            ))}
+
+                          {candidateDetailsNew.typeRequireStrings.length >
+                            2 && <span>...</span>}
+                        </p>
+
+                        <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                          {(candidateDetailsNew.skillRequireStrings || [])
+                            .slice(0, 4)
+                            .map((skillDevRequire, key) => (
+                              <span
+                                className={`badge bg-success-subtle text-success fs-14 mt-1`}
+                                key={key}
+                              >
+                                {skillDevRequire}
+                              </span>
+                            ))}
+                          {candidateDetailsNew.skillRequireStrings.length >
+                            4 && (
+                              <span className="badge bg-success-subtle text-success fs-14 mt-1">
+                                ...
+                              </span>
+                            )}
+                        </div>
+                      </div>
+                    </Col>
+
+                    <Col lg={3}>
+                      <div className="d-flex flex-column gap-1">
+                        <div className=" d-flex ">
+                          <span className=" fs-14" style={{ width: "38px" }}>
+                            Type{" "}
+                          </span>
+                          <div class="checkbox-wrapper-type ms-2">
+                            <div class="round ms-2">
+                              <input
+                                type="checkbox"
+                                id="checkbox-type"
+                                checked={candidateDetailsNew.typeMatching}
+                              />
+                              <label htmlFor="checkbox-type"></label>
+                            </div>
+                          </div>
+                        </div>
+                        <div className=" d-flex">
+                          <span className=" fs-14" style={{ width: "38px" }}>
+                            Level
+                          </span>
+                          <div class="checkbox-wrapper-level ms-2">
+                            <div class="round ms-2">
+                              <input
+                                type="checkbox"
+                                id="checkbox-level"
+                                checked={candidateDetailsNew.levelMatching}
+                              />
+                              <label htmlFor="checkbox-level"></label>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="d-flex  align-items-center">
+                          <span className=" fs-14">Salary</span>
+                          <div className="devmatching-bar-salary border border-1 ms-3">
+                            <div
+                              className="devmatch-level-salary"
+                              style={{
+                                width: `${candidateDetailsNew.salaryPerDevPercentage}%`,
+                                backgroundColor: getBarColor(
+                                  candidateDetailsNew.salaryPerDevPercentage
+                                ),
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div className="d-flex  align-items-center">
+                          <span className=" fs-14" style={{ width: "41px" }}>
+                            Skill
+                          </span>
+                          <div className="devmatching-bar-skill border border-1 ms-3">
+                            <div
+                              className="devmatch-level-skill"
+                              style={{
+                                width: `${candidateDetailsNew.skillPercentage}%`,
+                                backgroundColor: getBarColor(
+                                  candidateDetailsNew.skillPercentage
+                                ),
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div>
+                          <span>
+                            {/* <i className="mdi mdi-star align-middle"></i> */}
+                            Experience: {candidateDetailsNew.yearOfExperience}{" "}
+                            years
+                          </span>
+                        </div>
+                      </div>
+                    </Col>
+
+                    <Col lg={3} className="border-start border-3">
+                      <div style={{ height: "100px" }}>
+                        <div className="left-side-matching ">
+                          <div className="d-flex w-100 justify-content-between">
+                            <div className="d-flex align-items-center">
+                              <p
+                                style={{
+                                  display: "contents",
+                                  fontFamily: "Tahoma",
+                                  fontSize: "15px",
+                                }}
+                              >
+                                Matching request total
+                              </p>
+                            </div>
+                            <div className="matching-rate-dev">
+                              <span
+                                className="percent-matching-dev"
+                                style={{
+                                  color: getBarColor(
+                                    candidateDetailsNew.averagedPercentage
+                                  ),
+                                }}
+                              >
+                                {/* {candidateDetailsNew.averagedPercentage.toFixed(
+                                    2
+                                  )}
+                                  % */}
+                                {candidateDetailsNew.averagedPercentage.toFixed(
+                                  2
+                                ) == 100.0
+                                  ? 100
+                                  : candidateDetailsNew.averagedPercentage.toFixed(
+                                    2
+                                  )}
+                                %
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="devmatching-bar border border-1">
+                            <div
+                              className="devmatch-level"
+                              style={{
+                                width: `${candidateDetailsNew.averagedPercentage}%`,
+                                backgroundColor: getBarColor(
+                                  candidateDetailsNew.averagedPercentage
+                                ),
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </div>
+            ))
+            : devHasBeenSent.map((devHasBeenSentNew, key) => (
+              <div
+                key={key}
+                className={
+                  devHasBeenSentNew.addclassNameBookmark === true
+                    ? "candidate-list-box bookmark-post card mt-4"
+                    : "candidate-list-box card mt-4"
+                }
+              >
+                <CardBody className="p-4">
+                  <Row className="align-items-center">
+                    <Col lg={1}>
+                      {devHasBeenSentNew.selectedDevStatus ===
+                        "Dev Accepted" ? (
                         <div className="checkbox-wrapper-hiring-detail-manager d-flex justify-content-center">
                           <label>
                             <input
                               type="checkbox"
-                              checked={selectedDev.includes(
-                                candidateDetailsNew.developerId
+                              checked={selectedDevAccept.includes(
+                                devHasBeenSentNew.developerId
                               )}
                               onChange={() =>
-                                toggleDevMatchingSelection(
-                                  candidateDetailsNew.developerId
+                                toggleDevAcceptSelection(
+                                  devHasBeenSentNew.developerId
                                 )
                               }
                             />
                             <span className="checkbox"></span>
                           </label>
                         </div>
-                      </Col>
+                      ) : (
+                        <div></div>
+                      )}
+                    </Col>
 
-                      <Col lg={5}>
-                        <div className="candidate-list-content mt-3 mt-lg-0">
-                          <h5
-                            className="fs-19 mb-0 d-flex"
-                            onClick={() => openModal(candidateDetailsNew)}
+                    <Col lg={5}>
+                      <div className="candidate-list-content mt-3 mt-lg-0">
+                        <h5 className="fs-19 mb-0 d-flex">
+                          <Link
+                            to="/developerinfo"
+                            className="primary-link d-flex align-items-end"
                           >
-                            {candidateDetailsNew.firstName}{" "}
-                            {candidateDetailsNew.lastName}
-                          </h5>
-                          <ul className="list-inline mb-0 text-muted">
-                            <li className="list-inline-item">
-                              <i className="uil-keyboard"></i>{" "}
-                              {candidateDetailsNew.levelRequireName}
-                            </li>
-                            <br />
-                            <li className="list-inline-item">
-                              <i className="uil uil-wallet"></i>{" "}
-                              {candidateDetailsNew.averageSalary}$
-                            </li>
-                          </ul>
-                          <p className="text-muted mb-0">
-                            {candidateDetailsNew.typeRequireStrings
+                            {devHasBeenSentNew.firstName}{" "}
+                            {devHasBeenSentNew.lastName}
+                          </Link>
+                        </h5>
 
-                              .slice(0, 2)
-                              .map((typeDev, key) => (
-                                <span key={key}>{typeDev + ", "} </span>
-                              ))}
+                        <ul className="list-inline mb-0 text-muted">
+                          <li className="list-inline-item">
+                            <i className="uil-keyboard"></i>{" "}
+                            {devHasBeenSentNew.levelRequireName}
+                          </li>
+                          <br />
+                          <li className="list-inline-item">
+                            <i className="uil uil-wallet"></i>{" "}
+                            {devHasBeenSentNew.averageSalary}$
+                          </li>
+                        </ul>
 
-                            {candidateDetailsNew.typeRequireStrings.length >
-                              2 && <span>...</span>}
-                          </p>
+                        <p className="text-muted mb-0">
+                          {devHasBeenSentNew.typeRequireStrings
+                            .slice(0, 2)
+                            .map((typeDev, key) => (
+                              <span key={key}>{typeDev + ","}</span>
+                            ))}
+                          {devHasBeenSentNew.typeRequireStrings.length >
+                            2 && <span>...</span>}
+                        </p>
 
-                          <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                            {(candidateDetailsNew.skillRequireStrings || [])
-                              .slice(0, 4)
-                              .map((skillDevRequire, key) => (
-                                <span
-                                  className={`badge bg-success-subtle text-success fs-14 mt-1`}
-                                  key={key}
-                                >
-                                  {skillDevRequire}
-                                </span>
-                              ))}
-                            {candidateDetailsNew.skillRequireStrings.length >
-                              4 && (
-                              <span className="badge bg-success-subtle text-success fs-14 mt-1">
-                                ...
+                        <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                          {(devHasBeenSentNew.skillRequireStrings || [])
+                            .slice(0, 4)
+                            .map((skillDevRequire, key) => (
+                              <span
+                                className={`badge bg-success-subtle text-success fs-14 mt-1`}
+                                key={key}
+                              >
+                                {skillDevRequire}
                               </span>
-                            )}
-                          </div>
+                            ))}
                         </div>
-                      </Col>
+                      </div>
+                    </Col>
 
-                      <Col lg={3}>
-                        <div className="d-flex flex-column gap-1">
-                          <div className=" d-flex ">
-                            <span className=" fs-14" style={{ width: "38px" }}>
-                              Type{" "}
-                            </span>
-                            <div class="checkbox-wrapper-type ms-2">
-                              <div class="round ms-2">
-                                <input
-                                  type="checkbox"
-                                  id="checkbox-type"
-                                  checked={candidateDetailsNew.typeMatching}
-                                />
-                                <label htmlFor="checkbox-type"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <div className=" d-flex">
-                            <span className=" fs-14" style={{ width: "38px" }}>
-                              Level
-                            </span>
-                            <div class="checkbox-wrapper-level ms-2">
-                              <div class="round ms-2">
-                                <input
-                                  type="checkbox"
-                                  id="checkbox-level"
-                                  checked={candidateDetailsNew.levelMatching}
-                                />
-                                <label htmlFor="checkbox-level"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex  align-items-center">
-                            <span className=" fs-14">Salary</span>
-                            <div className="devmatching-bar-salary border border-1 ms-3">
-                              <div
-                                className="devmatch-level-salary"
-                                style={{
-                                  width: `${candidateDetailsNew.salaryPerDevPercentage}%`,
-                                  backgroundColor: getBarColor(
-                                    candidateDetailsNew.salaryPerDevPercentage
-                                  ),
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                          <div className="d-flex  align-items-center">
-                            <span className=" fs-14" style={{ width: "41px" }}>
-                              Skill
-                            </span>
-                            <div className="devmatching-bar-skill border border-1 ms-3">
-                              <div
-                                className="devmatch-level-skill"
-                                style={{
-                                  width: `${candidateDetailsNew.skillPercentage}%`,
-                                  backgroundColor: getBarColor(
-                                    candidateDetailsNew.skillPercentage
-                                  ),
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                          <div>
-                            <span>
-                              {/* <i className="mdi mdi-star align-middle"></i> */}
-                              Experience: {candidateDetailsNew.yearOfExperience}{" "}
-                              years
-                            </span>
-                          </div>
-                        </div>
-                      </Col>
-
-                      <Col lg={3} className="border-start border-3">
-                        <div style={{ height: "100px" }}>
-                          <div className="left-side-matching ">
-                            <div className="d-flex w-100 justify-content-between">
-                              <div className="d-flex align-items-center">
-                                <p
-                                  style={{
-                                    display: "contents",
-                                    fontFamily: "Tahoma",
-                                    fontSize: "15px",
-                                  }}
-                                >
-                                  Matching request total
-                                </p>
-                              </div>
-                              <div className="matching-rate-dev">
-                                <span
-                                  className="percent-matching-dev"
-                                  style={{
-                                    color: getBarColor(
-                                      candidateDetailsNew.averagedPercentage
-                                    ),
-                                  }}
-                                >
-                                  {/* {candidateDetailsNew.averagedPercentage.toFixed(
-                                    2
-                                  )}
-                                  % */}
-                                  {candidateDetailsNew.averagedPercentage.toFixed(
-                                    2
-                                  ) == 100.0
-                                    ? 100
-                                    : candidateDetailsNew.averagedPercentage.toFixed(
-                                        2
-                                      )}
-                                  %
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="devmatching-bar border border-1">
-                              <div
-                                className="devmatch-level"
-                                style={{
-                                  width: `${candidateDetailsNew.averagedPercentage}%`,
-                                  backgroundColor: getBarColor(
-                                    candidateDetailsNew.averagedPercentage
-                                  ),
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </div>
-              ))
-            : devHasBeenSent.map((devHasBeenSentNew, key) => (
-                <div
-                  key={key}
-                  className={
-                    devHasBeenSentNew.addclassNameBookmark === true
-                      ? "candidate-list-box bookmark-post card mt-4"
-                      : "candidate-list-box card mt-4"
-                  }
-                >
-                  <CardBody className="p-4">
-                    <Row className="align-items-center">
-                      <Col lg={1}>
-                        {devHasBeenSentNew.selectedDevStatus ===
-                        "Dev Accepted" ? (
-                          <div className="checkbox-wrapper-hiring-detail-manager d-flex justify-content-center">
-                            <label>
+                    <Col lg={3}>
+                      <div className="d-flex flex-column">
+                        <div className=" d-flex mb-2">
+                          <span className=" fs-14" style={{ width: "38px" }}>
+                            Type{" "}
+                          </span>
+                          <div class="checkbox-wrapper-type ms-2">
+                            <div class="round ms-2">
                               <input
                                 type="checkbox"
-                                checked={selectedDevAccept.includes(
-                                  devHasBeenSentNew.developerId
-                                )}
-                                onChange={() =>
-                                  toggleDevAcceptSelection(
-                                    devHasBeenSentNew.developerId
-                                  )
-                                }
+                                id="checkbox-type"
+                                checked={devHasBeenSentNew.typeMatching}
                               />
-                              <span className="checkbox"></span>
-                            </label>
-                          </div>
-                        ) : (
-                          <div></div>
-                        )}
-                      </Col>
-
-                      <Col lg={5}>
-                        <div className="candidate-list-content mt-3 mt-lg-0">
-                          <h5 className="fs-19 mb-0 d-flex">
-                            <Link
-                              to="/developerinfo"
-                              className="primary-link d-flex align-items-end"
-                            >
-                              {devHasBeenSentNew.firstName}{" "}
-                              {devHasBeenSentNew.lastName}
-                            </Link>
-                          </h5>
-
-                          <ul className="list-inline mb-0 text-muted">
-                            <li className="list-inline-item">
-                              <i className="uil-keyboard"></i>{" "}
-                              {devHasBeenSentNew.levelRequireName}
-                            </li>
-                            <br />
-                            <li className="list-inline-item">
-                              <i className="uil uil-wallet"></i>{" "}
-                              {devHasBeenSentNew.averageSalary}$
-                            </li>
-                          </ul>
-
-                          <p className="text-muted mb-0">
-                            {devHasBeenSentNew.typeRequireStrings
-                              .slice(0, 2)
-                              .map((typeDev, key) => (
-                                <span key={key}>{typeDev + ","}</span>
-                              ))}
-                            {devHasBeenSentNew.typeRequireStrings.length >
-                              2 && <span>...</span>}
-                          </p>
-
-                          <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                            {(devHasBeenSentNew.skillRequireStrings || [])
-                              .slice(0, 4)
-                              .map((skillDevRequire, key) => (
-                                <span
-                                  className={`badge bg-success-subtle text-success fs-14 mt-1`}
-                                  key={key}
-                                >
-                                  {skillDevRequire}
-                                </span>
-                              ))}
+                              <label htmlFor="checkbox-type"></label>
+                            </div>
                           </div>
                         </div>
-                      </Col>
-
-                      <Col lg={3}>
-                        <div className="d-flex flex-column">
-                          <div className=" d-flex mb-2">
-                            <span className=" fs-14" style={{ width: "38px" }}>
-                              Type{" "}
-                            </span>
-                            <div class="checkbox-wrapper-type ms-2">
-                              <div class="round ms-2">
-                                <input
-                                  type="checkbox"
-                                  id="checkbox-type"
-                                  checked={devHasBeenSentNew.typeMatching}
-                                />
-                                <label htmlFor="checkbox-type"></label>
-                              </div>
+                        <div className="mb-2 d-flex">
+                          <span className=" fs-14" style={{ width: "38px" }}>
+                            Level
+                          </span>
+                          <div class="checkbox-wrapper-level ms-2">
+                            <div class="round ms-2">
+                              <input
+                                type="checkbox"
+                                id="checkbox-level"
+                                checked={devHasBeenSentNew.levelMatching}
+                              />
+                              <label htmlFor="checkbox-level"></label>
                             </div>
-                          </div>
-                          <div className="mb-2 d-flex">
-                            <span className=" fs-14" style={{ width: "38px" }}>
-                              Level
-                            </span>
-                            <div class="checkbox-wrapper-level ms-2">
-                              <div class="round ms-2">
-                                <input
-                                  type="checkbox"
-                                  id="checkbox-level"
-                                  checked={devHasBeenSentNew.levelMatching}
-                                />
-                                <label htmlFor="checkbox-level"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex mb-2 align-items-center">
-                            <span className=" fs-14">Salary</span>
-                            <div className="devmatching-bar-salary border border-1 ms-3">
-                              <div
-                                className="devmatch-level-salary"
-                                style={{
-                                  width: `${devHasBeenSentNew.salaryPerDevPercentage}%`,
-                                  backgroundColor: getBarColor(
-                                    devHasBeenSentNew.salaryPerDevPercentage
-                                  ),
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                          <div className="d-flex mb-2 align-items-center">
-                            <span className=" fs-14" style={{ width: "41px" }}>
-                              Skill
-                            </span>
-                            <div className="devmatching-bar-skill border border-1 ms-3">
-                              <div
-                                className="devmatch-level-skill"
-                                style={{
-                                  width: `${devHasBeenSentNew.skillPercentage}%`,
-                                  backgroundColor: getBarColor(
-                                    devHasBeenSentNew.skillPercentage
-                                  ),
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                          <div>
-                            <span>
-                              Experience: {devHasBeenSentNew.yearOfExperience}{" "}
-                              years
-                            </span>
                           </div>
                         </div>
-                      </Col>
+                        <div className="d-flex mb-2 align-items-center">
+                          <span className=" fs-14">Salary</span>
+                          <div className="devmatching-bar-salary border border-1 ms-3">
+                            <div
+                              className="devmatch-level-salary"
+                              style={{
+                                width: `${devHasBeenSentNew.salaryPerDevPercentage}%`,
+                                backgroundColor: getBarColor(
+                                  devHasBeenSentNew.salaryPerDevPercentage
+                                ),
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div className="d-flex mb-2 align-items-center">
+                          <span className=" fs-14" style={{ width: "41px" }}>
+                            Skill
+                          </span>
+                          <div className="devmatching-bar-skill border border-1 ms-3">
+                            <div
+                              className="devmatch-level-skill"
+                              style={{
+                                width: `${devHasBeenSentNew.skillPercentage}%`,
+                                backgroundColor: getBarColor(
+                                  devHasBeenSentNew.skillPercentage
+                                ),
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div>
+                          <span>
+                            Experience: {devHasBeenSentNew.yearOfExperience}{" "}
+                            years
+                          </span>
+                        </div>
+                      </div>
+                    </Col>
 
-                      <Col lg={3} className="border-start border-3">
-                        <div style={{ height: "100px" }}>
-                          <div className="d-flex justify-content-end">
-                            <span
-                              className={
-                                devHasBeenSentNew.selectedDevStatus ===
+                    <Col lg={3} className="border-start border-3">
+                      <div style={{ height: "100px" }}>
+                        <div className="d-flex justify-content-end">
+                          <span
+                            className={
+                              devHasBeenSentNew.selectedDevStatus ===
                                 "Waiting HR Approval"
-                                  ? "badge bg-warning text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
-                                    "Dev Accepted"
+                                ? "badge bg-warning text-light"
+                                : devHasBeenSentNew.selectedDevStatus ===
+                                  "Dev Accepted"
                                   ? "badge bg-primary text-light"
                                   : devHasBeenSentNew.selectedDevStatus ===
                                     "HR Rejected"
-                                  ? "badge bg-danger text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
-                                    "Waiting Interview"
-                                  ? "badge bg-warning text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
-                                    "Waiting Dev Approval"
-                                  ? "badge bg-warning text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
-                                    "Interviewing"
-                                  ? "badge bg-info text-light"
-                                  : ""
-                              }
-                            >
-                              {devHasBeenSentNew.selectedDevStatus}
-                            </span>
-                          </div>
-                          <div className="right-side-percen-matching-devaccepted">
-                            <div className="d-flex w-100 justify-content-between">
-                              <div className="d-flex align-items-center">
-                                <p
-                                  style={{
-                                    display: "contents",
-                                    fontFamily: "Tahoma",
-                                    fontSize: "15px",
-                                  }}
-                                >
-                                  Matching request total
-                                </p>
-                              </div>
-                              <div className="matching-rate-dev">
-                                <span
-                                  className="percent-matching-dev"
-                                  style={{
-                                    color: getBarColor(
-                                      devHasBeenSentNew.averagedPercentage
-                                    ),
-                                  }}
-                                >
-                                  {devHasBeenSentNew.averagedPercentage.toFixed(
-                                    2
-                                  ) == 100.0
-                                    ? 100
-                                    : devHasBeenSentNew.averagedPercentage.toFixed(
-                                        2
-                                      )}
-                                  %
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="devmatching-bar border border-1">
-                              <div
-                                className="devmatch-level"
+                                    ? "badge bg-danger text-light"
+                                    : devHasBeenSentNew.selectedDevStatus ===
+                                      "Waiting Interview"
+                                      ? "badge bg-warning text-light"
+                                      : devHasBeenSentNew.selectedDevStatus ===
+                                        "Waiting Dev Approval"
+                                        ? "badge bg-warning text-light"
+                                        : devHasBeenSentNew.selectedDevStatus ===
+                                          "Interviewing"
+                                          ? "badge bg-info text-light"
+                                          : ""
+                            }
+                          >
+                            {devHasBeenSentNew.selectedDevStatus}
+                          </span>
+                        </div>
+                        <div className="right-side-percen-matching-devaccepted">
+                          <div className="d-flex w-100 justify-content-between">
+                            <div className="d-flex align-items-center">
+                              <p
                                 style={{
-                                  width: `${devHasBeenSentNew.averagedPercentage}%`,
-                                  backgroundColor: getBarColor(
+                                  display: "contents",
+                                  fontFamily: "Tahoma",
+                                  fontSize: "15px",
+                                }}
+                              >
+                                Matching request total
+                              </p>
+                            </div>
+                            <div className="matching-rate-dev">
+                              <span
+                                className="percent-matching-dev"
+                                style={{
+                                  color: getBarColor(
                                     devHasBeenSentNew.averagedPercentage
                                   ),
                                 }}
-                              ></div>
+                              >
+                                {devHasBeenSentNew.averagedPercentage.toFixed(
+                                  2
+                                ) == 100.0
+                                  ? 100
+                                  : devHasBeenSentNew.averagedPercentage.toFixed(
+                                    2
+                                  )}
+                                %
+                              </span>
                             </div>
                           </div>
+
+                          <div className="devmatching-bar border border-1">
+                            <div
+                              className="devmatch-level"
+                              style={{
+                                width: `${devHasBeenSentNew.averagedPercentage}%`,
+                                backgroundColor: getBarColor(
+                                  devHasBeenSentNew.averagedPercentage
+                                ),
+                              }}
+                            ></div>
+                          </div>
                         </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </div>
-              ))}
+                      </div>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </div>
+            ))}
         </div>
       )}
       {/* ------------------------------------------------------------------------------------------------- */}
@@ -1630,24 +1587,24 @@ const JobDetailsDescription = () => {
                         <span
                           className={
                             devHasBeenSentNew.selectedDevStatus ===
-                            "Waiting HR Approval"
+                              "Waiting HR Approval"
                               ? "badge bg-warning text-light"
                               : devHasBeenSentNew.selectedDevStatus ===
                                 "Dev Accepted"
-                              ? "badge bg-primary text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
-                                "HR Rejected"
-                              ? "badge bg-danger text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
-                                "Waiting Interview"
-                              ? "badge bg-warning text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
-                                "Waiting Dev Approval"
-                              ? "badge bg-warning text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
-                                "Interviewing"
-                              ? "badge bg-info text-light"
-                              : ""
+                                ? "badge bg-primary text-light"
+                                : devHasBeenSentNew.selectedDevStatus ===
+                                  "HR Rejected"
+                                  ? "badge bg-danger text-light"
+                                  : devHasBeenSentNew.selectedDevStatus ===
+                                    "Waiting Interview"
+                                    ? "badge bg-warning text-light"
+                                    : devHasBeenSentNew.selectedDevStatus ===
+                                      "Waiting Dev Approval"
+                                      ? "badge bg-warning text-light"
+                                      : devHasBeenSentNew.selectedDevStatus ===
+                                        "Interviewing"
+                                        ? "badge bg-info text-light"
+                                        : ""
                           }
                         >
                           {devHasBeenSentNew.selectedDevStatus}
@@ -1680,8 +1637,8 @@ const JobDetailsDescription = () => {
                               ) == 100.0
                                 ? 100
                                 : devHasBeenSentNew.averagedPercentage.toFixed(
-                                    2
-                                  )}
+                                  2
+                                )}
                               %
                             </span>
                           </div>

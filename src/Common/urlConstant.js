@@ -72,6 +72,8 @@ export default {
       removeOutOfWaitingInterview:
         "/SelectingDev/RemoveOutOfWaitingInterview?requestId=${requestId}&developerId=${developerId}",
       sendDevToHRNew: "/SelectingDev/SendDevToHR",
+      onboardDeveloper:
+        "/SelectingDev/Onboarding?requestId=${requestId}&developerId=${developerId}",
     },
     company: {
       createCompany: "/CompanyPartner",
@@ -105,6 +107,7 @@ export default {
       getAllInterviewByManagerAndPaging:
         "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}",
       approvalByManager: "/Interview/ApprovalByManager",
+      completeInterview: "/Interview/Finish?interviewId=${interviewId}",
     },
     assignTask: {
       createAssignTask: "/AssignTask",

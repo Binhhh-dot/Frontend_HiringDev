@@ -15,7 +15,11 @@ import {
   NavItem,
   NavLink,
   TabPane,
-  TabContent
+  TabContent,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from "reactstrap";
 import { Modal as AntdModal } from "antd";
 import { Container } from "reactstrap";
@@ -38,6 +42,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import classnames from "classnames";
 import jobImage1 from "../../../assets/images/featured-job/img-01.png";
 import img0 from "../../../assets/images/user/img-00.jpg";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faEllipsisVertical,
+  faGear
+} from "@fortawesome/free-solid-svg-icons";
+import { DownOutlined } from '@ant-design/icons';
+import { Dropdown as DropdownAntd, Space } from 'antd';
 
 
 const HiringRequestDetails = () => {
@@ -55,7 +66,9 @@ const HiringRequestDetails = () => {
   const [loadingInterview, setLoadingInterview] = useState(false);
   const [activeTab, setActiveTab] = useState("1");
   const [loadingReject, setLoadingReject] = useState(false);
+  const [loadingOnboard, setLoadingOnboard] = useState(false);
   const [isListLoading, setIsListLoading] = useState(false);
+  const [isListLoading2, setIsListLoading2] = useState(false);
   const [modalCreateInterview, setModalCreateInterview] = useState(false);
   const [developerIdSelectedCreateInterview, setDeveloperIdSelectedCreateInterview] = useState(null);
   const [interviewTitlError, setInterviewTitlError] = useState(null);
@@ -70,6 +83,44 @@ const HiringRequestDetails = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectInterviewDetail, setSelectInterviewDetail] = useState({});
   const [devInterviewDetail, setDevInterviewDetail] = useState([]);
+
+  const [isInputEditable, setIsInputEditable] = useState(false);
+  const [interviewTitleInput, setInterviewTitleInput] = useState('');
+  const [descriptionInput, setDescriptionInput] = useState('');
+  const [dateOfInterviewInput, setDateOfInterviewInput] = useState('');
+  const [startTimeInput, setStartTimeInput] = useState('');
+  const [endTimeInput, setEndTimeInput] = useState('');
+
+  const generateItems = () => {
+    if (selectInterviewDetail.statusString === "Waiting Approval") {
+      return [
+        {
+          label: (
+            <div
+              style={{ width: "100px" }}
+              onClick={() => onUpdateInterview()}
+            >
+              Edit
+            </div>
+          ),
+          key: '0',
+        },
+        {
+          label: <a href="https://www.aliyun.com">Cancel</a>,
+          key: '1',
+        },
+      ];
+    } else {
+      return [
+        {
+          label: <a href="https://www.aliyun.com">Cancel</a>,
+          key: '1',
+        },
+      ];
+    }
+  };
+
+  const items = generateItems();
 
   const openModalCreateInterview = (developerId) => {
     setInterviewTitlError(null);
@@ -88,6 +139,47 @@ const HiringRequestDetails = () => {
 
   const tabChange = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
+  };
+
+  const completedInterview = async (interviewId) => {
+    try {
+      const response = await interviewServices.completedInterview(interviewId);
+      console.log(response);
+    } catch (error) {
+      toast.error(error.response.data.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      console.error("Error completedInterview:", error);
+    }
+  };
+
+  const updateInterview = async (interviewId) => {
+    try {
+      const response = await interviewServices.completedInterview(interviewId);
+      console.log(response);
+    } catch (error) {
+      console.error("Error completedInterview:", error);
+    }
+  };
+
+  const exitPopup = () => {
+    document.getElementById('buttonSaveFormInterview').style.display = 'none';
+    document.getElementById('buttonCancelFormInterview').style.display = 'none';
+    setIsInputEditable(false)
+  };
+
+  const cancelEditInterview = (id) => {
+    document.getElementById('buttonSaveFormInterview').style.display = 'none';
+    document.getElementById('buttonCancelFormInterview').style.display = 'none';
+    fetchGetDetailInterviewByInterviewId(id);
+    setIsInputEditable(false)
   };
 
   const closeModal = () => {
@@ -123,6 +215,7 @@ const HiringRequestDetails = () => {
           skills: dev.skillRequireStrings,
           averagedPercentage: dev.averagedPercentage.toFixed(2),
           selectedDevStatus: dev.selectedDevStatus,
+          interviewRound: dev.interviewRound,
         };
       });
       setCandidategridDetails(candidategridDetails);
@@ -169,7 +262,6 @@ const HiringRequestDetails = () => {
       const data = response.data;
       const formattedJobVacancies = data.data.map((job) => {
         // Assuming job.typeRequireName and job.levelRequireName are available
-        console.log(job.description.length)
         return {
           interviewId: job.interviewId,
           requestId: job.requestId,
@@ -206,8 +298,11 @@ const HiringRequestDetails = () => {
     fetchJobVacancies();
   }, []);
 
+
+
   useEffect(() => {
     fetchJobVacancies();
+    fetchListInterview();
   }, [loadListDeveloper]);
 
   useEffect(() => {
@@ -300,6 +395,43 @@ const HiringRequestDetails = () => {
     // Replace with the actual duration of your action
   };
 
+  const handleOnboard = async (id) => {
+    // Simulate an asynchronous action, e.g., making an API request
+    setLoadingOnboard((prevLoading) => ({
+      ...prevLoading,
+      [id]: true,
+    }));
+    try {
+      // Sử dụng giá trị từ state hoặc DOM
+      const queryParams = new URLSearchParams(location.search);
+      const requestId = queryParams.get("Id");
+      // Gọi API để reject interview
+      const response = await developerServices.onbardingDeveloper(requestId, id);
+      setIsListLoading2(true);
+      // Xử lý kết quả nếu cần thiết
+      fetchJobVacancies();
+      // Cập nhật giao diện hoặc thực hiện các hành động khác sau khi reject thành công
+      // Ví dụ: Ẩn nút hoặc cập nhật trạng thái
+      setIsListLoading2(false);
+      setLoadingReject((prevLoading) => ({
+        ...prevLoading,
+        [id]: false,
+      }));
+    } catch (error) {
+      // Xử lý lỗi nếu có
+      console.error("Error rejecting interview:", error);
+      // Hiển thị thông báo lỗi hoặc thực hiện các hành động khác
+      setLoadingOnboard((prevLoading) => ({
+        ...prevLoading,
+        [id]: false,
+      }));
+    }
+    // Simulate an asynchronous action, e.g., making an API request
+
+    // After the action is completed, you can update the state
+    // Replace with the actual duration of your action
+  };
+
   const createAnInterview = async () => {
     console.log(developerIdSelectedCreateInterview)
 
@@ -372,6 +504,7 @@ const HiringRequestDetails = () => {
         setTimeStartError(null);
       }
     }
+
     if (check) {
       try {
         const title = document.getElementById("interview-title").value;
@@ -455,7 +588,44 @@ const HiringRequestDetails = () => {
 
   const midleSelect = (id) => {
     fetchGetDetailInterviewByInterviewId(id);
+
     setShowPopup(true);
+  };
+
+  const handleClick = () => {
+    // Mở cửa sổ mới khi người dùng ấn vào button
+    const authWindow = window.open(
+      'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345',
+      '_blank',
+      'width=600,height=400'
+    );
+
+    // Kiểm tra khi cửa sổ đó được đóng lại
+    const interval = setInterval(() => {
+      if (authWindow.closed) {
+        clearInterval(interval);
+
+        // Lấy mã code từ URL của cửa sổ mới
+        const searchParams = new URLSearchParams(authWindow.location.search);
+        const code = searchParams.get('code');
+
+        if (code) {
+          console.log('Mã code:', code);
+          // Thực hiện xử lý tiếp theo sau khi lấy được mã code
+        } else {
+          console.log('Không nhận được mã code.');
+        }
+      }
+    }, 1000);
+  }
+
+
+
+  const onUpdateInterview = () => {
+    document.getElementById('buttonSaveFormInterview').style.display = 'block';
+    document.getElementById('buttonCancelFormInterview').style.display = 'block';
+    setIsInputEditable(true);
+
   };
 
   const fetchGetDetailInterviewByInterviewId = async (id) => {
@@ -465,6 +635,21 @@ const HiringRequestDetails = () => {
       response = await interviewServices.getDetailInterviewByInterviewId(
         id
       );
+      document.getElementById("interview-title-popup").value = response.data.data.title;
+      document.getElementById("description-title-popup").value = response.data.data.description;
+      var parts = response.data.data.dateOfInterview.split('-');
+      if (parts.length === 3) {
+        var day = parts[1];
+        var month = parts[0];
+        var year = parts[2];
+        // Format the date as "yyyy-dd-mm"
+        var formattedDate = year + '-' + day + '-' + month;
+        document.getElementById("date-of-interview-popup").value = formattedDate;
+      } else {
+        console.error("Invalid date format");
+      }
+      document.getElementById("start-time-popup").value = response.data.data.startTime;
+      document.getElementById("end-time-popup").value = response.data.data.endTime;
       setSelectInterviewDetail(response.data.data);
       setDevInterviewDetail(response.data.data.developer);
     } catch (error) {
@@ -539,23 +724,6 @@ const HiringRequestDetails = () => {
                           >
                             {hiringRequestDetail.statusString}
                           </span>{" "}
-                        </li>
-
-                        <li>
-                          {candidategridDetails.some(
-                            (dev) =>
-                              dev.selectedDevStatus === "Waiting Interview"
-                          ) ? (
-                            <Link
-                              to={`/createInterview?requestId=${hiringRequestDetail.requestId}`}
-                              className="btn btn-success"
-                              id="button-create-interview"
-                              style={{ backgroundColor: "#02AF74" }}
-                            >
-                              Create Interview
-                            </Link>
-                          ) : null}
-                          <></>
                         </li>
                       </ul>
                     </Col>
@@ -750,6 +918,11 @@ const HiringRequestDetails = () => {
                         Create an interview
                       </div>
                     </div>
+
+                    <div>
+                      <button onClick={() => handleClick()}  >Mở cửa sổ đăng nhập</button>
+
+                    </div>
                   </Form>
 
                 </div>
@@ -761,7 +934,10 @@ const HiringRequestDetails = () => {
             centered
             open={showPopup}
             onOk={() => setShowPopup(false)}
-            onCancel={() => setShowPopup(false)}
+            onCancel={() => {
+              setShowPopup(false);
+              exitPopup(); // Log message when the modal is closed
+            }}
             width={1100}
             footer={null}
           >
@@ -771,119 +947,209 @@ const HiringRequestDetails = () => {
                   className="d-flex justify-content-between"
                   style={{ width: "98%" }}
                 >
-                  <h4 className="mb-0">Interview Detail</h4>
-                  <p className="badge bg-success text-light fs-13 ">
-                    {selectInterviewDetail.statusString}
-                  </p>
-                </div>
-                <div className="mt-3">
-                  <p className="mb-0 text-muted">Title </p>
-                  <div
-                    className="p-2 border border-2"
-                    style={{
-                      width: "98%",
-                      fontWeight: "500",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    {selectInterviewDetail.title}
-                  </div>
-                </div>
-                <div className="mt-3">
-                  <p className="mb-0 text-muted">Description </p>
-                  <div
-                    className="p-2 border border-2 "
-                    style={{
-                      width: "98%",
-                      fontWeight: "500",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    {selectInterviewDetail.description}
-                  </div>
-                </div>
+                  <div className="d-flex gap-2">
 
-                <div className="mt-3">
-                  <p className="mb-0 text-muted">Date Of Interview </p>
-                  <div
-                    className="p-2 border border-2"
-                    style={{
-                      width: "98%",
-                      fontWeight: "500",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    {selectInterviewDetail.dateOfInterview}
+                    <h4 className="mb-0">Interview Detail</h4>
+                    <p className="badge bg-success text-light fs-13 ">
+                      {selectInterviewDetail.statusString}
+                    </p>
                   </div>
+                  {selectInterviewDetail.statusString !== 'Completed' && (
+                    <DropdownAntd
+                      menu={{
+                        items,
+                      }}
+                      trigger={['click']}
+                    >
+                      <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                        <FontAwesomeIcon
+                          icon={faGear}
+                          size="xl"
+                          color="#909191"
+                        />
+                      </a>
+                    </DropdownAntd>
+                  )}
+
+
                 </div>
-                <div
-                  className="d-flex  justify-content-between"
-                  style={{ gap: "20px", width: "98%" }}
-                >
-                  <div className="mt-3" style={{ width: "50%" }}>
-                    <p className="mb-0 text-muted">Start Time </p>
-                    <div
-                      className="p-2 border border-2"
+                <Form action="#" className="auth-form">
+                  <FormGroup className="mb-3">
+                    <Label
+                      htmlFor="usernameInput"
+                      className="form-label"
+                      style={{ marginBottom: "0px" }}
+
+                    >
+                      Interview Title
+                    </Label>
+                    <Input
+                      type="text"
+                      className="form-control border border-2"
+                      id="interview-title-popup"
                       style={{
-                        // width: "fit-content",
+                        width: "98%",
                         fontWeight: "500",
                         borderRadius: "10px",
                       }}
+                      readOnly={!isInputEditable}
+                      // value={selectInterviewDetail.title}
+                      onChange={(e) => setInterviewTitleInput(e.target.value)}
+                    />
+                    {interviewTitlError && (
+                      <p className="text-danger mt-2">
+                        {interviewTitlError}
+                      </p>
+                    )}
+                  </FormGroup>
+                  <FormGroup className="mb-3">
+                    <Label
+                      htmlFor="usernameInput"
+                      className="form-label"
+                      style={{ marginBottom: "0px" }}
                     >
-                      {selectInterviewDetail.startTime}
-                    </div>
-                  </div>
-
-                  <div className="mt-3" style={{ width: "50%" }}>
-                    <p className="mb-0 text-muted">End Time </p>
-                    <div
-                      className="p-2 border border-2"
+                      Description
+                    </Label>
+                    <Input
+                      type="text"
+                      className="form-control border border-2"
+                      id="description-title-popup"
                       style={{
-                        // width: "fit-content",
+                        width: "98%",
                         fontWeight: "500",
                         borderRadius: "10px",
                       }}
+                      readOnly={!isInputEditable}
+                      // value={selectInterviewDetail.title}
+                      onChange={(e) => setDescriptionInput(e.target.value)}
+                    />
+                    {interviewTitlError && (
+                      <p className="text-danger mt-2">
+                        {interviewTitlError}
+                      </p>
+                    )}
+                  </FormGroup>
+                  <FormGroup className="mb-3">
+                    <Label
+                      htmlFor="usernameInput"
+                      className="form-label"
+                      style={{ marginBottom: "0px" }}
                     >
-                      {selectInterviewDetail.endTime}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-3">
-                  <p className="mb-0 text-muted">Posted Time</p>
-                  <div
-                    className="p-2 border border-2"
-                    style={{
-                      width: "98%",
-                      fontWeight: "500",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    {selectInterviewDetail.postedTime}
-                  </div>
-                </div>
-
-                {selectInterviewDetail.meetingLink == null ? (
-                  <div></div>
-                ) : (
-                  <div className="mt-3">
-                    <p className="mb-0 text-muted">Meeting Link </p>
-                    <div
-                      className="p-2 border border-2"
+                      Date of interview
+                    </Label>
+                    <Input
+                      type="date"
+                      className="form-control border border-2"
+                      id="date-of-interview-popup"
                       style={{
-                        width: "99%",
+                        width: "98%",
                         fontWeight: "500",
                         borderRadius: "10px",
                       }}
-                    >
-                      {selectInterviewDetail.meetingLink == null ? (
-                        <span>None</span>
-                      ) : (
-                        selectInterviewDetail.meetingLink
+                      readOnly={!isInputEditable}
+                      // value={selectInterviewDetail.title}
+                      onChange={(e) => setDateOfInterviewInput(e.target.value)}
+                    />
+                    {interviewTitlError && (
+                      <p className="text-danger mt-2">
+                        {interviewTitlError}
+                      </p>
+                    )}
+                  </FormGroup>
+                  <div className="d-flex justify-content-between">
+                    <FormGroup className="mb-3" style={{ width: "240px" }}>
+                      <Label
+                        htmlFor="usernameInput"
+                        className="form-label"
+                        style={{ marginBottom: "0px" }}
+                      >
+                        Start Time
+                      </Label>
+                      <Input
+                        type="time"
+                        className="form-control border border-2"
+                        id="start-time-popup"
+                        style={{
+                          width: "98%",
+                          fontWeight: "500",
+                          borderRadius: "10px",
+                        }}
+                        readOnly={!isInputEditable}
+                        // value={selectInterviewDetail.title}
+                        onChange={(e) => setStartTimeInput(e.target.value)}
+                      />
+                      {interviewTitlError && (
+                        <p className="text-danger mt-2">
+                          {interviewTitlError}
+                        </p>
                       )}
-                    </div>
+                    </FormGroup>
+                    <FormGroup className="mb-3" style={{ width: "240px" }} >
+                      <Label
+                        htmlFor="usernameInput"
+                        className="form-label"
+                        style={{ marginBottom: "0px" }}
+                      >
+                        End Time
+                      </Label>
+                      <Input
+                        type="time"
+                        className="form-control border border-2"
+                        id="end-time-popup"
+                        style={{
+                          width: "96%",
+                          fontWeight: "500",
+                          borderRadius: "10px",
+                        }}
+                        readOnly={!isInputEditable}
+                        // value={selectInterviewDetail.title}
+                        onChange={(e) => setEndTimeInput(e.target.value)}
+                      />
+                      {interviewTitlError && (
+                        <p className="text-danger mt-2">
+                          {interviewTitlError}
+                        </p>
+                      )}
+                    </FormGroup>
+                  </div>
+                </Form>
+                {selectInterviewDetail.statusString === "Approved" && (
+                  <div className="mt-3 d-flex justify-content-end" id="buttonCompleted">
+                    <button
+                      className="btn btn-success"
+                      onClick={() => {
+                        completedInterview(selectInterviewDetail.interviewId);
+                      }}
+                      id="buttonCompletedFormInterview"
+                    >
+                      Completed
+                    </button>
                   </div>
                 )}
+                <div className="d-flex gap-2 justify-content-end" >
+                  <div className="mt-3 d-flex justify-content-end">
+                    <button className="btn btn-blue"
+                      onClick={() => {
+                        updateInterview(selectInterviewDetail.interviewId);
+                      }}
+                      id="buttonSaveFormInterview"
+                      style={{ display: "none" }}
+                    >
+                      Save
+                    </button>
+                  </div>
+                  <div className="mt-3 d-flex justify-content-end">
+                    <button className="btn btn-danger"
+                      onClick={() => {
+                        cancelEditInterview(selectInterviewDetail.interviewId);
+                      }}
+                      id="buttonCancelFormInterview"
+                      style={{ display: "none" }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               </Col>
               <Col lg={6} className="border-start ">
                 {/* ------------------------------------------------------ */}
@@ -1244,246 +1510,286 @@ const HiringRequestDetails = () => {
                     List interview
                   </NavLink>
                 </NavItem>
-                <NavItem role="presentation">
-                  <NavLink
-                    to="#"
-                    className={classnames({ active: activeTab === "3" })}
-                    onClick={() => {
-                      tabChange("3");
-                    }}
-                    type="button"
-                  >
-                    Developer
-                  </NavLink>
-                </NavItem>
-              </Nav>
 
-              <CardBody className="p-4" style={{ backgroundColor: "#f6f6f6" }}>
+              </Nav>
+              <CardBody style={{ backgroundColor: "#f6f6f6", padding: "0 24px 24px 24px" }}>
                 <TabContent activeTab={activeTab}>
                   <TabPane tabId="1">
-                    <div className="candidate-list">
-                      <Row>
-                        {candidategridDetails.map((candidategridDetailsNew, key) => (
-                          <Col lg={3} md={6} key={key}>
-                            <div>
-                              <CardBody className="p-4 dev-accepted mt-4">
-                                <div className="d-flex mb-4 justify-content-between">
-                                  <div className="d-flex">
-                                    <div
-                                      className="flex-shrink-0 position-relative"
-                                      onClick={() =>
-                                        openModal(candidategridDetailsNew)
+                    <Row>
+                      {candidategridDetails.map((candidategridDetailsNew, key) => (
+                        <Col lg={3} md={6} key={key}>
+                          <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
+                            <CardBody className="p-4 dev-accepted mt-4" style={{ borderRadius: "15px" }}>
+                              <div className="d-flex mb-4 justify-content-between">
+                                <div className="d-flex">
+                                  <div
+                                    className="flex-shrink-0 position-relative"
+                                    onClick={() =>
+                                      openModal(candidategridDetailsNew)
+                                    }
+                                  >
+                                    <img
+                                      src={
+                                        candidategridDetailsNew.userImg ||
+                                        userImage0
                                       }
-                                    >
-                                      <img
-                                        src={
-                                          candidategridDetailsNew.userImg ||
-                                          userImage0
+                                      alt=""
+                                      className="avatar-md rounded"
+                                    />
+                                    <span
+                                      className={
+                                        candidategridDetailsNew.candidateStatusClassName
+                                      }
+                                    ></span>
+                                  </div>
+                                  <div className="ms-3">
+                                    <div className="primary-link">
+                                      <h5
+                                        className="fs-17"
+                                        onClick={() =>
+                                          openModal(candidategridDetailsNew)
                                         }
-                                        alt=""
-                                        className="avatar-md rounded"
-                                      />
-                                      <span
-                                        className={
-                                          candidategridDetailsNew.candidateStatusClassName
-                                        }
-                                      ></span>
+                                      >
+                                        {candidategridDetailsNew.firstName} {candidategridDetailsNew.lastName}
+                                      </h5>
                                     </div>
-                                    <div className="ms-3">
-                                      <div className="primary-link">
-                                        <h5
-                                          className="fs-17"
-                                          onClick={() =>
-                                            openModal(candidategridDetailsNew)
-                                          }
-                                        >
-                                          {candidategridDetailsNew.codeName}
-                                        </h5>
-                                      </div>
-                                      <span
-                                        className={
-                                          candidategridDetailsNew.selectedDevStatus ===
-                                            "HR Rejected"
-                                            ? "badge bg-danger text-light mb-2"
+                                    <span
+                                      className={
+                                        candidategridDetailsNew.selectedDevStatus ===
+                                          "Rejected"
+                                          ? "badge bg-danger text-light mb-2"
+                                          : candidategridDetailsNew.selectedDevStatus ===
+                                            "Under Consideration"
+                                            ? "badge bg-warning text-light mb-2"
                                             : candidategridDetailsNew.selectedDevStatus ===
-                                              "Under Consideration"
-                                              ? "badge bg-warning text-light mb-2"
+                                              "Interview Scheduled"
+                                              ? "badge bg-blue text-light mb-2"
                                               : candidategridDetailsNew.selectedDevStatus ===
-                                                "Interview Scheduled"
-                                                ? "badge bg-blue text-light mb-2"
+                                                "Expired"
+                                                ? "badge bg-danger text-light mb-2"
                                                 : candidategridDetailsNew.selectedDevStatus ===
-                                                  "Expired"
+                                                  "Cancelled"
                                                   ? "badge bg-danger text-light mb-2"
                                                   : candidategridDetailsNew.selectedDevStatus ===
-                                                    "Cancelled"
-                                                    ? "badge bg-danger text-light mb-2"
+                                                    "Waiting Interview"
+                                                    ? "badge bg-warning text-light mb-2"
                                                     : candidategridDetailsNew.selectedDevStatus ===
-                                                      "Waiting Interview"
+                                                      "Onboarding"
                                                       ? "badge bg-primary text-light mb-2"
                                                       : candidategridDetailsNew.selectedDevStatus ===
-                                                        "Complete"
-                                                        ? "badge bg-primary text-light mb-2"
-                                                        : candidategridDetailsNew.selectedDevStatus ===
-                                                          "Saved"
-                                                          ? "badge bg-info text-light mb-2"
-                                                          : ""
-                                        }
-                                      >
-                                        {candidategridDetailsNew.selectedDevStatus}
-                                      </span>{" "}
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    className="list-inline-item"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="top"
-                                    onClick={() => openModal(candidategridDetailsNew)}
-                                    title="View More"
-                                  >
-                                    <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
-                                      <i className="mdi mdi-eye"></i>
-                                    </div>
+                                                        "Saved"
+                                                        ? "badge bg-info text-light mb-2"
+                                                        : ""
+                                      }
+                                    >
+                                      {candidategridDetailsNew.selectedDevStatus}
+                                    </span>{" "}
                                   </div>
                                 </div>
-
-                                <ul className="list-inline d-flex justify-content-between align-items-center">
-                                  <li>
-                                    <div className="d-flex flex-wrap align-items-start gap-1">
-                                      {candidategridDetailsNew.skills &&
-                                        Array.isArray(
-                                          candidategridDetailsNew.skills
-                                        ) &&
-                                        candidategridDetailsNew.skills
-                                          .slice(0, 3)
-                                          .map((skill, skillIndex) => (
-                                            <span
-                                              key={skillIndex}
-                                              className="badge bg-success-subtle text-success fs-14 mt-1"
-                                            >
-                                              {skill}
-                                            </span>
-                                          ))}
-                                      {candidategridDetailsNew.skills &&
-                                        Array.isArray(
-                                          candidategridDetailsNew.skills
-                                        ) &&
-                                        candidategridDetailsNew.skills.length > 3 && (
-                                          <span className="badge bg-success-subtle text-success fs-14 mt-1">
-                                            ...
-                                          </span>
-                                        )}
-                                    </div>
-                                  </li>
-                                </ul>
-                                <div className="border rounded mb-4">
-                                  <div className="row g-0">
-                                    <Col lg={6}>
-                                      <div className="border-end px-3 py-2">
-                                        <p className="text-muted mb-0">
-                                          Exp. : {candidategridDetailsNew.experience}
-                                        </p>
-                                      </div>
-                                    </Col>
-                                    <Col lg={6}>
-                                      <div className="px-3 py-2">
-                                        <p className="text-muted mb-0">
-                                          {candidategridDetailsNew.jobType}
-                                        </p>
-                                      </div>
-                                    </Col>
-                                  </div>
-                                </div>
-                                <p className="text-muted"></p>
 
                                 <div
-                                  className="border border-2 p-3"
-                                  style={{ borderRadius: "7px" }}
+                                  className="list-inline-item"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="top"
+                                  onClick={() => openModal(candidategridDetailsNew)}
+                                  title="View More"
                                 >
-                                  <div className="d-flex justify-content-between">
-                                    <p>Matching with request</p>
-                                    <p className="text-success fw-bold">
-                                      {candidategridDetailsNew.averagedPercentage}%
-                                    </p>
-                                  </div>
-                                  <div className="dev-matching-in-company border border-1">
-                                    <div
-                                      className="dev-matching-level-in-company"
-                                      style={{
-                                        width: `${candidategridDetailsNew.averagedPercentage}% `,
-                                      }}
-                                    ></div>
+                                  <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
+                                    <i className="mdi mdi-eye"></i>
                                   </div>
                                 </div>
-                                <div className="mt-3">
-                                  {candidategridDetailsNew.selectedDevStatus ===
-                                    "Under Consideration" ? (
-                                    <>
-                                      <button
-                                        id="interviewButton"
-                                        className="btn btn-primary btn-hover w-100 mt-2 fw-bold"
-                                        onClick={() =>
-                                          handleInterviewClick(
-                                            candidategridDetailsNew.id
-                                          )
-                                        }
-                                      >
-                                        {loadingInterview[
+                              </div>
+
+                              <ul className="list-inline d-flex justify-content-between align-items-center">
+                                <li>
+                                  <div className="d-flex flex-wrap align-items-start gap-1">
+                                    {candidategridDetailsNew.skills &&
+                                      Array.isArray(
+                                        candidategridDetailsNew.skills
+                                      ) &&
+                                      candidategridDetailsNew.skills
+                                        .slice(0, 3)
+                                        .map((skill, skillIndex) => (
+                                          <span
+                                            key={skillIndex}
+                                            className="badge bg-success-subtle text-success fs-14 mt-1"
+                                          >
+                                            {skill}
+                                          </span>
+                                        ))}
+                                    {candidategridDetailsNew.skills &&
+                                      Array.isArray(
+                                        candidategridDetailsNew.skills
+                                      ) &&
+                                      candidategridDetailsNew.skills.length > 3 && (
+                                        <span className="badge bg-success-subtle text-success fs-14 mt-1">
+                                          ...
+                                        </span>
+                                      )}
+                                  </div>
+                                </li>
+                              </ul>
+                              <div className="border rounded mb-4">
+                                <div className="row g-0">
+                                  <Col lg={6}>
+                                    <div className="border-end px-3 py-2">
+                                      <p className="text-muted mb-0">
+                                        Exp. : {candidategridDetailsNew.experience}
+                                      </p>
+                                    </div>
+                                  </Col>
+                                  <Col lg={6}>
+                                    <div className="px-3 py-2">
+                                      <p className="text-muted mb-0">
+                                        {candidategridDetailsNew.jobType}
+                                      </p>
+                                    </div>
+                                  </Col>
+                                </div>
+                              </div>
+                              <p className="text-muted"></p>
+
+                              <div
+                                className="border border-2 p-3"
+                                style={{ borderRadius: "7px" }}
+                              >
+                                <div className="d-flex justify-content-between">
+                                  <p>Matching with request</p>
+                                  <p className="text-success fw-bold">
+                                    {candidategridDetailsNew.averagedPercentage}%
+                                  </p>
+                                </div>
+                                <div className="dev-matching-in-company border border-1">
+                                  <div
+                                    className="dev-matching-level-in-company"
+                                    style={{
+                                      width: `${candidategridDetailsNew.averagedPercentage}% `,
+                                    }}
+                                  ></div>
+                                </div>
+                              </div>
+                              <div className="mt-3">
+                                {candidategridDetailsNew.selectedDevStatus ===
+                                  "Under Consideration" ? (
+                                  <>
+                                    <button
+                                      id="interviewButton"
+                                      className="btn btn-soft-primary btn-hover w-100 mt-2 fw-bold"
+                                      onClick={() =>
+                                        handleInterviewClick(
                                           candidategridDetailsNew.id
-                                        ] ? (
-                                          <HashLoader
-                                            size={20}
-                                            color={"#36D7B7"}
-                                            loading={true}
-                                          />
-                                        ) : (
-                                          <>
-                                            <i className="mdi mdi-account-check"></i>
-                                            Interview
-                                          </>
-                                        )}
-                                      </button>
+                                        )
+                                      }
+                                    >
+                                      {loadingInterview[
+                                        candidategridDetailsNew.id
+                                      ] ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"#36D7B7"}
+                                          loading={true}
+                                        />
+                                      ) : (
+                                        <>
+                                          <i className="mdi mdi-account-check"></i>
+                                          Interview
+                                        </>
+                                      )}
+                                    </button>
+                                    <button
+                                      id="rejectButton"
+                                      className="btn btn-soft-danger btn-danger w-100 mt-2 fw-bold"
+                                      onClick={() =>
+                                        rejectInterview2(candidategridDetailsNew.id)
+                                      }
+                                    >
+                                      {loadingReject[candidategridDetailsNew.id] ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"red"}
+                                          loading={true}
+                                        />
+                                      ) : isListLoading ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"red"}
+                                          loading={true}
+                                        />
+                                      ) : (
+                                        "Reject"
+                                      )}
+                                    </button>
+                                  </>
+                                ) : candidategridDetailsNew.selectedDevStatus ===
+                                  "Waiting Interview" ? (
+                                  <>
+                                    <button
+                                      id="interviewButton"
+                                      className="btn btn-soft-blue w-100 mt-2 fw-bold"
+                                      onClick={() =>
+                                        openModalCreateInterview(
+                                          candidategridDetailsNew.id
+                                        )
+                                      }
+                                    >
+                                      <>
+                                        Create Interview {candidategridDetailsNew.interviewRound > 0 ? `Round ${candidategridDetailsNew.interviewRound + 1}` : ''}
+                                      </>
+                                    </button>
+                                    {candidategridDetailsNew.interviewRound > 0 && (
                                       <button
-                                        id="rejectButton"
-                                        className="btn btn-soft-danger btn-danger w-100 mt-2 fw-bold"
+                                        id="onboardButton"
+                                        className="btn btn-soft-blue w-100 mt-2 fw-bold"
                                         onClick={() =>
-                                          rejectInterview2(candidategridDetailsNew.id)
+                                          handleOnboard(candidategridDetailsNew.id)
                                         }
                                       >
-                                        {loadingReject[candidategridDetailsNew.id] ? (
+                                        {loadingOnboard[candidategridDetailsNew.id] ? (
                                           <HashLoader
                                             size={20}
-                                            color={"#36D7B7"}
+                                            color={"blue"}
                                             loading={true}
                                           />
-                                        ) : isListLoading ? (
+                                        ) : isListLoading2 ? (
                                           <HashLoader
                                             size={20}
-                                            color={"#36D7B7"}
+                                            color={"blue"}
                                             loading={true}
                                           />
                                         ) : (
-                                          "Reject"
+                                          "Onboard"
                                         )}
                                       </button>
-                                    </>
-                                  ) : candidategridDetailsNew.selectedDevStatus ===
-                                    "Waiting Interview" ? (
+                                    )}
+                                    <button
+                                      id="rejectButton"
+                                      className="btn btn-soft-danger btn-danger w-100 mt-2 fw-bold"
+                                      onClick={() =>
+                                        rejectInterview2(candidategridDetailsNew.id)
+                                      }
+                                    >
+                                      {loadingReject[candidategridDetailsNew.id] ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"red"}
+                                          loading={true}
+                                        />
+                                      ) : isListLoading ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"red"}
+                                          loading={true}
+                                        />
+                                      ) : (
+                                        "Reject"
+                                      )}
+                                    </button>
+                                  </>
+                                ) :
+                                  candidategridDetailsNew.selectedDevStatus ===
+                                    "Interview Scheduled" ? (
                                     <>
                                       <button
-                                        id="interviewButton"
-                                        className="btn btn-primary btn-hover w-100 mt-2 fw-bold"
-                                        onClick={() =>
-                                          openModalCreateInterview(
-                                            candidategridDetailsNew.id
-                                          )
-                                        }
-                                      >
-                                        <>
-                                          Create Interview
-                                        </>
-                                      </button>
-                                      <button
                                         id="rejectButton"
                                         className="btn btn-soft-danger btn-danger w-100 mt-2 fw-bold"
                                         onClick={() =>
@@ -1493,13 +1799,13 @@ const HiringRequestDetails = () => {
                                         {loadingReject[candidategridDetailsNew.id] ? (
                                           <HashLoader
                                             size={20}
-                                            color={"#36D7B7"}
+                                            color={"white"}
                                             loading={true}
                                           />
                                         ) : isListLoading ? (
                                           <HashLoader
                                             size={20}
-                                            color={"#36D7B7"}
+                                            color={"white"}
                                             loading={true}
                                           />
                                         ) : (
@@ -1509,25 +1815,24 @@ const HiringRequestDetails = () => {
                                     </>
                                   ) :
                                     null}
-                                </div>
-                              </CardBody>
-                            </div>
-                          </Col>
-                        ))}
-                      </Row>
-                      <div>
-                        <DeveloperDetailInCompanyPopup
-                          isModalOpen={isModalOpen}
-                          closeModal={closeModal}
-                          devId={selectedCandidateInfo.id}
-                        />
-                      </div>
+                              </div>
+                            </CardBody>
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
+                    <div>
+                      <DeveloperDetailInCompanyPopup
+                        isModalOpen={isModalOpen}
+                        closeModal={closeModal}
+                        devId={selectedCandidateInfo.id}
+                      />
                     </div>
                   </TabPane>
                   <TabPane tabId="2">
                     <Row>
                       {listInterview.map((jobVacancy2Details, key) => (
-                        <Col lg={3} md={6} className="mt-4" key={key}>
+                        <Col lg={3} md={6} className="mt-4" s key={key}>
                           <div
                             onClick={() =>
                               midleSelect(jobVacancy2Details.interviewId)
@@ -1548,6 +1853,7 @@ const HiringRequestDetails = () => {
                                   {jobVacancy2Details.statusString}
                                 </span>
                               </div>
+
                               <div>
                                 <div>
                                   <img
@@ -1631,9 +1937,6 @@ const HiringRequestDetails = () => {
                         </nav>
                       </Col>
                     </Row> */}
-                  </TabPane>
-                  <TabPane tabId="3">
-                    <div>3</div>
                   </TabPane>
                 </TabContent>
               </CardBody>

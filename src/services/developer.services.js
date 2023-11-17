@@ -182,6 +182,17 @@ const sendDevToHRNew = async (requestId, developerIds) => {
   return response;
 };
 
+const onbardingDeveloper = async (requestId, developerId) => {
+  const serviceUrl = urlConstant.endpoint.selectingDeveloper.onboardDeveloper
+    .replace("${requestId}", requestId)
+    .replace("${developerId}", developerId);
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    requestId,
+    developerId,
+  });
+  return response;
+};
+
 export default {
   GetAllSelectedDevByHR,
   approvalInterviewByHR,
@@ -198,4 +209,5 @@ export default {
   changeStatusDevUnofficialInTaskDetailForStaff,
   removeOutOfWaitingInterview,
   sendDevToHRNew,
+  onbardingDeveloper
 };

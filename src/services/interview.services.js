@@ -94,6 +94,14 @@ const approvalByManager = async (interviewId) => {
   return response;
 };
 
+const completedInterview = async (interviewId) => {
+  const serviceUrl = urlConstant.endpoint.interview.completeInterview.replace("${interviewId}", interviewId);
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    interviewId
+  });
+  return response;
+}
+
 export default {
   createAnInterview,
   getListInterviewByRequestId,
@@ -102,4 +110,5 @@ export default {
   getAllInterviewByHRAndRequestIdAndPaging,
   getAllInterviewByManagerAndPaging,
   approvalByManager,
+  completedInterview
 };

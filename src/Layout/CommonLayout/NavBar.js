@@ -54,9 +54,9 @@ const NavBar = (props) => {
 
   const signout = () => {
     // Giả sử error là một tham số được truyền vào từ nơi gọi hàm
-    toast.info("Logout thanh cong", {
+    toast.success("Logout successfully", {
       position: "top-right",
-      autoClose: 5000,
+      autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,

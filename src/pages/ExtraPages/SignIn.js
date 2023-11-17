@@ -60,14 +60,26 @@ const SignIn = () => {
     } else {
       if (userData.data.companyId != null) {
         localStorage.setItem('companyId', userData.data.companyId);
-        toast.success('Logged in successfully!');
+        toast.success('Login successfully!');
         navigate("/layout3")
       } else {
         navigate("/signcompany")
+        toast.info("Let's create company information!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     }
 
   };
+
+
   return (
     <React.Fragment>
       <div>

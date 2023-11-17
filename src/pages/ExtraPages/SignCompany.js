@@ -12,7 +12,8 @@ import loginService from "../../services/login.service";
 import userImage2 from "../../assets/images/user/img-02.jpg";
 import Select from "react-select";
 import companyServices from "../../services/company.services";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignCompany = () => {
     document.title = "Sign Up | Jobcy - Job Listing Template | Themesdesign";
@@ -37,6 +38,12 @@ const SignCompany = () => {
 
     const [countries, setCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState(null);
+    const [companyNameError, setCompanyNameError] = useState(null);
+    const [emailError, setEmailError] = useState(null);
+    const [phoneNumberError, setPhoneNumberError] = useState(null);
+    const [countryError, setCountryError] = useState(null);
+    const [addressError, setAddressError] = useState(null);
+    const [imageError, setImageError] = useState(null);
 
     useEffect(() => {
         fetch(
@@ -68,6 +75,19 @@ const SignCompany = () => {
 
     };
 
+    const handleSkipClick = () => {
+        toast.success("Login successfully", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    };
+
     const handleSignUp = async (e) => {
         e.preventDefault();
         const formData2 = new FormData();
@@ -79,6 +99,22 @@ const SignCompany = () => {
         formData2.append('country', formData.country);
         formData2.append('userId', userId);
         formData2.append('file', avatar2);
+
+        if (formData.companyName.trim() == "") {
+            setCompanyNameError("Please enter the company name!")
+        }
+        if (formData.companyEmail.trim() == "") {
+            setEmailError("Please enter email!")
+        }
+        if (formData.phoneNumber.trim() == "") {
+            setPhoneNumberError("Please enter company phone number!")
+        }
+        if (formData.address.trim() == "") {
+            setAddressError("Please enter country!")
+        }
+        if (formData.country == "") {
+            setCountryError("Please enter address!")
+        }
 
         try {
             // Make API request
@@ -97,26 +133,6 @@ const SignCompany = () => {
         }
     };
 
-    const handleEmailChange = (e) => {
-        const newEmail = e.target.value;
-
-        // Thực hiện cập nhật state formData
-        setFormData({ ...formData, email: newEmail });
-
-        // Thực hiện xử lý kiểm tra email
-        const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
-
-        if (newEmail.trim() === '') {
-            e.target.setCustomValidity('Please enter your email');
-            return; // Không cần kiểm tra tiếp nếu trống
-        }
-
-        if (!isValidEmail) {
-            e.target.setCustomValidity('Please enter a valid email address.');
-        } else {
-            e.target.setCustomValidity('');
-        }
-    };
 
     return (
         <React.Fragment>
@@ -207,14 +223,16 @@ const SignCompany = () => {
                                                                     <Input lang="en"
                                                                         type="text"
                                                                         className="form-control"
-                                                                        required
                                                                         id="firstnameInput"
                                                                         placeholder="Enter your first name"
                                                                         value={formData.firstName}
                                                                         onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                                                                        onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
-                                                                        onInvalid={(e) => e.target.setCustomValidity("Please enter your company name")}
                                                                     />
+                                                                    {companyNameError && (
+                                                                        <p className="mt-2" style={{ color: "#ff4200" }} >
+                                                                            {companyNameError}
+                                                                        </p>
+                                                                    )}
                                                                 </div>
                                                                 <div className="mb-3">
                                                                     <label
@@ -226,16 +244,19 @@ const SignCompany = () => {
                                                                     <Input
                                                                         type="text"
                                                                         className="form-control"
-                                                                        required
+
                                                                         id="lastnameInput"
                                                                         placeholder="Enter your last name"
                                                                         value={formData.lastName}
                                                                         onChange={(e) => {
                                                                             setFormData({ ...formData, companyEmail: e.target.value });
                                                                         }}
-                                                                        onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
-                                                                        onInvalid={(e) => e.target.setCustomValidity("Please enter your email")}
                                                                     />
+                                                                    {emailError && (
+                                                                        <p className="mt-2" style={{ color: "#ff4200" }} >
+                                                                            {emailError}
+                                                                        </p>
+                                                                    )}
                                                                 </div>
                                                                 <div className="mb-3">
                                                                     <label
@@ -247,14 +268,17 @@ const SignCompany = () => {
                                                                     <Input
                                                                         type="number"
                                                                         className="form-control"
-                                                                        required
+
                                                                         id="phonenumberInput"
                                                                         placeholder="Enter your phone number"
                                                                         value={formData.phoneNumber}
                                                                         onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                                                        onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
-                                                                        onInvalid={(e) => e.target.setCustomValidity("Please enter your company phone number")}
                                                                     />
+                                                                    {phoneNumberError && (
+                                                                        <p className="mt-2" style={{ color: "#ff4200" }} >
+                                                                            {phoneNumberError}
+                                                                        </p>
+                                                                    )}
                                                                 </div>
                                                                 <div className="mb-3">
                                                                     <label
@@ -310,6 +334,11 @@ const SignCompany = () => {
                                                                             setFormData({ ...formData, country: selectedOption.value });
                                                                         }}
                                                                     />
+                                                                    {countryError && (
+                                                                        <p className="mt-2" style={{ color: "#ff4200" }} >
+                                                                            {countryError}
+                                                                        </p>
+                                                                    )}
                                                                 </div>
                                                                 <div className="mb-3">
                                                                     <label
@@ -324,11 +353,14 @@ const SignCompany = () => {
                                                                         id="passwordInput"
                                                                         placeholder="Enter your password"
                                                                         value={formData.password}
-                                                                        required
+
                                                                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                                                        onInput={(e) => e.target.setCustomValidity('')} // Clear custom validity on input
-                                                                        onInvalid={(e) => e.target.setCustomValidity("Please enter your address")}
                                                                     />
+                                                                    {addressError && (
+                                                                        <p className="mt-2" style={{ color: "#ff4200" }} >
+                                                                            {addressError}
+                                                                        </p>
+                                                                    )}
                                                                 </div>
                                                                 <div className="text-center">
                                                                     {error && <p className="text-danger mt-2">{error}</p>}
@@ -345,6 +377,8 @@ const SignCompany = () => {
                                                                         {" "}
                                                                         <Link
                                                                             to="/layout3"
+                                                                            onClick={handleSkipClick}
+
                                                                             className="fw-medium text-white text-decoration-underline"
                                                                         >
                                                                             {" "}

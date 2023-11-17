@@ -8,7 +8,7 @@ const PrivacyAndPolicyPage = () => {
       <section className="section" style={{ backgroundColor: "rgb(248 255 246 / 62%)" }}>
         <Container style={{ backgroundColor: "white" }}>
           <Row className="justify-content-center p-5" style={{ border: "1px solid #b3adad" }}>
-            <h1 className="text-center mb-4 mt-3">COMMISSION AGREEMENT</h1>
+            <h1 className="text-center mb-4 mt-3">Hợp đồng công tác</h1>
 
             <p>This Commission Agreement is entered into on <b>[Effective Date]</b> , by and between: WeHire and Company Partner.</p>
             <p>By executing this document, both parties affirmatively state that it has carefully read and understood the terms and conditions set forth herein and agree to be bound by the said terms and conditions.</p>
