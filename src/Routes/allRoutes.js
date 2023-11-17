@@ -91,6 +91,12 @@ import NewHiringRequestDetail from "../pages/Admin/NewHiringRequestDetail";
 import ProjectDetail from "../pages/Admin/ProjectDetail";
 import SideBarManager from "../pages/Admin/SideBarManager";
 
+//Admin Management
+import ListAccountHR from "../pages/Admin/ListAccountHR";
+import ListAccountManager from "../pages/Admin/ListAccountManager";
+import ListAccountStaff from "../pages/Admin/ListAccountStaff";
+import ListAccountDeveloper from "../pages/Admin/ListAccountDeveloper";
+
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -224,5 +230,9 @@ const authRoutes = [
   { path: "/newhiringrequestdetail", component: <NewHiringRequestDetail /> },
   { path: "/projectdetail", component: <ProjectDetail /> },
   { path: "/sidebarmanager", component: <SideBarManager /> },
+  { path: "/listAccountHR", component: <ListAccountHR /> },
+  { path: "/listAccountManager", component: <ListAccountManager /> },
+  { path: "/listAccountStaff", component: <ListAccountStaff /> },
+  { path: "/listAccountDeveloper", component: <ListAccountDeveloper /> },
 ];
 export { userRoutes, authRoutes };
