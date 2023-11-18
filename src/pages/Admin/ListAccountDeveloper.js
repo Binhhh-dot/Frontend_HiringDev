@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import {
     Layout, Button, Table, Divider, Tag, Space, Avatar, Badge, Input, Breadcrumb,
-    Modal, Cascader, Checkbox, DatePicker, Form, InputNumber, Radio, Select,
+    Modal, Cascader, Checkbox, DatePicker, Form, InputNumber, Radio,
     Slider, Switch, TreeSelect, Upload, Col, Row, message, notification, Menu
 } from 'antd';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
-
 import {
     PieChartOutlined,
     DesktopOutlined,
@@ -37,6 +36,7 @@ import axios from "axios";
 import employmentTypeServices from '../../services/employmentType.services';
 import developerServices from '../../services/developer.services';
 import scheduleTypeService from './/../../services/scheduleType';
+import Select from 'react-select';
 
 const normFile = (e) => {
     if (Array.isArray(e)) {
@@ -247,6 +247,8 @@ const ListAccountDeveloper = () => {
     });
 
     //Create Dev
+    document.title = "Create Developer Account";
+
     const [options, setOptions] = useState([]);
     const [options2, setOptions2] = useState([]);
     const [options7, setOptions7] = useState([]);
@@ -404,6 +406,16 @@ const ListAccountDeveloper = () => {
     const [dateOfBirthError, setDateOfBirthError] = useState([]);
 
 
+
+    const handleOkUpdate = async () => {
+        try {
+            await handleCreateDev();
+           setVisibleModal1(false);
+        } catch (error) {
+            console.error("Error deleting user:", error);
+        }
+    };
+
     const handleCreateDev = async () => {
         // Kiểm tra xem có userID trong localStorage không    
         let check = true;
@@ -435,7 +447,6 @@ const ListAccountDeveloper = () => {
             setTypeError(null);
         }
 
-        // Kiểm tra lỗi cho Level requirement
         if (!selectedOptions3.value) {
             setLevelError("Please select the level ");
             check = false;
@@ -444,18 +455,18 @@ const ListAccountDeveloper = () => {
         }
 
         if (!selectedOptions6.value) {
-            setScheduleTypeError("Please select the schedule type ");
-            check = false;
-        } else {
-            setScheduleTypeError(null);
-        }
-
-        if (!selectedOptions5.value) {
             setEmploymentTypeError("Please select the employment type ");
             check = false;
         } else {
             setEmploymentTypeError(null);
         }
+
+        // if (!selectedOptions5.value) {
+        //     setEmploymentTypeError("Please select the employment type ");
+        //     check = false;
+        // } else {
+        //     setEmploymentTypeError(null);
+        // }
 
         if (!selectedOptions7.value) {
             setGenderError("Please select the gender");
@@ -520,7 +531,7 @@ const ListAccountDeveloper = () => {
                 const dateOfBirth = document.getElementById("date-of-birth").value; // replace with actual value from the type dropdown
                 const levelRequireId = selectedOptions3.value; // replace with actual value from the level dropdown
                 const scheduleTypeId = selectedOptions6.value;
-                const employmentTypeId = selectedOptions5.value;
+                const employmentTypeId = selectedOptions6.value;
                 const genderId = selectedOptions7.value;
                 const cvId = selectedOptions4.id;
                 const skillIds = selectedOptions.map((skill) => skill.value);
@@ -529,8 +540,27 @@ const ListAccountDeveloper = () => {
                     firstName, lastName, email, phoneNumber, genderId, dateOfBirth, yearOfExperience, avarageSalary, cvId, scheduleTypeId, employmentTypeId, levelRequireId, typeRequireId, skillIds
                 );
                 console.log(response)
+                message.success({
+                    content: 'Account Created Successfully',
+                    duration: 2,
+                    onClose: () => {
+                        console.log('Toast closed');
+                    },
+                    style: {
+                        marginTop: '50px',
+                        marginRight: '50px',
+                    },
+                });
             } catch (error) {
                 console.error("Error create dev:", error);
+                message.error({
+                    content: 'Error creating account ',
+                    duration: 2,
+                    style: {
+                        marginTop: '50px',
+                        marginRight: '50px',
+                    },
+                });
 
             }
         }
@@ -825,7 +855,7 @@ const ListAccountDeveloper = () => {
                                         render={(text, record) => (
                                             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                                                 {text.map((type, index) => (
-                                                    <div key={index} className="badge text-bg-info" style={{ padding: '5px', margin: '5px' }}>
+                                                    <div key={index} className="badge text-bg-light" style={{ padding: '5px', margin: '5px' }}>
                                                         {type}
                                                     </div>
                                                 ))}
@@ -834,7 +864,7 @@ const ListAccountDeveloper = () => {
                                     <Column title="Skill Require" dataIndex="skillRequireStrings" key="skillRequireStrings" render={(text, record) => (
                                         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                                             {text.map((skill, index) => (
-                                                <div key={index} className="badge text-bg-info" style={{ padding: '5px', margin: '5px' }}>
+                                                <div key={index} className="badge text-bg-light" style={{ padding: '5px', margin: '5px' }}>
                                                     {skill}
                                                 </div>
                                             ))}
@@ -854,15 +884,7 @@ const ListAccountDeveloper = () => {
                                             {text}
                                           </span>
                                         )}
-                                    // render={(status) => (
-                                    //     <>
-                                    //         {status.map((tag) => (
-                                    //             <Tag className="badge bg-warning text-light" key={tag}>
-                                    //                 {tag}
-                                    //             </Tag>
-                                    //         ))}
-                                    //     </>
-                                    // )}
+                                  
                                     />
                                     <Column
                                             title="Action"
@@ -947,8 +969,8 @@ const ListAccountDeveloper = () => {
                             <p><strong>Average Salary:</strong> {hRInfo.averageSalary}</p>
                             <p><strong>Schedule Type Name:</strong> {hRInfo.scheduleTypeName}</p>
                             <p><strong>Employment Type Name:</strong> {hRInfo.employmentTypeName}</p>
-                            <p><strong>Status:</strong> <span className={hRInfo.devStatusString === 'On Working' ? 'badge bg-warning text-light' : hRInfo.devStatusString === 'Selected On Request' ? 'badge rounded-pill text-bg-success'  : 'badge text-bg-danger'}>{hRInfo.devStatusString}</span></p>
-                            <p><strong>Status User:     </strong> {hRInfo.userStatusString}</p>
+                            <p><strong>Developer Status:</strong> <span className={hRInfo.devStatusString === 'On Working' ? 'badge bg-warning text-light' : hRInfo.devStatusString === 'Selected On Request' ? 'badge text-bg-light'  : 'badge text-bg-danger'}>{hRInfo.devStatusString}</span></p>
+                            <p><strong>Account Status:</strong> <span className={hRInfo.userStatusString === 'Active' ? 'badge rounded-pill text-bg-success' : hRInfo.userStatusString === 'Selected On Request' ? 'badge bg-warning text-light'  : 'badge text-bg-danger'}>{hRInfo.userStatusString}</span></p>
                             <p><strong>Gender Name:     </strong> {hRInfo.genderName}</p>
 
 
@@ -962,12 +984,15 @@ const ListAccountDeveloper = () => {
                     title="Create Account"
                     centered
                     visible={visibleModal1}
+                    onOk={handleOkUpdate}
                     onCancel={handleCancel}
                     width={1000}
                     footer={null}
                 >
-                    <div className=" ">
-                        <div className="row justify-content-center  w-100 ">
+                     <React.Fragment>
+            <section className="section" style={{ paddingTop: "0px" }}>
+                <div className=" ">
+                    <div className="row justify-content-center  w-100 ">
                             <div className="rounded shadow bg-white p-4">
                                 <div className="custom-form">
                                     <div id="message3"></div>
@@ -978,18 +1003,6 @@ const ListAccountDeveloper = () => {
                                         id="contact-form3"
                                     >
                                         <h4 class="text-dark mb-3">Create new account developer</h4>
-                                        <div class="row">
-                                            <div className="form-group app-label mt-2">
-                                                <label className="text-muted">Choose CV:</label>
-                                                <div className="form-button">
-                                                    <Select
-                                                        options={options4}
-                                                        value={selectedOptions4}
-                                                        onChange={handleChange4}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group app-label mt-2">
@@ -1025,6 +1038,7 @@ const ListAccountDeveloper = () => {
                                                             options={options7}
                                                             value={selectedOptions7}
                                                             onChange={handleChange7}
+                                                            style={{ width: '100%' }} 
                                                         />
                                                     </div>
                                                     {genderError && <p className="text-danger mt-2">{genderError}</p>}
@@ -1074,18 +1088,20 @@ const ListAccountDeveloper = () => {
                                         <div className="row">
                                             <div className="col-md-6">
 
-                                                <div className="form-group app-label mt-2">
-                                                    <label className="text-muted">Schedule Type</label>
-                                                    <div className="form-button">
-                                                        <Select
-                                                            options={options5}
-                                                            value={selectedOptions5}
-                                                            onChange={handleChange5}
-                                                        />
-                                                    </div>
-                                                    {scheduleTypeError && <p className="text-danger mt-2">{scheduleTypeError}</p>}
-
+                                            <div className="form-group app-label mt-2">
+                                                <label className="text-muted">Type requirement</label>
+                                                <div className="form-button">
+                                                    <Select
+                                                        isMulti
+                                                        options={options2}
+                                                        value={selectedOptions2}
+                                                        onChange={handleChange2}
+                                                        style={{ width: '100%' }} 
+                                                    />
                                                 </div>
+                                                {typeError && <p className="text-danger mt-2">{typeError}</p>}
+
+                                            </div>
                                             </div>
                                             <div className="col-md-6">
                                                 <div class="form-group app-label mt-2">
@@ -1097,6 +1113,7 @@ const ListAccountDeveloper = () => {
                                                                 options={options3}
                                                                 value={selectedOptions3}
                                                                 onChange={handleChange3}
+                                                                style={{ width: '100%' }} 
                                                             />
                                                         </div>
                                                         {levelError && <p className="text-danger mt-2">{levelError}</p>}
@@ -1115,6 +1132,7 @@ const ListAccountDeveloper = () => {
                                                             options={options}
                                                             value={selectedOptions}
                                                             onChange={handleChange}
+                                                            style={{ width: '100%' }} 
                                                         />
                                                     </div>
                                                     {skillError && <p className="text-danger mt-2">{skillError}</p>}
@@ -1130,6 +1148,7 @@ const ListAccountDeveloper = () => {
                                                                 options={options6}
                                                                 value={selectedOptions6}
                                                                 onChange={handleChange6}
+                                                                style={{ width: '100%' }} 
                                                             />
                                                         </div>
                                                     </div>
@@ -1138,33 +1157,18 @@ const ListAccountDeveloper = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div className="form-group app-label mt-2">
-                                                <label className="text-muted">Type requirement</label>
-                                                <div className="form-button">
-                                                    <Select
-                                                        isMulti
-                                                        options={options2}
-                                                        value={selectedOptions2}
-                                                        onChange={handleChange2}
-                                                    />
-                                                </div>
-                                                {typeError && <p className="text-danger mt-2">{typeError}</p>}
-
-                                            </div>
-
-
-                                        </div>
                                         <div class="col-lg-12 mt-2 d-flex justify-content-end">
-                                            <button type="button" className="btn btn-primary btn-hover" onClick={handleCreateDev} >
+                                            <button type="button" className="btn btn-primary btn-hover" onClick={handleOkUpdate} >
                                                 Create
                                             </button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </div>             
+                </div>
+            </section>
+        </React.Fragment>
                   
                 </Modal>
                 <Modal
