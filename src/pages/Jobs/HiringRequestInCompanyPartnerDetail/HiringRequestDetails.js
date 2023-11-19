@@ -45,10 +45,12 @@ import img0 from "../../../assets/images/user/img-00.jpg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEllipsisVertical,
-  faGear
+  faGear,
 } from "@fortawesome/free-solid-svg-icons";
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, SkypeOutlined } from '@ant-design/icons';
 import { Dropdown as DropdownAntd, Space } from 'antd';
+import teamMeetingServices from "../../../services/teamMeeting.services";
+import customUrl from "../../../utils/customUrl";
 
 
 const HiringRequestDetails = () => {
@@ -90,7 +92,7 @@ const HiringRequestDetails = () => {
   const [dateOfInterviewInput, setDateOfInterviewInput] = useState('');
   const [startTimeInput, setStartTimeInput] = useState('');
   const [endTimeInput, setEndTimeInput] = useState('');
-
+  const [authenCode, setAuthencode] = useState(null);
   const generateItems = () => {
     if (selectInterviewDetail.statusString === "Waiting Approval") {
       return [
@@ -158,6 +160,10 @@ const HiringRequestDetails = () => {
       });
       console.error("Error completedInterview:", error);
     }
+  };
+
+  const openSkype = async (linkMeeting) => {
+    window.open(linkMeeting, '_blank');
   };
 
   const updateInterview = async (interviewId) => {
@@ -298,7 +304,58 @@ const HiringRequestDetails = () => {
     fetchJobVacancies();
   }, []);
 
+  const handleInterviewCreation = async () => {
+    console.log(authenCode)
+    try {
+      const title = document.getElementById("interview-title").value;
+      const description = document.getElementById("description").value;
+      const dateOfInterview =
+        document.getElementById("date-of-interview").value;
 
+      const startTime = document.getElementById("startTime").value + ":00";
+      console.log(startTime);
+      const endTime = document.getElementById("endTime").value + ":00";
+      const queryParams = new URLSearchParams(location.search);
+      const requestId = queryParams.get("Id");
+      const developerId = developerIdSelectedCreateInterview;
+      const response = await interviewServices.createAnInterview(
+        requestId,
+        developerId,
+        title,
+        description,
+        dateOfInterview,
+        startTime,
+        endTime
+      );
+      let interviewId = response.data.data.interviewId;
+      if (response.data.code == 201) {
+        console.log("tao thanh cong")
+        try {
+          const redirectUrl = customUrl.redirectUrlCreateMeetting;
+          console.log(interviewId);
+          console.log(redirectUrl);
+          console.log(authenCode);
+          const responseCreateMeeting = await teamMeetingServices.createTeamMeeting(interviewId, redirectUrl, authenCode)
+          console.log(responseCreateMeeting)
+        } catch (error) {
+          console.log("error:", error)
+        }
+      }
+      setLoadListDeveloper(!loadListDeveloper);
+      toast.success('Create successfully!');
+      setModalCreateInterview(false);
+      // fetchListDevInterview();
+      // setLoading(false);
+      // navigate(`/hiringrequestlistincompanypartnerdetail?Id=${requestId}`);
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      // setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleInterviewCreation();
+  }, [authenCode]);
 
   useEffect(() => {
     fetchJobVacancies();
@@ -433,10 +490,7 @@ const HiringRequestDetails = () => {
   };
 
   const createAnInterview = async () => {
-    console.log(developerIdSelectedCreateInterview)
-
     let check = true;
-    // setLoading(true);
     if (!document.getElementById("interview-title").value) {
       setInterviewTitlError("Please enter a interview title");
       check = false;
@@ -504,43 +558,37 @@ const HiringRequestDetails = () => {
         setTimeStartError(null);
       }
     }
-
+    let checkCreateInterview = false;
+    let code;
     if (check) {
-      try {
-        const title = document.getElementById("interview-title").value;
-        const description = document.getElementById("description").value;
-        const dateOfInterview =
-          document.getElementById("date-of-interview").value;
+      const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-        const startTime = document.getElementById("startTime").value + ":00";
-        console.log(startTime);
-        const endTime = document.getElementById("endTime").value + ":00";
-        const queryParams = new URLSearchParams(location.search);
-        const requestId = queryParams.get("Id");
-        const developerId = developerIdSelectedCreateInterview;
-        const response = await interviewServices.createAnInterview(
-          requestId,
-          developerId,
-          title,
-          description,
-          dateOfInterview,
-          startTime,
-          endTime
-        );
-        let data = response.data;
-        setLoadListDeveloper(!loadListDeveloper);
-        toast.success('Create successfully!');
-        setModalCreateInterview(false);
-        // fetchListDevInterview();
-        // setLoading(false);
-        // navigate(`/hiringrequestlistincompanypartnerdetail?Id=${requestId}`);
-      } catch (error) {
-        console.error("Error fetching job vacancies:", error);
-        // setLoading(false);
-      }
+      const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+
+      // Lắng nghe các thông điệp từ cửa sổ popup
+      window.addEventListener('message', (event) => {
+        code = event.data;
+        // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
+        if (code) {
+          checkCreateInterview = true;
+          popupWindow.close();
+          console.log(event.data)
+          setAuthencode(event.data)
+        }
+      });
     }
+    // setLoading(true);
+
     // setLoading(false);
   };
+
+
+
+
+  const createIntervewAndCreateMeeting = async () => {
+
+  }
+
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
@@ -592,33 +640,22 @@ const HiringRequestDetails = () => {
     setShowPopup(true);
   };
 
-  const handleClick = () => {
-    // Mở cửa sổ mới khi người dùng ấn vào button
-    const authWindow = window.open(
-      'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345',
-      '_blank',
-      'width=600,height=400'
-    );
 
-    // Kiểm tra khi cửa sổ đó được đóng lại
-    const interval = setInterval(() => {
-      if (authWindow.closed) {
-        clearInterval(interval);
+  const openFacebook = () => {
+    const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-        // Lấy mã code từ URL của cửa sổ mới
-        const searchParams = new URLSearchParams(authWindow.location.search);
-        const code = searchParams.get('code');
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
 
-        if (code) {
-          console.log('Mã code:', code);
-          // Thực hiện xử lý tiếp theo sau khi lấy được mã code
-        } else {
-          console.log('Không nhận được mã code.');
-        }
+    // Lắng nghe các thông điệp từ cửa sổ popup
+    window.addEventListener('message', (event) => {
+      const code = event.data;
+      // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
+      if (code) {
+        console.log(code)
+        popupWindow.close();
       }
-    }, 1000);
-  }
-
+    });
+  };
 
 
   const onUpdateInterview = () => {
@@ -918,13 +955,10 @@ const HiringRequestDetails = () => {
                         Create an interview
                       </div>
                     </div>
-
-                    <div>
-                      <button onClick={() => handleClick()}  >Mở cửa sổ đăng nhập</button>
-
-                    </div>
                   </Form>
-
+                  <div>
+                    <button onClick={() => openFacebook()}>Mở cửa sổ đăng nhập</button>
+                  </div>
                 </div>
               </div>
             </ModalBody>
@@ -1114,15 +1148,28 @@ const HiringRequestDetails = () => {
                   </div>
                 </Form>
                 {selectInterviewDetail.statusString === "Approved" && (
-                  <div className="mt-3 d-flex justify-content-end" id="buttonCompleted">
+                  <div className="  d-flex justify-content-end" id="buttonCompleted">
                     <button
-                      className="btn btn-success"
+                      className="btn btn-blue me-2"
+                      onClick={() => {
+                        openSkype(selectInterviewDetail.meetingUrl);
+                      }}
+                      id="buttonCompletedFormInterview"
+                    >
+                      <div className="d-flex">
+                        <SkypeOutlined className="me-1" style={{ fontSize: "17px" }} />
+                        Join Skype
+                      </div>
+                    </button>
+
+                    <button
+                      className="btn btn-success me-2"
                       onClick={() => {
                         completedInterview(selectInterviewDetail.interviewId);
                       }}
                       id="buttonCompletedFormInterview"
                     >
-                      Completed
+                      Complete
                     </button>
                   </div>
                 )}
@@ -1871,16 +1918,25 @@ const HiringRequestDetails = () => {
                                 </div>
                               </div>
                               <div className="d-flex flex-column gap-1 ">
-                                <div className="d-flex mb-0">
+                                {/* <div className="d-flex  mb-0">
                                   <div className="flex-shrink-0">
                                     <i className="uil uil-clock-three text-primary me-1"></i>
                                   </div>
                                   <p className="text-muted  mb-0 ">{jobVacancy2Details.startTime} to {jobVacancy2Details.endTime}</p>
-                                  {/* <p className="text-muted mb-0 ms-1">|</p> */}
                                   <div className="flex-shrink-0 ms-2">
                                     <i className="uil uil-calendar-alt text-primary "></i>
                                   </div>
                                   <p className="text-muted mb-0 ms-1">{jobVacancy2Details.dateOfInterview} </p>
+                                </div> */}
+                                <div className="d-flex justify-content-between">
+                                  <div className="d-flex">
+                                    <i className="uil uil-clock-three text-primary me-1"></i>
+                                    <p className="text-muted  mb-0 ">{jobVacancy2Details.startTime} to {jobVacancy2Details.endTime}</p>
+                                  </div>
+                                  <div className="d-flex">
+                                    <i className="uil uil-calendar-alt text-primary "></i>
+                                    <p className="text-muted mb-0 ms-1">{jobVacancy2Details.dateOfInterview} </p>
+                                  </div>
                                 </div>
                                 <p className="text-muted mb-0" style={{ height: "45px" }}>{jobVacancy2Details.description}</p>
                               </div>
@@ -1942,9 +1998,9 @@ const HiringRequestDetails = () => {
               </CardBody>
             </Card>
           </div>
-        </div>
+        </div >
 
-      </section>
+      </section >
       <div>
       </div>
     </React.Fragment >

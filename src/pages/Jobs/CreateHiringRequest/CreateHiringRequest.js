@@ -10,7 +10,6 @@ import skillService from "../../../services/skill.service";
 import typeService from "../../../services/type.service";
 import levelService from "../../../services/level.service";
 import hiringRequestService from "../../../services/hiringrequest.service";
-import scheduleTypeService from "../../../services/scheduleType";
 import employmentTypeServices from "../../../services/employmentType.services";
 import { Editor } from "@tinymce/tinymce-react";
 import companyServices from "../../../services/company.services";
@@ -37,7 +36,6 @@ const CreateHiringRequest = () => {
   const [typeError, setTypeError] = useState(null);
   const [levelError, setLevelError] = useState(null);
   const [skillError, setSkillError] = useState(null);
-  const [scheduleTypeError, setScheduleTypeError] = useState(null);
   const [employmentTypeError, setEmploymentTypeError] = useState(null);
   const [budgetError, setBudgetError] = useState(null);
   const [durationError, setDurationError] = useState(null);
@@ -309,36 +307,6 @@ const CreateHiringRequest = () => {
       }
 
       try {
-        const response4 = await scheduleTypeService.getAllScheduleType();
-        const activeScheduleType = response4.data.data.filter(
-          (scheduleType) => scheduleType.statusString === "Active"
-        );
-        if (hiringRequestSaved) {
-          const requiredScheduleTypeName = hiringRequestSaved.scheduleTypeName;
-          const foundScheduleType = activeScheduleType.find(
-            (scheduleType) =>
-              scheduleType.scheduleTypeName === requiredScheduleTypeName
-          );
-          if (foundScheduleType) {
-            const newScheduleTypeNam = {
-              value: foundScheduleType.scheduleTypeId.toString(),
-              label: foundScheduleType.scheduleTypeName,
-            };
-            setSelectedOptions4(newScheduleTypeNam);
-          }
-        }
-        const formattedScheduleType = activeScheduleType.map(
-          (scheduleType) => ({
-            value: scheduleType.scheduleTypeId.toString(),
-            label: scheduleType.scheduleTypeName,
-          })
-        );
-        setOptions4(formattedScheduleType);
-      } catch (error) {
-        console.error("Error fetching schedule type:", error);
-      }
-
-      try {
         const response5 = await employmentTypeServices.getAllEmploymentType();
         const activeEmploymentType = response5.data.data.filter(
           (employmentType) => employmentType.statusString === "Active"
@@ -417,12 +385,7 @@ const CreateHiringRequest = () => {
           setLevelError(null);
         }
 
-        if (!selectedOptions4.value) {
-          setScheduleTypeError("Please select the schedule type requirement.");
-          check = false;
-        } else {
-          setScheduleTypeError(null);
-        }
+
         if (!selectedOptions5.value) {
           setEmploymentTypeError(
             "Please select the employment type requirement."
@@ -498,13 +461,12 @@ const CreateHiringRequest = () => {
             const duration = document.getElementById("duration").value; // get duration from the date input
             const typeRequireId = selectedOptions2.value; // replace with actual value from the type dropdown
             const levelRequireId = selectedOptions3.value; // replace with actual value from the level dropdown
-            const scheduleTypeId = selectedOptions4.value;
             const employmentTypeId = selectedOptions5.value;
             const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
             const isSaved = false;
-
             const requestIdState = location.state?.requestId || null;
             const projectIdState = location.state?.projectId || null;
+            const jobPositionIdState = location.state?.jobPositionId || null;
 
             if (requestIdState) {
               const targetedDev = 0;
@@ -520,12 +482,13 @@ const CreateHiringRequest = () => {
                 levelRequireId,
                 skillIds,
                 isSaved,
-                scheduleTypeId,
-                employmentTypeId
+                employmentTypeId,
               );
               console.log("Job saved posted successfully:", response);
             } else {
               const response = await hiringRequestService.createHiringRequest(
+                companyIdErr,
+                jobPositionIdState,
                 jobTitle,
                 jobDescription,
                 numberOfDev,
@@ -535,8 +498,6 @@ const CreateHiringRequest = () => {
                 levelRequireId,
                 skillIds,
                 isSaved,
-                projectIdState,
-                scheduleTypeId,
                 employmentTypeId
               );
               console.log("Job posted successfully:", response);
@@ -580,7 +541,6 @@ const CreateHiringRequest = () => {
           setNumberDevError(null);
           setTypeError(null);
           setLevelError(null);
-          setScheduleTypeError(null);
           setEmploymentTypeError(null);
           setSkillError(null);
           setBudgetError(null);
@@ -611,9 +571,6 @@ const CreateHiringRequest = () => {
           const levelRequireId = selectedOptions3.value
             ? selectedOptions3.value
             : null; // replace with actual value from the level dropdown
-          const scheduleTypeId = selectedOptions4.value
-            ? selectedOptions4.value
-            : null;
           const employmentTypeId = selectedOptions5.value
             ? selectedOptions5.value
             : null;
@@ -635,7 +592,6 @@ const CreateHiringRequest = () => {
               levelRequireId,
               skillIds,
               isSaved,
-              scheduleTypeId,
               employmentTypeId
             );
             console.log("Save posted successfully:", response);
@@ -651,7 +607,6 @@ const CreateHiringRequest = () => {
               skillIds,
               isSaved,
               companyId,
-              scheduleTypeId,
               employmentTypeId
             );
             console.log("Update posted successfully:", response);
@@ -709,7 +664,7 @@ const CreateHiringRequest = () => {
                   >
                     <h4 class="text-dark mb-3">Post a New Job :</h4>
                     <div class="row">
-                      <div class="col-md-12">
+                      <div class="col-md-9">
                         <div class="form-group app-label mt-2">
                           <label class="text-muted">Job Title</label>
                           <input
@@ -724,10 +679,7 @@ const CreateHiringRequest = () => {
                           )}
                         </div>
                       </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-6">
+                      <div class="col-md-3">
                         <div class="form-group app-label mt-2">
                           <label class="text-muted">Number of developer</label>
                           <input
@@ -738,6 +690,60 @@ const CreateHiringRequest = () => {
                           ></input>
                           {numberDevError && (
                             <p className="text-danger mt-2">{numberDevError}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group app-label mt-2">
+                          <label class="text-muted">Salary per dev</label>
+                          <input
+                            id="budget"
+                            type="number"
+                            class="form-control resume"
+                            placeholder="300$"
+                          ></input>
+                          {budgetError && (
+                            <p className="text-danger mt-2">{budgetError}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-group app-label mt-2">
+                          <label class="text-muted">Duration</label>
+                          <input
+                            id="duration"
+                            type="date"
+                            class="form-control resume"
+                            placeholder=""
+                          ></input>
+                          {durationError && (
+                            <p className="text-danger mt-2">{durationError}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group app-label mt-2">
+                          <label class="text-muted">
+                            Employment type requirement
+                          </label>
+                          <div className="form-button">
+                            <Select
+                              options={options5}
+                              value={selectedOptions5}
+                              onChange={handleChange5}
+                              className="Select Select--level-highest"
+                            />
+                          </div>
+                          {employmentTypeError && (
+                            <p className="text-danger mt-2">
+                              {employmentTypeError}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -797,81 +803,6 @@ const CreateHiringRequest = () => {
                       </div>
                     </div>
 
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group app-label mt-2">
-                          <label class="text-muted">
-                            Schedule type requirement
-                          </label>
-                          <div className="form-button">
-                            <Select
-                              options={options4}
-                              value={selectedOptions4}
-                              onChange={handleChange4}
-                              className="Select Select--level"
-                            />
-                          </div>
-                          {scheduleTypeError && (
-                            <p className="text-danger mt-2">
-                              {scheduleTypeError}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div class="col-md-6">
-                        <div class="form-group app-label mt-2">
-                          <label class="text-muted">
-                            Employment type requirement
-                          </label>
-                          <div className="form-button">
-                            <Select
-                              options={options5}
-                              value={selectedOptions5}
-                              onChange={handleChange5}
-                              className="Select Select--level"
-                            />
-                          </div>
-                          {employmentTypeError && (
-                            <p className="text-danger mt-2">
-                              {employmentTypeError}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group app-label mt-2">
-                          <label class="text-muted">Budget</label>
-                          <input
-                            id="budget"
-                            type="number"
-                            class="form-control resume"
-                            placeholder="300$"
-                          ></input>
-                          {budgetError && (
-                            <p className="text-danger mt-2">{budgetError}</p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div class="col-md-6">
-                        <div class="form-group app-label mt-2">
-                          <label class="text-muted">Duration</label>
-                          <input
-                            id="duration"
-                            type="date"
-                            class="form-control resume"
-                            placeholder=""
-                          ></input>
-                          {durationError && (
-                            <p className="text-danger mt-2">{durationError}</p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
                     <div class="row">
                       <div class="col-md-12">
                         <div class="form-group app-label mt-2">
@@ -1204,8 +1135,8 @@ const CreateHiringRequest = () => {
             </div>
           </div>
         </div>
-      </section>
-    </React.Fragment>
+      </section >
+    </React.Fragment >
   );
 };
 

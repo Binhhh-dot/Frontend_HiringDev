@@ -2,6 +2,8 @@ import urlConstant from "../Common/urlConstant";
 import utils from "../utils/customAxios";
 
 const createHiringRequest = async (
+  companyId,
+  jobPositionId,
   jobTitle,
   jobDescription,
   numberOfDev,
@@ -11,12 +13,12 @@ const createHiringRequest = async (
   levelRequireId,
   skillIds,
   isSaved,
-  projectId,
   employmentTypeId,
-  scheduleTypeId
 ) => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.createHiringRequest;
   const response = await utils.axiosLocalHost.post(serviceUrl, {
+    companyId,
+    jobPositionId,
     jobTitle,
     jobDescription,
     numberOfDev,
@@ -26,8 +28,6 @@ const createHiringRequest = async (
     levelRequireId,
     skillIds,
     isSaved,
-    projectId,
-    scheduleTypeId,
     employmentTypeId,
   });
   return response;

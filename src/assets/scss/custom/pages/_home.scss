@@ -111,6 +111,7 @@
   padding: 198px 0 140px 0;
   background-color: rgba(var(--#{$prefix}primary-rgb), 0.1);
   overflow-x: clip;
+
   @media (max-width: 767.98px) {
     padding: 160px 0 125px 0;
   }
@@ -128,6 +129,7 @@
   padding: 210px 0 95px 0;
   background-color: rgba(var(--#{$prefix}primary-rgb), 0.1);
   overflow-x: clip;
+
   @media (max-width: 767.98px) {
     padding: 160px 0 90px 0;
   }
@@ -136,19 +138,23 @@
 .homeslider {
   .home-slide-box {
     position: relative;
+
     .bg-overlay {
       background: linear-gradient(to top, rgba($black, 0.75), transparent);
     }
+
     .home-slide-content {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
+
       .slide-para {
         font-family: $font-family-secondary;
       }
     }
   }
+
   @media (min-width: 992px) {
     width: 200%;
 
@@ -185,6 +191,7 @@
     font-size: 102px;
     color: $white;
   }
+
   .icon-2 {
     font-size: 100px;
     position: absolute;
@@ -195,6 +202,7 @@
 }
 
 @media (min-width: 768px) {
+
   .bg-home2,
   .bg-home3 {
     .filter-border {
@@ -231,4 +239,32 @@ body[data-bs-theme="dark"] {
   .bg-home {
     background-color: #373f4a;
   }
+}
+
+.scrollable-row {
+  overflow-x: auto;
+  width: 100%;
+  white-space: nowrap;
+  /* Ngăn các cột trở xuống dòng */
+}
+
+.flex-nowrap>.col-lg-3 {
+  display: inline-block;
+  vertical-align: top;
+  white-space: normal;
+  /* Đảm bảo nội dung bên trong cột không bị cắt bớt */
+}
+
+.show-scroll {
+  overflow-x: auto;
+}
+
+.hover-change {
+  transition: background-color 0.3s;
+  /* Thêm hiệu ứng chuyển đổi màu sắc */
+}
+
+.hover-change:hover {
+  background-color: rgb(246, 246, 246);
+  /* Thay đổi màu nền khi hover */
 }

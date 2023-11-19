@@ -48,6 +48,7 @@ import Contact from "../pages/Contact/Contact";
 import SignIn from "../pages/ExtraPages/SignIn";
 import SignUp from "../pages/ExtraPages/SignUp";
 import SignOut from "../pages/ExtraPages/SignOut";
+import Callback from "../pages/ExtraPages/Callback";
 import SignCompany from "../pages/ExtraPages/SignCompany";
 import ResetPassword from "../pages/ExtraPages/ResetPassword";
 import ComingSoon from "../pages/ExtraPages/ComingSoon";
@@ -223,6 +224,7 @@ const authRoutes = [
   { path: "/comingsoon", component: <ComingSoon /> },
   { path: "/resetpassword", component: <ResetPassword /> },
   { path: "/signout", component: <SignOut /> },
+  { path: "/callback", component: <Callback /> },
   { path: "/signup", component: <SignUp /> },
   { path: "/signin", component: <SignIn /> },
   { path: "/signcompany", component: <SignCompany /> },
