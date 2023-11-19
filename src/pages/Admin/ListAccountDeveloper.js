@@ -37,6 +37,8 @@ import employmentTypeServices from '../../services/employmentType.services';
 import developerServices from '../../services/developer.services';
 import scheduleTypeService from './/../../services/scheduleType';
 import Select from 'react-select';
+import SliderBarWeb from "../Admin/SlideBar/SiderBarWeb"
+
 
 const normFile = (e) => {
     if (Array.isArray(e)) {
@@ -639,94 +641,7 @@ const ListAccountDeveloper = () => {
     return (
         <React.Fragment>
             <Layout style={{ minHeight: "100vh" }}>
-                <Sider
-                    collapsed={collapsed}
-                    width={250}
-                    style={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}
-                >
-                    <div className="d-flex mt-3 justify-content-between ms-3 me-3">
-                        {showWeHire && (
-                            <h2 className="mb-0" id="wehire">
-                                WeHire
-                            </h2>
-                        )}
-                        {isLeftIcon ? (
-                            <div
-                                style={{
-                                    width: "40px",
-                                    height: "40px",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    backgroundColor: "#f8f7fd",
-                                    borderRadius: "10px",
-                                }}
-                            >
-                                {/* <LeftOutlined
-                onClick={toggleSidebar}
-                style={{ color: "purple", fontSize: "24px" }}
-              /> */}
-                                <FontAwesomeIcon
-                                    icon={faAngleLeft}
-                                    size="xl"
-                                    color="#6546D2"
-                                    onClick={toggleSidebar}
-                                />
-                            </div>
-                        ) : (
-                            <div
-                                className="ms-2"
-                                style={{
-                                    width: "40px",
-                                    height: "40px",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    backgroundColor: "#f8f7fd",
-                                    borderRadius: "10px",
-                                }}
-                            >
-                                {/* <RightOutlined
-                onClick={toggleSidebar}
-                style={{ color: "purple", fontSize: "24px" }}
-              /> */}
-                                <FontAwesomeIcon
-                                    icon={faAngleRight}
-                                    size="xl"
-                                    color="#6546D2"
-                                    onClick={toggleSidebar}
-                                />
-                            </div>
-                        )}
-                    </div>
-                    <Menu
-                        className="mt-4"
-                        style={{ border: "0px" }}
-                        defaultSelectedKeys={["menu-key/10"]}
-                        selectedKeys={selectedKeys}
-                        mode="inline"
-                        onClick={handleMenuClick}
-                    >
-                        {items.map((item) =>
-                            item.children ? (
-                                <Menu.SubMenu
-                                    key={item.key}
-                                    icon={item.icon}
-                                    title={item.label}
-                                    onClick={() => handleSubMenuClick(item)}
-                                >
-                                    {item.children.map((child) => (
-                                        <Menu.Item key={child.key}>{child.label}</Menu.Item>
-                                    ))}
-                                </Menu.SubMenu>
-                            ) : (
-                                <Menu.Item key={item.key} icon={item.icon}>
-                                    {item.label}
-                                </Menu.Item>
-                            )
-                        )}
-                    </Menu>
-                </Sider>
+               <SliderBarWeb></SliderBarWeb>
                 <Layout>
                 <div
                     style={{
