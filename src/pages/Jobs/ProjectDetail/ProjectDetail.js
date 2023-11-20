@@ -10,7 +10,7 @@ const ProjectDetail = () => {
   document.title = "Job Details | Jobcy - Job Listing Template | Themesdesign";
   return (
     <React.Fragment>
-      <Section />
+      {/* <Section /> */}
       <section className="section">
         <Container className="custom-container-project-detail">
           <Row>

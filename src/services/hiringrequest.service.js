@@ -354,6 +354,18 @@ const getHiringRequestByProjectIdAndPaging = async (
   return response;
 };
 
+const getHiringRequestByProjectId = async (
+  projectId
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getAllHiringRequestByProjectId.replace(
+      "${projectId}",
+      projectId
+    ) 
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -373,5 +385,7 @@ export default {
   updateHiringRequest,
   cancelHirringRequestStatus,
   cancelHirringRequestStatusAfter,
-  getHiringRequestByProjectIdAndPaging
+  getHiringRequestByProjectIdAndPaging,
+  getHiringRequestByProjectId
+
 };

@@ -91,9 +91,10 @@ export default {
       getDeveloperUnofficial: "/Developer/Unofficial",
       getDeveloperUnofficialPaging:
         "PageIndex=${currentPage}&PageSize=${pageSize}",
-
       changeStatusDevUnofficialInTaskDetailForStaff:
         "/AssignTask/ChangeStatusDevTask",
+      getListDeveloperOnboardByProjectId: "/Developer/ByProject/${projectId}",
+
     },
     interview: {
       createAnInterview: "/Interview",

@@ -207,7 +207,16 @@ const CreateHiringRequest = () => {
             hiringRequestSaved.salaryPerDev;
           console.log(hiringRequestSaved.salaryPerDev)
           localStorage.setItem("requestId", hiringRequestSaved.requestId);
-          const formattedDuration = hiringRequestSaved.duration.split("T")[0];
+          var parts = hiringRequestSaved.duration.split('-');
+      if (parts.length === 3) {
+        var day = parts[1];
+        var month = parts[0];
+        var year = parts[2];
+        // Format the date as "yyyy-dd-mm"
+        var formattedDuration = year + '-' + day + '-' + month;
+      } else {
+        console.error("Invalid date format");
+      }
           const editor = window.tinymce.get("description"); // Giả sử 'description' là id của Editor
           if (editor) {
             editor.setContent(hiringRequestSaved.jobDescription);
@@ -528,6 +537,8 @@ const CreateHiringRequest = () => {
   const handleSavePostJob = async () => {
     // Kiểm tra xem có userID trong localStorage không
     const userId = localStorage.getItem("userId");
+    const jobPositionIdState = location.state?.jobPositionId || null;
+    const companyIdErr = localStorage.getItem("companyId");
     if (!userId) {
       openModal(); // Nếu không có, mở modal signup
     } else {
@@ -597,6 +608,8 @@ const CreateHiringRequest = () => {
             console.log("Save posted successfully:", response);
           } else {
             const response = await hiringRequestService.createHiringRequest(
+              companyIdErr,
+              jobPositionIdState,
               jobTitle,
               jobDescription,
               numberOfDev,
@@ -606,7 +619,6 @@ const CreateHiringRequest = () => {
               levelRequireId,
               skillIds,
               isSaved,
-              companyId,
               employmentTypeId
             );
             console.log("Update posted successfully:", response);

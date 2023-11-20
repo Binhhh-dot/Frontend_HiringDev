@@ -639,6 +639,7 @@ const CreateProject = () => {
                             type="file"
                             class="form-control resume"
                             onChange={handlePreviewAvatar}
+                            accept=".jpg, .jpeg, .png"
                             placeholder=""
                             required
                           ></input>
@@ -654,6 +655,7 @@ const CreateProject = () => {
                             type="text"
                             class="form-control resume"
                             placeholder=""
+                            maxLength="100"
                             required
                           ></input>
                           {jobTitleError && (

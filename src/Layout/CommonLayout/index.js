@@ -1,5 +1,5 @@
-import React, { Suspense } from "react";
 
+import React, { Suspense, useState, useEffect } from "react";
 //Importing Section
 // const TopBar = import("../CommonLayout/TopBar");
 import TopBar from "../CommonLayout/TopBar";
@@ -10,6 +10,10 @@ import StyleSwitcher from "../CommonLayout/StyleSwitcher";
 import ScrolltoTop from "../../components/ScrolltoTop";
 
 const Layout = (props) => {
+  useEffect(() => {
+    
+  }, []);
+
   return (
     <React.Fragment>
       <Suspense>

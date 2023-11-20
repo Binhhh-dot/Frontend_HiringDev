@@ -46,6 +46,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEllipsisVertical,
   faGear,
+  faEllipsis
 } from "@fortawesome/free-solid-svg-icons";
 import { DownOutlined, SkypeOutlined } from '@ant-design/icons';
 import { Dropdown as DropdownAntd, Space } from 'antd';
@@ -1174,17 +1175,7 @@ const HiringRequestDetails = () => {
                   </div>
                 )}
                 <div className="d-flex gap-2 justify-content-end" >
-                  <div className="mt-3 d-flex justify-content-end">
-                    <button className="btn btn-blue"
-                      onClick={() => {
-                        updateInterview(selectInterviewDetail.interviewId);
-                      }}
-                      id="buttonSaveFormInterview"
-                      style={{ display: "none" }}
-                    >
-                      Save
-                    </button>
-                  </div>
+                  
                   <div className="mt-3 d-flex justify-content-end">
                     <button className="btn btn-danger"
                       onClick={() => {
@@ -1194,6 +1185,17 @@ const HiringRequestDetails = () => {
                       style={{ display: "none" }}
                     >
                       Cancel
+                    </button>
+                  </div>
+                  <div className="mt-3 d-flex justify-content-end">
+                    <button className="btn btn-blue"
+                      onClick={() => {
+                        updateInterview(selectInterviewDetail.interviewId);
+                      }}
+                      id="buttonSaveFormInterview"
+                      style={{ display: "none" }}
+                    >
+                      Save
                     </button>
                   </div>
                 </div>
@@ -1525,8 +1527,7 @@ const HiringRequestDetails = () => {
           <div class="col-lg-11 p-0">
             <Card
               className="profile-content-page mt-4 mt-lg-0"
-              style={{ borderTop: "none" }}
-
+              style={{ border: "none" }}
             >
               <Nav
                 className="profile-content-nav nav-pills border-bottom"
