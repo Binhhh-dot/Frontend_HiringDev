@@ -79,6 +79,11 @@ const HiringRequestDetails = () => {
   const [timeStartError, setTimeStartError] = useState(null);
   const [timeEndError, setTimeEndError] = useState(null);
   const [desError, setDesError] = useState(null);
+  const [interviewTitleUpdateError, setInterviewTitleUpdateError] = useState(null);
+  const [dateOfInterViewUpdateError, setDateOfInterViewUpdateError] = useState(null);
+  const [timeStartUpdateError, setTimeStartUpdateError] = useState(null);
+  const [timeEndUpdateError, setTimeEndUpdateError] = useState(null);
+  const [desUpdateError, setDesUpdateError] = useState(null);
   const [loadListDeveloper, setLoadListDeveloper] = useState(false);
   let [currentPageInterview, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -86,7 +91,7 @@ const HiringRequestDetails = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectInterviewDetail, setSelectInterviewDetail] = useState({});
   const [devInterviewDetail, setDevInterviewDetail] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const [isInputEditable, setIsInputEditable] = useState(false);
   const [interviewTitleInput, setInterviewTitleInput] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
@@ -94,6 +99,8 @@ const HiringRequestDetails = () => {
   const [startTimeInput, setStartTimeInput] = useState('');
   const [endTimeInput, setEndTimeInput] = useState('');
   const [authenCode, setAuthencode] = useState(null);
+  const [authenCodeOld, setAuthencodeOld] = useState(null);
+  const [isUpdateInterview,setIsUpdateInterview ] = useState(false);
   const generateItems = () => {
     if (selectInterviewDetail.statusString === "Waiting Approval") {
       return [
@@ -168,10 +175,89 @@ const HiringRequestDetails = () => {
   };
 
   const updateInterview = async (interviewId) => {
+    let check = true;
+    if (!document.getElementById("interview-title-popup").value) {
+      setInterviewTitleUpdateError("Please enter a interview title");
+      check = false;
+    } else {
+      setInterviewTitleUpdateError(null);
+    }
+    if (!document.getElementById("description-title-popup").value) {
+      setDesUpdateError("Please enter a description");
+      check = false;
+    } else {
+      setDesUpdateError(null);
+    }
+    if (!document.getElementById("date-of-interview-popup").value) {
+      console.log(document.getElementById("date-of-interview").value)
+      setDateOfInterViewUpdateError("Please enter a date of interview");
+      check = false;
+    } else {
+      setDateOfInterViewUpdateError(null);
+      console.log(document.getElementById("date-of-interview-popup").value)
+    }
+    if (!document.getElementById("start-time-popup").value) {
+      setTimeStartUpdateError("Please enter the start time of the interview ");
+      check = false;
+    } else {
+      setTimeStartUpdateError(null);
+    }
+    if (!document.getElementById("end-time-popup").value) {
+      setTimeEndUpdateError("Please enter the end time of the interview");
+      check = false;
+    } else {
+      setTimeEndUpdateError(null);
+    }
+    if (document.getElementById("date-of-interview-popup").value) {
+      const currentDate = new Date();
+      const selectedDate = new Date(
+        document.getElementById("date-of-interview-popup").value
+      );
+
+      if (selectedDate <= currentDate) {
+        setDateOfInterViewUpdateError(
+          "Please enter a date greater than the current date"
+        );
+        check = false;
+      } else {
+        setDateOfInterViewUpdateError(null);
+      }
+    }
+
+    if (
+      document.getElementById("end-time-popup").value &&
+      document.getElementById("start-time-popup").value &&
+      document.getElementById("start-time-popup") !==
+      document.getElementById("end-time-popup").value
+    ) {
+      const startTimeDate = new Date(
+        "1970-01-01T" + document.getElementById("start-time-popup").value + "Z"
+      );
+      const endTimeDate = new Date(
+        "1970-01-01T" + document.getElementById("end-time-popup").value + "Z"
+      );
+      if (startTimeDate > endTimeDate) {
+        // Hiển thị thông báo lỗi
+        setTimeStartUpdateError("Start Time must be before End Time");
+        // Cập nhật DOM để hiển thị thông báo
+        check = false;
+      } else {
+        setTimeStartUpdateError(null);
+      }
+    }
+
     try {
-      const response = await interviewServices.completedInterview(interviewId);
+      const title = document.getElementById("interview-title-popup").value;
+      const description = document.getElementById("description-title-popup").value;
+      const dateOfInterview = document.getElementById("date-of-interview-popup").value;
+      const startDate = document.getElementById("start-time-popup").value + ":00";
+      const endDate = document.getElementById("end-time-popup").value + ":00";
+      const response = await interviewServices.updateInterview(interviewId, title, description, dateOfInterview, startDate, endDate);
       console.log(response);
+      toast.success("Update successfully");
+      setIsUpdateInterview(!isUpdateInterview);
     } catch (error) {
+      toast.error("Update fail")
       console.error("Error completedInterview:", error);
     }
   };
@@ -260,11 +346,8 @@ const HiringRequestDetails = () => {
     const requestId = queryParams.get("Id");
     const companyId = localStorage.getItem('companyId');
     try {
-      response = await interviewServices.getAllInterviewByHRAndPaging(
-        companyId,
+      response = await interviewServices.getListInterviewByRequestId(
         requestId,
-        8,
-        currentPageInterview,
       );
       const data = response.data;
       const formattedJobVacancies = data.data.map((job) => {
@@ -285,16 +368,6 @@ const HiringRequestDetails = () => {
         };
       });
       setlistInterview(formattedJobVacancies);
-      setTotalPages(Math.ceil(data.paging.total / pageSize));
-      if (data.paging.total < 7) {
-        // Lấy tham chiếu đến phần tử có id="paging"
-        var rowElement = document.getElementById("paging");
-
-        // Ẩn phần tử bằng cách đặt style.display thành "none"
-        if (rowElement) {
-          rowElement.style.display = "none";
-        }
-      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -306,7 +379,7 @@ const HiringRequestDetails = () => {
   }, []);
 
   const handleInterviewCreation = async () => {
-    console.log(authenCode)
+    setLoading(true);
     try {
       const title = document.getElementById("interview-title").value;
       const description = document.getElementById("description").value;
@@ -333,9 +406,6 @@ const HiringRequestDetails = () => {
         console.log("tao thanh cong")
         try {
           const redirectUrl = customUrl.redirectUrlCreateMeetting;
-          console.log(interviewId);
-          console.log(redirectUrl);
-          console.log(authenCode);
           const responseCreateMeeting = await teamMeetingServices.createTeamMeeting(interviewId, redirectUrl, authenCode)
           console.log(responseCreateMeeting)
         } catch (error) {
@@ -345,17 +415,20 @@ const HiringRequestDetails = () => {
       setLoadListDeveloper(!loadListDeveloper);
       toast.success('Create successfully!');
       setModalCreateInterview(false);
-      // fetchListDevInterview();
-      // setLoading(false);
-      // navigate(`/hiringrequestlistincompanypartnerdetail?Id=${requestId}`);
+      setAuthencodeOld(authenCode);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    handleInterviewCreation();
+    if (authenCode == authenCodeOld) {
+      console.log("lap lai")
+    } else {
+      handleInterviewCreation();
+    }
   }, [authenCode]);
 
   useEffect(() => {
@@ -367,6 +440,10 @@ const HiringRequestDetails = () => {
     fetchListInterview();
   }, [currentPageInterview]);
 
+  useEffect(() => {
+    fetchListInterview();
+  }, [isUpdateInterview]);
+
   const [showItems, setShowItems] = useState(5);
   const listInterviewArray = Object.values(listInterview);
   const listInterviewToShow = listInterviewArray.slice(0, showItems);
@@ -377,6 +454,10 @@ const HiringRequestDetails = () => {
 
   const handleInterviewClick = async (id) => {
     setLoadingInterview((prevLoading) => ({
+      ...prevLoading,
+      [id]: true,
+    }));
+    setLoadingReject((prevLoading) => ({
       ...prevLoading,
       [id]: true,
     }));
@@ -413,12 +494,20 @@ const HiringRequestDetails = () => {
       ...prevLoading,
       [id]: false,
     }));
+    setLoadingReject((prevLoading) => ({
+      ...prevLoading,
+      [id]: false,
+    }));
     // Replace with the actual duration of your action
   };
 
   const rejectInterview2 = async (id) => {
     // Simulate an asynchronous action, e.g., making an API request
     setLoadingReject((prevLoading) => ({
+      ...prevLoading,
+      [id]: true,
+    }));
+    setLoadingInterview((prevLoading) => ({
       ...prevLoading,
       [id]: true,
     }));
@@ -438,11 +527,19 @@ const HiringRequestDetails = () => {
         ...prevLoading,
         [id]: false,
       }));
+      setLoadingInterview((prevLoading) => ({
+        ...prevLoading,
+        [id]: false,
+      }));
     } catch (error) {
       // Xử lý lỗi nếu có
       console.error("Error rejecting interview:", error);
       // Hiển thị thông báo lỗi hoặc thực hiện các hành động khác
       setLoadingReject((prevLoading) => ({
+        ...prevLoading,
+        [id]: false,
+      }));
+      setLoadingInterview((prevLoading) => ({
         ...prevLoading,
         [id]: false,
       }));
@@ -505,10 +602,12 @@ const HiringRequestDetails = () => {
       setDesError(null);
     }
     if (!document.getElementById("date-of-interview").value) {
+      console.log(document.getElementById("date-of-interview").value)
       setDateOfInterViewError("Please enter a date of interview");
       check = false;
     } else {
       setDateOfInterViewError(null);
+      console.log(document.getElementById("date-of-interview").value)
     }
     if (!document.getElementById("startTime").value) {
       setTimeStartError("Please enter the start time of the interview ");
@@ -528,7 +627,7 @@ const HiringRequestDetails = () => {
         document.getElementById("date-of-interview").value
       );
 
-      if (selectedDate < currentDate) {
+      if (selectedDate <= currentDate) {
         setDateOfInterViewError(
           "Please enter a date greater than the current date"
         );
@@ -577,63 +676,18 @@ const HiringRequestDetails = () => {
           setAuthencode(event.data)
         }
       });
+      setLoading(true);
     }
-    // setLoading(true);
-
-    // setLoading(false);
+    setLoading(false);
   };
 
-
-
-
-  const createIntervewAndCreateMeeting = async () => {
-
-  }
-
-
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-    const maxPageButtons = 4;
-    let startPage = Math.max(1, currentPageInterview - Math.floor(maxPageButtons / 2));
-    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-    if (
-      totalPages > maxPageButtons &&
-      currentPageInterview <= Math.floor(maxPageButtons / 2) + 1
-    ) {
-      endPage = maxPageButtons;
-    }
-    for (let i = startPage; i <= endPage; i++) {
-      pageNumbers.push(
-        <li
-          key={i}
-          className={`page-item ${i === currentPageInterview ? "active" : ""}`}
-        >
-          <p className="page-link" to="#" onClick={() => handlePageClick(i)}>
-            {i}
-          </p>
-        </li>
-      );
-    }
-
-    return pageNumbers;
-  };
 
 
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
   };
-  const handleNextPage = () => {
-    if (currentPageInterview < totalPages) {
-      setCurrentPage(currentPageInterview + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentPageInterview > 1) {
-      setCurrentPage(currentPageInterview - 1);
-    }
-  };
+  
 
   const midleSelect = (id) => {
     fetchGetDetailInterviewByInterviewId(id);
@@ -674,7 +728,9 @@ const HiringRequestDetails = () => {
         id
       );
       document.getElementById("interview-title-popup").value = response.data.data.title;
+      setInterviewTitleInput(response.data.data.title);
       document.getElementById("description-title-popup").value = response.data.data.description;
+      setDescriptionInput(response.data.data.description);
       var parts = response.data.data.dateOfInterview.split('-');
       if (parts.length === 3) {
         var day = parts[1];
@@ -683,11 +739,14 @@ const HiringRequestDetails = () => {
         // Format the date as "yyyy-dd-mm"
         var formattedDate = year + '-' + day + '-' + month;
         document.getElementById("date-of-interview-popup").value = formattedDate;
+        setDateOfInterviewInput(formattedDate);
       } else {
         console.error("Invalid date format");
       }
       document.getElementById("start-time-popup").value = response.data.data.startTime;
+      setStartTimeInput(response.data.data.startTime);
       document.getElementById("end-time-popup").value = response.data.data.endTime;
+      setEndTimeInput(response.data.data.endTime);
       setSelectInterviewDetail(response.data.data);
       setDevInterviewDetail(response.data.data.developer);
     } catch (error) {
@@ -698,6 +757,12 @@ const HiringRequestDetails = () => {
 
   return (
     <React.Fragment>
+      {loading && (
+        <div className="overlay" style={{ zIndex: "2000" }}>
+          <div className="spinner"></div>
+          <div class="loading-text">Loading...</div>
+        </div>
+      )}
       <section class="section">
         <div class="row  justify-content-center " style={{ margin: "0px" }}>
           <div class="col-lg-8 " style={{ padding: "0px" }}>
@@ -1014,7 +1079,6 @@ const HiringRequestDetails = () => {
                       htmlFor="usernameInput"
                       className="form-label"
                       style={{ marginBottom: "0px" }}
-
                     >
                       Interview Title
                     </Label>
@@ -1175,7 +1239,7 @@ const HiringRequestDetails = () => {
                   </div>
                 )}
                 <div className="d-flex gap-2 justify-content-end" >
-                  
+
                   <div className="mt-3 d-flex justify-content-end">
                     <button className="btn btn-danger"
                       onClick={() => {
@@ -1734,7 +1798,7 @@ const HiringRequestDetails = () => {
                                       ] ? (
                                         <HashLoader
                                           size={20}
-                                          color={"#36D7B7"}
+                                          color={"white"}
                                           loading={true}
                                         />
                                       ) : (
@@ -1754,13 +1818,13 @@ const HiringRequestDetails = () => {
                                       {loadingReject[candidategridDetailsNew.id] ? (
                                         <HashLoader
                                           size={20}
-                                          color={"red"}
+                                          color={"white"}
                                           loading={true}
                                         />
                                       ) : isListLoading ? (
                                         <HashLoader
                                           size={20}
-                                          color={"red"}
+                                          color={"white"}
                                           loading={true}
                                         />
                                       ) : (
@@ -1819,13 +1883,13 @@ const HiringRequestDetails = () => {
                                       {loadingReject[candidategridDetailsNew.id] ? (
                                         <HashLoader
                                           size={20}
-                                          color={"red"}
+                                          color={"white"}
                                           loading={true}
                                         />
                                       ) : isListLoading ? (
                                         <HashLoader
                                           size={20}
-                                          color={"red"}
+                                          color={"white"}
                                           loading={true}
                                         />
                                       ) : (

@@ -483,7 +483,7 @@ const ProjectDetailDesciption = () => {
                     <div>
                       <div className="d-flex justify-content-end">
                         <p className="fw-bold" style={{ color: "grey" }}>
-                          2 day left
+                          {hiringRequestDetail.dayLeft} day left 
                         </p>
                       </div>
                       <div className="dev-matching-in-company border border-1">

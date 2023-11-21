@@ -109,6 +109,8 @@ export default {
         "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}",
       approvalByManager: "/Interview/ApprovalByManager",
       completeInterview: "/Interview/Finish?interviewId=${interviewId}",
+      updateInterview: "/Interview/${interviewId}",
+
     },
     assignTask: {
       createAssignTask: "/AssignTask",
