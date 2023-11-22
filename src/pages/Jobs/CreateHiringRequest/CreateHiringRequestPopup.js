@@ -170,7 +170,6 @@ const CreateHiringRequestPopup = (
                 if (editor) {
                     editor.setContent(hiringRequestSaved.jobDescription);
                 }
-
                 // Đặt giá trị cho input duration
                 document.getElementById("duration").value = formattedDuration;
             } else {
@@ -194,6 +193,33 @@ const CreateHiringRequestPopup = (
 
         } catch (error) {
             console.error("Error:", error);
+        }
+        try {
+            const queryParams = new URLSearchParams(location.search);
+            const projectId = queryParams.get("Id");
+            const response6 = await jobPositionServices.getJobPostionByProjectId(projectId);
+            const activeJobposition = response6.data.data.filter(
+                (jobPosition) => jobPosition.statusString === "Active"
+            );
+            if (jobPositionId) {
+                const foundJobPosition = activeJobposition.find(
+                    (jobPosition) => jobPosition.jobPositionId === jobPositionId
+                );
+                if (foundJobPosition) {
+                    const newJobPosition = {
+                        value: foundJobPosition.jobPositionId.toString(),
+                        label: foundJobPosition.positionName,
+                    };
+                    setSelectedOptions6(newJobPosition);
+                }
+            }
+            let formattedJobPosotion = activeJobposition.map((type) => ({
+                value: type.jobPositionId.toString(),
+                label: type.positionName,
+            }));
+            setOptions6(formattedJobPosotion);
+        } catch (error) {
+            console.error("Error fetching levels:", error);
         }
         try {
             const response = await skillService.getAllSkill();
@@ -308,34 +334,7 @@ const CreateHiringRequestPopup = (
         } catch (error) {
             console.error("Error fetching employment typeName:", error);
         }
-        try {
-            const queryParams = new URLSearchParams(location.search);
-            const projectId = queryParams.get("Id");
-            const response6 = await jobPositionServices.getJobPostionByProjectId(projectId);
-            const activeJobposition = response6.data.data.filter(
-                (jobPosition) => jobPosition.statusString === "Active"
-            );
-            if (hiringRequestSaved) {
-                const requiredJobPosition = hiringRequestSaved.positionName;
-                const foundJobPosition = activeJobposition.find(
-                    (jobPosition) => jobPosition.positionName === requiredJobPosition
-                );
-                if (foundJobPosition) {
-                    const newJobPosition = {
-                        value: foundJobPosition.jobPositionId.toString(),
-                        label: foundJobPosition.positionName,
-                    };
-                    setSelectedOptions6(newJobPosition);
-                }
-            }
-            let formattedJobPosotion = activeJobposition.map((type) => ({
-                value: type.jobPositionId.toString(),
-                label: type.positionName,
-            }));
-            setOptions6(formattedJobPosotion);
-        } catch (error) {
-            console.error("Error fetching levels:", error);
-        }
+
     };
 
     const handlePostJob = async () => {
@@ -469,14 +468,13 @@ const CreateHiringRequestPopup = (
                         const jobPositionIdState = null;
 
                         if (requestId) {
-                            const targetedDev = 0;
                             const response = await hiringRequestService.updateHiringRequest(
-                                requestIdState,
+                                requestId,
+                                jobPositionSelectedId,
                                 jobTitle,
                                 jobDescription,
                                 numberOfDev,
                                 salaryPerDev,
-                                targetedDev,
                                 duration,
                                 typeRequireId,
                                 levelRequireId,
@@ -484,6 +482,7 @@ const CreateHiringRequestPopup = (
                                 isSaved,
                                 employmentTypeId,
                             );
+                            console.log(response);
                         } else {
                             const response = await hiringRequestService.createHiringRequest(
                                 companyIdErr,
@@ -547,7 +546,6 @@ const CreateHiringRequestPopup = (
                     setDescriptionError(null);
                     checkVali = false;
                 }
-                console.log("Save job...");
                 setLoading(true);
                 try {
                     const jobTitleInput = document.getElementById("job-title");
@@ -582,13 +580,12 @@ const CreateHiringRequestPopup = (
                     // const requestIdState = location.state?.requestId || null;
 
                     if (requestId) {
-                        const targetedDev = 0;
                         const response = await hiringRequestService.updateHiringRequest(
                             requestId,
+                            jobPositionSelectedId,
                             jobTitle,
                             jobDescription,
                             numberOfDev,
-                            targetedDev,
                             salaryPerDev,
                             duration,
                             typeRequireId,

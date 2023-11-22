@@ -56,6 +56,7 @@ export default {
       getHiringRequestByRequestId: "/HiringRequest?requestId=${requestId}",
       getAllHiringRequestByProjectId:
         "/HiringRequest/ByProject?projectId=${projectId}",
+      updateHiringRequest: "/HiringRequest?requestId=${requestId}",
     },
 
     selectingDeveloper: {
@@ -110,7 +111,7 @@ export default {
       approvalByManager: "/Interview/ApprovalByManager",
       completeInterview: "/Interview/Finish?interviewId=${interviewId}",
       updateInterview: "/Interview/${interviewId}",
-
+      cancelInterview: "/Interview/Cancel/${interviewId}",
     },
     assignTask: {
       createAssignTask: "/AssignTask",
@@ -165,9 +166,12 @@ export default {
     jobPosition: {
       createJobPosition: "/JobPosition",
       getJobPositionByProjectId: "/JobPosition/ByProject/${projectId}",
+      getJobPositionsWithHiringRequest: "/JobPosition/JobPositionsWithHiringRequest/${projectId}",
     },
     teamMeeting: {
       createTeamMeeting: "/TeamMeeting",
+      deleteTeamMeeting: "/TeamMeeting",
+      updateTeamMeeting: "/TeamMeeting",
     }
   },
 };

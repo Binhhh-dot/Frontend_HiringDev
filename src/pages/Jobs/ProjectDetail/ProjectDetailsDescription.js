@@ -74,7 +74,7 @@ const ProjectDetailDesciption = () => {
   const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
   const [selectedHiringRequestInfo, setSelectedHiringRequestInfo] = useState({});
   const [selectedJobPositionInfo, setSelectedJobPositionInfo] = useState({});
-
+  const [checkHeightListHiringRequest, setCheckHeightListHiringRequest] = useState(false);
 
   // const fetchProjectDetails2 = async () => {
   //   try {
@@ -278,58 +278,44 @@ const ProjectDetailDesciption = () => {
       const queryParams = new URLSearchParams(location.search);
       const projectId2 = queryParams.get("Id");
 
-      response = await hiringrequestService.getHiringRequestByProjectId(
+      response = await jobPositionServices.getJobPositionsWithHiringRequest(
         projectId2
       );
       // }
-
       const data = response.data;
+
+      const hasMoreThanThreeRequests = data.data.some(job => job.totalHiringRequest > 2);
+
+      // Set checkHeightListHiringRequest based on the condition
+      if (hasMoreThanThreeRequests) {
+        setCheckHeightListHiringRequest(true);
+      }
+
       const formattedJobVacancies = data.data.map((job) => {
-        // Assuming job.typeRequireName and job.levelRequireName are available
-        job.skillRequireStrings.unshift(
-          job.typeRequireName,
-          job.levelRequireName
-        );
-        return {
-          id: job.requestId,
-          companyImg: job.companyImage,
-          jobDescription: job.jobTitle,
-          companyName: job.companyName,
-          location: job.numberOfDev + " Developer",
-          duration: job.durationMMM,
-          numberOfDev: job.numberOfDev,
-          done: job.statusString.includes("Done"),
-
-          save: job.statusString.includes("Saved"),
-          waitingApproval: job.statusString.includes("Waiting Approval"),
-          inProgress: job.statusString.includes("In Progress"),
-          rejected: job.statusString.includes("Rejected"),
-          expired: job.statusString.includes("Expired"),
-          cancelled: job.statusString.includes("Cancelled"),
-          finished: job.statusString.includes("Finished"),
-          completed: job.statusString.includes("Completed"),
-
-          timing: job.statusString,
-          addclassNameBookmark: false,
-          showFullSkills: false,
-          badges: [],
-          experience: job.skillRequireStrings.join(", "),
-          statusString: job.statusString,
+        return job.requestsInJobPosition.map((request) => ({
+          id: request.requestId,
+          duration: request.durationMMM,
+          numberOfDev: request.numberOfDev,
+          statusString: request.statusString,
+          jobTitle: request.jobTitle,
           positionName: job.positionName,
-        };
-      });
+          jobPositionId: job.jobPositionId,
+          timing: request.statusString,
+          targetedDev: request.targetedDev,
+          done: request.statusString.includes("Done"),
+          save: request.statusString.includes("Saved"),
+          waitingApproval: request.statusString.includes("Waiting Approval"),
+          inProgress: request.statusString.includes("In Progress"),
+          rejected: request.statusString.includes("Rejected"),
+          expired: request.statusString.includes("Expired"),
+          cancelled: request.statusString.includes("Cancelled"),
+          finished: request.statusString.includes("Finished"),
+          completed: request.statusString.includes("Completed"),
+        }));
+      }).flat();
+
       console.log(response.data);
       setJobVacancyList(formattedJobVacancies);
-      setTotalPages(Math.ceil(data.paging.total / pageSize));
-      if (data.paging.total < 6) {
-        // Lấy tham chiếu đến phần tử có id="paging"
-        var rowElement = document.getElementById("paging");
-
-        // Ẩn phần tử bằng cách đặt style.display thành "none"
-        if (rowElement) {
-          rowElement.style.display = "none";
-        }
-      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -483,7 +469,7 @@ const ProjectDetailDesciption = () => {
                     <div>
                       <div className="d-flex justify-content-end">
                         <p className="fw-bold" style={{ color: "grey" }}>
-                          {hiringRequestDetail.dayLeft} day left 
+                          {hiringRequestDetail.dayLeft} day left
                         </p>
                       </div>
                       <div className="dev-matching-in-company border border-1">
@@ -556,7 +542,10 @@ const ProjectDetailDesciption = () => {
                       <div>12</div>
                     </TabPane>
                     <TabPane tabId="2">
-                      <div className={`${showScroll ? ' show-scroll' : ''}`} ref={rowRef} style={{ minHeight: "100%" }}>
+                      <div className={`${showScroll ? ' show-scroll' : ''}`} ref={rowRef} style={{
+                        minHeight: checkHeightListHiringRequest ? "100%" : "auto",
+                        height: checkHeightListHiringRequest ? "auto" : "650px",
+                      }}>
                         <Row className="flex-nowrap gap-3" style={{ marginLeft: "1px", marginBottom: "10px" }}>
                           {listJobPosition.map((jobPosition, key) => (
                             <Col lg={3} md={6} key={key} className="card " style={{ paddingLeft: "0px", paddingRight: "0px", borderRadius: "15px", height: "fit-content" }}>
@@ -572,16 +561,14 @@ const ProjectDetailDesciption = () => {
                                 <div className="d-flex flex-column gap-3" style={{ height: "100%" }}>
                                   {jobVacancyList.map((jobVacancyListDetails, key) => {
                                     // Check if the positionName is 'job position 2'
-                                    if (jobVacancyListDetails.positionName === jobPosition.positionName) {
+                                    if (jobVacancyListDetails.jobPositionId === jobPosition.jobPositionId) {
                                       return (
                                         <div
                                           onClick={() => openHiringRequestDetail(jobVacancyListDetails.id, jobVacancyListDetails.timing, jobPosition.jobPositionId)}
                                           key={key}
                                           style={{ transform: "none" }}
                                           className={
-                                            jobVacancyListDetails.addclassNameBookmark === true
-                                              ? "job-box bookmark-post card "
-                                              : "job-box card "
+                                            "job-box card "
                                           }
                                         // className="job-box card mt-4"
                                         >
@@ -593,11 +580,11 @@ const ProjectDetailDesciption = () => {
                                                 className="text-dark "
                                                 style={{ fontWeight: "bold" }}
                                               >
-                                                {jobVacancyListDetails.jobDescription}
+                                                {jobVacancyListDetails.jobTitle}
                                               </div>
-                                              <p className="text-muted fs-14 mb-0">
+                                              {/* <p className="text-muted fs-14 mb-0">
                                                 {jobVacancyListDetails.companyName}
-                                              </p>
+                                              </p> */}
                                             </div>
                                             <div>
                                               <span

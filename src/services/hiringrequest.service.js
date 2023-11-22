@@ -35,10 +35,10 @@ const createHiringRequest = async (
 
 const updateHiringRequest = async (
   requestId,
+  jobPositionId,
   jobTitle,
   jobDescription,
   numberOfDev,
-  targetedDev,
   salaryPerDev,
   duration,
   typeRequireId,
@@ -46,27 +46,21 @@ const updateHiringRequest = async (
   skillIds,
   isSaved,
   employmentTypeId,
-  scheduleTypeId
 ) => {
   const serviceUrl =
-    urlConstant.endpoint.hiringRequest.getHiringRequestByRequestId.replace(
-      "${requestId}",
-      requestId
-    );
-  console.log(serviceUrl);
+    urlConstant.endpoint.hiringRequest.updateHiringRequest.replace("${requestId}", requestId);
   const response = await utils.axiosLocalHost.put(serviceUrl, {
     requestId,
+    jobPositionId,
     jobTitle,
     jobDescription,
     numberOfDev,
-    targetedDev,
     salaryPerDev,
     duration,
     typeRequireId,
     levelRequireId,
     skillIds,
     isSaved,
-    scheduleTypeId,
     employmentTypeId,
   });
   return response;
@@ -361,7 +355,7 @@ const getHiringRequestByProjectId = async (
     urlConstant.endpoint.hiringRequest.getAllHiringRequestByProjectId.replace(
       "${projectId}",
       projectId
-    ) 
+    )
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };

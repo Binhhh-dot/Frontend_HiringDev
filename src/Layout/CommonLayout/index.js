@@ -10,15 +10,13 @@ import StyleSwitcher from "../CommonLayout/StyleSwitcher";
 import ScrolltoTop from "../../components/ScrolltoTop";
 
 const Layout = (props) => {
-  useEffect(() => {
-    
-  }, []);
+  const userId = localStorage.getItem("userId");
 
   return (
     <React.Fragment>
       <Suspense>
         <div>
-          <TopBar />
+          {!userId && <TopBar />}
           <NavBar />
           <div className="main-content">
             <div className="page-content">{props.children}</div>

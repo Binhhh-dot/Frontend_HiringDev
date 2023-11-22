@@ -56,6 +56,10 @@ const TopBar = () => {
 
   const openModal = () => setModal(!modal);
 
+
+
+
+
   return (
     <React.Fragment>
       <div className="top-bar" style={{ zIndex: 1030 }}>

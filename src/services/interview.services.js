@@ -122,6 +122,16 @@ const updateInterview = async (
   return response;
 };
 
+const cancelInterview = async (
+  interviewId
+) => {
+  const serviceUrl = urlConstant.endpoint.interview.cancelInterview.replace("${interviewId}", interviewId);
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    interviewId
+  });
+  return response;
+};
+
 export default {
   createAnInterview,
   getListInterviewByRequestId,
@@ -131,5 +141,6 @@ export default {
   getAllInterviewByManagerAndPaging,
   approvalByManager,
   completedInterview,
-  updateInterview
+  updateInterview,
+  cancelInterview,
 };

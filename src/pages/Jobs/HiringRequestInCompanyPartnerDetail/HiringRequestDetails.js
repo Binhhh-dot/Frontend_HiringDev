@@ -21,7 +21,8 @@ import {
   DropdownMenu,
   DropdownItem
 } from "reactstrap";
-import { Modal as AntdModal } from "antd";
+
+import { Modal as AntdModal, Button as AntdButton } from "antd";
 import { Container } from "reactstrap";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
@@ -99,8 +100,16 @@ const HiringRequestDetails = () => {
   const [startTimeInput, setStartTimeInput] = useState('');
   const [endTimeInput, setEndTimeInput] = useState('');
   const [authenCode, setAuthencode] = useState(null);
+  const [authenCodeCancel, setAuthenCodeCancel] = useState(null);
+  const [authenCodeUpdate, setAuthenCodeUpdate] = useState(null);
   const [authenCodeOld, setAuthencodeOld] = useState(null);
-  const [isUpdateInterview,setIsUpdateInterview ] = useState(false);
+  const [authenCodeCancelOld, setAuthenCodeCancelOld] = useState(null);
+  const [authenCodeUpdateOld, setAuthenCodeUpdateOld] = useState(null);
+
+  const [isUpdateInterview, setIsUpdateInterview] = useState(false);
+  const [interviewIdCancel, setInterviewIdCancel] = useState(null);
+  const [interviewIdUpdate, setInterviewIdUpdate] = useState(null);
+
   const generateItems = () => {
     if (selectInterviewDetail.statusString === "Waiting Approval") {
       return [
@@ -116,14 +125,44 @@ const HiringRequestDetails = () => {
           key: '0',
         },
         {
-          label: <a href="https://www.aliyun.com">Cancel</a>,
+          label: (
+            <div
+              style={{ width: "100px" }}
+              onClick={() => {
+                AntdModal.confirm({
+                  title: 'Confirm cancel interview',
+                  content: 'Are you sure to cancel this interview?',
+                  onOk() {
+                    // Action when the user clicks OK
+                    console.log('Confirmed!');
+                    openWindowCancelInterview(selectInterviewDetail.interviewId);
+                  },
+                  onCancel() {
+                    // Action when the user cancels
+                    console.log('Cancelled!');
+                  },
+                  footer: (_, { OkBtn, CancelBtn }) => (
+                    <>
+                      <CancelBtn />
+                      <OkBtn />
+                    </>
+                  ),
+                });
+              }}
+            >
+              Cancel
+            </div>
+          ),
           key: '1',
         },
       ];
     } else {
       return [
         {
-          label: <a href="https://www.aliyun.com">Cancel</a>,
+          label: <div
+            onClick={() => cancelInterview()}
+            style={{ width: "100px" }}
+          >Cancel</div>,
           key: '1',
         },
       ];
@@ -189,7 +228,6 @@ const HiringRequestDetails = () => {
       setDesUpdateError(null);
     }
     if (!document.getElementById("date-of-interview-popup").value) {
-      console.log(document.getElementById("date-of-interview").value)
       setDateOfInterViewUpdateError("Please enter a date of interview");
       check = false;
     } else {
@@ -245,20 +283,8 @@ const HiringRequestDetails = () => {
         setTimeStartUpdateError(null);
       }
     }
-
-    try {
-      const title = document.getElementById("interview-title-popup").value;
-      const description = document.getElementById("description-title-popup").value;
-      const dateOfInterview = document.getElementById("date-of-interview-popup").value;
-      const startDate = document.getElementById("start-time-popup").value + ":00";
-      const endDate = document.getElementById("end-time-popup").value + ":00";
-      const response = await interviewServices.updateInterview(interviewId, title, description, dateOfInterview, startDate, endDate);
-      console.log(response);
-      toast.success("Update successfully");
-      setIsUpdateInterview(!isUpdateInterview);
-    } catch (error) {
-      toast.error("Update fail")
-      console.error("Error completedInterview:", error);
+    if (check) {
+      openWindowUpdateInterview(interviewId);
     }
   };
 
@@ -269,6 +295,11 @@ const HiringRequestDetails = () => {
   };
 
   const cancelEditInterview = (id) => {
+    setInterviewTitleUpdateError(null);
+    setDesUpdateError(null);
+    setDateOfInterViewUpdateError(null);
+    setTimeStartUpdateError(null);
+    setTimeEndUpdateError(null);
     document.getElementById('buttonSaveFormInterview').style.display = 'none';
     document.getElementById('buttonCancelFormInterview').style.display = 'none';
     fetchGetDetailInterviewByInterviewId(id);
@@ -408,6 +439,7 @@ const HiringRequestDetails = () => {
           const redirectUrl = customUrl.redirectUrlCreateMeetting;
           const responseCreateMeeting = await teamMeetingServices.createTeamMeeting(interviewId, redirectUrl, authenCode)
           console.log(responseCreateMeeting)
+          console.log("tao meet thanh cong")
         } catch (error) {
           console.log("error:", error)
         }
@@ -423,6 +455,79 @@ const HiringRequestDetails = () => {
     }
   };
 
+  const handleCancelInterview = async () => {
+    console.log("nhay do")
+    setLoading(true);
+    try {
+      const interviewId = interviewIdCancel;
+      console.log(interviewId);
+      const response = await interviewServices.cancelInterview(interviewId);
+      console.log("cancel thanh cong")
+
+      if (response.data.code == 200) {
+        try {
+          console.log("nhay do")
+          const redirectUrl = customUrl.redirectUrlCreateMeetting;
+          console.log(interviewId);
+          console.log(redirectUrl);
+          console.log(authenCodeCancel);
+          const responseCancelMeeting = await teamMeetingServices.deleteTeamMeeting(interviewId, redirectUrl, authenCodeCancel)
+          console.log(responseCancelMeeting)
+        } catch (error) {
+          console.log("error:", error)
+        }
+      }
+      setLoadListDeveloper(!loadListDeveloper);
+      toast.success('Cancel successfully!');
+      setAuthenCodeCancelOld(authenCodeCancel);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateInterview = async () => {
+    console.log("chui do dc day ")
+    setLoading(true);
+    try {
+      const interviewId = interviewIdUpdate;
+      let response;
+      try {
+        const title = document.getElementById("interview-title-popup").value;
+        const description = document.getElementById("description-title-popup").value;
+        const dateOfInterview = document.getElementById("date-of-interview-popup").value;
+        const startDate = document.getElementById("start-time-popup").value + ":00";
+        const endDate = document.getElementById("end-time-popup").value + ":00";
+        response = await interviewServices.updateInterview(interviewId, title, description, dateOfInterview, startDate, endDate);
+        console.log("api update :")
+        console.log(response);
+      } catch (error) {
+        console.error("Error completedInterview:", error);
+      }
+      if (response.data.code == 200) {
+        try {
+          const redirectUrl = customUrl.redirectUrlCreateMeetting;
+          console.log(interviewId);
+          console.log(redirectUrl);
+          console.log(authenCodeUpdate);
+          const responseCancelMeeting = await teamMeetingServices.editTeamMeeting(interviewId, redirectUrl, authenCodeUpdate)
+          console.log(responseCancelMeeting)
+        } catch (error) {
+          console.log("error:", error)
+        }
+      }
+      setIsUpdateInterview(!isUpdateInterview);
+      setLoadListDeveloper(!loadListDeveloper);
+      toast.success('Update successfully!');
+      setAuthenCodeUpdateOld(authenCodeUpdate);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (authenCode == authenCodeOld) {
       console.log("lap lai")
@@ -430,6 +535,22 @@ const HiringRequestDetails = () => {
       handleInterviewCreation();
     }
   }, [authenCode]);
+
+  useEffect(() => {
+    if (authenCodeCancel == authenCodeCancelOld) {
+      console.log("lap lai")
+    } else {
+      handleCancelInterview();
+    }
+  }, [authenCodeCancel]);
+
+  useEffect(() => {
+    if (authenCodeUpdate == authenCodeUpdateOld) {
+      console.log("lap lai")
+    } else {
+      handleUpdateInterview();
+    }
+  }, [authenCodeUpdate]);
 
   useEffect(() => {
     fetchJobVacancies();
@@ -682,16 +803,53 @@ const HiringRequestDetails = () => {
   };
 
 
+  const openWindowCancelInterview = async (interviewId) => {
+    const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+    let code;
 
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
+    // Lắng nghe các thông điệp từ cửa sổ popup
+    window.addEventListener('message', (event) => {
+      code = event.data;
+      // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
+      if (code) {
+        popupWindow.close();
+        console.log(event.data)
+        setAuthenCodeCancel(event.data)
+        setInterviewIdCancel(interviewId)
+      }
+    });
+
   };
-  
+
+  const openWindowUpdateInterview = async (interviewId) => {
+    const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
+
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+    let code;
+
+    // Lắng nghe các thông điệp từ cửa sổ popup
+    window.addEventListener('message', (event) => {
+      code = event.data;
+      // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
+      if (code) {
+        popupWindow.close();
+        console.log(event.data)
+        setAuthenCodeUpdate(event.data)
+        setInterviewIdUpdate(interviewId)
+      }
+    });
+    // setLoading(true);
+  };
 
   const midleSelect = (id) => {
+    setInterviewTitleUpdateError(null);
+    setDesUpdateError(null);
+    setDateOfInterViewUpdateError(null);
+    setTimeStartUpdateError(null);
+    setTimeEndUpdateError(null);
     fetchGetDetailInterviewByInterviewId(id);
-
     setShowPopup(true);
   };
 
@@ -717,12 +875,21 @@ const HiringRequestDetails = () => {
     document.getElementById('buttonSaveFormInterview').style.display = 'block';
     document.getElementById('buttonCancelFormInterview').style.display = 'block';
     setIsInputEditable(true);
+  };
 
+  const cancelInterview = async (interviewId) => {
+    try {
+      console.log(interviewId);
+      const response = await interviewServices.cancelInterview(interviewId);
+      toast.success("Cancel sucessfully")
+    } catch (error) {
+      toast.success("Cancel error")
+      console.log(error)
+    }
   };
 
   const fetchGetDetailInterviewByInterviewId = async (id) => {
     let response;
-
     try {
       response = await interviewServices.getDetailInterviewByInterviewId(
         id
@@ -755,6 +922,7 @@ const HiringRequestDetails = () => {
   };
 
 
+
   return (
     <React.Fragment>
       {loading && (
@@ -768,12 +936,6 @@ const HiringRequestDetails = () => {
           <div class="col-lg-8 " style={{ padding: "0px" }}>
             <Card className="job-detail overflow-hidden">
               <div>
-                <img
-                  src={JobDetailImage}
-                  alt=""
-                  className="img-fluid"
-                  style={{ width: "100%" }}
-                />
                 <div className="job-details-compnay-profile">
                   <img
                     src={JobImage10}
@@ -1022,9 +1184,7 @@ const HiringRequestDetails = () => {
                       </div>
                     </div>
                   </Form>
-                  <div>
-                    <button onClick={() => openFacebook()}>Mở cửa sổ đăng nhập</button>
-                  </div>
+
                 </div>
               </div>
             </ModalBody>
@@ -1036,7 +1196,7 @@ const HiringRequestDetails = () => {
             onOk={() => setShowPopup(false)}
             onCancel={() => {
               setShowPopup(false);
-              exitPopup(); // Log message when the modal is closed
+              exitPopup();
             }}
             width={1100}
             footer={null}
@@ -1089,15 +1249,14 @@ const HiringRequestDetails = () => {
                       style={{
                         width: "98%",
                         fontWeight: "500",
-                        borderRadius: "10px",
+                        borderRadius: "5px",
                       }}
                       readOnly={!isInputEditable}
-                      // value={selectInterviewDetail.title}
                       onChange={(e) => setInterviewTitleInput(e.target.value)}
                     />
-                    {interviewTitlError && (
+                    {interviewTitleUpdateError && (
                       <p className="text-danger mt-2">
-                        {interviewTitlError}
+                        {interviewTitleUpdateError}
                       </p>
                     )}
                   </FormGroup>
@@ -1116,15 +1275,14 @@ const HiringRequestDetails = () => {
                       style={{
                         width: "98%",
                         fontWeight: "500",
-                        borderRadius: "10px",
+                        borderRadius: "5px",
                       }}
                       readOnly={!isInputEditable}
-                      // value={selectInterviewDetail.title}
                       onChange={(e) => setDescriptionInput(e.target.value)}
                     />
-                    {interviewTitlError && (
+                    {desUpdateError && (
                       <p className="text-danger mt-2">
-                        {interviewTitlError}
+                        {desUpdateError}
                       </p>
                     )}
                   </FormGroup>
@@ -1143,15 +1301,14 @@ const HiringRequestDetails = () => {
                       style={{
                         width: "98%",
                         fontWeight: "500",
-                        borderRadius: "10px",
+                        borderRadius: "5px",
                       }}
                       readOnly={!isInputEditable}
-                      // value={selectInterviewDetail.title}
                       onChange={(e) => setDateOfInterviewInput(e.target.value)}
                     />
-                    {interviewTitlError && (
+                    {dateOfInterViewUpdateError && (
                       <p className="text-danger mt-2">
-                        {interviewTitlError}
+                        {dateOfInterViewUpdateError}
                       </p>
                     )}
                   </FormGroup>
@@ -1171,15 +1328,15 @@ const HiringRequestDetails = () => {
                         style={{
                           width: "98%",
                           fontWeight: "500",
-                          borderRadius: "10px",
+                          borderRadius: "5px",
                         }}
                         readOnly={!isInputEditable}
                         // value={selectInterviewDetail.title}
                         onChange={(e) => setStartTimeInput(e.target.value)}
                       />
-                      {interviewTitlError && (
+                      {timeStartUpdateError && (
                         <p className="text-danger mt-2">
-                          {interviewTitlError}
+                          {timeStartUpdateError}
                         </p>
                       )}
                     </FormGroup>
@@ -1198,15 +1355,15 @@ const HiringRequestDetails = () => {
                         style={{
                           width: "96%",
                           fontWeight: "500",
-                          borderRadius: "10px",
+                          borderRadius: "5px",
                         }}
                         readOnly={!isInputEditable}
                         // value={selectInterviewDetail.title}
                         onChange={(e) => setEndTimeInput(e.target.value)}
                       />
-                      {interviewTitlError && (
+                      {timeEndUpdateError && (
                         <p className="text-danger mt-2">
-                          {interviewTitlError}
+                          {timeEndUpdateError}
                         </p>
                       )}
                     </FormGroup>
@@ -1265,7 +1422,6 @@ const HiringRequestDetails = () => {
                 </div>
               </Col>
               <Col lg={6} className="border-start ">
-                {/* ------------------------------------------------------ */}
                 <Row>
                   <Col lg={6}>
                     <div className="p-2">
@@ -1500,93 +1656,6 @@ const HiringRequestDetails = () => {
                 </ul>
               </CardBody>
             </Card>
-            {/* {listInterview.length > 0 ? (
-              <div className="job-overview ">
-                <div>
-                  <div className="d-flex flex-column gap-3">
-                    <div className="d-flex justify-content-between align-items-center ">
-                      <h4 class="justify-content-center ">List Interviews</h4>
-                      <Link
-                        to="/listInterview"
-                        className="btn btn-link mb-0"
-                        // style={{ backgroundColor: "#02AF74" }}
-                        state={{ jobId: hiringRequestDetail.requestId }}
-                      >
-                        View All
-                      </Link>
-                    </div>
-                    <Row className="d-flex flex-column gap-4">
-                      {listInterviewToShow.map((listInterviewDetails, key) => (
-                        <Col lg={12} md={12} key={key}>
-                          <div className="dev-accepted ">
-                            <div className="px-4 py-3">
-                              <Row>
-                                <Col lg={12}>
-                                  <div className="mt-3 mt-lg-0 d-flex flex-column gap-3">
-                                    <div className="d-flex justify-content-between align-items-center">
-                                      <h5 className="mb-0">
-                                        <Link
-                                          to="/jobdetails"
-                                          className="text-dark"
-                                        >
-                                          {listInterviewDetails.title}
-                                        </Link>{" "}
-                                      </h5>
-                                      <span
-                                        className={
-                                          "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
-                                        }
-                                      >
-                                        {listInterviewDetails.statusString}
-                                      </span>
-                                    </div>
-                                    <div className="d-flex flex-column gap-1">
-                                      <p className="text-muted fs-14 mb-0">
-                                        Date:{" "}
-                                        {listInterviewDetails.dateOfInterview}
-                                      </p>
-                                      <p className="text-muted fs-14 mb-0">
-                                        Time: {listInterviewDetails.startTime} -{" "}
-                                        {listInterviewDetails.endTime}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </Col>
-                              </Row>
-                            </div>
-                          </div>
-                        </Col>
-                      ))}
-                      <Col lg={12} md={12}>
-                        <div className="dev-accepted">
-                          <div className="px-4 py-3 ">
-                            <Row>
-                              <div
-                                className="d-flex justify-content-center align-items-center"
-                                style={{
-                                  height: "50px",
-                                }}
-                              >
-                                <i
-                                  className=" uil uil-plus"
-                                  style={{ fontSize: "20px" }}
-                                ></i>
-                                <span className="ms-1">Add interview</span>
-                              </div>
-                            </Row>
-                          </div>
-                        </div>
-                      </Col>
-                    </Row>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div>
-                <p>No interviews available.</p>
-              </div>
-            )} */}
-
           </div>
           <div class="col-lg-11 p-0">
             <Card
