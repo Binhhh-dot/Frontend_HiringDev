@@ -201,8 +201,13 @@ const HiringRequestDetails = () => {
   };
 
   const completedInterview = async (interviewId) => {
+    setLoading(true);
     try {
       const response = await interviewServices.completedInterview(interviewId);
+      setShowPopup(false)
+      setLoadListDeveloper(!loadListDeveloper);
+      setLoading(false);
+      toast.success("Complete interview successfuly")
       console.log(response);
     } catch (error) {
       toast.error(error.response.data.message, {
