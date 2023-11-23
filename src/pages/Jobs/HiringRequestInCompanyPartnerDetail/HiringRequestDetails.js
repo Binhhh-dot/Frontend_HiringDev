@@ -53,6 +53,7 @@ import { DownOutlined, SkypeOutlined } from '@ant-design/icons';
 import { Dropdown as DropdownAntd, Space } from 'antd';
 import teamMeetingServices from "../../../services/teamMeeting.services";
 import customUrl from "../../../utils/customUrl";
+import { useNavigate } from "react-router-dom";
 
 
 const HiringRequestDetails = () => {
@@ -109,6 +110,15 @@ const HiringRequestDetails = () => {
   const [isUpdateInterview, setIsUpdateInterview] = useState(false);
   const [interviewIdCancel, setInterviewIdCancel] = useState(null);
   const [interviewIdUpdate, setInterviewIdUpdate] = useState(null);
+  const [minDate, setMinDate] = useState('');
+  const today = new Date();
+  today.setDate(today.getDate() + 1);
+  const tomorrow = today.toISOString().split('T')[0];
+  const navigate = useNavigate();
+
+  useState(() => {
+    setMinDate(tomorrow); // Thiết lập giá trị minDate thành ngày kế tiếp
+  }, []);
 
   const generateItems = () => {
     if (selectInterviewDetail.statusString === "Waiting Approval") {
@@ -672,7 +682,6 @@ const HiringRequestDetails = () => {
   };
 
   const handleOnboard = async (id) => {
-    // Simulate an asynchronous action, e.g., making an API request
     setLoadingOnboard((prevLoading) => ({
       ...prevLoading,
       [id]: true,
@@ -681,11 +690,17 @@ const HiringRequestDetails = () => {
       // Sử dụng giá trị từ state hoặc DOM
       const queryParams = new URLSearchParams(location.search);
       const requestId = queryParams.get("Id");
+
+      const state = {
+        requestId: requestId,
+        developerId: id
+      };
+      navigate("/laborSubleasingAgreement", { state });
       // Gọi API để reject interview
-      const response = await developerServices.onbardingDeveloper(requestId, id);
+      // const response = await developerServices.onbardingDeveloper(requestId, id);
       setIsListLoading2(true);
       // Xử lý kết quả nếu cần thiết
-      fetchJobVacancies();
+      // fetchJobVacancies();
       // Cập nhật giao diện hoặc thực hiện các hành động khác sau khi reject thành công
       // Ví dụ: Ẩn nút hoặc cập nhật trạng thái
       setIsListLoading2(false);
@@ -1113,6 +1128,7 @@ const HiringRequestDetails = () => {
                         type="date"
                         className="form-control"
                         id="date-of-interview"
+                        min={minDate}
                       />
                       {dateOfInterViewError && (
                         <p className="text-danger mt-2">
@@ -1928,13 +1944,13 @@ const HiringRequestDetails = () => {
                                         {loadingOnboard[candidategridDetailsNew.id] ? (
                                           <HashLoader
                                             size={20}
-                                            color={"blue"}
+                                            color={"white"}
                                             loading={true}
                                           />
                                         ) : isListLoading2 ? (
                                           <HashLoader
                                             size={20}
-                                            color={"blue"}
+                                            color={"white"}
                                             loading={true}
                                           />
                                         ) : (

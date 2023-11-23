@@ -207,7 +207,7 @@ const userRoutes = [
   { path: "/createcompanyaccount", component: <CreateCompanyAccount /> },
   { path: "/faqs", component: <Faqs /> },
   { path: "/privacyandpolicy", component: <PrivacyAndPolicy /> },
-  { path: "/paymentagreement", component: <PaymenAgreement /> },
+  { path: "/laborSubleasingAgreement", component: <PaymenAgreement /> },
   { path: "/pricing", component: <Pricing /> },
   { path: "/team", component: <Team /> },
   { path: "/services", component: <Services /> },

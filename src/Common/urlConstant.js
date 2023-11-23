@@ -172,6 +172,9 @@ export default {
       createTeamMeeting: "/TeamMeeting",
       deleteTeamMeeting: "/TeamMeeting",
       updateTeamMeeting: "/TeamMeeting",
+    },
+    contract: {
+      getPreContract: "/Contract/PreContract?developerId=${developerId}&requestId=${requestId}",
     }
   },
 };
