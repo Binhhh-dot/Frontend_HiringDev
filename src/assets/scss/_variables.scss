@@ -87,6 +87,7 @@ $money: #8FBB21;
 $green-bland: #D9F3EA;
 $purplel: #e1dffd;
 $OrangeRed2l: #ffe5db;
+$Newgreen: #02af74;
 
 
 // scss-docs-end color-variables
@@ -115,7 +116,8 @@ $colors: (
   "orangeRed2": $OrangeRed2,
   "money": $money,
   "purplel": $purplel,
-  "orangeRed2l": $OrangeRed2l
+  "orangeRed2l": $OrangeRed2l,
+  "newGreen": $Newgreen
 );
 // scss-docs-end colors-map
 // scss-docs-start theme-color-variables
@@ -140,6 +142,7 @@ $money: $money;
 $teal: $teal;
 $purplel: $purplel;
 $OrangeRed2l: $OrangeRed2l;
+$Newgreen: $Newgreen;
 
 
 // scss-docs-end theme-color-variables
@@ -167,7 +170,8 @@ $theme-colors: (
   "gray":$gray-600,
   "greenBland":$green-bland,
   "purplel": $purplel,
-  "orangeRed2l": $OrangeRed2l
+  "orangeRed2l": $OrangeRed2l,
+  "newGreen" : $Newgreen
 );
 
 // scss-docs-end theme-colors-map

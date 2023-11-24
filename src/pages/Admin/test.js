@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import JobVacancyList from "./JobVacancyList";
 import NewListInterviewInfo from "./NewListInterviewInfo";
 import ProjectList from "./ProjectList";
+import ContractList from "./ContractList";
 import img0 from "../../assets/images/user/img-00.jpg";
 import { Badge, Space } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +19,7 @@ import {
   SnippetsOutlined,
   SolutionOutlined,
   CodeOutlined,
+  AuditOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Input, Button } from "antd";
 
@@ -96,6 +98,13 @@ const items = [
     key: "menu-key/12",
     icon: <CodeOutlined />,
     className: "project",
+  },
+
+  {
+    label: "Contract",
+    key: "menu-key/14",
+    icon: <AuditOutlined />,
+    className: "contract",
   },
 ];
 
@@ -355,6 +364,27 @@ const Test = () => {
             </section>
           )}
           {/* ----------------------------------------------------------- */}
+          {selectedKeys[0] === "menu-key/14" && (
+            <section
+              className="section p-3"
+              style={{
+                backgroundColor: "#FFFF",
+                borderRadius: "10px",
+                margin: "30px",
+                boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+              }}
+            >
+              <Container className="px-0">
+                <Row className="px-0">
+                  <Col className="px-0">
+                    <div className="me-lg-6">
+                      <ContractList />
+                    </div>
+                  </Col>
+                </Row>
+              </Container>
+            </section>
+          )}
         </Content>
         <Footer>Footer</Footer>
       </Layout>

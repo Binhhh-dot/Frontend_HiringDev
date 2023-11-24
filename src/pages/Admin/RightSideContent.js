@@ -53,7 +53,6 @@ const RightSideContent = () => {
     fetchGetHiringDetailOverview();
   }, []);
   ////////////////////////////////////////////////////////////
-  //box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 
   if (!companyInfoInManager || !hiringRequestDetailOverview) {
     return null;
@@ -167,24 +166,6 @@ const RightSideContent = () => {
                   </div>
                 </div>
               </li>
-              {/* <li>
-                <div className="d-flex mt-4">
-                  <i className="uil uil-star-half-alt icon bg-primary-subtle text-primary"></i>
-                  <div className="ms-3">
-                    <h6 className="fs-14 mb-2">Experience</h6>
-                    <p className="text-muted mb-0"> 0-3 Years</p>
-                  </div>
-                </div>
-              </li> */}
-              {/* <li>
-                <div className="d-flex mt-4">
-                  <i className="uil uil-location-point icon bg-primary-subtle text-primary"></i>
-                  <div className="ms-3">
-                    <h6 className="fs-14 mb-2">Location</h6>
-                    <p className="text-muted mb-0"> New york</p>
-                  </div>
-                </div>
-              </li> */}
 
               <li>
                 <div className="d-flex mt-4">
@@ -197,17 +178,7 @@ const RightSideContent = () => {
                   </div>
                 </div>
               </li>
-              <li>
-                <div className="d-flex mt-4">
-                  <i className="uil uil-clock icon bg-primary-subtle text-primary"></i>
-                  <div className="ms-3">
-                    <h6 className="fs-14 mb-2">Schedule Type</h6>
-                    <p className="text-muted mb-0">
-                      {hiringRequestDetailOverview.scheduleTypeName}
-                    </p>
-                  </div>
-                </div>
-              </li>
+
               <li>
                 <div className="d-flex mt-4">
                   <i className="uil uil-briefcase-alt icon bg-primary-subtle text-primary"></i>
@@ -259,7 +230,7 @@ const RightSideContent = () => {
             loading="lazy"
           ></iframe>
         </div> */}
-        <div
+        {/* <div
           className="modal fade"
           id="applyNow"
           tabIndex="-1"
@@ -332,7 +303,7 @@ const RightSideContent = () => {
               </ModalBody>
             </Modal>
           </div>
-        </div>
+        </div> */}
       </div>
     </React.Fragment>
   );

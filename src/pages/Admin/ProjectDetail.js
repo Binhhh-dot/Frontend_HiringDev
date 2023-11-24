@@ -287,7 +287,7 @@ const ProjectDetail = () => {
                 className="custom-container-hiring-detail"
                 style={{ paddingLeft: "30px", paddingRight: "30px" }}
               >
-                <Row>
+                <Row className="mt-3">
                   <Col lg={8}>
                     <ProjectDetailDescription />
                   </Col>

@@ -25,6 +25,7 @@ export default {
     },
     projectType: {
       getAll: "/ProjectType?Status=${status}",
+      getAllProjectType: "/ProjectType",
     },
     hiringRequest: {
       getAll: "/HiringRequest",
@@ -100,8 +101,7 @@ export default {
       getListInterviewByRequestId: "/Interview/Request/${requestId}",
       getAllInterviewByHRAndPaging:
         "/Interview/ByHR?companyId=${companyId}&requestId=${requestId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
-      getDetailInterviewByInterviewId:
-        "/Interview/${InterviewId}",
+      getDetailInterviewByInterviewId: "/Interview/${InterviewId}",
       getAllInterviewByHRAndRequestIdAndPaging:
         "/Interview/ByHR?companyId=${companyId}&requestId=${requestId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
       getAllInterviewByManagerAndPaging:
@@ -158,6 +158,12 @@ export default {
       createProject: "/Project",
       getAllProjectByCompanyId: "/Project/ByCompany/${companyId}",
       getProjectDetailByProjectId: "/Project/${projectId}",
+      getDeveloperByProject: "/Developer/ByProject/${projectId}",
+      updateProject: "/Project/${projectId}",
+    },
+    contract: {
+      getContract: "/Contract",
+      getContractAndPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
     },
   },
 };
