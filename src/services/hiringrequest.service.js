@@ -237,7 +237,7 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   currentPage,
   pageSize,
   jobTitle,
-  skill,
+  skill
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.getAllHiringRequestById.replace(
@@ -333,7 +333,7 @@ const cancelHirringRequestStatusAfter = async (
 const getHiringRequestByProjectIdAndPaging = async (
   projectId,
   currentPage,
-  pageSize,
+  pageSize
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.getAllHiringRequestByProjectId.replace(

@@ -228,7 +228,7 @@ const authRoutes = [
   { path: "/signup", component: <SignUp /> },
   { path: "/signin", component: <SignIn /> },
   { path: "/signcompany", component: <SignCompany /> },
-  { path: "/test", component: <Test /> },
+  { path: "/manager", component: <Test /> },
   { path: "/newhiringrequestdetail", component: <NewHiringRequestDetail /> },
   { path: "/projectdetail", component: <ProjectDetail /> },
   { path: "/sidebarmanager", component: <SideBarManager /> },

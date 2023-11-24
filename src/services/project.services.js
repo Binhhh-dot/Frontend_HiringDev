@@ -52,7 +52,41 @@ const getProjectDetailByProjectId = async (projectId) => {
   return response;
 };
 
+const getDeveloperByProject = async (projectId) => {
+  const serviceUrl = urlConstant.endpoint.project.getDeveloperByProject.replace(
+    "${projectId}",
+    projectId
+  );
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
 
+const updateProject = async (
+  projectId,
+  ProjectId,
+  ProjectTypeId,
+  ProjectName,
+  Description,
+  StartDate,
+  EndDate,
+  FileImage
+) => {
+  const serviceUrl = urlConstant.endpoint.project.updateProject.replace(
+    "${projectId}",
+    projectId
+  );
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    ProjectId,
+    ProjectTypeId,
+    ProjectName,
+    Description,
+    StartDate,
+    EndDate,
+    FileImage,
+  });
+
+  return response;
+};
 
 export default {
   createProject,
@@ -60,4 +94,6 @@ export default {
   getProjectDetailByProjectId,
   getProjectList,
   getProjectListPaging,
+  getDeveloperByProject,
+  updateProject,
 };
