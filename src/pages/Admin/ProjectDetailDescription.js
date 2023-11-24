@@ -215,7 +215,7 @@ const ProjectDetailDescription = () => {
     }
   };
   //---------------------------------------------------------------------------------
-  const [activeTabMini, setActiveTabMini] = useState("1");
+  const [activeTabMini, setActiveTabMini] = useState("5");
   const tabChangeMini = (tabMini) => {
     if (activeTabMini) {
       if (activeTabMini !== tabMini) setActiveTabMini(tabMini);
@@ -741,10 +741,7 @@ const ProjectDetailDescription = () => {
                                 format={monthFormat}
                                 picker="month"
                               />
-                              <div
-                                className="me-5"
-                                style={{ borderRadius: "9px" }}
-                              >
+                              <div style={{ borderRadius: "9px" }}>
                                 <div
                                   className="border border-1 p-2"
                                   style={{
@@ -760,6 +757,43 @@ const ProjectDetailDescription = () => {
 
                             <div>
                               <div>
+                                <div className="px-4 mb-2">
+                                  <Row className="align-items-center">
+                                    <Col md={2} style={{ textAlign: "center" }}>
+                                      <div>
+                                        <span className="mb-0">
+                                          PayPeriodCode
+                                        </span>
+                                      </div>
+                                    </Col>
+
+                                    <Col md={2} style={{ textAlign: "center" }}>
+                                      <div>
+                                        <p className="mb-0">StartDate</p>
+                                      </div>
+                                    </Col>
+
+                                    <Col md={2} style={{ textAlign: "center" }}>
+                                      <div>
+                                        <p className="mb-0">EndDate</p>
+                                      </div>
+                                    </Col>
+
+                                    <Col md={2} style={{ textAlign: "center" }}>
+                                      <p className="mb-0">TotalAmount</p>
+                                    </Col>
+
+                                    <Col md={2} style={{ textAlign: "center" }}>
+                                      CreatedAt
+                                    </Col>
+
+                                    <Col md={2} style={{ textAlign: "center" }}>
+                                      <div>
+                                        <span>Status</span>
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                </div>
                                 <div
                                   style={{
                                     boxShadow:
@@ -769,51 +803,15 @@ const ProjectDetailDescription = () => {
                                     "job-box-dev-in-list-hiringRequest-for-dev card"
                                   }
                                 >
-                                  <div className="p-3">
+                                  <div className="p-4">
                                     <Row className="align-items-center">
                                       <Col
                                         md={2}
                                         style={{ textAlign: "center" }}
                                       >
                                         <div>
-                                          <span className="mb-0">Nguyen</span>
+                                          <span className="mb-0">#MLN111</span>
                                         </div>
-                                      </Col>
-
-                                      <Col
-                                        md={2}
-                                        className="px-0"
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        <div>
-                                          <p className="mb-0">Van A</p>
-                                        </div>
-                                      </Col>
-
-                                      <Col
-                                        md={2}
-                                        className="px-0"
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        <div>
-                                          <p className="mb-0">a@gmail.com</p>
-                                        </div>
-                                      </Col>
-
-                                      <Col
-                                        md={2}
-                                        className="px-0"
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        <p className="mb-0">168 hours</p>
-                                      </Col>
-
-                                      <Col
-                                        md={1}
-                                        className=" px-0"
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        10 hours
                                       </Col>
 
                                       <Col
@@ -821,20 +819,39 @@ const ProjectDetailDescription = () => {
                                         style={{ textAlign: "center" }}
                                       >
                                         <div>
-                                          <span>20000$</span>
+                                          <p className="mb-0">25 Oct 2023</p>
                                         </div>
                                       </Col>
 
-                                      <Col md={1}>
-                                        <div
-                                          className="d-flex justify-content-center rounded-circle"
-                                          onClick={""}
-                                          style={{ backgroundColor: "#ECECED" }}
-                                        >
-                                          <i
-                                            className="uil uil-angle-down"
-                                            style={{ fontSize: "26px" }}
-                                          ></i>
+                                      <Col
+                                        md={2}
+                                        style={{ textAlign: "center" }}
+                                      >
+                                        <div>
+                                          <p className="mb-0">24 Nov 2023</p>
+                                        </div>
+                                      </Col>
+
+                                      <Col
+                                        md={2}
+                                        style={{ textAlign: "center" }}
+                                      >
+                                        <p className="mb-0">3000$</p>
+                                      </Col>
+
+                                      <Col
+                                        md={2}
+                                        style={{ textAlign: "center" }}
+                                      >
+                                        25 Nov 2023
+                                      </Col>
+
+                                      <Col
+                                        md={2}
+                                        style={{ textAlign: "center" }}
+                                      >
+                                        <div>
+                                          <span>Status</span>
                                         </div>
                                       </Col>
                                     </Row>
@@ -846,7 +863,7 @@ const ProjectDetailDescription = () => {
                         </TabPane>
                         <TabPane tabId="6">
                           <div>
-                            <Row className="mb-2">
+                            <Row className="mb-2 px-3">
                               <Col md={2} style={{ textAlign: "center" }}>
                                 First Name
                               </Col>
@@ -887,6 +904,7 @@ const ProjectDetailDescription = () => {
                               </Col>
                               <Col md={1}></Col>
                             </Row>
+
                             <div className="d-flex flex-column gap-2">
                               {devInProject.map((devInProjectNew, key) => (
                                 <div key={key}>
@@ -993,7 +1011,6 @@ const ProjectDetailDescription = () => {
                                             >
                                               Work Date
                                             </Col>
-                                            <Col md={3}>Time In</Col>
                                             <Col md={3}>
                                               <div>
                                                 {" "}
@@ -1010,19 +1027,28 @@ const ProjectDetailDescription = () => {
                                                 />
                                               </div>
                                             </Col>
-                                            <Col md={3}>Hours In Day </Col>
-                                          </Row>
-                                        </div>
-
-                                        <div
-                                          className="job-box-dev-in-list-hiringRequest-for-dev card  p-2"
-                                          style={{ backgroundColor: "#FFFFFF" }}
-                                        >
-                                          <Row>
-                                            <Col md={3}>Work Date</Col>
-                                            <Col md={3}>Time In</Col>
-                                            <Col md={3}>Time Out</Col>
-                                            <Col md={3}>Hours In Day</Col>
+                                            <Col md={3}>
+                                              <div>
+                                                {" "}
+                                                <Input
+                                                  type="text"
+                                                  className="form-control"
+                                                  id="time-Out"
+                                                  value={"07:00"}
+                                                  onChange={(e) =>
+                                                    setCurrentProjectName(
+                                                      e.target.value
+                                                    )
+                                                  }
+                                                />
+                                              </div>
+                                            </Col>
+                                            <Col
+                                              md={3}
+                                              className="d-flex justify-content-center align-items-center"
+                                            >
+                                              Hours In Day{" "}
+                                            </Col>
                                           </Row>
                                         </div>
                                       </div>
@@ -1039,7 +1065,11 @@ const ProjectDetailDescription = () => {
                 </TabPane>
 
                 <TabPane tabId="4">
-                  <div>DDDDDD</div>
+                  <div className="mt-1 mb-2">
+                    <div>
+                      <h4>List History Payment</h4>
+                    </div>
+                  </div>
                 </TabPane>
               </TabContent>
             </CardBody>
