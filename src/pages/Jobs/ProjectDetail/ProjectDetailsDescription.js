@@ -16,6 +16,8 @@ import {
   Nav,
   TabPane,
   TabContent,
+  Input,
+  Collapse
 } from "reactstrap";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
@@ -53,6 +55,12 @@ import JobImage10 from "../../../assets/images/featured-job/img-10.png";
 import JobDetailImage from "../../../assets/images/job-detail.jpg";
 import { Avatar, Divider, Tooltip } from 'antd';
 import developerServices from "../../../services/developer.services";
+import dayjs from "dayjs";
+import { DatePicker, Space } from "antd";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
+
+
 
 const ProjectDetailDesciption = () => {
   const location = useLocation();
@@ -75,7 +83,26 @@ const ProjectDetailDesciption = () => {
   const [selectedHiringRequestInfo, setSelectedHiringRequestInfo] = useState({});
   const [selectedJobPositionInfo, setSelectedJobPositionInfo] = useState({});
   const [checkHeightListHiringRequest, setCheckHeightListHiringRequest] = useState(false);
+  const monthFormat = "YYYY/MM";
 
+
+  const toggleCollapse = (index) => {
+    const newShowCollapse = [...showCollapse];
+    newShowCollapse[index] = !newShowCollapse[index];
+    setShowCollapse(newShowCollapse);
+  };
+  const [currentProjectName, setCurrentProjectName] = useState(null);
+  const [devInProject, setDevInProject] = useState([]);
+  const [showCollapse, setShowCollapse] = useState(
+    Array(devInProject.length).fill(false)
+  );
+
+  const [activeTabMini, setActiveTabMini] = useState("1");
+  const tabChangeMini = (tabMini) => {
+    if (activeTabMini) {
+      if (activeTabMini !== tabMini) setActiveTabMini(tabMini);
+    }
+  };
   // const fetchProjectDetails2 = async () => {
   //   try {
   //     const queryParams = new URLSearchParams(location.search);
@@ -362,6 +389,8 @@ const ProjectDetailDesciption = () => {
     }
   };
 
+
+
   return (
     <React.Fragment>
       <div className="job-detail " style={{ marginTop: "50px" }}>
@@ -534,8 +563,20 @@ const ProjectDetailDesciption = () => {
                       Developer
                     </NavLink>
                   </NavItem>
+                  <NavItem role="presentation">
+                    <NavLink
+                      to="#"
+                      className={classnames({ active: activeTab === "4" })}
+                      onClick={() => {
+                        tabChange("4");
+                      }}
+                      type="button"
+                    // style={{paddingLeft:"0px"}}
+                    >
+                      Payment
+                    </NavLink>
+                  </NavItem>
                 </Nav>
-
                 <CardBody className="p-3" style={{ backgroundColor: "#f6f6f6", overflowX: "auto" }} >
                   <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
@@ -801,6 +842,352 @@ const ProjectDetailDesciption = () => {
                           closeModal={closeModal}
                           devId={selectedCandidateInfo.id}
                         />
+                      </div>
+                    </TabPane>
+                    <TabPane tabId="4">
+                      <div>
+                        <Nav
+                          className="profile-content-nav nav-pills border-bottom mb-4"
+                          id="pills-tab"
+                          role="tablist"
+                          justified
+                        >
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTabMini === "5",
+                              })}
+                              onClick={() => {
+                                tabChangeMini("5");
+                              }}
+                              type="button"
+                            >
+                              Pay Period
+                            </NavLink>
+                          </NavItem>
+
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTabMini === "6",
+                              })}
+                              onClick={() => {
+                                tabChangeMini("6");
+                              }}
+                              type="button"
+                            >
+                              Pay Slip
+                            </NavLink>
+                          </NavItem>
+                        </Nav>
+
+                        {/* -------------------------------------------------------------- */}
+                        <div>
+                          <TabContent activeTab={activeTabMini}>
+                            <TabPane tabId="5">
+                              <div>
+                                <div className="mb-4 d-flex justify-content-between">
+                                  <DatePicker
+                                    defaultValue={dayjs("2023/11", monthFormat)}
+                                    format={monthFormat}
+                                    picker="month"
+                                  />
+                                  <div
+                                    className="me-5"
+                                    style={{ borderRadius: "9px" }}
+                                  >
+                                    <div
+                                      className="border border-1 p-2"
+                                      style={{
+                                        borderRadius: "9px",
+                                        backgroundColor: "#1677FF",
+                                        color: "white",
+                                      }}
+                                    >
+                                      <i className="uil uil-plus"></i> Create
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <div>
+                                    <div
+                                      style={{
+                                        boxShadow:
+                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                      }}
+                                      className={
+                                        "job-box-dev-in-list-hiringRequest-for-dev card"
+                                      }
+                                    >
+                                      <div className="p-3">
+                                        <Row className="align-items-center">
+                                          <Col
+                                            md={2}
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            <div>
+                                              <span className="mb-0">Nguyen</span>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            <div>
+                                              <p className="mb-0">Van A</p>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            <div>
+                                              <p className="mb-0">a@gmail.com</p>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            <p className="mb-0">168 hours</p>
+                                          </Col>
+
+                                          <Col
+                                            md={1}
+                                            className=" px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            10 hours
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            <div>
+                                              <span>20000$</span>
+                                            </div>
+                                          </Col>
+
+                                          <Col md={1}>
+                                            <div
+                                              className="d-flex justify-content-center rounded-circle"
+                                              onClick={""}
+                                              style={{ backgroundColor: "#ECECED" }}
+                                            >
+                                              <i
+                                                className="uil uil-angle-down"
+                                                style={{ fontSize: "26px" }}
+                                              ></i>
+                                            </div>
+                                          </Col>
+                                        </Row>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </TabPane>
+                            <TabPane tabId="6">
+                              <div>
+                                <Row className="mb-2">
+                                  <Col md={2} style={{ textAlign: "center" }}>
+                                    First Name
+                                  </Col>
+                                  <Col
+                                    md={2}
+                                    className="px-0"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    Last Name
+                                  </Col>
+                                  <Col
+                                    md={2}
+                                    className="px-0"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    Email
+                                  </Col>
+                                  <Col
+                                    md={2}
+                                    className="px-0"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    Total Hours
+                                  </Col>
+                                  <Col
+                                    md={1}
+                                    className="px-0"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    Total OT
+                                  </Col>
+                                  <Col
+                                    md={2}
+                                    className="px-0"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    Total Salary
+                                  </Col>
+                                  <Col md={1}></Col>
+                                </Row>
+                                <div className="d-flex flex-column gap-2">
+                                  {devInProject.map((devInProjectNew, key) => (
+                                    <div key={key}>
+                                      <div
+                                        style={{
+                                          boxShadow:
+                                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                        }}
+                                        className={
+                                          "job-box-dev-in-list-hiringRequest-for-dev card"
+                                        }
+                                      >
+                                        <div className="p-3">
+                                          <Row className="align-items-center">
+                                            <Col
+                                              md={2}
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              <div>
+                                                <span className="mb-0">Nguyen</span>
+                                              </div>
+                                            </Col>
+
+                                            <Col
+                                              md={2}
+                                              className="px-0"
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              <div>
+                                                <p className="mb-0">Van A</p>
+                                              </div>
+                                            </Col>
+
+                                            <Col
+                                              md={2}
+                                              className="px-0"
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              <div>
+                                                <p className="mb-0">a@gmail.com</p>
+                                              </div>
+                                            </Col>
+
+                                            <Col
+                                              md={2}
+                                              className="px-0"
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              <p className="mb-0">168 hours</p>
+                                            </Col>
+
+                                            <Col
+                                              md={1}
+                                              className=" px-0"
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              10 hours
+                                            </Col>
+
+                                            <Col
+                                              md={2}
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              <div>
+                                                <span>20000$</span>
+                                              </div>
+                                            </Col>
+
+                                            <Col md={1}>
+                                              <div
+                                                className="d-flex justify-content-center rounded-circle"
+                                                onClick={() => toggleCollapse(key)}
+                                                style={{
+                                                  backgroundColor: "#ECECED",
+                                                }}
+                                              >
+                                                <i
+                                                  className="uil uil-angle-down"
+                                                  style={{ fontSize: "26px" }}
+                                                ></i>
+                                              </div>
+                                            </Col>
+                                          </Row>
+                                        </div>
+                                      </div>
+
+                                      <Collapse isOpen={showCollapse[key]}>
+                                        <div
+                                          style={{
+                                            backgroundColor: "#EFF0F2",
+                                            borderRadius: "7px",
+                                          }}
+                                          className="mt-1 p-2"
+                                        >
+                                          <div className="d-flex flex-column gap-2">
+                                            <div
+                                              className="job-box-dev-in-list-hiringRequest-for-dev card  p-2"
+                                              style={{ backgroundColor: "#FFFFFF" }}
+                                            >
+                                              <Row>
+                                                <Col
+                                                  md={3}
+                                                  className="d-flex justify-content-center align-items-center"
+                                                >
+                                                  Work Date
+                                                </Col>
+                                                <Col md={3}>Time In</Col>
+                                                <Col md={3}>
+                                                  <div>
+                                                    {" "}
+                                                    <Input
+                                                      type="text"
+                                                      className="form-control"
+                                                      id="time-In"
+                                                      value={"07:00"}
+                                                      onChange={(e) =>
+                                                        setCurrentProjectName(
+                                                          e.target.value
+                                                        )
+                                                      }
+                                                    />
+                                                  </div>
+                                                </Col>
+                                                <Col md={3}>Hours In Day </Col>
+                                              </Row>
+                                            </div>
+
+                                            <div
+                                              className="job-box-dev-in-list-hiringRequest-for-dev card  p-2"
+                                              style={{ backgroundColor: "#FFFFFF" }}
+                                            >
+                                              <Row>
+                                                <Col md={3}>Work Date</Col>
+                                                <Col md={3}>Time In</Col>
+                                                <Col md={3}>Time Out</Col>
+                                                <Col md={3}>Hours In Day</Col>
+                                              </Row>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </Collapse>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </TabPane>
+                          </TabContent>
+                        </div>
                       </div>
                     </TabPane>
                   </TabContent>
