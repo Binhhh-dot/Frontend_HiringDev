@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const CreateHiringRequestPopup = (
-    { isModalOpen, closeModal, requestId, jobPositionId },
+    { isModalOpen, closeModal, requestId, jobPositionId, minDateDuration, maxDateDuration },
     ...props
 ) => {
 
@@ -417,22 +417,7 @@ const CreateHiringRequestPopup = (
                     check = false;
                     setDurationError("Please enter the duration.");
                 } else {
-                    const currentDate = new Date();
-                    const selectedDate = new Date(
-                        document.getElementById("duration").value
-                    );
-                    const sevenDaysLater = new Date(
-                        currentDate.getTime() + 7 * 24 * 60 * 60 * 1000
-                    ); // Thêm 7 ngày
-
-                    if (selectedDate < sevenDaysLater) {
-                        setDurationError(
-                            "Please enter a date that is at least 7 days greater than the current date."
-                        );
-                        check = false;
-                    } else {
-                        setDurationError(null);
-                    }
+                    setDurationError(null);
                 }
                 // Kiểm tra lỗi cho Job Description
 
@@ -515,7 +500,6 @@ const CreateHiringRequestPopup = (
                 } else {
                     setLoading(false);
                     setSuccessMessage(null);
-                    setErrorMessage("Lỗi khi đăng công việc");
                 }
             }
         }
@@ -628,8 +612,11 @@ const CreateHiringRequestPopup = (
     };
 
     useEffect(() => {
+        console.log(minDateDuration)
+        console.log(maxDateDuration)
         fetchData();
     }, [isModalOpen, requestId, jobPositionId]);
+
 
     return (
         <React.Fragment>
@@ -647,7 +634,6 @@ const CreateHiringRequestPopup = (
                         {loading && (
                             <div className="overlay" style={{ zIndex: "2000" }}>
                                 <div className="spinner"></div>
-                                <div class="loading-text">Loading...</div>
                             </div>
                         )}
 
@@ -712,11 +698,7 @@ const CreateHiringRequestPopup = (
                                                                 className="Select Select--level-highest2"
                                                             />
                                                         </div>
-                                                        {employmentTypeError && (
-                                                            <p className="text-danger mt-2">
-                                                                {employmentTypeError}
-                                                            </p>
-                                                        )}
+
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -742,6 +724,8 @@ const CreateHiringRequestPopup = (
                                                             type="date"
                                                             class="form-control resume"
                                                             placeholder=""
+                                                            min={minDateDuration}
+                                                            max={maxDateDuration}
                                                         ></input>
                                                         {durationError && (
                                                             <p className="text-danger mt-2">{durationError}</p>

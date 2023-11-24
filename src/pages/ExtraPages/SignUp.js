@@ -9,7 +9,9 @@ import signUpImage from "../../assets/images/auth/sign-up.png";
 import { Form } from "react-bootstrap";
 import axios from "axios"; // Import Axios
 import loginService from "../../services/login.service";
-
+import { HashLoader } from "react-spinners";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
   document.title = "Sign Up | Jobcy - Job Listing Template | Themesdesign";
@@ -22,21 +24,26 @@ const SignUp = () => {
     password: "",
     phoneNumber: "",
   });
+  const [loadingSignUp, setLoadingSignUp] = useState(false);
+
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-
+    setLoadingSignUp(true);
     try {
       const response = await loginService.signUp(formData);
 
       if (response.status === 201) {
         // Đăng ký thành công, chuyển hướng đến trang đăng nhập
         navigate("/signin")
+        toast.success("Sign up sucessfully")
       }
+      setLoadingSignUp(false);
     } catch (error) {
       console.error("Lỗi khi đăng ký:", error);
+      setLoadingSignUp(false);
       // Xử lý lỗi tại đây nếu cần thiết
-      setError(error.response.data.message);
+      toast.error(error.response.data.message)
     }
   };
 
@@ -227,8 +234,18 @@ const SignUp = () => {
                                   <button
                                     type="submit"
                                     className="btn btn-white btn-hover w-100"
+                                    disabled={loadingSignUp}
                                   >
-                                    Sign Up
+                                    {loadingSignUp ? (
+                                      <HashLoader
+                                        size={20}
+                                        color={"green"}
+                                        loading={true}
+                                      />
+                                    )
+                                      : (
+                                        "Sign Up"
+                                      )}
                                   </button>
                                 </div>
                               </Form>

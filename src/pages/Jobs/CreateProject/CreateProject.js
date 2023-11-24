@@ -74,7 +74,26 @@ const CreateProject = () => {
   const [emailFormCreateCompany, setEmailFormCreateCompany] = useState(null);
   const [companyPhoneNumberFormCreateCompany, setCompanyPhoneNumberFormCreateCompany] = useState(null);
   const [addressFormCreateCompany, setAddressFormCreateCompany] = useState(null);
+  const [minDate, setMinDate] = useState('');
+  const [minDateEndDay, setMinDateEndDay] = useState('');
+  const today = new Date();
+  const today2 = new Date();
+  today.setDate(today.getDate());
+  today2.setDate(today.getDate() + 30);
+  const tomorrow = today.toISOString().split('T')[0];
+  const _30DayLater = today2.toISOString().split('T')[0];
 
+  const [projectNameError, setProjectNameError] = useState(null);
+  const [startDateError, setStartDateError] = useState(null);
+  const [endDateError, setEndDateError] = useState(null);
+  const [projectTypeError, setProjectTypeError] = useState(null);
+  const [jobDescriptionError, setJobDescriptionError] = useState(null);
+
+  useState(() => {
+    setMinDate(tomorrow);
+    setMinDateEndDay(_30DayLater);
+    // Thiết lập giá trị minDate thành ngày kế tiếp
+  }, []);
 
   const openModal = () => {
     setModal(!modal);
@@ -158,6 +177,8 @@ const CreateProject = () => {
 
 
   useEffect(() => {
+    console.log(minDate)
+    console.log(minDateEndDay)
     fetch(
       "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4"
     )
@@ -279,118 +300,58 @@ const CreateProject = () => {
       } else {
         setLoading(true);
         let check = true;
-        // if (!document.getElementById("job-title").value) {
-        //   setJobTitleError("Please enter a job title.");
-        //   check = false;
-        // } else {
-        //   setJobTitleError(null);
-        // }
-        // if (
-        //   !document.getElementById("number-dev").value ||
-        //   parseInt(document.getElementById("number-dev").value, 10) <= 0
-        // ) {
-        //   setNumberDevError(
-        //     "Please enter a valid number of developers (greater than 0)."
-        //   );
-        //   check = false;
-        // } else {
-        //   setNumberDevError(null);
-        // }
+        if (!document.getElementById("project-name").value) {
+          setProjectNameError("Enter project name");
+          check = false;
+        } else {
+          setProjectNameError(null);
+        }
+        if (!document.getElementById("start-date").value) {
+          setStartDateError("Enter start date of project");
+          check = false;
 
-        // // Kiểm tra lỗi cho Type of developer
-        // if (!selectedOptions2.value) {
-        //   setTypeError("Please select the type of developer.");
-        //   check = false;
-        // } else {
-        //   setTypeError(null);
-        // }
+        } else {
+          setStartDateError(null);
+        }
+        if (!document.getElementById("end-date").value) {
+          setEndDateError("Enter end date of project");
+          check = false;
 
-        // // Kiểm tra lỗi cho Level requirement
-        // if (!selectedOptions3.value) {
-        //   setLevelError("Please select the level requirement.");
-        //   check = false;
-        // } else {
-        //   setLevelError(null);
-        // }
+        } else {
+          setEndDateError(null);
+        }
+        if (!selectedOptions2.value) {
+          setProjectTypeError("Select project type")
+          check = false;
 
-        // if (!selectedOptions4.value) {
-        //   setScheduleTypeError("Please select the schedule type requirement.");
-        //   check = false;
-        // } else {
-        //   setScheduleTypeError(null);
-        // }
-        // if (!selectedOptions5.value) {
-        //   setEmploymentTypeError(
-        //     "Please select the employment type requirement."
-        //   );
-        //   check = false;
-        // } else {
-        //   setEmploymentTypeError(null);
-        // }
+        } else {
+          setProjectTypeError(null);
+        }
+        if (!value) {
+          setJobDescriptionError("Enter job description")
+          check = false;
+        } else {
+          setJobDescriptionError(null);
+        }
+        if (document.getElementById("end-date").value && document.getElementById("start-date").value) {
+          var startDate = new Date(document.getElementById("start-date").value);
+          var endDate = new Date(document.getElementById("end-date").value);
 
-        // // Kiểm tra lỗi cho Skill requirement
-        // if (selectedOptions.length === 0) {
-        //   setSkillError("Please select at least one skill.");
-        //   check = false;
-        // } else {
-        //   setSkillError(null);
-        // }
+          var timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
+          var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Chuyển đổi khoảng cách thời gian thành số ngày
 
-        // // Kiểm tra lỗi cho Budget
-        // if (
-        //   !document.getElementById("budget").value ||
-        //   parseInt(document.getElementById("budget").value, 10) <= 0
-        // ) {
-        //   setBudgetError("Please enter the budget(greater than 0).");
-        //   check = false;
-        // } else {
-        //   setBudgetError(null);
-        // }
-
-        // // Kiểm tra lỗi cho Duration
-        // if (!document.getElementById("duration").value) {
-        //   check = false;
-        //   setDurationError("Please enter the duration.");
-        // } else {
-        //   const currentDate = new Date();
-        //   const selectedDate = new Date(
-        //     document.getElementById("duration").value
-        //   );
-        //   const sevenDaysLater = new Date(
-        //     currentDate.getTime() + 7 * 24 * 60 * 60 * 1000
-        //   ); // Thêm 7 ngày
-
-        //   if (selectedDate < sevenDaysLater) {
-        //     setDurationError(
-        //       "Please enter a date that is at least 7 days greater than the current date."
-        //     );
-        //     check = false;
-        //   } else {
-        //     setDurationError(null);
-        //   }
-        // }
-        // // Kiểm tra lỗi cho Job Description
-
-        // if (value == "") {
-        //   setDescriptionError("Please enter the job description.");
-        //   check = false;
-        // } else {
-        //   setDescriptionError(null);
-        // }
-        // Nếu có, thực hiện logic để đăng job
-        // Đây có thể là nơi gửi yêu cầu đăng job lên server
-        console.log("Posting project...");
+          if (diffDays <= 30) {
+            setStartDateError("The difference between start and end date must be greater than 1 month");
+            check = false;
+          }
+        }
         if (check) {
           try {
-
-
             const projectName = document.getElementById("project-name").value;
             const projectDescription = value;
-
             const startDate = document.getElementById("start-date").value;
             const endDate = document.getElementById("end-date").value;
             const projectTypeRequireId = selectedOptions2.value;
-
             const formData = new FormData();
             formData.append('companyId', companyIdErr);
             formData.append('projectName', projectName);
@@ -398,174 +359,31 @@ const CreateProject = () => {
             formData.append('startDate', startDate);
             formData.append('endDate', endDate);
             formData.append('description', projectDescription);
-            formData.append('file', avatar);
-            // const requestIdState = location.state?.requestId || null;
-
-            // if (requestIdState) {
-            //   const targetedDev = 0;
-            //   const response = await hiringRequestService.updateHiringRequest(
-            //     requestIdState,
-            //     jobTitle,
-            //     jobDescription,
-            //     numberOfDev,
-            //     salaryPerDev,
-            //     targetedDev,
-            //     duration,
-            //     typeRequireId,
-            //     levelRequireId,
-            //     skillIds,
-            //     isSaved,
-            //     scheduleTypeId,
-            //     employmentTypeId
-            //   );
-            //   console.log("Job saved posted successfully:", response);
-            // } else {
             const response = await projectServices.createProject(
               formData
             );
-            console.log("Job posted successfully:", response);
             // }
             setLoading(false);
-            // navigate("/signin");
-            setSuccessMessage("Đăng công việc thành công");
-            localStorage.removeItem("requestId");
             setErrorMessage(null);
-            // navigate("/hiringrequestlistincompanypartner");
+            navigate("/projectlist");
+            toast.success("Create project successfully!")
           } catch (error) {
             console.log(value);
             console.error("Error posting job:", error);
             setLoading(false);
             setSuccessMessage(null);
-            setErrorMessage("Lỗi khi đăng công việc");
-            toast.info(' Wow so easy!', {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });;
+            toast.error("Create project fail!")
             // Handle error, show error message, etc.
           }
         } else {
           setLoading(false);
           setSuccessMessage(null);
-          setErrorMessage("Lỗi khi đăng công việc");
+          toast.error("Create project fail!")
         }
       }
     }
   };
 
-  const handleSavePostJob = async () => {
-    // Kiểm tra xem có userID trong localStorage không
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      openModal(); // Nếu không có, mở modal signup
-    } else {
-      const companyIdErr = localStorage.getItem("companyId");
-      if (companyIdErr == "null") {
-
-        openModal2();
-      } else {
-        if (!document.getElementById("job-title").value) {
-          setJobTitleError("Please enter a job title.");
-          setNumberDevError(null);
-          setTypeError(null);
-          setLevelError(null);
-          setScheduleTypeError(null);
-          setEmploymentTypeError(null);
-          setSkillError(null);
-          setBudgetError(null);
-          setDurationError(null);
-          setDescriptionError(null);
-        }
-        console.log("Save job...");
-        setLoading(true);
-        try {
-          const jobTitleInput = document.getElementById("job-title");
-          const jobTitle =
-            jobTitleInput.value.trim() !== "" ? jobTitleInput.value : null; // replace with the actual job title from your input
-          const jobDescription = value.trim() !== "" ? value : null; // get job description from the textarea
-          const numberDevInput = document.getElementById("number-dev");
-          const numberOfDev =
-            numberDevInput.value !== ""
-              ? parseInt(numberDevInput.value, 10)
-              : null;
-          const budgetInput = document.getElementById("budget");
-          const salaryPerDev =
-            budgetInput.value !== "" ? parseFloat(budgetInput.value) : null;
-          const durationInput = document.getElementById("duration");
-          const duration =
-            durationInput.value.trim() !== "" ? durationInput.value : null; // get duration from the date input
-          const typeRequireId = selectedOptions2.value
-            ? selectedOptions2.value
-            : null; // replace with actual value from the type dropdown
-          const levelRequireId = selectedOptions3.value
-            ? selectedOptions3.value
-            : null; // replace with actual value from the level dropdown
-          const scheduleTypeId = selectedOptions4.value
-            ? selectedOptions4.value
-            : null;
-          const employmentTypeId = selectedOptions5.value
-            ? selectedOptions5.value
-            : null;
-          const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
-          const isSaved = true;
-          const requestIdState = location.state?.requestId || null;
-
-          if (requestIdState) {
-            const targetedDev = 0;
-            const response = await hiringRequestService.updateHiringRequest(
-              requestIdState,
-              jobTitle,
-              jobDescription,
-              numberOfDev,
-              targetedDev,
-              salaryPerDev,
-              duration,
-              typeRequireId,
-              levelRequireId,
-              skillIds,
-              isSaved,
-              scheduleTypeId,
-              employmentTypeId
-            );
-            console.log("Save posted successfully:", response);
-          } else {
-            const response = await hiringRequestService.createHiringRequest(
-              jobTitle,
-              jobDescription,
-              numberOfDev,
-              salaryPerDev,
-              duration,
-              typeRequireId,
-              levelRequireId,
-              skillIds,
-              isSaved,
-              companyId,
-              scheduleTypeId,
-              employmentTypeId
-            );
-            console.log("Update posted successfully:", response);
-          }
-          setLoading(false);
-          setJobTitleError(null);
-          setSuccessMessage("Save công việc thành công");
-          setErrorMessage(null);
-          navigate("/hiringrequestlistincompanypartner");
-        } catch (error) {
-          console.error("Error posting job:", error);
-          setLoading(false);
-          setSuccessMessage(null);
-          setErrorMessage("Lỗi khi đăng công việc");
-
-          // Handle error, show error message, etc.
-        }
-      }
-    }
-  };
 
   const handleChooseAvatar2 = () => {
     const inputElement = document.getElementById('profile-img-file-input-2');
@@ -580,7 +398,16 @@ const CreateProject = () => {
 
   };
 
+  const setMinDateEndDayByJs = () => {
+    const startDateValue = document.getElementById("start-date").value;
+    const startDate = new Date(startDateValue);
+    startDate.setDate(startDate.getDate() + 30); // Thêm 30 ngày vào ngày bắt đầu
 
+    const minDay = startDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
+
+    console.log(minDay);
+    setMinDateEndDay(minDay)
+  }
   const handlePreviewAvatar = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -594,7 +421,6 @@ const CreateProject = () => {
       {loading && (
         <div className="overlay" style={{ zIndex: "2000" }}>
           <div className="spinner"></div>
-          <div class="loading-text">Loading...</div>
         </div>
       )}
       <Section />
@@ -612,40 +438,6 @@ const CreateProject = () => {
                     id="contact-form3"
                   >
                     <h4 class="text-dark mb-3">Post a New Project :</h4>
-                    <div>
-                      {avatar ? (
-                        <img
-                          style={{ width: "100%", height: "250px", objectFit: "cover" }}
-                          src={avatar.preview}
-                          className=""
-                          id="profile-img"
-                          alt=""
-                        />
-                      ) : (
-                        <img
-                          style={{ width: "100%", height: "250px", objectFit: "cover" }}
-                          src={backgroundImage}  // Giá trị mặc định là "userImage2"
-                          className=""
-                          id="profile-img-2"
-                          alt=""
-                        />
-                      )}
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group app-label mt-2">
-                          <label class="text-muted">Project Img</label>
-                          <input
-                            type="file"
-                            class="form-control resume"
-                            onChange={handlePreviewAvatar}
-                            accept=".jpg, .jpeg, .png"
-                            placeholder=""
-                            required
-                          ></input>
-                        </div>
-                      </div>
-                    </div>
                     <div class="row">
                       <div class="col-md-12">
                         <div class="form-group app-label mt-2">
@@ -658,8 +450,8 @@ const CreateProject = () => {
                             maxLength="100"
                             required
                           ></input>
-                          {jobTitleError && (
-                            <p className="text-danger mt-2">{jobTitleError}</p>
+                          {projectNameError && (
+                            <p className="text-danger mt-2">{projectNameError}</p>
                           )}
                         </div>
                       </div>
@@ -679,8 +471,8 @@ const CreateProject = () => {
                             />
                           </div>
 
-                          {typeError && (
-                            <p className="text-danger mt-2">{typeError}</p>
+                          {projectTypeError && (
+                            <p className="text-danger mt-2">{projectTypeError}</p>
                           )}
                         </div>
                       </div>
@@ -694,10 +486,12 @@ const CreateProject = () => {
                             type="date"
                             class="form-control resume"
                             placeholder=""
+                            min={minDate}
+                            onChange={setMinDateEndDayByJs}
                             required
                           ></input>
-                          {levelError && (
-                            <p className="text-danger mt-2">{levelError}</p>
+                          {startDateError && (
+                            <p className="text-danger mt-2">{startDateError}</p>
                           )}
                         </div>
                       </div>
@@ -709,11 +503,12 @@ const CreateProject = () => {
                             id="end-date"
                             type="date"
                             class="form-control resume"
+                            min={minDateEndDay}
                             placeholder=""
                             required
                           ></input>
-                          {skillError && (
-                            <p className="text-danger mt-2">{skillError}</p>
+                          {endDateError && (
+                            <p className="text-danger mt-2">{endDateError}</p>
                           )}
                         </div>
                       </div>
@@ -738,9 +533,9 @@ const CreateProject = () => {
                               // 
                             }}
                           />
-                          {descriptionError && (
+                          {jobDescriptionError && (
                             <p className="text-danger mt-2">
-                              {descriptionError}
+                              {jobDescriptionError}
                             </p>
                           )}
                         </div>

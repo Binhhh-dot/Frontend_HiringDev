@@ -19,7 +19,7 @@ import {
   Input,
   Collapse
 } from "reactstrap";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Await, Link, Navigate, useLocation } from "react-router-dom";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -28,7 +28,9 @@ import {
   faX,
   faPlus,
   faTimes,
-  faEllipsis
+  faEllipsis,
+  faAngleRight,
+  faAngleLeft
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
@@ -37,6 +39,7 @@ import {
   faEnvelope,
   faCalendar
 } from "@fortawesome/free-regular-svg-icons";
+import { Modal as AntdModal, Button as AntdButton } from "antd";
 import "./index.css";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 import CreateHiringRequestPopup from "../CreateHiringRequest/CreateHiringRequestPopup";
@@ -45,6 +48,7 @@ import projectServices from "../../../services/project.services";
 import classnames from "classnames";
 import { useNavigate } from "react-router-dom";
 import hiringrequestService from "../../../services/hiringrequest.service";
+import { format, addMonths, subMonths } from 'date-fns';
 import {
   CheckSquareOutlined,
   UserOutlined,
@@ -58,8 +62,14 @@ import developerServices from "../../../services/developer.services";
 import dayjs from "dayjs";
 import { DatePicker, Space } from "antd";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import payPeriodServices from "../../../services/payPeriod.services";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import FileSaver from 'file-saver';
+import axios from "axios";
+import { Dropdown as DropdownAntd } from 'antd';
+import { Empty } from 'antd';
 dayjs.extend(customParseFormat);
-
 
 
 const ProjectDetailDesciption = () => {
@@ -76,14 +86,79 @@ const ProjectDetailDesciption = () => {
   const rowRef = useRef(null);
   const [showScroll, setShowScroll] = useState(false);
   const [showInput, setShowInput] = useState(false);
+  const [loadPayPeriod, setLoadPayPeriod] = useState(false);
   const [developerOnboardList, setDeveloperOnboardList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
   const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
+  const [payPeriodDetail, setPayPeriodDetail] = useState(null);
   const [selectedHiringRequestInfo, setSelectedHiringRequestInfo] = useState({});
   const [selectedJobPositionInfo, setSelectedJobPositionInfo] = useState({});
   const [checkHeightListHiringRequest, setCheckHeightListHiringRequest] = useState(false);
   const monthFormat = "YYYY/MM";
+  const [currentMonth, setCurrentMonth] = useState();
+  const [listMonth, setListMonth] = useState([]);
+  const [listStartDay, setListStartDay] = useState([]);
+  const [listEndDay, setListEndDay] = useState([]);
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
+  const [minDateDuration, setMinDateDuration] = useState();
+  const [maxDateDuration, setMaxDateDuration] = useState();
+  const [editingPositions, setEditingPositions] = useState({});
+  const [editingPositionSelect, setEditingPositionSelect] = useState(null);
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef(null);
+  const [key, setKey] = useState(Date.now());
+
+  const generateItems = () => {
+
+    return [
+      {
+        label: (
+          <div
+            style={{ width: "100px" }}
+            onClick={() => onUpdateJobPosition()}
+          >
+            Edit
+          </div>
+        ),
+        key: '0',
+      },
+      {
+        label: (
+          <div
+            style={{ width: "100px" }}
+            onClick={() => {
+              AntdModal.confirm({
+                title: 'Confirm cancel interview',
+                content: 'Are you sure to cancel this interview?',
+                onOk() {
+                  // Action when the user clicks OK
+                  console.log('Confirmed!');
+                  // openWindowCancelInterview(selectInterviewDetail.interviewId);
+                },
+                onCancel() {
+                  // Action when the user cancels
+                  console.log('Cancelled!');
+                },
+                footer: (_, { OkBtn, CancelBtn }) => (
+                  <>
+                    <CancelBtn />
+                    <OkBtn />
+                  </>
+                ),
+              });
+            }}
+          >
+            Cancel
+          </div>
+        ),
+        key: '1',
+      },
+    ];
+
+  };
+
+  const items = generateItems();
 
 
   const toggleCollapse = (index) => {
@@ -97,73 +172,13 @@ const ProjectDetailDesciption = () => {
     Array(devInProject.length).fill(false)
   );
 
-  const [activeTabMini, setActiveTabMini] = useState("1");
+  const [activeTabMini, setActiveTabMini] = useState("5");
   const tabChangeMini = (tabMini) => {
     if (activeTabMini) {
       if (activeTabMini !== tabMini) setActiveTabMini(tabMini);
     }
   };
-  // const fetchProjectDetails2 = async () => {
-  //   try {
-  //     const queryParams = new URLSearchParams(location.search);
-  //     const jobId = queryParams.get("Id");
-  //     const response = await developerServices.GetAllSelectedDevByHR(jobId);
-  //     const data = response.data;
-  //     const candidategridDetails = data.data.map((dev) => {
-  //       return {
-  //         id: dev.developerId,
-  //         userImg: dev.userImage,
-  //         candidateName: dev.firstName + " " + dev.lastName,
-  //         candidateStatusClassName:
-  //           "profile-active position-absolute badge rounded-circle bg-success",
-  //         experience: dev.yearOfExperience + " Years",
-  //         jobType: dev.levelRequireName,
-  //         codeName: dev.codeName,
-  //         salary: dev.averageSalary,
-  //         addclassNameBookmark: false,
-  //         label: false,
-  //         skills: dev.skillRequireStrings,
-  //         averagedPercentage: dev.averagedPercentage.toFixed(2),
-  //         selectedDevStatus: dev.selectedDevStatus,
-  //       };
-  //     });
-  //     setCandidategridDetails(candidategridDetails);
-  //   } catch (error) {
-  //     console.error("Error fetching job vacancies:", error);
-  //   }
-  // };
 
-  const pageSize = 5;
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-    const maxPageButtons = 4;
-    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-    if (
-      totalPages > maxPageButtons &&
-      currentPage <= Math.floor(maxPageButtons / 2) + 1
-    ) {
-      endPage = maxPageButtons;
-    }
-    for (let i = startPage; i <= endPage; i++) {
-      pageNumbers.push(
-        <li
-          key={i}
-          className={`page-item ${i === currentPage ? "active" : ""}`}
-        >
-          <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
-            {i}
-          </Link>
-        </li>
-      );
-    }
-
-    return pageNumbers;
-  };
 
   const openModal = (candidateInfo) => {
     setSelectedCandidateInfo(candidateInfo);
@@ -179,6 +194,28 @@ const ProjectDetailDesciption = () => {
   const closeModal = () => {
     setSelectedCandidateInfo({});
     setIsModalOpen(false);
+  };
+
+  const onUpdateJobPosition = (id) => {
+    setEditingPositions((prevEditingPositions) => ({
+      ...prevEditingPositions,
+      [id]: true,
+    }));
+    setEditingPositionSelect(id);
+    console.log(id)
+  };
+
+  const handleKeyPress = (event, id) => {
+    if (event.key === 'Enter') {
+      setEditingPositions((prevEditingPositions) => ({
+        ...prevEditingPositions,
+        [id]: false,
+      }));
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
   };
 
   const closeModalCreateHiringRequest = () => {
@@ -246,6 +283,13 @@ const ProjectDetailDesciption = () => {
     }
   };
 
+  function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because it's zero-indexed
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  }
+
   const fetchProjectDetails = async () => {
     let response;
     // const saveData = localStorage.getItem("myData");
@@ -257,6 +301,93 @@ const ProjectDetailDesciption = () => {
       response = await projectServices.getProjectDetailByProjectId(projectId);
       console.log(response.data.data);
       setHiringRequestDetail(response.data.data);
+      function convertToDateObject(dateString) {
+        const [day, month, year] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day); // month - 1 because months are zero-indexed in JavaScript
+      }
+      const startDate = convertToDateObject(response.data.data.startDate);
+      const endDate = convertToDateObject(response.data.data.endDate);
+
+      var temp = new Date(startDate);
+      var formattedMinDate = temp.toISOString().split('T')[0];
+
+      var temp2 = new Date(endDate);
+      var formattedMaxDate = temp2.toISOString().split('T')[0]; // Sử dụng temp2 thay vì temp
+      var currentDate = new Date();
+      // Trừ đi 7 ngày từ formattedMinDate
+      var sevenDaysBeforeMinDate = new Date(temp.getTime());
+      sevenDaysBeforeMinDate.setDate(sevenDaysBeforeMinDate.getDate() - 6);
+      var formattedSevenDaysBeforeMinDate = sevenDaysBeforeMinDate.toISOString().split('T')[0];
+
+      // Kiểm tra nếu startDate trừ đi 7 ngày bé hơn ngày hiện tại
+      if (sevenDaysBeforeMinDate < currentDate) {
+        // Thêm 3 ngày vào startDate
+        currentDate.setDate(currentDate.getDate() + 4);
+        formattedSevenDaysBeforeMinDate = currentDate.toISOString().split('T')[0];
+      }
+
+      setMinDateDuration(formattedSevenDaysBeforeMinDate);
+
+      // Trừ đi 1 tháng từ formattedMaxDate
+      var oneMonthBeforeMaxDate = new Date(temp2.getTime());
+      oneMonthBeforeMaxDate.setMonth(oneMonthBeforeMaxDate.getMonth() - 1);
+      var formattedOneMonthBeforeMaxDate = oneMonthBeforeMaxDate.toISOString().split('T')[0];
+
+      setMaxDateDuration(formattedOneMonthBeforeMaxDate);
+
+      const monthsArray = [];
+      const startDateArray = [];
+      const endDateArray = [];
+
+      let currentMonthStart = new Date(startDate.getFullYear(), startDate.getMonth() - 1, 25);
+      let currentMonthEnd = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() + 1, 24);
+
+      let checkFirstMonth = false;
+      while (currentMonthStart <= endDate) {
+        let formattedMonth;
+        let formattedStartDay;
+        let formattedEndDay;
+        if (!checkFirstMonth) {
+          if (currentMonthStart < startDate && startDate < currentMonthEnd) {
+            formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+            formattedStartDay = formatDate(startDate);
+            formattedEndDay = formatDate(new Date(currentMonthEnd));
+            monthsArray.push(formattedMonth);
+            startDateArray.push(formattedStartDay);
+            endDateArray.push(formattedEndDay);
+          }
+
+          checkFirstMonth = true;
+        } else {
+          if (currentMonthStart < startDate) {
+            formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+            formattedStartDay = formatDate(startDate);
+            formattedEndDay = formatDate(new Date(currentMonthEnd));
+            monthsArray.push(formattedMonth);
+            startDateArray.push(formattedStartDay);
+            endDateArray.push(formattedEndDay);
+          } else {
+
+            formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+            formattedStartDay = formatDate(new Date(currentMonthStart));
+            formattedEndDay = formatDate(currentMonthEnd > endDate ? endDate : new Date(currentMonthEnd));
+            monthsArray.push(formattedMonth);
+            startDateArray.push(formattedStartDay);
+            endDateArray.push(formattedEndDay);
+          }
+        }
+
+        currentMonthStart.setMonth(currentMonthStart.getMonth() + 1);
+        currentMonthStart.setDate(25);
+
+        currentMonthEnd = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() + 1, 24);
+      }
+
+      setListMonth(monthsArray);
+      setListStartDay(startDateArray);
+      setListEndDay(endDateArray);
+
+      setLoadPayPeriod(!loadPayPeriod);
       return response;
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -283,6 +414,21 @@ const ProjectDetailDesciption = () => {
     }
   };
 
+  const fetchDetailPayPeriod = async (newDate) => {
+    let response;
+    try {
+      const queryParams = new URLSearchParams(location.search);
+      const projectId = queryParams.get("Id");
+      response = await payPeriodServices.getPayPeriodDetailByProjectIdAndDate(projectId, newDate);
+      setPayPeriodDetail(response.data.data);
+      console.log("payperiod", response.data.data)
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      console.log("payperiod loi")
+      setPayPeriodDetail(null);
+    }
+  }
+
   useEffect(() => {
     fetchJobPosition();
   }, []);
@@ -298,6 +444,24 @@ const ProjectDetailDesciption = () => {
   useEffect(() => {
     fetchProjectDetails();
   }, []);
+
+  useEffect(() => {
+    const temp = listStartDay[currentMonthIndex];
+    if (temp) {
+      const parts = temp.split('.');
+      const newDate = `${parts[2]}-${parts[1]}-25`;
+      fetchDetailPayPeriod(newDate)
+    }
+  }, [currentMonthIndex]);
+
+  useEffect(() => {
+    const temp = listStartDay[currentMonthIndex];
+    if (temp) {
+      const parts = temp.split('.');
+      const newDate = `${parts[2]}-${parts[1]}-25`;
+      fetchDetailPayPeriod(newDate)
+    }
+  }, [loadPayPeriod]);
 
   const fetchJobVacancies = async () => {
     let response;
@@ -384,11 +548,84 @@ const ProjectDetailDesciption = () => {
       const response = await jobPositionServices.createJobPosition(projectId, positionName);
       fetchJobPosition();
       toggleInput();
+      toast.success("Create job position successfully")
     } catch (error) {
       console.error("Error create Job Position:", error);
     }
   };
 
+
+  const nextMonth = () => {
+    if (currentMonthIndex < listMonth.length - 1) {
+      setCurrentMonthIndex(currentMonthIndex + 1);
+    }
+  };
+
+  const previousMonth = () => {
+    if (currentMonthIndex > 0) {
+      setCurrentMonthIndex(currentMonthIndex - 1);
+    }
+  };
+
+
+
+  const generateExel = async () => {
+
+    const queryParams = new URLSearchParams(location.search);
+    const projectId = queryParams.get("Id");
+
+    const currentMonthData = listMonth[currentMonthIndex];
+
+    const date = new Date(currentMonthData);
+    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-25`;
+    const filename = "EmployeePaySlip_" + hiringRequestDetail.companyName.replace(/\s+/g, '') + "_" + listMonth[currentMonthIndex].replace(/\s+/g, '_');
+
+    downloadExcelFile(projectId, formattedDate, filename)
+
+
+  };
+
+  const importExcel = async (formData2) => {
+    try {
+      if (formData2) {
+        const queryParams = new URLSearchParams(location.search);
+        const projectId = queryParams.get("Id");
+        const response = await payPeriodServices.importExcel(projectId, formData2);
+        toast.success(response.data.data.code)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.response.data.message)
+    }
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData2 = new FormData();
+      formData2.append('file', file);
+      importExcel(formData2);
+    }
+    setKey(Date.now())
+  };
+
+  const downloadExcelFile = async (projectId, inputDate, filename) => {
+    try {
+      const response = await payPeriodServices.exportToExcel(projectId, inputDate);
+      if (response.status !== 200) {
+        throw new Error('Something went wrong while downloading the file');
+      }
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      const downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(blob);
+      downloadLink.setAttribute('download', filename);
+      downloadLink.click();
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+      toast.error("There are no developers worked in " + listMonth[currentMonthIndex].replace(/\s+/g, ' '))
+    }
+  };
 
 
   return (
@@ -571,33 +808,69 @@ const ProjectDetailDesciption = () => {
                         tabChange("4");
                       }}
                       type="button"
-                    // style={{paddingLeft:"0px"}}
                     >
                       Payment
                     </NavLink>
                   </NavItem>
                 </Nav>
-                <CardBody className="p-3" style={{ backgroundColor: "#f6f6f6", overflowX: "auto" }} >
+                <CardBody className="p-4" style={{ backgroundColor: "#fafafa", overflowX: "auto" }} >
                   <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
                       <div>12</div>
                     </TabPane>
                     <TabPane tabId="2">
+
                       <div className={`${showScroll ? ' show-scroll' : ''}`} ref={rowRef} style={{
                         minHeight: checkHeightListHiringRequest ? "100%" : "auto",
                         height: checkHeightListHiringRequest ? "auto" : "650px",
                       }}>
                         <Row className="flex-nowrap gap-3" style={{ marginLeft: "1px", marginBottom: "10px" }}>
                           {listJobPosition.map((jobPosition, key) => (
-                            <Col lg={3} md={6} key={key} className="card " style={{ paddingLeft: "0px", paddingRight: "0px", borderRadius: "15px", height: "fit-content" }}>
+                            <Col lg={3} md={6} key={key} className="card " style={{ paddingLeft: "0px", paddingRight: "0px", borderRadius: "15px", height: "fit-content", backgroundColor: "#f6f6f6" }}>
                               <div className="d-flex flex-column ms-2 mt-2 mb-2 me-2 gap-3" style={{ height: "100%" }} >
                                 <div className="d-flex justify-content-between align-items-center">
-                                  <div style={{ paddingLeft: "15px", fontWeight: "bold", fontSize: "18px", marginTop: "15px", marginBottom: "8px" }} >
+                                  {/* {editingPositions[jobPosition.jobPositionId] ? (
+                                    <div className="form-group app-label">
+                                      <input
+                                        ref={inputRef}
+                                        placeholder="Please enter job position"
+                                        style={{ width: "94%", margin: "10px 10px 0px 10px" }}
+                                        type="text"
+                                        className="form-control resume"
+                                        id="job-position-input"
+                                        value={inputValue}
+                                        onChange={handleInputChange}
+                                        onKeyDown={(e) => handleKeyPress(e, jobPosition.jobPositionId)}
+                                      />
+                                    </div>
+                                  ) : ( */}
+                                  <div
+                                    style={{
+                                      paddingLeft: "15px",
+                                      fontWeight: "bold",
+                                      fontSize: "18px",
+                                      marginTop: "15px",
+                                      marginBottom: "8px",
+                                      cursor: "pointer"
+                                    }}
+                                  // onClick={() => onUpdateJobPosition(jobPosition.jobPositionId)}
+                                  >
                                     {jobPosition.positionName}
                                   </div>
-                                  <FontAwesomeIcon icon={faEllipsis}
-                                    style={{ fontSize: "24px", paddingRight: "15px" }}
-                                  />
+                                  {/* )} */}
+                                  <DropdownAntd
+                                    menu={{
+                                      items,
+                                    }}
+                                    trigger={['click']}
+                                  >
+                                    <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                      <FontAwesomeIcon icon={faEllipsis}
+                                        style={{ fontSize: "24px", paddingRight: "15px", color: 'black', cursor: "pointer" }}
+                                      />
+                                    </a>
+                                  </DropdownAntd>
+
                                 </div>
                                 <div className="d-flex flex-column gap-3" style={{ height: "100%" }}>
                                   {jobVacancyList.map((jobVacancyListDetails, key) => {
@@ -739,6 +1012,8 @@ const ProjectDetailDesciption = () => {
                           closeModal={closeModalCreateHiringRequest}
                           requestId={selectedHiringRequestInfo}
                           jobPositionId={selectedJobPositionInfo}
+                          minDateDuration={minDateDuration}
+                          maxDateDuration={maxDateDuration}
                         />
                       </div>
                     </TabPane>
@@ -846,160 +1121,151 @@ const ProjectDetailDesciption = () => {
                     </TabPane>
                     <TabPane tabId="4">
                       <div>
+                        <div className="d-flex justify-content-between mb-3">
+                          <div style={{ fontSize: "30px", fontWeight: "bold" }}>
+                            Payroll
+                          </div>
+                          <div className="d-flex gap-5 justify-content-end">
+                            <div className="btn btn-soft-primary fw-bold"
+                            >
+                              Create new
+                            </div>
+                            <div className="d-flex justify-content-end gap-2">
+                              <div>
+                                <input
+                                  key={key}
+                                  type="file"
+                                  style={{ display: 'none' }}
+                                  onChange={handleFileChange}
+                                  id="fileInput" // Đặt id để tham chiếu trong nút Import Excel
+                                />
+                                <label
+                                  htmlFor="fileInput"
+                                  className="btn btn-soft-blue fw-bold"
+                                >
+                                  Import Excel
+                                </label>
+                              </div>
+                              <div className="btn btn-soft-blue fw-bold"
+                                onClick={() => {
+                                  generateExel();
+                                }}
+                              >
+                                Generate Excel
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
                         <Nav
-                          className="profile-content-nav nav-pills border-bottom mb-4"
+                          className="profile-content-nav nav-pills border-bottom d-flex justify-content-between"
                           id="pills-tab"
                           role="tablist"
-                          justified
                         >
-                          <NavItem role="presentation">
-                            <NavLink
-                              to="#"
-                              className={classnames("nav-link", {
-                                active: activeTabMini === "5",
-                              })}
-                              onClick={() => {
-                                tabChangeMini("5");
-                              }}
-                              type="button"
-                            >
-                              Pay Period
-                            </NavLink>
-                          </NavItem>
-
-                          <NavItem role="presentation">
-                            <NavLink
-                              to="#"
-                              className={classnames("nav-link", {
-                                active: activeTabMini === "6",
-                              })}
-                              onClick={() => {
-                                tabChangeMini("6");
-                              }}
-                              type="button"
-                            >
-                              Pay Slip
-                            </NavLink>
-                          </NavItem>
+                          <div className="d-flex align-items-center gap-3">
+                            <FontAwesomeIcon icon={faAngleLeft} style={{ fontSize: '20px' }} onClick={previousMonth} />
+                            <FontAwesomeIcon icon={faAngleRight} style={{ fontSize: '20px' }} onClick={nextMonth} />
+                            <div className="d-flex flex-column">
+                              <div id="monthYearSelected" style={{ fontSize: "20px", fontWeight: "600" }}>{listMonth[currentMonthIndex]}</div>
+                              <div id="dateSelected" style={{ fontSize: "15px", color: "grey" }}>{listStartDay[currentMonthIndex]} - {listEndDay[currentMonthIndex]}</div>
+                            </div>
+                          </div>
+                          <div className="d-flex">
+                            <NavItem role="presentation">
+                              <NavLink
+                                to="#"
+                                className={classnames({ active: activeTabMini === "5" })}
+                                onClick={() => {
+                                  tabChangeMini("5");
+                                }}
+                                type="button"
+                              // style={{paddingLeft:"0px"}}
+                              >
+                                Overview
+                              </NavLink>
+                            </NavItem>
+                            <NavItem role="presentation">
+                              <NavLink
+                                to="#"
+                                className={classnames({ active: activeTabMini === "6" })}
+                                onClick={() => {
+                                  tabChangeMini("6");
+                                }}
+                                type="button"
+                              // style={{paddingLeft:"0px"}}
+                              >
+                                Pay Period
+                              </NavLink>
+                            </NavItem>
+                          </div>
                         </Nav>
-
                         {/* -------------------------------------------------------------- */}
                         <div>
                           <TabContent activeTab={activeTabMini}>
-                            <TabPane tabId="5">
-                              <div>
-                                <div className="mb-4 d-flex justify-content-between">
-                                  <DatePicker
-                                    defaultValue={dayjs("2023/11", monthFormat)}
-                                    format={monthFormat}
-                                    picker="month"
-                                  />
-                                  <div
-                                    className="me-5"
-                                    style={{ borderRadius: "9px" }}
-                                  >
-                                    <div
-                                      className="border border-1 p-2"
-                                      style={{
-                                        borderRadius: "9px",
-                                        backgroundColor: "#1677FF",
-                                        color: "white",
-                                      }}
-                                    >
-                                      <i className="uil uil-plus"></i> Create
+                            <TabPane tabId="5" className="pt-4">
+                              {payPeriodDetail ? (
+                                <>
+                                  <Row>
+                                    <Col>
+                                    </Col>
+                                  </Row>
+                                  <div className="d-flex align-items-center gap-3 ">
+                                    <div style={{ fontSize: "30px", fontWeight: "bold" }}>
+                                      {payPeriodDetail.payPeriodCode}
                                     </div>
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <div>
-                                    <div
-                                      style={{
-                                        boxShadow:
-                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                      }}
+                                    <span
                                       className={
-                                        "job-box-dev-in-list-hiringRequest-for-dev card"
+                                        payPeriodDetail.statusString === "Rejected"
+                                          ? "badge bg-danger text-light "
+                                          : payPeriodDetail.statusString ===
+                                            "Preparing"
+                                            ? "badge bg-warning text-light "
+                                            : payPeriodDetail.statusString ===
+                                              "In Progress"
+                                              ? "badge bg-blue text-light "
+                                              : payPeriodDetail.statusString ===
+                                                "Expired"
+                                                ? "badge bg-danger text-light "
+                                                : payPeriodDetail.statusString ===
+                                                  "Cancelled"
+                                                  ? "badge bg-danger text-light "
+                                                  : payPeriodDetail.statusString ===
+                                                    "Finished"
+                                                    ? "badge bg-primary text-light "
+                                                    : payPeriodDetail.statusString ===
+                                                      "Created"
+                                                      ? "badge bg-primary text-light"
+                                                      : payPeriodDetail.statusString === "Saved"
+                                                        ? "badge bg-info text-light "
+                                                        : ""
                                       }
                                     >
-                                      <div className="p-3">
-                                        <Row className="align-items-center">
-                                          <Col
-                                            md={2}
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            <div>
-                                              <span className="mb-0">Nguyen</span>
-                                            </div>
-                                          </Col>
-
-                                          <Col
-                                            md={2}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            <div>
-                                              <p className="mb-0">Van A</p>
-                                            </div>
-                                          </Col>
-
-                                          <Col
-                                            md={2}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            <div>
-                                              <p className="mb-0">a@gmail.com</p>
-                                            </div>
-                                          </Col>
-
-                                          <Col
-                                            md={2}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            <p className="mb-0">168 hours</p>
-                                          </Col>
-
-                                          <Col
-                                            md={1}
-                                            className=" px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            10 hours
-                                          </Col>
-
-                                          <Col
-                                            md={2}
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            <div>
-                                              <span>20000$</span>
-                                            </div>
-                                          </Col>
-
-                                          <Col md={1}>
-                                            <div
-                                              className="d-flex justify-content-center rounded-circle"
-                                              onClick={""}
-                                              style={{ backgroundColor: "#ECECED" }}
-                                            >
-                                              <i
-                                                className="uil uil-angle-down"
-                                                style={{ fontSize: "26px" }}
-                                              ></i>
-                                            </div>
-                                          </Col>
-                                        </Row>
-                                      </div>
+                                      {payPeriodDetail.statusString}
+                                    </span>{" "}
+                                  </div>
+                                  <div style={{ color: "black" }} className="d-flex gap-4">
+                                    <div>
+                                      <FontAwesomeIcon icon={faFlag} style={{ marginRight: "8px" }} />
+                                      Start date :{" "}
+                                      {payPeriodDetail.startDateMMM}
+                                    </div>
+                                    <div>
+                                      <FontAwesomeIcon icon={faCircleXmark} style={{ marginRight: "8px" }} />
+                                      End date : {" "}
+                                      {payPeriodDetail.endDateMMM}
                                     </div>
                                   </div>
-                                </div>
-                              </div>
+
+                                  <div>{payPeriodDetail.totalAmount}</div>
+                                  <div>{payPeriodDetail.createdAt}</div>
+                                </>
+                              ) : (
+                                <Empty />
+                              )}
                             </TabPane>
                             <TabPane tabId="6">
                               <div>
-                                <Row className="mb-2">
+                                <Row className="mb-2 px-3">
                                   <Col md={2} style={{ textAlign: "center" }}>
                                     First Name
                                   </Col>
@@ -1040,6 +1306,7 @@ const ProjectDetailDesciption = () => {
                                   </Col>
                                   <Col md={1}></Col>
                                 </Row>
+
                                 <div className="d-flex flex-column gap-2">
                                   {devInProject.map((devInProjectNew, key) => (
                                     <div key={key}>
@@ -1146,7 +1413,6 @@ const ProjectDetailDesciption = () => {
                                                 >
                                                   Work Date
                                                 </Col>
-                                                <Col md={3}>Time In</Col>
                                                 <Col md={3}>
                                                   <div>
                                                     {" "}
@@ -1163,19 +1429,28 @@ const ProjectDetailDesciption = () => {
                                                     />
                                                   </div>
                                                 </Col>
-                                                <Col md={3}>Hours In Day </Col>
-                                              </Row>
-                                            </div>
-
-                                            <div
-                                              className="job-box-dev-in-list-hiringRequest-for-dev card  p-2"
-                                              style={{ backgroundColor: "#FFFFFF" }}
-                                            >
-                                              <Row>
-                                                <Col md={3}>Work Date</Col>
-                                                <Col md={3}>Time In</Col>
-                                                <Col md={3}>Time Out</Col>
-                                                <Col md={3}>Hours In Day</Col>
+                                                <Col md={3}>
+                                                  <div>
+                                                    {" "}
+                                                    <Input
+                                                      type="text"
+                                                      className="form-control"
+                                                      id="time-Out"
+                                                      value={"07:00"}
+                                                      onChange={(e) =>
+                                                        setCurrentProjectName(
+                                                          e.target.value
+                                                        )
+                                                      }
+                                                    />
+                                                  </div>
+                                                </Col>
+                                                <Col
+                                                  md={3}
+                                                  className="d-flex justify-content-center align-items-center"
+                                                >
+                                                  Hours In Day{" "}
+                                                </Col>
                                               </Row>
                                             </div>
                                           </div>

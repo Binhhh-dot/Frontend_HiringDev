@@ -7,11 +7,15 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import html2canvas from 'html2canvas';
 import { Modal as AntdModal, Button as AntdButton } from "antd";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
+
 
 const PrivacyAndPolicyPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [preContractInfo, setPreContractInfo] = useState([]);
-  const [minDay, setMinday] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [endDayPreview, setEndDayPreview] = useState(false);
@@ -20,6 +24,9 @@ const PrivacyAndPolicyPage = () => {
   const [legalPreview, setLegalPreview] = useState(false);
   const [companyPhonePreview, setCompanyPhonePreview] = useState(false);
   const [companyPreview, setCompanyPreview] = useState(false);
+  const [minDate, setMinDate] = useState();
+  const [maxDate, setMaxDate] = useState();
+  const [loading, setLoading] = useState(false);
 
   const fetchPreContract = async () => {
     let response;
@@ -34,12 +41,8 @@ const PrivacyAndPolicyPage = () => {
       const preContractData = response.data.data;
       setPreContractInfo(response.data.data)
       console.log(response);
-      document.getElementById("companyName").value = preContractData.companyPartnerName;
-      document.getElementById("companyPhoneNumber").value = preContractData.companyPartPhoneNumber;
       document.getElementById("legalRepresentative").value = preContractData.legalRepresentation;
       document.getElementById("position").value = preContractData.legalRepresentationPosition;
-
-
 
       var parts = preContractData.fromDate.split('/');
       if (parts.length === 3) {
@@ -49,6 +52,7 @@ const PrivacyAndPolicyPage = () => {
         // Format the date as "yyyy-dd-mm"
         var formattedDurationStartDay = year + '-' + day + '-' + month;
         document.getElementById("startDate").value = formattedDurationStartDay;
+        setMinDate(formattedDurationStartDay)
       } else {
         console.error("Invalid date format");
       }
@@ -61,6 +65,8 @@ const PrivacyAndPolicyPage = () => {
         // Format the date as "yyyy-dd-mm"
         var formattedDurationEndDay = year + '-' + day + '-' + month;
         document.getElementById("endDate").value = formattedDurationEndDay;
+        setMaxDate(formattedDurationEndDay)
+
       } else {
         console.error("Invalid date format");
       }
@@ -74,7 +80,31 @@ const PrivacyAndPolicyPage = () => {
   };
 
   const conFirmContract = async () => {
-
+    let check = true;
+    const legalRepresentation = document.getElementById("legalRepresentative").value;
+    const legalRepresentationPosition = document.getElementById("position").value;
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+    const developerIdState = location.state?.developerId;
+    const requestIdState = location.state?.requestId;
+    if (startDate >= endDate) {
+      setShowPopup(false)
+      toast.error("End date must be greater than start date")
+      check = false;
+    }
+    try {
+      if (check) {
+        setLoading(true);
+        const response = await contractServices.postContract(requestIdState, developerIdState, startDate, endDate, legalRepresentation, legalRepresentationPosition);
+        console.log(response)
+        setLoading(false);
+        navigate('/hiringrequestlistincompanypartnerdetail?Id=' + requestIdState);
+        toast.success("Confirm contract successfully")
+      }
+    } catch (error) {
+      console.log(error)
+      setLoading(false);
+    }
   }
   useEffect(() => {
     fetchPreContract();
@@ -130,11 +160,13 @@ const PrivacyAndPolicyPage = () => {
     setShowPopup(true);
   };
 
-
-
-
   return (
     <React.Fragment>
+      {loading && (
+        <div className="overlay" style={{ zIndex: "999999" }}>
+          <div className="spinner"></div>
+        </div>
+      )}
       <section className="section" style={{ backgroundColor: "rgb(248 255 246 / 62%)" }}>
         <Container style={{ backgroundColor: "white" }} >
           <Row className="justify-content-center p-5" style={{ border: "1px solid #b3adad" }}>
@@ -255,6 +287,8 @@ const PrivacyAndPolicyPage = () => {
                       className="form-control"
                       id="startDate"
                       placeholder="Enter start date of the laborers"
+                      min={minDate}
+                      max={maxDate}
                     />
                   </div>
                 </div>
@@ -271,6 +305,8 @@ const PrivacyAndPolicyPage = () => {
                       className="form-control"
                       id="endDate"
                       placeholder="Enter end date of the laborers"
+                      min={minDate}
+                      max={maxDate}
                     />
                   </div>
                 </div>
@@ -399,7 +435,7 @@ const PrivacyAndPolicyPage = () => {
           }}
           width={1100}
           footer={null}
-          zIndex={99999999}
+          zIndex={2000}
         >
           <Container style={{ backgroundColor: "white" }} >
             <Row className="justify-content-center p-5 mb-4" style={{ border: "1px solid #b3adad" }}>
@@ -622,7 +658,10 @@ const PrivacyAndPolicyPage = () => {
                   </div>
                 </div>
                 <div className="text-end">
-                  <div className="btn btn-primary" onClick={conFirmContract()}>
+                  <div className="btn btn-primary"
+                    onClick={() =>
+                      conFirmContract()
+                    }>
                     <i className="uil uil-print"></i> Comfirm
                   </div>
                 </div>

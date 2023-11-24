@@ -8,9 +8,15 @@ import homeImage3 from "../../../assets/images/home/img-03.png";
 import homeImage4 from "../../../assets/images/home/img-04.png";
 import JobSearch from "../SubSection/JobSearch";
 import CountryOptions from "../SubSection/CountryOptions";
+import { Link, useNavigate } from "react-router-dom";
 
 const Section = () => {
   SwiperCore.use([Autoplay]);
+  const navigate = useNavigate();
+
+  const linkToListJob = () => {
+    navigate("/projectlist")
+  };
   return (
     <React.Fragment>
       <section className="bg-home3" id="home">
@@ -32,22 +38,16 @@ const Section = () => {
                 <div className="registration-form">
                   <Row className="g-0">
                     <Col md={4}>
-                      <div className="filter-search-form filter-border mt-3 mt-md-0">
-                        <i className="uil uil-briefcase-alt"></i>
-                        <JobSearch />
-                      </div>
+
                     </Col>
                     <Col md={4}>
-                      <div className="filter-search-form mt-3 mt-md-0 bg-white">
-                        <i className="uil uil-map-marker"></i>
-                        <CountryOptions />
-                      </div>
+
                     </Col>
                     <Col md={4}>
                       <div className="mt-3 mt-md-0 h-100">
                         <button
                           className="btn btn-primary submit-btn w-100 h-100"
-                          type="submit"
+                          onClick={() => linkToListJob()}
                         >
                           <i className="uil uil-search me-1"></i> Find Job
                         </button>

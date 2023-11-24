@@ -147,7 +147,7 @@ const NavBar = (props) => {
         id="navigation"
       >
         <Container fluid className="custom-container">
-          <Link className="navbar-brand text-dark fw-bold me-auto" to="/">
+          <Link className="navbar-brand text-dark fw-bold me-auto" to="/layout3">
             <img src={darkLogo} height="22" alt="" className="logo-dark" />
             <img src={lightLogo} height="22" alt="" className="logo-light" />
           </Link>

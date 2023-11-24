@@ -168,6 +168,8 @@ export default {
     contract: {
       getContract: "/Contract",
       getContractAndPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getPreContract: "/Contract/PreContract?developerId=${developerId}&requestId=${requestId}",
+      postContract: "/Contract",
     },
     jobPosition: {
       createJobPosition: "/JobPosition",
@@ -179,8 +181,11 @@ export default {
       deleteTeamMeeting: "/TeamMeeting",
       updateTeamMeeting: "/TeamMeeting",
     },
-    contract: {
-      getPreContract: "/Contract/PreContract?developerId=${developerId}&requestId=${requestId}",
+
+    payPeriod: {
+      exportToExcel: "/PayPeriod/ExportToExcel/${projectId}?inputDate=${inputDate}",
+      importExcel: "/PayPeriod/ImportExcel/${projectId}",
+      getPayPeriodDetailByProjectIdAndDate: "/PayPeriod/${projectId}?inputDate=${inputDate}",
     }
   },
 };

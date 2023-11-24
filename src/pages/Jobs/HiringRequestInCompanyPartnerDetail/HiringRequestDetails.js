@@ -948,7 +948,6 @@ const HiringRequestDetails = () => {
       {loading && (
         <div className="overlay" style={{ zIndex: "2000" }}>
           <div className="spinner"></div>
-          <div class="loading-text">Loading...</div>
         </div>
       )}
       <section class="section">
@@ -969,13 +968,6 @@ const HiringRequestDetails = () => {
                   <Row>
                     <Col md={8}>
                       <h4 className="mb-1">{hiringRequestDetail.jobTitle}</h4>
-                      {/* <ul className="list-inline text-muted mb-0">
-                          <li className="list-inline-item text-warning review-rating">
-                            <span className="badge bg-warning">
-                              {hiringRequestDetail.statusString}
-                            </span>{" "}
-                          </li>
-                        </ul> */}
                     </Col>
                     <Col lg={4}>
                       <ul className="list-inline mb-0 text-lg-end mt-3 mt-lg-0">

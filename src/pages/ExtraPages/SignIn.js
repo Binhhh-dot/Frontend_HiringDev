@@ -12,15 +12,19 @@ import axios from "axios";
 import loginService from "../../services/login.service";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { HashLoader } from "react-spinners";
+
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   document.title = "Sign In | Jobcy - Job Listing Template | Themesdesign";
+  const [loadingSignIn, setLoadingSignIn] = useState(false);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+    setLoadingSignIn(true);
     let userId;
     let role;
     try {
@@ -41,7 +45,7 @@ const SignIn = () => {
     } catch (error) {
       toast.error(error.response.data.message, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -49,6 +53,7 @@ const SignIn = () => {
         progress: undefined,
         theme: "light",
       });
+      setLoadingSignIn(false);
     }
 
     const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
@@ -60,10 +65,12 @@ const SignIn = () => {
     } else {
       if (userData.data.companyId != null) {
         localStorage.setItem('companyId', userData.data.companyId);
+        setLoadingSignIn(false);
         toast.success('Login successfully!');
         navigate("/layout3")
       } else {
         navigate("/signcompany")
+        setLoadingSignIn(false);
         toast.info("Let's create company information!", {
           position: "top-right",
           autoClose: 3000,
@@ -76,7 +83,6 @@ const SignIn = () => {
         });
       }
     }
-
   };
 
 
@@ -193,20 +199,25 @@ const SignIn = () => {
                                     >
                                       Forgot Password?
                                     </Link>
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="flexCheckDefault"
-                                    >
-                                      Remember me
-                                    </label>
                                   </div>
                                 </div>
                                 <div className="text-center">
+
                                   <button
                                     type="submit"
                                     className="btn btn-white btn-hover w-100"
+                                    disabled={loadingSignIn}
                                   >
-                                    Sign In
+                                    {loadingSignIn ? (
+                                      <HashLoader
+                                        size={20}
+                                        color={"green"}
+                                        loading={true}
+                                      />
+                                    )
+                                      : (
+                                        "Sign In"
+                                      )}
                                   </button>
                                   {error && (
                                     <p className="text-danger mt-2">{error}</p>
@@ -223,6 +234,7 @@ const SignIn = () => {
                                     {" "}
                                     Sign Up{" "}
                                   </Link>
+
                                 </p>
                               </div>
                             </div>
