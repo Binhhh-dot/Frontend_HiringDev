@@ -618,6 +618,12 @@ const JobDetailsDescription = () => {
             <Row>
               <Col md={8}>
                 <h3 className="mb-1">{hiringRequestDetail.jobTitle}</h3>
+                <p
+                  className="fw-medium mb-0 text-muted"
+                  style={{ fontStyle: "italic" }}
+                >
+                  #{hiringRequestDetail.requestCode}
+                </p>
               </Col>
             </Row>
           </div>
@@ -777,7 +783,7 @@ const JobDetailsDescription = () => {
                   }}
                 >
                   <span
-                    style={{ fontWeight: "600" }}
+                    style={{ fontWeight: "600", cursor: "pointer" }}
                     className="text-primary pb-1"
                   >
                     Matching
@@ -790,7 +796,10 @@ const JobDetailsDescription = () => {
                     handleTabChange("matching");
                   }}
                 >
-                  <span style={{ fontWeight: "600" }} className="pb-1">
+                  <span
+                    style={{ fontWeight: "600", cursor: "pointer" }}
+                    className="pb-1"
+                  >
                     Matching
                   </span>
                 </div>
@@ -806,7 +815,7 @@ const JobDetailsDescription = () => {
                   }}
                 >
                   <span
-                    style={{ fontWeight: "600" }}
+                    style={{ fontWeight: "600", cursor: "pointer" }}
                     className="text-primary pb-1"
                   >
                     Accepted
@@ -819,7 +828,10 @@ const JobDetailsDescription = () => {
                     handleTabChange("sent");
                   }}
                 >
-                  <span style={{ fontWeight: "600" }} className="pb-1">
+                  <span
+                    style={{ fontWeight: "600", cursor: "pointer" }}
+                    className="pb-1"
+                  >
                     Accepted
                   </span>
                 </div>
@@ -1619,13 +1631,13 @@ const JobDetailsDescription = () => {
       </div>
       {/* ----------------------------------------------------------------------------------------------------- */}
 
-      {/* <div>
+      <div>
         <DeveloperDetailInManagerPopup
           isModalOpen={isModalOpen}
           closeModal={closeModal}
           devId={selectedCandidateInfo.developerId}
         />
-      </div> */}
+      </div>
 
       <div>
         <Modal isOpen={isCancelModalOpen} toggle={closeCancelModal} size="lg">

@@ -29,10 +29,7 @@ import projectServices from "../../../services/project.services";
 import classnames from "classnames";
 import { useNavigate } from "react-router-dom";
 import hiringrequestService from "../../../services/hiringrequest.service";
-import {
-  CheckSquareOutlined,
-  UserOutlined
-} from "@ant-design/icons";
+import { CheckSquareOutlined, UserOutlined } from "@ant-design/icons";
 const ProjectDetailDesciption = () => {
   const location = useLocation();
   const [hiringRequestDetail, setHiringRequestDetail] = useState([]);
@@ -154,11 +151,12 @@ const ProjectDetailDesciption = () => {
       const queryParams = new URLSearchParams(location.search);
       const projectId2 = queryParams.get("Id");
 
-      response = await hiringrequestService.getHiringRequestByProjectIdAndPaging(
-        projectId2,
-        currentPage,
-        5
-      );
+      response =
+        await hiringrequestService.getHiringRequestByProjectIdAndPaging(
+          projectId2,
+          currentPage,
+          5
+        );
       // }
 
       const data = response.data;
@@ -227,13 +225,13 @@ const ProjectDetailDesciption = () => {
   };
 
   const openHiringRequestDetail = (id) => {
-    navigate('/hiringrequestlistincompanypartnerdetail?Id=' + id)
+    navigate("/hiringrequestlistincompanypartnerdetail?Id=" + id);
   };
 
   return (
     <React.Fragment>
       <div className="job-detail ">
-        <CardBody className="">
+        <CardBody>
           <div className="d-flex justify-content-between">
             <div className="d-flex p-3">
               <div style={{ fontWeight: "bold" }}>
@@ -245,20 +243,20 @@ const ProjectDetailDesciption = () => {
                   hiringRequestDetail.statusString === "Preparing"
                     ? "badge bg-warning text-light fs-12"
                     : hiringRequestDetail.statusString === "In Progress"
-                      ? "badge bg-blue text-light fs-12"
-                      : hiringRequestDetail.statusString === "Rejected"
-                        ? "badge bg-danger text-light fs-12"
-                        : hiringRequestDetail.statusString === "Expired"
-                          ? "badge bg-danger text-light fs-12"
-                          : hiringRequestDetail.statusString === "Cancelled"
-                            ? "badge bg-danger text-light fs-12"
-                            : hiringRequestDetail.statusString === "Finished"
-                              ? "badge bg-primary text-light fs-12"
-                              : hiringRequestDetail.statusString === "Complete"
-                                ? "badge bg-primary text-light fs-12"
-                                : hiringRequestDetail.statusString === "Saved"
-                                  ? "badge bg-info text-light fs-12"
-                                  : ""
+                    ? "badge bg-blue text-light fs-12"
+                    : hiringRequestDetail.statusString === "Rejected"
+                    ? "badge bg-danger text-light fs-12"
+                    : hiringRequestDetail.statusString === "Expired"
+                    ? "badge bg-danger text-light fs-12"
+                    : hiringRequestDetail.statusString === "Cancelled"
+                    ? "badge bg-danger text-light fs-12"
+                    : hiringRequestDetail.statusString === "Finished"
+                    ? "badge bg-primary text-light fs-12"
+                    : hiringRequestDetail.statusString === "Complete"
+                    ? "badge bg-primary text-light fs-12"
+                    : hiringRequestDetail.statusString === "Saved"
+                    ? "badge bg-info text-light fs-12"
+                    : ""
                 }
               >
                 {hiringRequestDetail.statusString}
@@ -295,6 +293,7 @@ const ProjectDetailDesciption = () => {
                   Overview
                 </NavLink>
               </NavItem>
+
               <NavItem role="presentation">
                 <NavLink
                   to="#"
@@ -331,7 +330,9 @@ const ProjectDetailDesciption = () => {
                     {jobVacancyList.map((jobVacancyListDetails, key) => (
                       <Col lg={3} md={6} className="mt-4" key={key}>
                         <div
-                          onClick={() => openHiringRequestDetail(jobVacancyListDetails.id)}
+                          onClick={() =>
+                            openHiringRequestDetail(jobVacancyListDetails.id)
+                          }
                           key={key}
                           style={{ transform: "none" }}
                           className={
@@ -339,14 +340,16 @@ const ProjectDetailDesciption = () => {
                               ? "job-box bookmark-post card mt-4"
                               : "job-box card mt-4"
                           }
-                        // className="job-box card mt-4"
+                          // className="job-box card mt-4"
                         >
                           <div className="p-3">
                             {/* <Row className="align-items-center"> */}
                             {/* <Col md={3}> */}
                             <div className="mb-2 mb-md-0 d-flex">
                               <div className="d-flex">
-                                <CheckSquareOutlined style={{ fontSize: "20px" }} />
+                                <CheckSquareOutlined
+                                  style={{ fontSize: "20px" }}
+                                />
                               </div>
                               <div
                                 className="text-dark mx-2"
@@ -364,20 +367,20 @@ const ProjectDetailDesciption = () => {
                                   jobVacancyListDetails.waitingApproval === true
                                     ? "badge bg-warning text-light fs-12 mt-3"
                                     : jobVacancyListDetails.inProgress === true
-                                      ? "badge bg-blue text-light fs-12 mt-3"
-                                      : jobVacancyListDetails.rejected === true
-                                        ? "badge bg-danger text-light fs-12 mt-3"
-                                        : jobVacancyListDetails.expired === true
-                                          ? "badge bg-darkcyan text-light fs-12 mt-3"
-                                          : jobVacancyListDetails.cancelled === true
-                                            ? "badge bg-secondary text-light fs-12 mt-3"
-                                            : jobVacancyListDetails.finished === true
-                                              ? "badge bg-primary text-light fs-12 mt-3"
-                                              : jobVacancyListDetails.completed === true
-                                                ? "badge bg-success text-light fs-12 mt-3"
-                                                : jobVacancyListDetails.save === true
-                                                  ? "badge bg-teal text-light fs-12 mt-3"
-                                                  : ""
+                                    ? "badge bg-blue text-light fs-12 mt-3"
+                                    : jobVacancyListDetails.rejected === true
+                                    ? "badge bg-danger text-light fs-12 mt-3"
+                                    : jobVacancyListDetails.expired === true
+                                    ? "badge bg-darkcyan text-light fs-12 mt-3"
+                                    : jobVacancyListDetails.cancelled === true
+                                    ? "badge bg-secondary text-light fs-12 mt-3"
+                                    : jobVacancyListDetails.finished === true
+                                    ? "badge bg-primary text-light fs-12 mt-3"
+                                    : jobVacancyListDetails.completed === true
+                                    ? "badge bg-success text-light fs-12 mt-3"
+                                    : jobVacancyListDetails.save === true
+                                    ? "badge bg-teal text-light fs-12 mt-3"
+                                    : ""
                                 }
                               >
                                 {jobVacancyListDetails.timing}
@@ -388,11 +391,16 @@ const ProjectDetailDesciption = () => {
                             <Row className="justify-content-between">
                               <Col md={12}>
                                 <div className="d-flex justify-content-between">
-                                  <div className="mb-0 " style={{ fontWeight: "bold" }}>
+                                  <div
+                                    className="mb-0 "
+                                    style={{ fontWeight: "bold" }}
+                                  >
                                     {jobVacancyListDetails.duration}
                                   </div>
                                   <div className="d-flex justify-content-center align-items-center">
-                                    <UserOutlined style={{ fontSize: "18px" }} />
+                                    <UserOutlined
+                                      style={{ fontSize: "18px" }}
+                                    />
                                     <div style={{ marginLeft: "4px" }}>
                                       {jobVacancyListDetails.numberOfDev}
                                     </div>

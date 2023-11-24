@@ -51,11 +51,15 @@ const CreateHiringRequest = () => {
   const [value, setValue] = useState("");
   const [avatar2, setAvatar2] = useState();
   const [userImage3, setUserImage3] = useState(null);
-  const [companyNameFormCreateCompany, setCompanyNameFormCreateCompany] = useState(null);
+  const [companyNameFormCreateCompany, setCompanyNameFormCreateCompany] =
+    useState(null);
   const [emailFormCreateCompany, setEmailFormCreateCompany] = useState(null);
-  const [companyPhoneNumberFormCreateCompany, setCompanyPhoneNumberFormCreateCompany] = useState(null);
-  const [addressFormCreateCompany, setAddressFormCreateCompany] = useState(null);
-
+  const [
+    companyPhoneNumberFormCreateCompany,
+    setCompanyPhoneNumberFormCreateCompany,
+  ] = useState(null);
+  const [addressFormCreateCompany, setAddressFormCreateCompany] =
+    useState(null);
 
   const openModal = () => {
     setModal(!modal);
@@ -108,35 +112,35 @@ const CreateHiringRequest = () => {
     }
   });
 
-
   const createCompany = async () => {
     const formData = new FormData();
-    const userId = localStorage.getItem('userId');
-    formData.append('companyName', companyNameFormCreateCompany);
-    formData.append('companyEmail', emailFormCreateCompany);
-    formData.append('phoneNumber', companyPhoneNumberFormCreateCompany);
-    formData.append('address', addressFormCreateCompany);
-    formData.append('country', selectedCountry);
-    formData.append('userId', userId);
-    formData.append('file', avatar2);
+    const userId = localStorage.getItem("userId");
+    formData.append("companyName", companyNameFormCreateCompany);
+    formData.append("companyEmail", emailFormCreateCompany);
+    formData.append("phoneNumber", companyPhoneNumberFormCreateCompany);
+    formData.append("address", addressFormCreateCompany);
+    formData.append("country", selectedCountry);
+    formData.append("userId", userId);
+    formData.append("file", avatar2);
 
     try {
       // Make API request
       const response = await companyServices.createCompany(formData);
 
       // Handle the response (you can show a success message or redirect to another page)
-      console.log('API Response:', response.data);
-      const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+      console.log("API Response:", response.data);
+      const responseUser = await axios.get(
+        `https://wehireapi.azurewebsites.net/api/User/${userId}`
+      );
       const userData = responseUser.data;
-      localStorage.setItem('companyId', userData.data.companyId);
-      console.log("thanh cong roi yeahh")
+      localStorage.setItem("companyId", userData.data.companyId);
+      console.log("thanh cong roi yeahh");
     } catch (error) {
       // Handle errors (show an error message or log the error)
-      console.error('Error creating company:', error);
+      console.error("Error creating company:", error);
       console.log(error.response.data);
     }
   };
-
 
   useEffect(() => {
     fetch(
@@ -181,7 +185,6 @@ const CreateHiringRequest = () => {
         const userId = localStorage.getItem("userId");
         const companyId = localStorage.getItem("companyId");
         if (userId && companyId == "null") {
-
           openModal2();
         }
       } catch (error) {
@@ -194,12 +197,11 @@ const CreateHiringRequest = () => {
         console.log(requestIdParam);
         console.log(projectIdState);
         if (requestIdParam) {
-
           const response =
             await hiringRequestService.getHiringRequestDetailInCompany(
               requestIdParam
             );
-          console.log(response)
+          console.log(response);
           hiringRequestSaved = response.data.data;
           document.getElementById("job-title").value =
             hiringRequestSaved.jobTitle;
@@ -207,7 +209,7 @@ const CreateHiringRequest = () => {
             hiringRequestSaved.numberOfDev;
           document.getElementById("budget").value =
             hiringRequestSaved.salaryPerDev;
-          console.log(hiringRequestSaved.salaryPerDev)
+          console.log(hiringRequestSaved.salaryPerDev);
           localStorage.setItem("requestId", hiringRequestSaved.requestId);
           const formattedDuration = hiringRequestSaved.duration.split("T")[0];
           const editor = window.tinymce.get("description"); // Giả sử 'description' là id của Editor
@@ -218,8 +220,6 @@ const CreateHiringRequest = () => {
           // Đặt giá trị cho input duration
           document.getElementById("duration").value = formattedDuration;
         }
-
-
       } catch (error) {
         console.error("Error:", error);
       }
@@ -545,7 +545,7 @@ const CreateHiringRequest = () => {
             setSuccessMessage("Đăng công việc thành công");
             localStorage.removeItem("requestId");
             setErrorMessage(null);
-            navigate('/projectdetailhr?Id=' + projectIdState);
+            navigate("/projectdetailhr?Id=" + projectIdState);
           } catch (error) {
             console.log(value);
             console.error("Error posting job:", error);
@@ -572,7 +572,6 @@ const CreateHiringRequest = () => {
     } else {
       const companyIdErr = localStorage.getItem("companyId");
       if (companyIdErr == "null") {
-
         openModal2();
       } else {
         if (!document.getElementById("job-title").value) {
@@ -674,7 +673,7 @@ const CreateHiringRequest = () => {
   };
 
   const handleChooseAvatar2 = () => {
-    const inputElement = document.getElementById('profile-img-file-input-2');
+    const inputElement = document.getElementById("profile-img-file-input-2");
     inputElement.click();
   };
   const handlePreviewAvatar2 = (e) => {
@@ -683,7 +682,6 @@ const CreateHiringRequest = () => {
       file.preview = URL.createObjectURL(file);
       setAvatar2(file);
     }
-
   };
   return (
     <React.Fragment>
@@ -750,7 +748,7 @@ const CreateHiringRequest = () => {
                               value={selectedOptions2}
                               onChange={handleChange2}
                               className="Select Select--level-highest"
-                              style={{ maxHeight: '2000px', overflowY: 'auto' }}
+                              style={{ maxHeight: "2000px", overflowY: "auto" }}
                             />
                           </div>
 
@@ -884,10 +882,11 @@ const CreateHiringRequest = () => {
                               setValue(newValue);
                             }}
                             init={{
-                              plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                              plugins:
+                                "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
                               //   plugins:
                               //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
-                              // 
+                              //
                             }}
                           />
                           {descriptionError && (
@@ -1044,11 +1043,9 @@ const CreateHiringRequest = () => {
                               </div>
                               <Form action="#" className="auth-form">
                                 <div style={{ textAlign: "center" }}>
-
                                   <div className="mb-4 profile-user">
                                     {avatar2 ? (
                                       <img
-
                                         src={avatar2.preview}
                                         className="rounded-circle img-thumbnail profile-img"
                                         id="profile-img"
@@ -1056,23 +1053,24 @@ const CreateHiringRequest = () => {
                                       />
                                     ) : (
                                       <img
-                                        src={userImage3}  // Giá trị mặc định là "userImage2"
+                                        src={userImage3} // Giá trị mặc định là "userImage2"
                                         className="rounded-circle img-thumbnail profile-img"
                                         id="profile-img-2"
                                         alt=""
                                       />
                                     )}
                                     <div className="p-0 rounded-circle profile-photo-edit">
-                                      <label
-                                        className="profile-photo-edit avatar-xs"
-                                      >
-                                        <i className="uil uil-edit" onClick={handleChooseAvatar2}></i>
+                                      <label className="profile-photo-edit avatar-xs">
+                                        <i
+                                          className="uil uil-edit"
+                                          onClick={handleChooseAvatar2}
+                                        ></i>
                                       </label>
                                       <input
                                         type="file"
                                         id="profile-img-file-input-2"
                                         onChange={handlePreviewAvatar2}
-                                        style={{ display: 'none' }}
+                                        style={{ display: "none" }}
                                       />
                                     </div>
                                   </div>
@@ -1137,7 +1135,8 @@ const CreateHiringRequest = () => {
                                     styles={{
                                       control: (provided) => ({
                                         ...provided,
-                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        backgroundColor:
+                                          "rgba(255, 255, 255, 0.1)",
                                         border: "1px solid #ede8e8",
                                       }),
                                       singleValue: (provided) => ({

@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row } from "reactstrap";
+import {
+  Col,
+  Row,
+  Card,
+  CardBody,
+  NavItem,
+  NavLink,
+  Nav,
+  TabPane,
+  TabContent,
+} from "reactstrap";
 import { Form } from "react-bootstrap";
 import jobImage1 from "../../assets/images/featured-job/img-01.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,17 +20,26 @@ import {
   faHourglassHalf,
 } from "@fortawesome/free-regular-svg-icons";
 import { faLaptopCode } from "@fortawesome/free-solid-svg-icons";
-import { Input } from "antd";
+
 import interviewServices from "../../services/interview.services";
 import { Link } from "react-router-dom";
 import { Modal } from "antd";
 import img0 from "../../assets/images/user/img-00.jpg";
+import classnames from "classnames";
+import { Input, Space } from "antd";
 
 const NewListInterviewInfo = () => {
   const [newInterviewListInManager, setNewInterviewListInManager] = useState(
     []
   );
 
+  //---------------------------------------------------------------------------------------
+  const [interviewListWaitingApproval, setInterviewListWaitingApproval] =
+    useState([]);
+  const [interviewListApproval, setInterviewListApproval] = useState([]);
+  const [interviewListComplete, setInterviewListComplete] = useState([]);
+  const [interviewListReject, setInterviewListReject] = useState([]);
+  //---------------------------------------------------------------------------------------
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 7;
@@ -35,9 +54,7 @@ const NewListInterviewInfo = () => {
         currentPage,
         7
       );
-
-      console.log(response.data);
-
+      console.log(response.data.data);
       setNewInterviewListInManager(response.data.data);
       setTotalPages(Math.ceil(response.data.paging.total / pageSize));
     } catch (error) {
@@ -45,6 +62,112 @@ const NewListInterviewInfo = () => {
     }
   };
   //-------------------------------------------------------------------------------------
+  let [currentPageWaitingApproval, setCurrentPageWaitingApproval] = useState(1);
+  const [totalPagesWaitingApproval, setTotalPagesWaitingApproval] = useState(1);
+  const pageSizeWaitingApproval = 7;
+  const handlePageClickWaitingApproval = (page) => {
+    setCurrentPageWaitingApproval(page);
+  };
+  const fetchInterviewListWaitingApproval = async () => {
+    let response;
+    let tmp;
+    try {
+      response = await interviewServices.getAllInterviewByManagerAndPaging(
+        currentPageWaitingApproval,
+        7
+      );
+      console.log(response.data.data);
+      tmp = response.data.data.filter(
+        (developer) => developer.statusString == "Waiting Approval"
+      );
+      setInterviewListWaitingApproval(tmp);
+      setTotalPagesWaitingApproval(
+        Math.ceil(tmp.length / pageSizeWaitingApproval)
+      );
+    } catch (error) {
+      console.error("Error fetching interview Waiting Approval list :", error);
+    }
+  };
+  //-------------------------------------------------------------------------------------
+  let [currentPageApproval, setCurrentPageApproval] = useState(1);
+  const [totalPagesApproval, setTotalPagesApproval] = useState(1);
+  const pageSizeApproval = 7;
+  const handlePageClickApproval = (page) => {
+    setCurrentPageApproval(page);
+  };
+  const fetchInterviewListApproval = async () => {
+    let response;
+    let tmp;
+    try {
+      response = await interviewServices.getAllInterviewByManagerAndPaging(
+        currentPageApproval,
+        7
+      );
+      console.log(response.data.data);
+      tmp = response.data.data.filter(
+        (developer) => developer.statusString == "Approved"
+      );
+      setInterviewListApproval(tmp);
+      setTotalPagesApproval(Math.ceil(tmp.length / pageSizeApproval));
+    } catch (error) {
+      console.error("Error fetching interview Approval list :", error);
+    }
+  };
+  //-------------------------------------------------------------------------------------
+  let [currentPageComplete, setCurrentPageComplete] = useState(1);
+  const [totalPagesComplete, setTotalPagesComplete] = useState(1);
+  const pageSizeComplete = 7;
+  const handlePageClickComplete = (page) => {
+    setCurrentPageComplete(page);
+  };
+  const fetchInterviewListComplete = async () => {
+    let response;
+    let tmp;
+    try {
+      response = await interviewServices.getAllInterviewByManagerAndPaging(
+        currentPageComplete,
+        7
+      );
+      console.log(response.data.data);
+      tmp = response.data.data.filter(
+        (developer) => developer.statusString == "Completed"
+      );
+      setInterviewListComplete(tmp);
+      setTotalPagesComplete(Math.ceil(tmp.length / pageSizeComplete));
+    } catch (error) {
+      console.error("Error fetching interview Completed list :", error);
+    }
+  };
+
+  //-------------------------------------------------------------------------------------
+  let [currentPageReject, setCurrentPageReject] = useState(1);
+  const [totalPagesReject, setTotalPagesReject] = useState(1);
+  const pageSizeReject = 7;
+  const handlePageClickReject = (page) => {
+    setCurrentPageReject(page);
+  };
+
+  const fetchInterviewListReject = async () => {
+    let response;
+    let tmp;
+    try {
+      response = await interviewServices.getAllInterviewByManagerAndPaging(
+        currentPageReject,
+        7
+      );
+      console.log(response.data.data);
+      tmp = response.data.data.filter(
+        (developer) => developer.statusString == "Rejected"
+      );
+      setInterviewListReject(tmp);
+      setTotalPagesReject(Math.ceil(tmp.length / pageSizeReject));
+    } catch (error) {
+      console.error("Error fetching interview Rejected list :", error);
+    }
+  };
+
+  //-------------------------------------------------------------------------------------
+
   const renderPageNumbers = () => {
     const pageNumbers = [];
     const maxPageButtons = 4;
@@ -83,6 +206,196 @@ const NewListInterviewInfo = () => {
     }
   };
   //-------------------------------------------------------------------------------------
+  // Phan trang Waiting Approval
+  const renderPageNumbersWaitingApproval = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(
+      1,
+      currentPageWaitingApproval - Math.floor(maxPageButtons / 2)
+    );
+    let endPage = Math.min(
+      totalPagesWaitingApproval,
+      startPage + maxPageButtons - 1
+    );
+    if (
+      totalPagesWaitingApproval > maxPageButtons &&
+      currentPageWaitingApproval <= Math.floor(maxPageButtons / 2) + 1
+    ) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${
+            i === currentPageWaitingApproval ? "active" : ""
+          }`}
+        >
+          <Link
+            className="page-link"
+            to="#"
+            onClick={() => handlePageClickWaitingApproval(i)}
+          >
+            {i}
+          </Link>
+        </li>
+      );
+    }
+    return pageNumbers;
+  };
+
+  const handleNextPageWaitingApproval = () => {
+    if (currentPageWaitingApproval < totalPagesWaitingApproval) {
+      setCurrentPageWaitingApproval(currentPageWaitingApproval + 1);
+    }
+  };
+
+  const handlePrevPageWaitingApproval = () => {
+    if (currentPageWaitingApproval > 1) {
+      setCurrentPageWaitingApproval(currentPageWaitingApproval - 1);
+    }
+  };
+  //-------------------------------------------------------------------------------------
+  // Phan trang Approval
+  const renderPageNumbersApproval = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(
+      1,
+      currentPageApproval - Math.floor(maxPageButtons / 2)
+    );
+    let endPage = Math.min(totalPagesApproval, startPage + maxPageButtons - 1);
+    if (
+      totalPagesApproval > maxPageButtons &&
+      currentPageApproval <= Math.floor(maxPageButtons / 2) + 1
+    ) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${i === currentPageApproval ? "active" : ""}`}
+        >
+          <Link
+            className="page-link"
+            to="#"
+            onClick={() => handlePageClickApproval(i)}
+          >
+            {i}
+          </Link>
+        </li>
+      );
+    }
+    return pageNumbers;
+  };
+
+  const handleNextPageApproval = () => {
+    if (currentPageApproval < totalPagesApproval) {
+      setCurrentPageApproval(currentPageApproval + 1);
+    }
+  };
+
+  const handlePrevPageApproval = () => {
+    if (currentPageApproval > 1) {
+      setCurrentPageApproval(currentPageApproval - 1);
+    }
+  };
+  //-------------------------------------------------------------------------------------
+  // Phan trang Complete
+  const renderPageNumbersComplete = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(
+      1,
+      currentPageComplete - Math.floor(maxPageButtons / 2)
+    );
+    let endPage = Math.min(totalPagesComplete, startPage + maxPageButtons - 1);
+    if (
+      totalPagesComplete > maxPageButtons &&
+      currentPageComplete <= Math.floor(maxPageButtons / 2) + 1
+    ) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${i === currentPageComplete ? "active" : ""}`}
+        >
+          <Link
+            className="page-link"
+            to="#"
+            onClick={() => handlePageClickComplete(i)}
+          >
+            {i}
+          </Link>
+        </li>
+      );
+    }
+    return pageNumbers;
+  };
+
+  const handleNextPageComplete = () => {
+    if (currentPageComplete < totalPagesComplete) {
+      setCurrentPageComplete(currentPageComplete + 1);
+    }
+  };
+
+  const handlePrevPageComplete = () => {
+    if (currentPageComplete > 1) {
+      setCurrentPageComplete(currentPageComplete - 1);
+    }
+  };
+  //-------------------------------------------------------------------------------------
+  // Phan trang Reject
+  const renderPageNumbersReject = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(
+      1,
+      currentPageReject - Math.floor(maxPageButtons / 2)
+    );
+    let endPage = Math.min(totalPagesReject, startPage + maxPageButtons - 1);
+    if (
+      totalPagesReject > maxPageButtons &&
+      currentPageReject <= Math.floor(maxPageButtons / 2) + 1
+    ) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${i === currentPageReject ? "active" : ""}`}
+        >
+          <Link
+            className="page-link"
+            to="#"
+            onClick={() => handlePageClickReject(i)}
+          >
+            {i}
+          </Link>
+        </li>
+      );
+    }
+    return pageNumbers;
+  };
+
+  const handleNextPageReject = () => {
+    if (currentPageReject < totalPagesReject) {
+      setCurrentPageComplete(currentPageReject + 1);
+    }
+  };
+
+  const handlePrevPageReject = () => {
+    if (currentPageReject > 1) {
+      setCurrentPageReject(currentPageReject - 1);
+    }
+  };
+
+  //-------------------------------------------------------------------------------------
   const [selectInterviewDetail, setSelectInterviewDetail] = useState({});
   const [devInterviewDetail, setDevInterviewDetail] = useState([]);
 
@@ -95,14 +408,13 @@ const NewListInterviewInfo = () => {
     let response;
 
     try {
-      response = await interviewServices.getDetailInterviewByInterviewId(
-        id
-      );
+      response = await interviewServices.getDetailInterviewByInterviewId(id);
       console.log("----------------------------------");
       console.log(response.data.data);
       console.log(response.data.data.developer.skillRequireStrings);
       setSelectInterviewDetail(response.data.data);
       setDevInterviewDetail(response.data.data.developer);
+
       console.log("----------------------------------");
     } catch (error) {
       console.error("Error fetching interview detail in manager list :", error);
@@ -114,19 +426,130 @@ const NewListInterviewInfo = () => {
     fetchNewInterviewListInManager();
   }, [currentPage]);
 
-  // useEffect(() => {
-  //   fetchGetDetailInterviewByInterviewId();
-  // }, []);
+  useEffect(() => {
+    fetchInterviewListWaitingApproval();
+  }, [currentPageWaitingApproval]);
+
+  useEffect(() => {
+    fetchInterviewListApproval();
+  }, [currentPageApproval]);
+
+  useEffect(() => {
+    fetchInterviewListComplete();
+  }, [currentPageComplete]);
+
+  useEffect(() => {
+    fetchInterviewListReject();
+  }, [currentPageReject]);
   //-------------------------------------------------------------------------------------
   const [showPopup, setShowPopup] = useState(false);
-  const [selectedCandidate, setSelectedCandidate] = useState([]);
 
+  //-------------------------------------------------------------------------------------
+  const [activeTab, setActiveTab] = useState("1");
+  const tabChange = (tab) => {
+    if (activeTab) {
+      if (activeTab !== tab) setActiveTab(tab);
+    }
+  };
+  //-------------------------------------------------------------------------------------
+  //Search
+  const { Search } = Input;
+  const onSearch = (value, _e, info) => console.log(info?.source, value);
   //-------------------------------------------------------------------------------------
   return (
     <React.Fragment>
       <h4>Interview List</h4>
-      <div style={{ width: "20%" }} className="mt-3 mb-3">
-        <Input placeholder="Search" style={{ height: "40px" }} />
+
+      <div className="d-flex justify-content-between">
+        <Nav
+          className="profile-content-nav nav-pills border-bottom gap-3 mb-3"
+          id="pills-tab"
+          role="tablist"
+        >
+          <NavItem role="presentation">
+            <NavLink
+              to="#"
+              className={classnames("nav-link", {
+                active: activeTab === "1",
+              })}
+              onClick={() => {
+                tabChange("1");
+              }}
+              type="button"
+            >
+              All
+            </NavLink>
+          </NavItem>
+          <NavItem role="presentation">
+            <NavLink
+              to="#"
+              className={classnames("nav-link", {
+                active: activeTab === "2",
+              })}
+              onClick={() => {
+                tabChange("2");
+              }}
+              type="button"
+            >
+              Waiting Approval
+            </NavLink>
+          </NavItem>
+          <NavItem role="presentation">
+            <NavLink
+              to="#"
+              className={classnames("nav-link", {
+                active: activeTab === "3",
+              })}
+              onClick={() => {
+                tabChange("3");
+              }}
+              type="button"
+            >
+              Approved
+            </NavLink>
+          </NavItem>
+          <NavItem role="presentation">
+            <NavLink
+              to="#"
+              className={classnames("nav-link", {
+                active: activeTab === "4",
+              })}
+              onClick={() => {
+                tabChange("4");
+              }}
+              type="button"
+            >
+              Complete
+            </NavLink>
+          </NavItem>
+          <NavItem role="presentation">
+            <NavLink
+              to="#"
+              className={classnames("nav-link", {
+                active: activeTab === "5",
+              })}
+              onClick={() => {
+                tabChange("5");
+              }}
+              type="button"
+            >
+              Rejected
+            </NavLink>
+          </NavItem>
+        </Nav>
+
+        <div className="d-flex align-items-center ">
+          <Space>
+            <Search
+              className="custom-search-input"
+              placeholder="input search text"
+              allowClear
+              enterButton="Search"
+              size="large"
+              onSearch={onSearch}
+            />
+          </Space>
+        </div>
       </div>
 
       <Modal
@@ -422,158 +845,832 @@ const NewListInterviewInfo = () => {
         </Row>
       </Modal>
 
-      <div>
-        {newInterviewListInManager.map(
-          (newInterviewListInManagerDetail, key) => (
-            <div
-              style={{
-                boxShadow:
-                  "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-              }}
-              key={key}
-              className={"job-box-dev-in-list-hiringRequest-for-dev mt-3 card"}
-            >
-              <div className="p-2">
-                <Row className="align-items-center">
-                  <Col md={2}>
-                    <div>
-                      <Link to="#">
-                        <img
-                          style={{
-                            width: "80px",
-                            height: "80px",
-                          }}
-                          src={jobImage1}
-                          alt=""
-                          className="img-fluid rounded-3 img-avt-hiring-request"
-                        />
-                      </Link>
-                    </div>
-                  </Col>
-
-                  <Col md={3} className="px-0">
-                    <div
-                      onClick={() =>
-                        midleSelect(newInterviewListInManagerDetail.interviewId)
-                      }
-                    >
-                      <h5 className="fs-18 mb-0">
-                        {newInterviewListInManagerDetail.title}
-                      </h5>
-                      <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
-                        {newInterviewListInManagerDetail.interviewCode}
-                      </p>
-                    </div>
-                  </Col>
-                  {/* ------------------ */}
-
-                  {/* -------------------*/}
-
-                  <Col md={2} className="d-flex  gap-2">
-                    <div className="d-flex flex-column gap-2">
-                      <FontAwesomeIcon
-                        icon={faCalendarDays}
-                        size="lg"
-                        className="text-primary"
-                      />
-                      <FontAwesomeIcon
-                        icon={faClock}
-                        size="lg"
-                        className="text-primary"
-                      />
-                    </div>
-
-                    <div>
-                      <p className="mb-0">
-                        {newInterviewListInManagerDetail.dateOfInterview}
-                      </p>
-                      <p className="mb-0 mt-1">
-                        {newInterviewListInManagerDetail.startTime} -{" "}
-                        {newInterviewListInManagerDetail.endTime}
-                      </p>
-                    </div>
-                  </Col>
-
-                  <Col
-                    md={2}
-                    className="d-flex justify-content-center align-items-center"
+      <CardBody className="px-0">
+        <TabContent activeTab={activeTab}>
+          <TabPane tabId="1">
+            <div>
+              {newInterviewListInManager.map(
+                (newInterviewListInManagerDetail, key) => (
+                  <div
+                    style={{
+                      boxShadow:
+                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                    }}
+                    key={key}
+                    className={
+                      "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                    }
                   >
-                    <p className="mb-0">
-                      {newInterviewListInManagerDetail.postedTime}
-                    </p>
-                  </Col>
+                    <div className="p-2">
+                      <Row className="align-items-center">
+                        <Col md={2}>
+                          <div>
+                            <Link to="#">
+                              <img
+                                style={{
+                                  width: "80px",
+                                  height: "80px",
+                                }}
+                                src={
+                                  newInterviewListInManagerDetail.companyImage
+                                }
+                                alt=""
+                                className="img-fluid rounded-3 img-avt-hiring-request"
+                              />
+                            </Link>
+                          </div>
+                        </Col>
 
-                  <Col md={3} className="d-flex justify-content-center">
-                    <span
-                      className={
-                        newInterviewListInManagerDetail.statusString ===
-                          "Waiting Approval"
-                          ? "badge bg-warning text-light fs-12"
-                          : newInterviewListInManagerDetail.statusString ===
-                            "Interviewing"
-                            ? "badge bg-blue text-light fs-12"
-                            : newInterviewListInManagerDetail.statusString ===
-                              "Rejected"
-                              ? "badge bg-danger text-light fs-12"
-                              : newInterviewListInManagerDetail.statusString ===
-                                "Expired"
+                        <Col md={3} className="px-0">
+                          <div
+                            onClick={() =>
+                              midleSelect(
+                                newInterviewListInManagerDetail.interviewId
+                              )
+                            }
+                          >
+                            <h5
+                              className="fs-18 mb-0"
+                              style={{ cursor: "pointer" }}
+                            >
+                              {newInterviewListInManagerDetail.title}
+                            </h5>
+                            <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                              {newInterviewListInManagerDetail.interviewCode}
+                            </p>
+                          </div>
+                        </Col>
+                        {/* ------------------ */}
+
+                        {/* -------------------*/}
+
+                        <Col md={2} className="d-flex  gap-2">
+                          <div className="d-flex flex-column gap-2">
+                            <FontAwesomeIcon
+                              icon={faCalendarDays}
+                              size="lg"
+                              className="text-primary"
+                            />
+                            <FontAwesomeIcon
+                              icon={faClock}
+                              size="lg"
+                              className="text-primary"
+                            />
+                          </div>
+
+                          <div>
+                            <p className="mb-0">
+                              {newInterviewListInManagerDetail.dateOfInterview}
+                            </p>
+                            <p className="mb-0 mt-1">
+                              {newInterviewListInManagerDetail.startTime} -{" "}
+                              {newInterviewListInManagerDetail.endTime}
+                            </p>
+                          </div>
+                        </Col>
+
+                        <Col
+                          md={2}
+                          className="d-flex justify-content-center align-items-center"
+                        >
+                          <p className="mb-0">
+                            {newInterviewListInManagerDetail.postedTime}
+                          </p>
+                        </Col>
+
+                        <Col md={3} className="d-flex justify-content-center">
+                          <span
+                            className={
+                              newInterviewListInManagerDetail.statusString ===
+                              "Waiting Approval"
+                                ? "badge bg-warning text-light fs-12"
+                                : newInterviewListInManagerDetail.statusString ===
+                                  "Approved"
+                                ? "badge bg-newGreen text-light fs-12"
+                                : newInterviewListInManagerDetail.statusString ===
+                                  "Rejected"
                                 ? "badge bg-danger text-light fs-12"
                                 : newInterviewListInManagerDetail.statusString ===
-                                  "Cancelled"
-                                  ? "badge bg-danger text-light fs-12"
-                                  : newInterviewListInManagerDetail.statusString ===
-                                    "Approved"
-                                    ? "badge bg-success text-light fs-12"
-                                    : newInterviewListInManagerDetail.statusString ===
-                                      "Complete"
-                                      ? "badge bg-primary text-light fs-12"
-                                      : newInterviewListInManagerDetail.statusString ===
-                                        "Saved"
-                                        ? "badge bg-info text-light fs-12"
-                                        : ""
+                                  "Expired"
+                                ? "badge bg-danger text-light fs-12"
+                                : newInterviewListInManagerDetail.statusString ===
+                                  "Completed"
+                                ? "badge bg-success text-light fs-12"
+                                : ""
+                            }
+                          >
+                            {newInterviewListInManagerDetail.statusString}
+                          </span>
+                        </Col>
+                      </Row>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+            {/* ----------------------------------------------------------------------------- */}
+            {/* phan trang */}
+            <Row>
+              <Col lg={12} className="mt-4 pt-2">
+                <nav aria-label="Page navigation example">
+                  <div className="pagination job-pagination mb-0 justify-content-center">
+                    <li
+                      className={`page-item ${
+                        currentPage === 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <Link
+                        className="page-link"
+                        to="#"
+                        tabIndex="-1"
+                        onClick={handlePrevPage}
+                      >
+                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                      </Link>
+                    </li>
+                    {renderPageNumbers()}
+                    <li
+                      className={`page-item ${
+                        currentPage === totalPages ? "disabled" : ""
+                      }`}
+                    >
+                      <Link
+                        className="page-link"
+                        to="#"
+                        onClick={handleNextPage}
+                      >
+                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                      </Link>
+                    </li>
+                  </div>
+                </nav>
+              </Col>
+            </Row>
+          </TabPane>
+          <TabPane tabId="2">
+            <div>
+              <div>
+                {interviewListWaitingApproval.map(
+                  (newInterviewListInManagerDetail, key) => (
+                    <div
+                      style={{
+                        boxShadow:
+                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                      }}
+                      key={key}
+                      className={
+                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
                       }
                     >
-                      {newInterviewListInManagerDetail.statusString}
-                    </span>
-                  </Col>
-                </Row>
+                      <div className="p-2">
+                        <Row className="align-items-center">
+                          <Col md={2}>
+                            <div>
+                              <Link to="#">
+                                <img
+                                  style={{
+                                    width: "80px",
+                                    height: "80px",
+                                  }}
+                                  src={
+                                    newInterviewListInManagerDetail.companyImage
+                                  }
+                                  alt=""
+                                  className="img-fluid rounded-3 img-avt-hiring-request"
+                                />
+                              </Link>
+                            </div>
+                          </Col>
+
+                          <Col md={3} className="px-0">
+                            <div
+                              onClick={() =>
+                                midleSelect(
+                                  newInterviewListInManagerDetail.interviewId
+                                )
+                              }
+                            >
+                              <h5
+                                className="fs-18 mb-0"
+                                style={{ cursor: "pointer" }}
+                              >
+                                {newInterviewListInManagerDetail.title}
+                              </h5>
+                              <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                                {newInterviewListInManagerDetail.interviewCode}
+                              </p>
+                            </div>
+                          </Col>
+                          {/* ------------------ */}
+
+                          {/* -------------------*/}
+
+                          <Col md={2} className="d-flex  gap-2">
+                            <div className="d-flex flex-column gap-2">
+                              <FontAwesomeIcon
+                                icon={faCalendarDays}
+                                size="lg"
+                                className="text-primary"
+                              />
+                              <FontAwesomeIcon
+                                icon={faClock}
+                                size="lg"
+                                className="text-primary"
+                              />
+                            </div>
+
+                            <div>
+                              <p className="mb-0">
+                                {
+                                  newInterviewListInManagerDetail.dateOfInterview
+                                }
+                              </p>
+                              <p className="mb-0 mt-1">
+                                {newInterviewListInManagerDetail.startTime} -{" "}
+                                {newInterviewListInManagerDetail.endTime}
+                              </p>
+                            </div>
+                          </Col>
+
+                          <Col
+                            md={2}
+                            className="d-flex justify-content-center align-items-center"
+                          >
+                            <p className="mb-0">
+                              {newInterviewListInManagerDetail.postedTime}
+                            </p>
+                          </Col>
+
+                          <Col md={3} className="d-flex justify-content-center">
+                            <span
+                              className={
+                                newInterviewListInManagerDetail.statusString ===
+                                "Waiting Approval"
+                                  ? "badge bg-warning text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Approved"
+                                  ? "badge bg-newGreen text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Rejected"
+                                  ? "badge bg-danger text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Expired"
+                                  ? "badge bg-danger text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Completed"
+                                  ? "badge bg-success text-light fs-12"
+                                  : ""
+                              }
+                            >
+                              {newInterviewListInManagerDetail.statusString}
+                            </span>
+                          </Col>
+                        </Row>
+                      </div>
+                    </div>
+                  )
+                )}
               </div>
             </div>
-          )
-        )}
-      </div>
+            {/* ----------------------------------------------------------------------------- */}
+            {/* phan trang */}
+            <Row>
+              <Col lg={12} className="mt-4 pt-2">
+                <nav aria-label="Page navigation example">
+                  <div className="pagination job-pagination mb-0 justify-content-center">
+                    <li
+                      className={`page-item ${
+                        currentPageWaitingApproval === 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <Link
+                        className="page-link"
+                        to="#"
+                        tabIndex="-1"
+                        onClick={handlePrevPageWaitingApproval}
+                      >
+                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                      </Link>
+                    </li>
+                    {renderPageNumbersWaitingApproval()}
+                    <li
+                      className={`page-item ${
+                        currentPageWaitingApproval === totalPagesWaitingApproval
+                          ? "disabled"
+                          : ""
+                      }`}
+                    >
+                      <Link
+                        className="page-link"
+                        to="#"
+                        onClick={handleNextPageWaitingApproval}
+                      >
+                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                      </Link>
+                    </li>
+                  </div>
+                </nav>
+              </Col>
+            </Row>
+          </TabPane>
+          <TabPane tabId="3">
+            <div>
+              <div>
+                {interviewListApproval.map(
+                  (newInterviewListInManagerDetail, key) => (
+                    <div
+                      style={{
+                        boxShadow:
+                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                      }}
+                      key={key}
+                      className={
+                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                      }
+                    >
+                      <div className="p-2">
+                        <Row className="align-items-center">
+                          <Col md={2}>
+                            <div>
+                              <Link to="#">
+                                <img
+                                  style={{
+                                    width: "80px",
+                                    height: "80px",
+                                  }}
+                                  src={
+                                    newInterviewListInManagerDetail.companyImage
+                                  }
+                                  alt=""
+                                  className="img-fluid rounded-3 img-avt-hiring-request"
+                                />
+                              </Link>
+                            </div>
+                          </Col>
 
-      {/* ----------------------------------------------------------------------------- */}
-      {/* phan trang */}
-      <Row>
-        <Col lg={12} className="mt-4 pt-2">
-          <nav aria-label="Page navigation example">
-            <div className="pagination job-pagination mb-0 justify-content-center">
-              <li
-                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-              >
-                <Link
-                  className="page-link"
-                  to="#"
-                  tabIndex="-1"
-                  onClick={handlePrevPage}
-                >
-                  <i className="mdi mdi-chevron-double-left fs-15"></i>
-                </Link>
-              </li>
-              {renderPageNumbers()}
-              <li
-                className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                  }`}
-              >
-                <Link className="page-link" to="#" onClick={handleNextPage}>
-                  <i className="mdi mdi-chevron-double-right fs-15"></i>
-                </Link>
-              </li>
+                          <Col md={3} className="px-0">
+                            <div
+                              onClick={() =>
+                                midleSelect(
+                                  newInterviewListInManagerDetail.interviewId
+                                )
+                              }
+                            >
+                              <h5
+                                className="fs-18 mb-0"
+                                style={{ cursor: "pointer" }}
+                              >
+                                {newInterviewListInManagerDetail.title}
+                              </h5>
+                              <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                                {newInterviewListInManagerDetail.interviewCode}
+                              </p>
+                            </div>
+                          </Col>
+                          {/* ------------------ */}
+
+                          {/* -------------------*/}
+
+                          <Col md={2} className="d-flex  gap-2">
+                            <div className="d-flex flex-column gap-2">
+                              <FontAwesomeIcon
+                                icon={faCalendarDays}
+                                size="lg"
+                                className="text-primary"
+                              />
+                              <FontAwesomeIcon
+                                icon={faClock}
+                                size="lg"
+                                className="text-primary"
+                              />
+                            </div>
+
+                            <div>
+                              <p className="mb-0">
+                                {
+                                  newInterviewListInManagerDetail.dateOfInterview
+                                }
+                              </p>
+                              <p className="mb-0 mt-1">
+                                {newInterviewListInManagerDetail.startTime} -{" "}
+                                {newInterviewListInManagerDetail.endTime}
+                              </p>
+                            </div>
+                          </Col>
+
+                          <Col
+                            md={2}
+                            className="d-flex justify-content-center align-items-center"
+                          >
+                            <p className="mb-0">
+                              {newInterviewListInManagerDetail.postedTime}
+                            </p>
+                          </Col>
+
+                          <Col md={3} className="d-flex justify-content-center">
+                            <span
+                              className={
+                                newInterviewListInManagerDetail.statusString ===
+                                "Waiting Approval"
+                                  ? "badge bg-warning text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Approved"
+                                  ? "badge bg-newGreen text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Rejected"
+                                  ? "badge bg-danger text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Expired"
+                                  ? "badge bg-danger text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Completed"
+                                  ? "badge bg-success text-light fs-12"
+                                  : ""
+                              }
+                            >
+                              {newInterviewListInManagerDetail.statusString}
+                            </span>
+                          </Col>
+                        </Row>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
             </div>
-          </nav>
-        </Col>
-      </Row>
+            {/* ----------------------------------------------------------------------------- */}
+            {/* phan trang */}
+            <Row>
+              <Col lg={12} className="mt-4 pt-2">
+                <nav aria-label="Page navigation example">
+                  <div className="pagination job-pagination mb-0 justify-content-center">
+                    <li
+                      className={`page-item ${
+                        currentPageApproval === 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <Link
+                        className="page-link"
+                        to="#"
+                        tabIndex="-1"
+                        onClick={handlePrevPageApproval}
+                      >
+                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                      </Link>
+                    </li>
+                    {renderPageNumbersApproval()}
+                    <li
+                      className={`page-item ${
+                        currentPageApproval === totalPagesApproval
+                          ? "disabled"
+                          : ""
+                      }`}
+                    >
+                      <Link
+                        className="page-link"
+                        to="#"
+                        onClick={handleNextPageApproval}
+                      >
+                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                      </Link>
+                    </li>
+                  </div>
+                </nav>
+              </Col>
+            </Row>
+          </TabPane>
+          <TabPane tabId="4">
+            <div>
+              <div>
+                {interviewListComplete.map(
+                  (newInterviewListInManagerDetail, key) => (
+                    <div
+                      style={{
+                        boxShadow:
+                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                      }}
+                      key={key}
+                      className={
+                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                      }
+                    >
+                      <div className="p-2">
+                        <Row className="align-items-center">
+                          <Col md={2}>
+                            <div>
+                              <Link to="#">
+                                <img
+                                  style={{
+                                    width: "80px",
+                                    height: "80px",
+                                  }}
+                                  src={
+                                    newInterviewListInManagerDetail.companyImage
+                                  }
+                                  alt=""
+                                  className="img-fluid rounded-3 img-avt-hiring-request"
+                                />
+                              </Link>
+                            </div>
+                          </Col>
+
+                          <Col md={3} className="px-0">
+                            <div
+                              onClick={() =>
+                                midleSelect(
+                                  newInterviewListInManagerDetail.interviewId
+                                )
+                              }
+                            >
+                              <h5
+                                className="fs-18 mb-0"
+                                style={{ cursor: "pointer" }}
+                              >
+                                {newInterviewListInManagerDetail.title}
+                              </h5>
+                              <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                                {newInterviewListInManagerDetail.interviewCode}
+                              </p>
+                            </div>
+                          </Col>
+                          {/* ------------------ */}
+
+                          {/* -------------------*/}
+
+                          <Col md={2} className="d-flex  gap-2">
+                            <div className="d-flex flex-column gap-2">
+                              <FontAwesomeIcon
+                                icon={faCalendarDays}
+                                size="lg"
+                                className="text-primary"
+                              />
+                              <FontAwesomeIcon
+                                icon={faClock}
+                                size="lg"
+                                className="text-primary"
+                              />
+                            </div>
+
+                            <div>
+                              <p className="mb-0">
+                                {
+                                  newInterviewListInManagerDetail.dateOfInterview
+                                }
+                              </p>
+                              <p className="mb-0 mt-1">
+                                {newInterviewListInManagerDetail.startTime} -{" "}
+                                {newInterviewListInManagerDetail.endTime}
+                              </p>
+                            </div>
+                          </Col>
+
+                          <Col
+                            md={2}
+                            className="d-flex justify-content-center align-items-center"
+                          >
+                            <p className="mb-0">
+                              {newInterviewListInManagerDetail.postedTime}
+                            </p>
+                          </Col>
+
+                          <Col md={3} className="d-flex justify-content-center">
+                            <span
+                              className={
+                                newInterviewListInManagerDetail.statusString ===
+                                "Waiting Approval"
+                                  ? "badge bg-warning text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Approved"
+                                  ? "badge bg-newGreen text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Rejected"
+                                  ? "badge bg-danger text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Expired"
+                                  ? "badge bg-danger text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Completed"
+                                  ? "badge bg-success text-light fs-12"
+                                  : ""
+                              }
+                            >
+                              {newInterviewListInManagerDetail.statusString}
+                            </span>
+                          </Col>
+                        </Row>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+            {/* ----------------------------------------------------------------------------- */}
+            {/* phan trang */}
+            <Row>
+              <Col lg={12} className="mt-4 pt-2">
+                <nav aria-label="Page navigation example">
+                  <div className="pagination job-pagination mb-0 justify-content-center">
+                    <li
+                      className={`page-item ${
+                        currentPageComplete === 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <Link
+                        className="page-link"
+                        to="#"
+                        tabIndex="-1"
+                        onClick={handlePrevPageComplete}
+                      >
+                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                      </Link>
+                    </li>
+                    {renderPageNumbersComplete()}
+                    <li
+                      className={`page-item ${
+                        currentPageComplete === totalPagesComplete
+                          ? "disabled"
+                          : ""
+                      }`}
+                    >
+                      <Link
+                        className="page-link"
+                        to="#"
+                        onClick={handleNextPageComplete}
+                      >
+                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                      </Link>
+                    </li>
+                  </div>
+                </nav>
+              </Col>
+            </Row>
+          </TabPane>
+          <TabPane tabId="5">
+            <div>
+              <div>
+                {interviewListReject.map(
+                  (newInterviewListInManagerDetail, key) => (
+                    <div
+                      style={{
+                        boxShadow:
+                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                      }}
+                      key={key}
+                      className={
+                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                      }
+                    >
+                      <div className="p-2">
+                        <Row className="align-items-center">
+                          <Col md={2}>
+                            <div>
+                              <Link to="#">
+                                <img
+                                  style={{
+                                    width: "80px",
+                                    height: "80px",
+                                  }}
+                                  src={
+                                    newInterviewListInManagerDetail.companyImage
+                                  }
+                                  alt=""
+                                  className="img-fluid rounded-3 img-avt-hiring-request"
+                                />
+                              </Link>
+                            </div>
+                          </Col>
+
+                          <Col md={3} className="px-0">
+                            <div
+                              onClick={() =>
+                                midleSelect(
+                                  newInterviewListInManagerDetail.interviewId
+                                )
+                              }
+                            >
+                              <h5
+                                className="fs-18 mb-0"
+                                style={{ cursor: "pointer" }}
+                              >
+                                {newInterviewListInManagerDetail.title}
+                              </h5>
+                              <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                                {newInterviewListInManagerDetail.interviewCode}
+                              </p>
+                            </div>
+                          </Col>
+                          {/* ------------------ */}
+
+                          {/* -------------------*/}
+
+                          <Col md={2} className="d-flex  gap-2">
+                            <div className="d-flex flex-column gap-2">
+                              <FontAwesomeIcon
+                                icon={faCalendarDays}
+                                size="lg"
+                                className="text-primary"
+                              />
+                              <FontAwesomeIcon
+                                icon={faClock}
+                                size="lg"
+                                className="text-primary"
+                              />
+                            </div>
+
+                            <div>
+                              <p className="mb-0">
+                                {
+                                  newInterviewListInManagerDetail.dateOfInterview
+                                }
+                              </p>
+                              <p className="mb-0 mt-1">
+                                {newInterviewListInManagerDetail.startTime} -{" "}
+                                {newInterviewListInManagerDetail.endTime}
+                              </p>
+                            </div>
+                          </Col>
+
+                          <Col
+                            md={2}
+                            className="d-flex justify-content-center align-items-center"
+                          >
+                            <p className="mb-0">
+                              {newInterviewListInManagerDetail.postedTime}
+                            </p>
+                          </Col>
+
+                          <Col md={3} className="d-flex justify-content-center">
+                            <span
+                              className={
+                                newInterviewListInManagerDetail.statusString ===
+                                "Waiting Approval"
+                                  ? "badge bg-warning text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Approved"
+                                  ? "badge bg-newGreen text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Rejected"
+                                  ? "badge bg-danger text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Expired"
+                                  ? "badge bg-danger text-light fs-12"
+                                  : newInterviewListInManagerDetail.statusString ===
+                                    "Completed"
+                                  ? "badge bg-success text-light fs-12"
+                                  : ""
+                              }
+                            >
+                              {newInterviewListInManagerDetail.statusString}
+                            </span>
+                          </Col>
+                        </Row>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+            {/* ----------------------------------------------------------------------------- */}
+            {/* phan trang */}
+            <Row>
+              <Col lg={12} className="mt-4 pt-2">
+                <nav aria-label="Page navigation example">
+                  <div className="pagination job-pagination mb-0 justify-content-center">
+                    <li
+                      className={`page-item ${
+                        currentPageReject === 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <Link
+                        className="page-link"
+                        to="#"
+                        tabIndex="-1"
+                        onClick={handlePrevPageReject}
+                      >
+                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                      </Link>
+                    </li>
+                    {renderPageNumbersReject()}
+                    <li
+                      className={`page-item ${
+                        currentPageReject === totalPagesReject ? "disabled" : ""
+                      }`}
+                    >
+                      <Link
+                        className="page-link"
+                        to="#"
+                        onClick={handleNextPageReject}
+                      >
+                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                      </Link>
+                    </li>
+                  </div>
+                </nav>
+              </Col>
+            </Row>
+          </TabPane>
+        </TabContent>
+      </CardBody>
     </React.Fragment>
   );
 };

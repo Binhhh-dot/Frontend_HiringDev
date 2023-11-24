@@ -200,7 +200,7 @@ const JobVacancyList = (a) => {
                           ? "badge bg-primary text-light fs-12"
                           : jobVacancyListDetail.statusString === "Completed"
                           ? "badge bg-primary text-light fs-12"
-                          : jobVacancyListDetail.statusString === "Save"
+                          : jobVacancyListDetail.statusString === "Saved"
                           ? "badge bg-info text-light fs-12"
                           : ""
                       }

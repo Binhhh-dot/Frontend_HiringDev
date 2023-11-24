@@ -1017,3 +1017,35 @@
 .avt-company-hiring-detail{
   object-fit: cover;
 }
+
+
+.info-dev-by-project{
+  padding: 0;
+}
+.info-dev-by-project li{
+  list-style: none;
+}
+
+
+
+
+.dev-in-project:hover{
+  border: 2px solid #BAB5F9;
+  border-radius: 6px;
+}
+
+
+.nav-link {
+  opacity: 0.5; /* Mờ khi chưa active */
+}
+
+.nav-link.active {
+  opacity: 1; /* Hiện sáng khi active */
+}
+
+
+.custom-search-input .ant-btn-primary {
+  background-color: #6546D2;
+  border-color: #6546D2;
+  color: #ffffff;
+}
