@@ -25,7 +25,7 @@ import DeveloperDetailInProjectPopup from "../Home/SubSection/DeveloperDetailInP
 //import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
-
+import { format } from "date-fns";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown } from "react-bootstrap";
 import projectTypeServices from "../../services/projectType.services";
@@ -39,16 +39,15 @@ import { DatePicker, Space } from "antd";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { PlusOutlined } from "@ant-design/icons";
-import Calendar from "react-calendar";
+
 import "react-calendar/dist/Calendar.css";
 dayjs.extend(customParseFormat);
-dayjs.extend(isSameOrAfter);
-dayjs.extend(isSameOrBefore);
+
 const monthFormat = "YYYY/MM/DD";
 
 const ProjectDetailDescription = () => {
   const { state } = useLocation();
-
+  const [allowedMonthsList, setAllowedMonthsList] = useState([]);
   //--------------------------------------------------------------------------------
   const [projectDetail, setProjectDetail] = useState([]);
   const [devInProject, setDevInProject] = useState([]);
@@ -61,11 +60,18 @@ const ProjectDetailDescription = () => {
   const [currentDescription, setCurrentDescription] = useState(null);
   const [currentFile, setCurrentFile] = useState(null);
 
+  const [startMonth, setStartMonth] = useState(null);
+  const [endMonth, setEndMonth] = useState(null);
+  const [allowedYearsList, setAllowedYearsList] = useState([]);
   // ----
+
   const convertDay = (yearmonthday) => {
-    const dateMoment = moment(yearmonthday, "DD-MM-YYYY");
-    const result = dateMoment.format("YYYY/MM/DD");
-    return result;
+    if (yearmonthday) {
+      const dateMoment = moment(yearmonthday, "DD-MM-YYYY");
+
+      const result = dateMoment.format("YYYY/MM/DD");
+      return result;
+    }
   };
 
   const convertFile = (e) => {
@@ -102,11 +108,83 @@ const ProjectDetailDescription = () => {
       setCurrentProjectType(response.data.data.projectTypeName);
 
       setcurrentStartDate(convertDay(response.data.data.startDate));
+      setStartMonth(
+        dayjs(convertDay(response.data.data.startDate), monthFormat)
+      );
 
       setCurrentEndDate(convertDay(response.data.data.endDate));
-      setCurrentDescription(response.data.data.description);
+      setEndMonth(dayjs(convertDay(response.data.data.startDate), monthFormat));
 
-      console.log(response.data.data);
+      setCurrentDescription(response.data.data.description);
+      console.log("GGGGGGGGGGGGGGGGGGGGGG");
+      console.log(convertDay(response.data.data.startDate));
+
+      // -----------
+      function convertToDateObject(dateString) {
+        const [day, month, year] = dateString.split("-").map(Number);
+        return new Date(year, month - 1, day); // month - 1 because months are zero-indexed in JavaScript
+      }
+      const startDate = convertToDateObject(response.data.data.startDate);
+      const endDate = convertToDateObject(response.data.data.endDate);
+
+      const monthsArray = [];
+      const yearsArray = [];
+
+      let currentMonthStart = new Date(
+        startDate.getFullYear(),
+        startDate.getMonth() - 1,
+        25
+      );
+      let currentMonthEnd = new Date(
+        currentMonthStart.getFullYear(),
+        currentMonthStart.getMonth() + 1,
+        24
+      );
+
+      let checkFirstMonth = false;
+      while (currentMonthStart <= endDate) {
+        let formattedMonth;
+        let formattedYear;
+
+        if (!checkFirstMonth) {
+          if (currentMonthStart < startDate && startDate < currentMonthEnd) {
+            formattedMonth = currentMonthEnd.getMonth() + 1;
+            formattedYear = currentMonthEnd.getFullYear();
+            monthsArray.push(formattedMonth);
+            yearsArray.push(formattedYear);
+          }
+
+          checkFirstMonth = true;
+        } else {
+          if (currentMonthStart < startDate) {
+            formattedMonth = currentMonthEnd.getMonth() + 1;
+            formattedYear = currentMonthEnd.getFullYear();
+            monthsArray.push(formattedMonth);
+            yearsArray.push(formattedYear);
+          } else {
+            formattedMonth = currentMonthEnd.getMonth() + 1;
+            formattedYear = currentMonthEnd.getFullYear();
+            monthsArray.push(formattedMonth);
+            yearsArray.push(formattedYear);
+          }
+        }
+
+        currentMonthStart.setMonth(currentMonthStart.getMonth() + 1);
+
+        currentMonthStart.setDate(25);
+
+        currentMonthEnd = new Date(
+          currentMonthStart.getFullYear(),
+          currentMonthStart.getMonth() + 1,
+          24
+        );
+      }
+
+      setAllowedMonthsList(monthsArray);
+      console.log("monthsArray");
+      setAllowedYearsList(yearsArray);
+      console.log(yearsArray);
+      console.log(monthsArray);
     } catch (error) {
       console.error("Error fetching project detail :", error);
     }
@@ -230,6 +308,8 @@ const ProjectDetailDescription = () => {
   };
   //---------------------------------------------------------------------------------
   // Date---
+  //dayjs("2023/12/09", monthFormat)
+
   const getFormattedDate = (selectedDate) => {
     const selectedMonth = selectedDate.format("MM");
     const selectedYear = selectedDate.format("YYYY");
@@ -239,14 +319,7 @@ const ProjectDetailDescription = () => {
     return formattedDate;
   };
 
-  const [startMonth, setStartMonth] = useState(
-    dayjs("2023/12/09", monthFormat)
-  );
-  const [endMonth, setEndMonth] = useState(dayjs("2024/01/12", monthFormat));
-
-  const [defaultClickDay, setDefaultClickDay] = useState(
-    getFormattedDate(startMonth)
-  );
+  const [defaultClickDay, setDefaultClickDay] = useState(null);
 
   const isMonthInRange = (current) => {
     return (
@@ -256,9 +329,10 @@ const ProjectDetailDescription = () => {
   };
 
   const pickDate = (date) => {
-    const formattedDate = getFormattedDate(dayjs(date));
+    const formattedDate = getFormattedDate(date);
     setDefaultClickDay(formattedDate);
     console.log(formattedDate);
+    console.log("JJJJJJJJJJJJJ");
   };
 
   //---------------------------------------------------------------------------------
@@ -279,19 +353,25 @@ const ProjectDetailDescription = () => {
       console.error("Error fetching get pay period:", error);
     }
   };
-  //-------------------------------------------------------------------------------------
-  // const [listPaySlip, setListPaySlip] = useState([]);
 
-  // const fetchGetPaySlipAndPaging = async () => {
-  //   let response;
-  //   try {
-  //     response = await payServices.getPaySlipAndPaging();
+  //----------------------------------------------------------------------------------
 
-  //     setListPaySlip(response.data.data);
-  //   } catch (error) {
-  //     console.error("Error fetching get pay slip:", error);
-  //   }
-  // };
+  function allowedMonthsAndYears(monthList, yearList) {
+    return function (current) {
+      const currentMonth = current.month();
+      const currentYear = current.year();
+
+      const isInAllowedMonths = monthList.some(
+        (month) => currentMonth === month - 1 && currentYear === moment().year()
+      );
+
+      const isInAllowedYears = yearList.some(
+        (year) => currentYear === year && currentMonth === moment().month()
+      );
+
+      return !(isInAllowedMonths && isInAllowedYears);
+    };
+  }
   //-------------------------------------------------------------------------------------
 
   useEffect(() => {
@@ -309,6 +389,7 @@ const ProjectDetailDescription = () => {
   useEffect(() => {
     fetchGetPayPeriod();
   }, [defaultClickDay]);
+
   //--------------------------------------------------------------------------------
 
   return (
@@ -782,11 +863,12 @@ const ProjectDetailDescription = () => {
                     <div className="mb-2 d-flex justify-content-between">
                       <DatePicker
                         defaultValue={startMonth}
-                        format={monthFormat}
+                        // format={monthFormat}
                         picker="month"
-                        disabledDate={(current) =>
-                          !isMonthInRange(dayjs(current))
-                        }
+                        disabledDate={allowedMonthsAndYears(
+                          allowedMonthsList,
+                          allowedYearsList
+                        )}
                         onChange={(date) => pickDate(date)}
                       />
                       <div style={{ borderRadius: "9px" }}>
