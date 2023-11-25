@@ -62,7 +62,7 @@ const ProjectDetailDescription = () => {
 
   const [startMonth, setStartMonth] = useState(null);
   const [endMonth, setEndMonth] = useState(null);
-  const [allowedYearsList, setAllowedYearsList] = useState([]);
+  const [allowedDatesList, setAllowedDatesList] = useState([]);
   // ----
 
   const convertDay = (yearmonthday) => {
@@ -126,7 +126,7 @@ const ProjectDetailDescription = () => {
       }
       const startDate = convertToDateObject(response.data.data.startDate);
       const endDate = convertToDateObject(response.data.data.endDate);
-
+      setAllowedDatesList
       const monthsArray = [];
       const yearsArray = [];
 
@@ -144,33 +144,24 @@ const ProjectDetailDescription = () => {
       let checkFirstMonth = false;
       while (currentMonthStart <= endDate) {
         let formattedMonth;
-        let formattedYear;
 
         if (!checkFirstMonth) {
           if (currentMonthStart < startDate && startDate < currentMonthEnd) {
-            formattedMonth = currentMonthEnd.getMonth() + 1;
-            formattedYear = currentMonthEnd.getFullYear();
+            formattedMonth = currentMonthEnd.getMonth() + 1 + " " + currentMonthEnd.getFullYear();
             monthsArray.push(formattedMonth);
-            yearsArray.push(formattedYear);
           }
-
           checkFirstMonth = true;
         } else {
           if (currentMonthStart < startDate) {
-            formattedMonth = currentMonthEnd.getMonth() + 1;
-            formattedYear = currentMonthEnd.getFullYear();
+            formattedMonth = currentMonthEnd.getMonth() + 1 + " " + currentMonthEnd.getFullYear();
             monthsArray.push(formattedMonth);
-            yearsArray.push(formattedYear);
           } else {
-            formattedMonth = currentMonthEnd.getMonth() + 1;
-            formattedYear = currentMonthEnd.getFullYear();
+            formattedMonth = currentMonthEnd.getMonth() + 1 + " " + currentMonthEnd.getFullYear();
             monthsArray.push(formattedMonth);
-            yearsArray.push(formattedYear);
           }
         }
 
         currentMonthStart.setMonth(currentMonthStart.getMonth() + 1);
-
         currentMonthStart.setDate(25);
 
         currentMonthEnd = new Date(
@@ -180,10 +171,7 @@ const ProjectDetailDescription = () => {
         );
       }
 
-      setAllowedMonthsList(monthsArray);
-      console.log("monthsArray");
-      setAllowedYearsList(yearsArray);
-      console.log(yearsArray);
+      setAllowedDatesList(monthsArray);
       console.log(monthsArray);
     } catch (error) {
       console.error("Error fetching project detail :", error);
@@ -356,20 +344,10 @@ const ProjectDetailDescription = () => {
 
   //----------------------------------------------------------------------------------
 
-  function allowedMonthsAndYears(monthList, yearList) {
+  function allowedDates(dateList) {
     return function (current) {
-      const currentMonth = current.month();
-      const currentYear = current.year();
-
-      const isInAllowedMonths = monthList.some(
-        (month) => currentMonth === month - 1 && currentYear === moment().year()
-      );
-
-      const isInAllowedYears = yearList.some(
-        (year) => currentYear === year && currentMonth === moment().month()
-      );
-
-      return !(isInAllowedMonths && isInAllowedYears);
+      const currentDate = current.format('MM YYYY');
+      return !dateList.includes(currentDate);
     };
   }
   //-------------------------------------------------------------------------------------
@@ -865,10 +843,8 @@ const ProjectDetailDescription = () => {
                         defaultValue={startMonth}
                         // format={monthFormat}
                         picker="month"
-                        disabledDate={allowedMonthsAndYears(
-                          allowedMonthsList,
-                          allowedYearsList
-                        )}
+                        disabledDate={allowedDates(allowedDatesList)}
+                        format="MM YYYY"
                         onChange={(date) => pickDate(date)}
                       />
                       <div style={{ borderRadius: "9px" }}>
