@@ -32,12 +32,19 @@ import projectTypeServices from "../../services/projectType.services";
 import Select from "react-select";
 import moment from "moment/moment";
 import classnames from "classnames";
+import payServices from "../../services/pay.services";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, Space } from "antd";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { PlusOutlined } from "@ant-design/icons";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 dayjs.extend(customParseFormat);
-const monthFormat = "YYYY/MM";
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
+const monthFormat = "YYYY/MM/DD";
 
 const ProjectDetailDescription = () => {
   const { state } = useLocation();
@@ -57,7 +64,7 @@ const ProjectDetailDescription = () => {
   // ----
   const convertDay = (yearmonthday) => {
     const dateMoment = moment(yearmonthday, "DD-MM-YYYY");
-    const result = dateMoment.format("YYYY-MM-DD");
+    const result = dateMoment.format("YYYY/MM/DD");
     return result;
   };
 
@@ -99,7 +106,7 @@ const ProjectDetailDescription = () => {
       setCurrentEndDate(convertDay(response.data.data.endDate));
       setCurrentDescription(response.data.data.description);
       console.log("AAAAAAAAAAA");
-      console.log(response.data.data.projectName);
+      console.log(response.data.data);
     } catch (error) {
       console.error("Error fetching project detail :", error);
     }
@@ -222,6 +229,70 @@ const ProjectDetailDescription = () => {
     }
   };
   //---------------------------------------------------------------------------------
+  // Date---
+  const getFormattedDate = (selectedDate) => {
+    const selectedMonth = selectedDate.format("MM");
+    const selectedYear = selectedDate.format("YYYY");
+
+    const formattedDate = `${selectedYear}-${selectedMonth}-26`;
+
+    return formattedDate;
+  };
+
+  const [startMonth, setStartMonth] = useState(
+    dayjs("2023/12/09", monthFormat)
+  );
+  const [endMonth, setEndMonth] = useState(dayjs("2024/01/12", monthFormat));
+
+  const [defaultClickDay, setDefaultClickDay] = useState(
+    getFormattedDate(startMonth)
+  );
+
+  const isMonthInRange = (current) => {
+    return (
+      current.isSameOrAfter(startMonth, "month") &&
+      current.isSameOrBefore(endMonth, "month")
+    );
+  };
+
+  const pickDate = (date) => {
+    const formattedDate = getFormattedDate(dayjs(date));
+    setDefaultClickDay(formattedDate);
+    console.log(formattedDate);
+  };
+
+  //---------------------------------------------------------------------------------
+
+  const [listPeriod, setListPeriod] = useState([]);
+
+  const fetchGetPayPeriod = async () => {
+    let response;
+    try {
+      response = await payServices.getPayPeriod(
+        state.projectId,
+        defaultClickDay
+      );
+      console.log("PERIOD PERIOD");
+      console.log(response.data);
+      setListPeriod(response.data.data);
+    } catch (error) {
+      console.error("Error fetching get pay period:", error);
+    }
+  };
+  //-------------------------------------------------------------------------------------
+  // const [listPaySlip, setListPaySlip] = useState([]);
+
+  // const fetchGetPaySlipAndPaging = async () => {
+  //   let response;
+  //   try {
+  //     response = await payServices.getPaySlipAndPaging();
+
+  //     setListPaySlip(response.data.data);
+  //   } catch (error) {
+  //     console.error("Error fetching get pay slip:", error);
+  //   }
+  // };
+  //-------------------------------------------------------------------------------------
 
   useEffect(() => {
     fetchGetProjectDetailByProjectId();
@@ -234,6 +305,10 @@ const ProjectDetailDescription = () => {
   useEffect(() => {
     fetchProjectType();
   }, []);
+
+  useEffect(() => {
+    fetchGetPayPeriod();
+  }, [defaultClickDay]);
   //--------------------------------------------------------------------------------
 
   return (
@@ -693,6 +768,41 @@ const ProjectDetailDescription = () => {
                 </TabPane>
                 <TabPane tabId="3">
                   <div>
+                    {/* ----------------------------------------------------------------------- */}
+                    {/* <DatePicker
+                      defaultValue={startMonth}
+                      format={monthFormat}
+                      picker="month"
+                      disabledDate={(current) =>
+                        !isMonthInRange(dayjs(current))
+                      }
+                      onChange={(date) => setStartMonth(date)}
+                    /> */}
+                    {/* ----------------------------------------------------------------------- */}
+                    <div className="mb-2 d-flex justify-content-between">
+                      <DatePicker
+                        defaultValue={startMonth}
+                        format={monthFormat}
+                        picker="month"
+                        disabledDate={(current) =>
+                          !isMonthInRange(dayjs(current))
+                        }
+                        onChange={(date) => pickDate(date)}
+                      />
+                      <div style={{ borderRadius: "9px" }}>
+                        <div
+                          className="border border-1 p-2"
+                          style={{
+                            borderRadius: "9px",
+                            backgroundColor: "#1677FF",
+                            color: "white",
+                          }}
+                        >
+                          <i className="uil uil-plus"></i> Create Pay Period
+                        </div>
+                      </div>
+                    </div>
+
                     <Nav
                       className="profile-content-nav nav-pills border-bottom mb-4"
                       id="pills-tab"
@@ -735,7 +845,7 @@ const ProjectDetailDescription = () => {
                       <TabContent activeTab={activeTabMini}>
                         <TabPane tabId="5">
                           <div>
-                            <div className="mb-4 d-flex justify-content-between">
+                            {/* <div className="mb-4 d-flex justify-content-between">
                               <DatePicker
                                 defaultValue={dayjs("2023/11", monthFormat)}
                                 format={monthFormat}
@@ -753,7 +863,7 @@ const ProjectDetailDescription = () => {
                                   <i className="uil uil-plus"></i> Create
                                 </div>
                               </div>
-                            </div>
+                            </div> */}
 
                             <div>
                               <div>
@@ -1069,6 +1179,63 @@ const ProjectDetailDescription = () => {
                     <div>
                       <h4>List History Payment</h4>
                     </div>
+
+                    {devInProject.map((devInProjectDetail, key) => (
+                      <div
+                        style={{
+                          boxShadow:
+                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                        }}
+                        key={key}
+                        className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                      >
+                        <CardBody>
+                          <Row className="align-items-center">
+                            <Col
+                              lg={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div>history name</div>
+                            </Col>
+                            <Col
+                              lg={3}
+                              className="d-flex justify-content-center"
+                            >
+                              <div>history name</div>
+                            </Col>
+                            <Col
+                              lg={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div>history name</div>
+                            </Col>
+                            <Col
+                              lg={2}
+                              className="d-flex gap-1 justify-content-center"
+                            >
+                              <div>history name</div>
+                            </Col>
+                            <Col
+                              lg={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div>history name</div>
+                            </Col>
+                            <Col
+                              lg={1}
+                              className="d-flex justify-content-center"
+                            >
+                              <div>
+                                <FontAwesomeIcon
+                                  icon={faEllipsisVertical}
+                                  size="xl"
+                                />
+                              </div>
+                            </Col>
+                          </Row>
+                        </CardBody>
+                      </div>
+                    ))}
                   </div>
                 </TabPane>
               </TabContent>
