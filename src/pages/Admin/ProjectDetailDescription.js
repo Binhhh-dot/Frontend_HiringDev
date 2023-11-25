@@ -105,7 +105,7 @@ const ProjectDetailDescription = () => {
 
       setCurrentEndDate(convertDay(response.data.data.endDate));
       setCurrentDescription(response.data.data.description);
-      console.log("AAAAAAAAAAA");
+
       console.log(response.data.data);
     } catch (error) {
       console.error("Error fetching project detail :", error);
