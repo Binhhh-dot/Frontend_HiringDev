@@ -1,34 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Layout,
-  Button,
-  Table,
-  Divider,
-  Tag,
-  Space,
-  Avatar,
-  Badge,
-  Input,
-  Breadcrumb,
-  Modal,
-  Cascader,
-  Checkbox,
-  DatePicker,
-  Form,
-  InputNumber,
-  Radio,
-  Select,
-  Slider,
-  Switch,
-  TreeSelect,
-  Upload,
-  Col,
-  Row,
-  message,
-  notification,
-  Menu,
-} from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Layout, Menu } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -37,27 +8,26 @@ import {
   UserOutlined,
   TeamOutlined,
   FileOutlined,
-  LeftOutlined,
-  RightOutlined,
   HomeOutlined,
   SnippetsOutlined,
   SolutionOutlined,
   CodeOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
+  AuditOutlined,
+  BankOutlined,
 } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Sider } = Layout;
 
 const SiderBarWeb = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]); // Định nghĩa selectedKeys
+  const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]);
   const [isLeftIcon, setIsLeftIcon] = useState(true);
   const [showWeHire, setShowWeHire] = useState(true);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
-    setIsLeftIcon(!isLeftIcon); // Cập nhật biến trạng thái khi toggleSidebar
+    setIsLeftIcon(!isLeftIcon);
     setShowWeHire(!showWeHire);
   };
 
@@ -68,6 +38,7 @@ const SiderBarWeb = () => {
   const handleSubMenuClick = (item) => {
     setSelectedKeys([item.key]);
   };
+
   const items = [
     {
       label: "Dashboard",
@@ -75,12 +46,12 @@ const SiderBarWeb = () => {
       icon: <HomeOutlined />,
       className: "option-1",
     },
-    {
-      label: "Option 2",
-      key: "menu-key/2",
-      icon: <DesktopOutlined />,
-      className: "option-2",
-    },
+    // {
+    //   label: "Option 2",
+    //   key: "menu-key/2",
+    //   icon: <DesktopOutlined />,
+    //   className: "option-2",
+    // },
     {
       label: "User",
       key: "menu-key/sub-menu-key",
@@ -102,32 +73,45 @@ const SiderBarWeb = () => {
         { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
       ],
     },
-    {
-      label: "Files",
-      key: "menu-key/9",
-      icon: <FileOutlined />,
-      className: "files",
-    },
+
     {
       label: "Hiring Request",
       key: "menu-key/10",
       icon: <SnippetsOutlined />,
       className: "hiringRequest",
+      link: "/manager",
     },
     {
       label: "Interview",
       key: "menu-key/11",
       icon: <SolutionOutlined />,
       className: "interview",
+      link: "/newlistinterview", // Add the link property
     },
-
     {
       label: "Project",
       key: "menu-key/12",
       icon: <CodeOutlined />,
       className: "project",
+      link: "/projectlistinmanager", // Add the link property
+    },
+    {
+      label: "Contract",
+      key: "menu-key/14",
+      icon: <AuditOutlined />,
+      className: "contract",
+      link: "/listcontract", // Add the link property
+    },
+
+    {
+      label: "Company",
+      key: "menu-key/15",
+      icon: <BankOutlined />,
+      className: "company",
+      link: "/listcompanyPartner", // Add the link property
     },
   ];
+
   const navigate = useNavigate();
 
   return (
@@ -154,10 +138,6 @@ const SiderBarWeb = () => {
               borderRadius: "10px",
             }}
           >
-            {/* <LeftOutlined
-onClick={toggleSidebar}
-style={{ color: "purple", fontSize: "24px" }}
-/> */}
             <FontAwesomeIcon
               icon={faAngleLeft}
               size="xl"
@@ -178,10 +158,6 @@ style={{ color: "purple", fontSize: "24px" }}
               borderRadius: "10px",
             }}
           >
-            {/* <RightOutlined
-onClick={toggleSidebar}
-style={{ color: "purple", fontSize: "24px" }}
-/> */}
             <FontAwesomeIcon
               icon={faAngleRight}
               size="xl"
@@ -226,7 +202,7 @@ style={{ color: "purple", fontSize: "24px" }}
             </Menu.SubMenu>
           ) : (
             <Menu.Item key={item.key} icon={item.icon}>
-              {item.label}
+              <Link to={item.link}>{item.label}</Link>
             </Menu.Item>
           )
         )}

@@ -98,6 +98,9 @@ import ListAccountStaff from "../pages/Admin/ListAccountStaff";
 import ListAccountDeveloper from "../pages/Admin/ListAccountDeveloper";
 import CompanyListPartner from "../pages/Admin/CompanyListPartner";
 import ContractDetail from "../pages/Admin/ContractDetail";
+import NewListInterviewInfo from "../pages/Admin/NewListInterviewInfo";
+import ProjectListInManager from "../pages/Admin/ProjectListInManager";
+import ContractList from "../pages/Admin/ContractList";
 
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
@@ -238,5 +241,8 @@ const authRoutes = [
   { path: "/listAccountDeveloper", component: <ListAccountDeveloper /> },
   { path: "/listcompanyPartner", component: <CompanyListPartner /> },
   { path: "/contractdetail", component: <ContractDetail /> },
+  { path: "/newlistinterview", component: <NewListInterviewInfo /> },
+  { path: "/projectlistinmanager", component: <ProjectListInManager /> },
+  { path: "/listcontract", component: <ContractList /> },
 ];
 export { userRoutes, authRoutes };
