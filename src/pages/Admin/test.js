@@ -3,6 +3,7 @@ import JobVacancyList from "./JobVacancyList";
 import NewListInterviewInfo from "./NewListInterviewInfo";
 import ProjectList from "./ProjectList";
 import ContractList from "./ContractList";
+import CompanyListPartner from "./CompanyListPartner";
 import img0 from "../../assets/images/user/img-00.jpg";
 import { Badge, Space } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -408,7 +409,7 @@ const Test = () => {
                 <Row className="px-0">
                   <Col className="px-0">
                     <div className="me-lg-6">
-                      <div>AAAAAAAA</div>
+                      <CompanyListPartner />
                     </div>
                   </Col>
                 </Row>

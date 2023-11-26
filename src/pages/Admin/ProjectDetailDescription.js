@@ -39,11 +39,14 @@ import { DatePicker, Space } from "antd";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { PlusOutlined } from "@ant-design/icons";
+import { Empty } from "antd";
 
 import "react-calendar/dist/Calendar.css";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { result } from "lodash";
 dayjs.extend(customParseFormat);
 
-const monthFormat = "YYYY/MM/DD";
+const monthFormat = "YYYY-MM-DD";
 
 const ProjectDetailDescription = () => {
   const { state } = useLocation();
@@ -60,16 +63,23 @@ const ProjectDetailDescription = () => {
   const [currentDescription, setCurrentDescription] = useState(null);
   const [currentFile, setCurrentFile] = useState(null);
 
-  const [startMonth, setStartMonth] = useState(null);
-  const [endMonth, setEndMonth] = useState(null);
+  //const [startMonth, setStartMonth] = useState(null);
+  //const [endMonth, setEndMonth] = useState(null);
+
   const [allowedDatesList, setAllowedDatesList] = useState([]);
-  // ----
+  const [defaultMonth, setDefaultMonth] = useState(null);
+  const [defaultClickDay, setDefaultClickDay] = useState(null);
+
+  const [listPaySlip, setlistPaySlip] = useState([]);
+
+  const [listWorklog, setListWorklog] = useState([]);
+  // -----------------------------------------------
 
   const convertDay = (yearmonthday) => {
     if (yearmonthday) {
       const dateMoment = moment(yearmonthday, "DD-MM-YYYY");
 
-      const result = dateMoment.format("YYYY/MM/DD");
+      const result = dateMoment.format("YYYY-MM-DD");
       return result;
     }
   };
@@ -88,10 +98,11 @@ const ProjectDetailDescription = () => {
   );
 
   // Hàm toggleCollapse
-  const toggleCollapse = (index) => {
+  const toggleCollapse = (index, paySlipId) => {
     const newShowCollapse = [...showCollapse];
     newShowCollapse[index] = !newShowCollapse[index];
     setShowCollapse(newShowCollapse);
+    fetchGetWorklog(paySlipId);
   };
 
   //--------------------------------------------------------------------------------
@@ -105,19 +116,14 @@ const ProjectDetailDescription = () => {
       setProjectDetail(response.data.data);
 
       setCurrentProjectName(response.data.data.projectName);
+
       setCurrentProjectType(response.data.data.projectTypeName);
 
       setcurrentStartDate(convertDay(response.data.data.startDate));
-      setStartMonth(
-        dayjs(convertDay(response.data.data.startDate), monthFormat)
-      );
 
       setCurrentEndDate(convertDay(response.data.data.endDate));
-      setEndMonth(dayjs(convertDay(response.data.data.startDate), monthFormat));
 
       setCurrentDescription(response.data.data.description);
-      console.log("GGGGGGGGGGGGGGGGGGGGGG");
-      console.log(convertDay(response.data.data.startDate));
 
       // -----------
       function convertToDateObject(dateString) {
@@ -126,9 +132,9 @@ const ProjectDetailDescription = () => {
       }
       const startDate = convertToDateObject(response.data.data.startDate);
       const endDate = convertToDateObject(response.data.data.endDate);
-      setAllowedDatesList
+
       const monthsArray = [];
-      const yearsArray = [];
+      //const yearsArray = [];
 
       let currentMonthStart = new Date(
         startDate.getFullYear(),
@@ -147,16 +153,28 @@ const ProjectDetailDescription = () => {
 
         if (!checkFirstMonth) {
           if (currentMonthStart < startDate && startDate < currentMonthEnd) {
-            formattedMonth = currentMonthEnd.getMonth() + 1 + " " + currentMonthEnd.getFullYear();
+            formattedMonth =
+              currentMonthEnd.getMonth() +
+              1 +
+              " " +
+              currentMonthEnd.getFullYear();
             monthsArray.push(formattedMonth);
           }
           checkFirstMonth = true;
         } else {
           if (currentMonthStart < startDate) {
-            formattedMonth = currentMonthEnd.getMonth() + 1 + " " + currentMonthEnd.getFullYear();
+            formattedMonth =
+              currentMonthEnd.getMonth() +
+              1 +
+              " " +
+              currentMonthEnd.getFullYear();
             monthsArray.push(formattedMonth);
           } else {
-            formattedMonth = currentMonthEnd.getMonth() + 1 + " " + currentMonthEnd.getFullYear();
+            formattedMonth =
+              currentMonthEnd.getMonth() +
+              1 +
+              " " +
+              currentMonthEnd.getFullYear();
             monthsArray.push(formattedMonth);
           }
         }
@@ -171,12 +189,25 @@ const ProjectDetailDescription = () => {
         );
       }
 
-      setAllowedDatesList(monthsArray);
-      console.log(monthsArray);
+      let formattedMonths = monthsArray.map((monthsArray) => {
+        let [m, year] = monthsArray.split(" ");
+        return `${m.padStart(2, "0")} ${year}`;
+      });
+
+      setAllowedDatesList(formattedMonths);
+      console.log("monthsArray");
+      console.log(formattedMonths);
+      const [defaultMonth, defaultYear] = allowedDatesList[0].split(" ");
+
+      // Thiết lập giá trị mặc định từ tháng và năm lấy từ chuỗi
+      const defaultDate = new Date(defaultYear, defaultMonth - 1, 1);
+
+      setDefaultMonth(defaultDate);
     } catch (error) {
       console.error("Error fetching project detail :", error);
     }
   };
+
   //----------------------------------------------------------------------------------
   const fetchGetDeveloperByProject = async () => {
     let response;
@@ -212,7 +243,6 @@ const ProjectDetailDescription = () => {
     let response;
     try {
       response = await projectTypeServices.getAllProjectType();
-      console.log(response.data.data);
 
       const activeTypes = response.data.data.filter(
         (type) => type.statusString === "Active"
@@ -307,20 +337,16 @@ const ProjectDetailDescription = () => {
     return formattedDate;
   };
 
-  const [defaultClickDay, setDefaultClickDay] = useState(null);
-
-  const isMonthInRange = (current) => {
-    return (
-      current.isSameOrAfter(startMonth, "month") &&
-      current.isSameOrBefore(endMonth, "month")
-    );
-  };
+  // const isMonthInRange = (current) => {
+  //   return (
+  //     current.isSameOrAfter(startMonth, "month") &&
+  //     current.isSameOrBefore(endMonth, "month")
+  //   );
+  // };
 
   const pickDate = (date) => {
     const formattedDate = getFormattedDate(date);
     setDefaultClickDay(formattedDate);
-    console.log(formattedDate);
-    console.log("JJJJJJJJJJJJJ");
   };
 
   //---------------------------------------------------------------------------------
@@ -329,29 +355,68 @@ const ProjectDetailDescription = () => {
 
   const fetchGetPayPeriod = async () => {
     let response;
+    // console.log("defaultClickDay");
+    // console.log(defaultClickDay);
+
     try {
       response = await payServices.getPayPeriod(
         state.projectId,
         defaultClickDay
       );
       console.log("PERIOD PERIOD");
-      console.log(response.data);
+
+      console.log(response.data.data.payPeriodId);
       setListPeriod(response.data.data);
+
+      fetchGetListPaySlip(response.data.data.payPeriodId);
     } catch (error) {
-      console.error("Error fetching get pay period:", error);
+      console.error("Error fetching get pay period or pay slip:", error);
+      setListPeriod(null);
     }
   };
 
   //----------------------------------------------------------------------------------
 
   function allowedDates(dateList) {
+    console.log("dateList");
+    console.log(dateList);
     return function (current) {
-      const currentDate = current.format('MM YYYY');
+      const currentDate = current.format("MM YYYY");
       return !dateList.includes(currentDate);
     };
   }
+
+  //-------------------------------------------------------------------------------------
+  const fetchGetListPaySlip = async (payPeriodIdSlip) => {
+    let response;
+    try {
+      response = await payServices.getPaySlip(payPeriodIdSlip);
+
+      console.log(response.data.data);
+      console.log("PAY SLIP PAY SLIP");
+      setlistPaySlip(response.data.data);
+    } catch (error) {
+      console.error("Error fetching pay slip", error);
+
+      console.log("PAYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
+    }
+  };
+
+  //-------------------------------------------------------------------------------------
+  const fetchGetWorklog = async (abc) => {
+    let response;
+    try {
+      response = await payServices.getWorklog(abc);
+      console.log(response.data.data);
+      console.log("WORK LOG WORK LOG");
+      setListWorklog(response.data.data);
+    } catch (error) {
+      console.error("Error fetching worklog", error);
+    }
+  };
   //-------------------------------------------------------------------------------------
 
+  //------------------------------------------------------------------------------------------
   useEffect(() => {
     fetchGetProjectDetailByProjectId();
   }, []);
@@ -367,6 +432,10 @@ const ProjectDetailDescription = () => {
   useEffect(() => {
     fetchGetPayPeriod();
   }, [defaultClickDay]);
+
+  // useEffect(() => {
+  //   fetchGetListPaySlip();
+  // }, [defaultClickDay]);
 
   //--------------------------------------------------------------------------------
 
@@ -828,20 +897,11 @@ const ProjectDetailDescription = () => {
                 <TabPane tabId="3">
                   <div>
                     {/* ----------------------------------------------------------------------- */}
-                    {/* <DatePicker
-                      defaultValue={startMonth}
-                      format={monthFormat}
-                      picker="month"
-                      disabledDate={(current) =>
-                        !isMonthInRange(dayjs(current))
-                      }
-                      onChange={(date) => setStartMonth(date)}
-                    /> */}
-                    {/* ----------------------------------------------------------------------- */}
+
                     <div className="mb-2 d-flex justify-content-between">
+                      {/* defaultMonth */}
                       <DatePicker
-                        defaultValue={startMonth}
-                        // format={monthFormat}
+                        defaultValue={defaultMonth}
                         picker="month"
                         disabledDate={allowedDates(allowedDatesList)}
                         format="MM YYYY"
@@ -903,26 +963,6 @@ const ProjectDetailDescription = () => {
                       <TabContent activeTab={activeTabMini}>
                         <TabPane tabId="5">
                           <div>
-                            {/* <div className="mb-4 d-flex justify-content-between">
-                              <DatePicker
-                                defaultValue={dayjs("2023/11", monthFormat)}
-                                format={monthFormat}
-                                picker="month"
-                              />
-                              <div style={{ borderRadius: "9px" }}>
-                                <div
-                                  className="border border-1 p-2"
-                                  style={{
-                                    borderRadius: "9px",
-                                    backgroundColor: "#1677FF",
-                                    color: "white",
-                                  }}
-                                >
-                                  <i className="uil uil-plus"></i> Create
-                                </div>
-                              </div>
-                            </div> */}
-
                             <div>
                               <div>
                                 <div className="px-4 mb-2">
@@ -930,29 +970,29 @@ const ProjectDetailDescription = () => {
                                     <Col md={2} style={{ textAlign: "center" }}>
                                       <div>
                                         <span className="mb-0">
-                                          PayPeriodCode
+                                          Payperiod Code
                                         </span>
                                       </div>
                                     </Col>
 
                                     <Col md={2} style={{ textAlign: "center" }}>
                                       <div>
-                                        <p className="mb-0">StartDate</p>
+                                        <p className="mb-0">Start Date</p>
                                       </div>
                                     </Col>
 
                                     <Col md={2} style={{ textAlign: "center" }}>
                                       <div>
-                                        <p className="mb-0">EndDate</p>
+                                        <p className="mb-0">End Date</p>
                                       </div>
                                     </Col>
 
                                     <Col md={2} style={{ textAlign: "center" }}>
-                                      <p className="mb-0">TotalAmount</p>
+                                      <p className="mb-0">Total Amount</p>
                                     </Col>
 
                                     <Col md={2} style={{ textAlign: "center" }}>
-                                      CreatedAt
+                                      Created At
                                     </Col>
 
                                     <Col md={2} style={{ textAlign: "center" }}>
@@ -971,59 +1011,91 @@ const ProjectDetailDescription = () => {
                                     "job-box-dev-in-list-hiringRequest-for-dev card"
                                   }
                                 >
-                                  <div className="p-4">
-                                    <Row className="align-items-center">
-                                      <Col
-                                        md={2}
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        <div>
-                                          <span className="mb-0">#MLN111</span>
-                                        </div>
-                                      </Col>
+                                  {listPeriod !== null ? (
+                                    <div className="p-4">
+                                      <Row className="align-items-center">
+                                        <Col
+                                          md={2}
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <div>
+                                            <span className="mb-0">
+                                              {listPeriod.payPeriodCode}
+                                            </span>
+                                          </div>
+                                        </Col>
 
-                                      <Col
-                                        md={2}
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        <div>
-                                          <p className="mb-0">25 Oct 2023</p>
-                                        </div>
-                                      </Col>
+                                        <Col
+                                          md={2}
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <div>
+                                            <p className="mb-0">
+                                              {listPeriod.startDateMMM}
+                                            </p>
+                                          </div>
+                                        </Col>
 
-                                      <Col
-                                        md={2}
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        <div>
-                                          <p className="mb-0">24 Nov 2023</p>
-                                        </div>
-                                      </Col>
+                                        <Col
+                                          md={2}
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <div>
+                                            <p className="mb-0">
+                                              {listPeriod.endDateMMM}
+                                            </p>
+                                          </div>
+                                        </Col>
 
-                                      <Col
-                                        md={2}
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        <p className="mb-0">3000$</p>
-                                      </Col>
+                                        <Col
+                                          md={2}
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <p className="mb-0">
+                                            {listPeriod.totalAmount}
+                                          </p>
+                                        </Col>
 
-                                      <Col
-                                        md={2}
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        25 Nov 2023
-                                      </Col>
+                                        <Col
+                                          md={2}
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          {listPeriod.createdAt}
+                                        </Col>
 
-                                      <Col
-                                        md={2}
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        <div>
-                                          <span>Status</span>
-                                        </div>
-                                      </Col>
-                                    </Row>
-                                  </div>
+                                        <Col
+                                          md={2}
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <div>
+                                            <span
+                                              className={
+                                                listPeriod.statusString ===
+                                                "Created"
+                                                  ? "badge bg-blue text-light fs-12"
+                                                  : listPeriod.statusString ===
+                                                    "cancelled"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : listPeriod.statusString ===
+                                                    "Inprogress"
+                                                  ? "badge bg-primary text-light fs-12"
+                                                  : listPeriod.statusString ===
+                                                    "completed"
+                                                  ? "badge bg-primary text-light fs-12"
+                                                  : ""
+                                              }
+                                            >
+                                              {listPeriod.statusString}
+                                            </span>
+                                          </div>
+                                        </Col>
+                                      </Row>
+                                    </div>
+                                  ) : (
+                                    <div>
+                                      <Empty />
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -1074,7 +1146,7 @@ const ProjectDetailDescription = () => {
                             </Row>
 
                             <div className="d-flex flex-column gap-2">
-                              {devInProject.map((devInProjectNew, key) => (
+                              {listPaySlip.map((listPaySlipNew, key) => (
                                 <div key={key}>
                                   <div
                                     style={{
@@ -1092,7 +1164,9 @@ const ProjectDetailDescription = () => {
                                           style={{ textAlign: "center" }}
                                         >
                                           <div>
-                                            <span className="mb-0">Nguyen</span>
+                                            <span className="mb-0">
+                                              {listPaySlipNew.firstName}
+                                            </span>
                                           </div>
                                         </Col>
 
@@ -1102,7 +1176,9 @@ const ProjectDetailDescription = () => {
                                           style={{ textAlign: "center" }}
                                         >
                                           <div>
-                                            <p className="mb-0">Van A</p>
+                                            <p className="mb-0">
+                                              {listPaySlipNew.lastName}
+                                            </p>
                                           </div>
                                         </Col>
 
@@ -1112,7 +1188,9 @@ const ProjectDetailDescription = () => {
                                           style={{ textAlign: "center" }}
                                         >
                                           <div>
-                                            <p className="mb-0">a@gmail.com</p>
+                                            <p className="mb-0">
+                                              {listPaySlipNew.email}
+                                            </p>
                                           </div>
                                         </Col>
 
@@ -1121,7 +1199,11 @@ const ProjectDetailDescription = () => {
                                           className="px-0"
                                           style={{ textAlign: "center" }}
                                         >
-                                          <p className="mb-0">168 hours</p>
+                                          <p className="mb-0">
+                                            {
+                                              listPaySlipNew.totalActualWorkedHours
+                                            }
+                                          </p>
                                         </Col>
 
                                         <Col
@@ -1129,7 +1211,7 @@ const ProjectDetailDescription = () => {
                                           className=" px-0"
                                           style={{ textAlign: "center" }}
                                         >
-                                          10 hours
+                                          {listPaySlipNew.totalOvertimeHours}
                                         </Col>
 
                                         <Col
@@ -1137,14 +1219,21 @@ const ProjectDetailDescription = () => {
                                           style={{ textAlign: "center" }}
                                         >
                                           <div>
-                                            <span>20000$</span>
+                                            <span>
+                                              {listPaySlipNew.totalEarnings}
+                                            </span>
                                           </div>
                                         </Col>
 
                                         <Col md={1}>
                                           <div
                                             className="d-flex justify-content-center rounded-circle"
-                                            onClick={() => toggleCollapse(key)}
+                                            onClick={() =>
+                                              toggleCollapse(
+                                                key,
+                                                listPaySlipNew.paySlipId
+                                              )
+                                            }
                                             style={{
                                               backgroundColor: "#ECECED",
                                             }}
@@ -1160,67 +1249,76 @@ const ProjectDetailDescription = () => {
                                   </div>
 
                                   <Collapse isOpen={showCollapse[key]}>
-                                    <div
-                                      style={{
-                                        backgroundColor: "#EFF0F2",
-                                        borderRadius: "7px",
-                                      }}
-                                      className="mt-1 p-2"
-                                    >
-                                      <div className="d-flex flex-column gap-2">
-                                        <div
-                                          className="job-box-dev-in-list-hiringRequest-for-dev card  p-2"
-                                          style={{ backgroundColor: "#FFFFFF" }}
-                                        >
-                                          <Row>
-                                            <Col
-                                              md={3}
-                                              className="d-flex justify-content-center align-items-center"
-                                            >
-                                              Work Date
-                                            </Col>
-                                            <Col md={3}>
-                                              <div>
-                                                {" "}
-                                                <Input
-                                                  type="text"
-                                                  className="form-control"
-                                                  id="time-In"
-                                                  value={"07:00"}
-                                                  onChange={(e) =>
-                                                    setCurrentProjectName(
-                                                      e.target.value
-                                                    )
-                                                  }
-                                                />
-                                              </div>
-                                            </Col>
-                                            <Col md={3}>
-                                              <div>
-                                                {" "}
-                                                <Input
-                                                  type="text"
-                                                  className="form-control"
-                                                  id="time-Out"
-                                                  value={"07:00"}
-                                                  onChange={(e) =>
-                                                    setCurrentProjectName(
-                                                      e.target.value
-                                                    )
-                                                  }
-                                                />
-                                              </div>
-                                            </Col>
-                                            <Col
-                                              md={3}
-                                              className="d-flex justify-content-center align-items-center"
-                                            >
-                                              Hours In Day{" "}
-                                            </Col>
-                                          </Row>
+                                    {listWorklog.map((listWorklogNew, key) => (
+                                      <div
+                                        key={key}
+                                        style={{
+                                          backgroundColor: "#EFF0F2",
+                                          borderRadius: "7px",
+                                        }}
+                                        className="mt-1 p-2"
+                                      >
+                                        <div className="d-flex flex-column gap-2">
+                                          <div
+                                            className="job-box-dev-in-list-hiringRequest-for-dev card  p-2"
+                                            style={{
+                                              backgroundColor: "#FFFFFF",
+                                            }}
+                                          >
+                                            <Row>
+                                              <Col
+                                                md={3}
+                                                className="d-flex justify-content-center align-items-center"
+                                              >
+                                                {listWorklogNew.workDateMMM}
+                                              </Col>
+                                              <Col md={3}>
+                                                <div>
+                                                  {" "}
+                                                  <Input
+                                                    type="text"
+                                                    className="form-control"
+                                                    id="time-In"
+                                                    value={
+                                                      listWorklogNew.timeIn
+                                                    }
+                                                    onChange={(e) =>
+                                                      setCurrentProjectName(
+                                                        e.target.value
+                                                      )
+                                                    }
+                                                  />
+                                                </div>
+                                              </Col>
+                                              <Col md={3}>
+                                                <div>
+                                                  {" "}
+                                                  <Input
+                                                    type="text"
+                                                    className="form-control"
+                                                    id="time-Out"
+                                                    value={
+                                                      listWorklogNew.timeOut
+                                                    }
+                                                    onChange={(e) =>
+                                                      setCurrentProjectName(
+                                                        e.target.value
+                                                      )
+                                                    }
+                                                  />
+                                                </div>
+                                              </Col>
+                                              <Col
+                                                md={3}
+                                                className="d-flex justify-content-center align-items-center"
+                                              >
+                                                {listWorklogNew.hourWorkInDay}
+                                              </Col>
+                                            </Row>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
+                                    ))}
                                   </Collapse>
                                 </div>
                               ))}

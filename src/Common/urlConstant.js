@@ -80,6 +80,8 @@ export default {
       createCompany: "/CompanyPartner",
       getCompanyByCompanyId: "/CompanyPartner/${companyId}",
       updateCompany: "/CompanyPartner?companyId=${companyId}",
+      getCompany: "/CompanyPartner",
+      getCompanyAndPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
     },
     country: {
       getAll:
@@ -170,6 +172,7 @@ export default {
 
       getPaySlip: "/PaySlip/ByPayPeriod/${payPeriodId}",
       getPaySlipPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getWorklog: "/WorkLog/ByPaySlip/${paySlipId}",
     },
   },
 };

@@ -9,6 +9,15 @@ const getPayPeriod = async (projectId, inputDate) => {
   return response;
 };
 
+const getPaySlip = async (payPeriodId) => {
+  const serviceUrl = urlConstant.endpoint.pay.getPaySlip.replace(
+    "${payPeriodId}",
+    payPeriodId
+  );
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
 const getPaySlipAndPaging = async (payPeriodId, PageIndex, PageSize) => {
   const serviceUrl =
     urlConstant.endpoint.pay.getPaySlip.replace("${payPeriodId}", payPeriodId) +
@@ -23,4 +32,13 @@ const getPaySlipAndPaging = async (payPeriodId, PageIndex, PageSize) => {
   return response;
 };
 
-export default { getPayPeriod, getPaySlipAndPaging };
+const getWorklog = async (paySlipId) => {
+  const serviceUrl = urlConstant.endpoint.pay.getWorklog.replace(
+    "${paySlipId}",
+    paySlipId
+  );
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
+export default { getPayPeriod, getPaySlipAndPaging, getPaySlip, getWorklog };
