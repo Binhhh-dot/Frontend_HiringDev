@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import JobDetailsDescription from "./JobDetailsDescription";
-import RightSideContent from "./RightSideContent";
-import NewListInterviewInfo from "./NewListInterviewInfo";
+import ContractDetailDescription from "./ContractDetailDescription";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -100,7 +98,8 @@ const items = [
     className: "project",
   },
 ];
-const NewHiringRequestDetail = () => {
+
+const ContractDetail = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]); // Định nghĩa selectedKeys
   const [isLeftIcon, setIsLeftIcon] = useState(true);
@@ -119,6 +118,7 @@ const NewHiringRequestDetail = () => {
   const handleSubMenuClick = (item) => {
     setSelectedKeys([item.key]);
   };
+
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
@@ -295,15 +295,8 @@ const NewHiringRequestDetail = () => {
                 style={{ paddingLeft: "30px", paddingRight: "30px" }}
               >
                 <Row>
-                  <Col lg={8}>
-                    <JobDetailsDescription />
-                  </Col>
-                  <Col
-                    lg={4}
-                    className="mt-lg-0"
-                    style={{ paddingLeft: "19px" }}
-                  >
-                    <RightSideContent />
+                  <Col lg={12}>
+                    <ContractDetailDescription />
                   </Col>
                 </Row>
               </Container>
@@ -315,4 +308,4 @@ const NewHiringRequestDetail = () => {
   );
 };
 
-export default NewHiringRequestDetail;
+export default ContractDetail;

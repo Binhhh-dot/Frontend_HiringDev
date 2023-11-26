@@ -430,17 +430,6 @@ const ContractList = () => {
                       <Row className="align-items-center ">
                         <Col md={1}>
                           <div className="d-flex justify-content-center">
-                            {/* <Link to="#">
-                              <img
-                                style={{
-                                  width: "80px",
-                                  height: "80px",
-                                }}
-                                src={contractListAllNew.companyImage}
-                                alt=""
-                                className="img-fluid rounded-3 img-avt-hiring-request"
-                              />
-                            </Link> */}
                             <i
                               className="uil uil-file-plus-alt"
                               style={{ fontSize: "50px" }}
@@ -452,7 +441,7 @@ const ContractList = () => {
                           <div>
                             <h5 className="fs-18 mb-0">
                               <Link
-                                to="/newhiringrequestdetail"
+                                to="/contractdetail"
                                 className="text-dark"
                                 state={{
                                   contractId: contractListAllNew.contractId,

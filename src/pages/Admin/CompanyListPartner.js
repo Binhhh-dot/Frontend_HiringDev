@@ -1,32 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { Col, Row } from "reactstrap";
 import { Link } from "react-router-dom";
-import {
-  Col,
-  Row,
-  // Input,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-} from "reactstrap";
-import { Input } from "antd";
+import companyServices from "../../services/company.services";
+import { Input, Space } from "antd";
 
-import JobType from "../Home/SubSection/JobType";
-import { Dropdown, Form } from "react-bootstrap";
-// import hiringrequestService from "../../../services/hiringrequest.service";
-import hiringrequestService from "../../services/hiringrequest.service";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import jobImage1 from "../../assets/images/featured-job/img-01.png";
-
-const JobVacancyList = (a) => {
-  //Apply Now Model
-  const [jobVacancyList, setJobVacancyList] = useState([]);
+const CompanyListPartner = () => {
+  const [listCompany, setListCompany] = useState([]);
 
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [search, setSearch] = useState("");
-
+  //------------------------------------------------------------------------------
   const pageSize = 7;
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -70,44 +53,51 @@ const JobVacancyList = (a) => {
       setCurrentPage(currentPage - 1);
     }
   };
-
-  const fetchJobVacancies = async () => {
+  //------------------------------------------------------------------------------
+  const fetchGetCompanyAndPaging = async () => {
     let response;
     try {
-      response = await hiringrequestService.getHiringRequestAndPaging(
-        currentPage,
-        7
-      );
+      response = await companyServices.getCompanyAndPaging(currentPage, 7);
 
       console.log(response.data.data);
       console.log(response.data.paging.total);
 
-      setJobVacancyList(response.data.data);
+      setListCompany(response.data.data);
       setTotalPages(Math.ceil(response.data.paging.total / pageSize));
     } catch (error) {
-      console.error("Error fetching job vacancies:", error);
+      console.error("Error fetching list company:", error);
     }
   };
 
   useEffect(() => {
-    fetchJobVacancies();
+    fetchGetCompanyAndPaging();
   }, [currentPage]);
-
-  const onSearch = () => {
-    fetchJobVacancies();
-  };
-
-  //--------------------------------------------------------------------------------------------
+  //--------------------------------------------------------------------------------
+  //Search
+  const { Search } = Input;
+  const onSearch = (value, _e, info) => console.log(info?.source, value);
+  //--------------------------------------------------------------------------------
 
   return (
     <React.Fragment>
-      <h4>Hiring Request List</h4>
-      {/* <div style={{ width: "20%" }} className="mt-3 mb-3">
-        <Input placeholder="Search" style={{ height: "40px" }} />
-      </div> */}
+      <div className="d-flex justify-content-between">
+        <h4>Company Partner List</h4>
+        <div className="d-flex align-items-center ">
+          <Space>
+            <Search
+              className="custom-search-input"
+              placeholder="input search text"
+              allowClear
+              enterButton="Search"
+              size="large"
+              onSearch={onSearch}
+            />
+          </Space>
+        </div>
+      </div>
 
       <div>
-        {jobVacancyList.map((jobVacancyListDetail, key) => (
+        {listCompany.map((listCompanyNew, key) => (
           <div
             style={{
               boxShadow:
@@ -126,7 +116,7 @@ const JobVacancyList = (a) => {
                           width: "80px",
                           height: "80px",
                         }}
-                        src={jobVacancyListDetail.companyImage}
+                        src={listCompanyNew.companyImage}
                         alt=""
                         className="img-fluid rounded-3 img-avt-hiring-request"
                       />
@@ -134,36 +124,22 @@ const JobVacancyList = (a) => {
                   </div>
                 </Col>
 
-                <Col md={3}>
+                <Col md={2}>
                   <div>
                     <h5 className="fs-18 mb-0">
                       <Link
                         to="/newhiringrequestdetail"
                         className="text-dark"
                         state={{
-                          hiringRequestId: jobVacancyListDetail.requestId,
-                          companyId: jobVacancyListDetail.companyId,
+                          companyId: listCompanyNew.companyId,
                         }}
                       >
-                        {jobVacancyListDetail.jobTitle}
+                        {listCompanyNew.companyName}
                       </Link>
                     </h5>
                     <p className="text-muted fs-14 mb-0">
-                      {jobVacancyListDetail.requestCode}
-                    </p>
-                  </div>
-                </Col>
-
-                <Col md={3}>
-                  <div className="d-flex mb-0 align-items-center">
-                    <div className="flex-shrink-0">
-                      <i
-                        className="uil uil-user-check text-primary me-1"
-                        style={{ fontSize: "19px" }}
-                      ></i>
-                    </div>
-                    <p className="text-muted mb-0">
-                      {jobVacancyListDetail.numberOfDev} developer
+                      {" "}
+                      {listCompanyNew.companyEmail}
                     </p>
                   </div>
                 </Col>
@@ -172,13 +148,39 @@ const JobVacancyList = (a) => {
                   <div className="d-flex mb-0 align-items-center">
                     <div className="flex-shrink-0">
                       <i
-                        className="uil uil-clock-three text-primary me-1"
+                        className="uil uil-map-marker text-primary me-1"
                         style={{ fontSize: "19px" }}
                       ></i>
                     </div>
                     <p className="text-muted mb-0">
-                      {jobVacancyListDetail.duration}
+                      {listCompanyNew.address} {listCompanyNew.country}
                     </p>
+                  </div>
+                </Col>
+
+                <Col md={2}>
+                  <div className="d-flex mb-0 align-items-center justify-content-center">
+                    <div className="flex-shrink-0">
+                      <i
+                        className="uil uil-user-check text-primary me-1"
+                        style={{ fontSize: "19px" }}
+                      ></i>
+                    </div>
+                    <p className="text-muted mb-0">
+                      {listCompanyNew.hrFullName}
+                    </p>
+                  </div>
+                </Col>
+
+                <Col md={2}>
+                  <div className="d-flex mb-0 align-items-center justify-content-center">
+                    <div className="flex-shrink-0">
+                      <i
+                        className="uil uil-arrow-growth text-primary me-1"
+                        style={{ fontSize: "19px" }}
+                      ></i>
+                    </div>
+                    <p className="text-muted mb-0">{listCompanyNew.rating}</p>
                   </div>
                 </Col>
 
@@ -186,26 +188,26 @@ const JobVacancyList = (a) => {
                   <div className="d-flex align-items-center">
                     <span
                       className={
-                        jobVacancyListDetail.statusString === "Waiting Approval"
+                        listCompanyNew.statusString === "Waiting Approval"
                           ? "badge bg-warning text-light fs-12"
-                          : jobVacancyListDetail.statusString === "In Progress"
+                          : listCompanyNew.statusString === "In Progress"
                           ? "badge bg-blue text-light fs-12"
-                          : jobVacancyListDetail.statusString === "Rejected"
+                          : listCompanyNew.statusString === "Rejected"
                           ? "badge bg-danger text-light fs-12"
-                          : jobVacancyListDetail.statusString === "Expired"
+                          : listCompanyNew.statusString === "Expired"
                           ? "badge bg-danger text-light fs-12"
-                          : jobVacancyListDetail.statusString === "Cancelled"
+                          : listCompanyNew.statusString === "Cancelled"
                           ? "badge bg-danger text-light fs-12"
-                          : jobVacancyListDetail.statusString === "Finished"
+                          : listCompanyNew.statusString === "Finished"
                           ? "badge bg-primary text-light fs-12"
-                          : jobVacancyListDetail.statusString === "Completed"
+                          : listCompanyNew.statusString === "Completed"
                           ? "badge bg-primary text-light fs-12"
-                          : jobVacancyListDetail.statusString === "Saved"
+                          : listCompanyNew.statusString === "Active"
                           ? "badge bg-info text-light fs-12"
                           : ""
                       }
                     >
-                      {jobVacancyListDetail.statusString}
+                      {listCompanyNew.statusString}
                     </span>
                   </div>
                 </Col>
@@ -215,6 +217,8 @@ const JobVacancyList = (a) => {
         ))}
       </div>
 
+      {/* ---------------------------------------------------------------------- */}
+      {/* phan trang */}
       <Row>
         <Col lg={12} className="mt-4 pt-2">
           <nav aria-label="Page navigation example">
@@ -249,4 +253,4 @@ const JobVacancyList = (a) => {
   );
 };
 
-export default JobVacancyList;
+export default CompanyListPartner;
