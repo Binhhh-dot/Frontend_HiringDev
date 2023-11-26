@@ -166,6 +166,8 @@ export default {
     contract: {
       getContract: "/Contract",
       getContractAndPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getContractById: "/Contract/${contractId}",
+      confirmContract: "/Contract/ConfirmSigned?contractId=${contractId}",
     },
     pay: {
       getPayPeriod: "/PayPeriod/${projectId}?inputDate=${inputDate}",
