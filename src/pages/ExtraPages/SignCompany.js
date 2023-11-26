@@ -14,12 +14,14 @@ import Select from "react-select";
 import companyServices from "../../services/company.services";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { HashLoader } from "react-spinners";
 
 const SignCompany = () => {
     document.title = "Sign Up | Jobcy - Job Listing Template | Themesdesign";
     const navigate = useNavigate();
     const [avatar2, setAvatar2] = useState();
     const [userImage3, setUserImage3] = useState(null);
+    const [loadingCreate, setLoadingCreate] = useState(false);
 
     const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
@@ -90,6 +92,7 @@ const SignCompany = () => {
 
     const handleSignUp = async (e) => {
         e.preventDefault();
+        setLoadingCreate(true);
         const formData2 = new FormData();
         const userId = localStorage.getItem('userId');
         formData2.append('companyName', formData.companyName);
@@ -99,37 +102,52 @@ const SignCompany = () => {
         formData2.append('country', formData.country);
         formData2.append('userId', userId);
         formData2.append('file', avatar2);
-
         if (formData.companyName.trim() == "") {
             setCompanyNameError("Please enter the company name!")
+        } else {
+            setCompanyNameError(null);
         }
         if (formData.companyEmail.trim() == "") {
             setEmailError("Please enter email!")
+        } else {
+            setEmailError(null);
         }
         if (formData.phoneNumber.trim() == "") {
             setPhoneNumberError("Please enter company phone number!")
+        } else {
+            setPhoneNumberError(null);
         }
         if (formData.address.trim() == "") {
             setAddressError("Please enter country!")
+        } else {
+            setAddressError(null);
         }
         if (formData.country == "") {
             setCountryError("Please enter address!")
+        } else {
+            setCountryError(null);
+        }
+        if (!avatar2) {
+            toast.error("You forgot to enter the company's image!")
         }
 
         try {
             // Make API request
             const response = await companyServices.createCompany(formData2);
-
             // Handle the response (you can show a success message or redirect to another page)
             console.log('API Response:', response.data);
             const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
             const userData = responseUser.data;
             localStorage.setItem('companyId', userData.data.companyId);
+            toast.success("Create company info sucessfully! Welcome to WeHire")
+            setLoadingCreate(false);
             navigate("/layout3");
         } catch (error) {
             // Handle errors (show an error message or log the error)
             console.error('Error creating company:', error);
             console.log(error.response.data);
+            toast.error(error.response.data.message)
+            setLoadingCreate(false);
         }
     };
 
@@ -174,7 +192,7 @@ const SignCompany = () => {
                                                             <div className="text-center">
                                                                 <h5>Let's Get Started</h5>
                                                                 <p className="text-white-70">
-                                                                    Sign Up and get access to all the features of
+                                                                    Create company information to get access to all the features of
                                                                     Jobcy
                                                                 </p>
                                                             </div>
@@ -207,6 +225,7 @@ const SignCompany = () => {
                                                                             <input
                                                                                 type="file"
                                                                                 id="profile-img-file-input-2"
+                                                                                accept=".jpg, .jpeg, .png"
                                                                                 onChange={handlePreviewAvatar2}
                                                                                 style={{ display: 'none' }}
                                                                             />
@@ -367,8 +386,18 @@ const SignCompany = () => {
                                                                     <button
                                                                         type="submit"
                                                                         className="btn btn-white btn-hover w-100"
+                                                                        disabled={loadingCreate}
                                                                     >
-                                                                        Create
+                                                                        {loadingCreate ? (
+                                                                            <HashLoader
+                                                                                size={20}
+                                                                                color={"green"}
+                                                                                loading={true}
+                                                                            />
+                                                                        )
+                                                                            : (
+                                                                                "Create"
+                                                                            )}
                                                                     </button>
                                                                 </div>
                                                                 <div className="mt-3 me-2

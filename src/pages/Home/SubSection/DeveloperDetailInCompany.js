@@ -49,8 +49,7 @@ const DeveloperDetailInCompanyPopup = (
                         <div className="candidate-profile text-center">
                           <img
                             src={
-                              developerInfo.userImg ||
-                              userImage0
+                              developerInfo.userImage || userImage0
                             }
                             alt=""
                             className="avatar-lg rounded-circle"

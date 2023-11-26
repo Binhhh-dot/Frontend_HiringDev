@@ -56,6 +56,10 @@ const TopBar = () => {
 
   const openModal = () => setModal(!modal);
 
+
+
+
+
   return (
     <React.Fragment>
       <div className="top-bar" style={{ zIndex: 1030 }}>
@@ -89,14 +93,14 @@ const TopBar = () => {
             <Col md={5}>
               <ul className="list-inline mb-0 text-center text-md-end">
                 <li className="list-inline-item py-2 me-2 align-middle">
-                  <span
-                    onClick={openModal}
+                  <Link
+                    to="/signin"
                     role="button"
                     className="text-dark fw-medium fs-13"
                   >
                     <i className="uil uil-lock"></i>
-                    Sign Up
-                  </span>
+                    Sign In
+                  </Link>
                   <Modal
                     isOpen={modal}
                     toggle={openModal}

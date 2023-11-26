@@ -57,6 +57,7 @@ export default {
       getHiringRequestByRequestId: "/HiringRequest?requestId=${requestId}",
       getAllHiringRequestByProjectId:
         "/HiringRequest/ByProject?projectId=${projectId}",
+      updateHiringRequest: "/HiringRequest?requestId=${requestId}",
     },
 
     selectingDeveloper: {
@@ -94,9 +95,10 @@ export default {
       getDeveloperUnofficial: "/Developer/Unofficial",
       getDeveloperUnofficialPaging:
         "PageIndex=${currentPage}&PageSize=${pageSize}",
-
       changeStatusDevUnofficialInTaskDetailForStaff:
         "/AssignTask/ChangeStatusDevTask",
+      getListDeveloperOnboardByProjectId: "/Developer/ByProject/${projectId}",
+
     },
     interview: {
       createAnInterview: "/Interview",
@@ -110,6 +112,8 @@ export default {
         "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}",
       approvalByManager: "/Interview/ApprovalByManager",
       completeInterview: "/Interview/Finish?interviewId=${interviewId}",
+      updateInterview: "/Interview/${interviewId}",
+      cancelInterview: "/Interview/Cancel/${interviewId}",
     },
     assignTask: {
       createAssignTask: "/AssignTask",
@@ -166,15 +170,39 @@ export default {
     contract: {
       getContract: "/Contract",
       getContractAndPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getPreContract: "/Contract/PreContract?developerId=${developerId}&requestId=${requestId}",
+      postContract: "/Contract",
       getContractById: "/Contract/${contractId}",
       confirmContract: "/Contract/ConfirmSigned?contractId=${contractId}",
     },
     pay: {
       getPayPeriod: "/PayPeriod/${projectId}?inputDate=${inputDate}",
-
       getPaySlip: "/PaySlip/ByPayPeriod/${payPeriodId}",
       getPaySlipPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
       getWorklog: "/WorkLog/ByPaySlip/${paySlipId}",
     },
+    jobPosition: {
+      createJobPosition: "/JobPosition",
+      getJobPositionByProjectId: "/JobPosition/ByProject/${projectId}",
+      getJobPositionsWithHiringRequest: "/JobPosition/JobPositionsWithHiringRequest/${projectId}",
+    },
+    teamMeeting: {
+      createTeamMeeting: "/TeamMeeting",
+      deleteTeamMeeting: "/TeamMeeting",
+      updateTeamMeeting: "/TeamMeeting",
+    },
+
+    payPeriod: {
+      exportToExcel: "/PayPeriod/ExportToExcel/${projectId}?inputDate=${inputDate}",
+      importExcel: "/PayPeriod/ImportExcel/${projectId}",
+      getPayPeriodDetailByProjectIdAndDate: "/PayPeriod/${projectId}?inputDate=${inputDate}",
+    },
+    paySlip: {
+      getPaySlipByPayPeriodId: "PaySlip/ByPayPeriod/${payPeriodId}"
+    },
+    workLog: {
+      getWorkLogByPaySlipId: "/WorkLog/ByPaySlip/${paySlipId}",
+      updateWorkLog: "/WorkLog",
+    }
   },
 };

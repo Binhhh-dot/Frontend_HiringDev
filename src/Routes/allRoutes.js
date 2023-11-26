@@ -48,6 +48,7 @@ import Contact from "../pages/Contact/Contact";
 import SignIn from "../pages/ExtraPages/SignIn";
 import SignUp from "../pages/ExtraPages/SignUp";
 import SignOut from "../pages/ExtraPages/SignOut";
+import Callback from "../pages/ExtraPages/Callback";
 import SignCompany from "../pages/ExtraPages/SignCompany";
 import ResetPassword from "../pages/ExtraPages/ResetPassword";
 import ComingSoon from "../pages/ExtraPages/ComingSoon";
@@ -149,16 +150,7 @@ const userRoutes = [
   { path: "/listInterview", component: <InterviewListManager /> },
   { path: "/listInterviewHR", component: <InterviewList /> },
 
-  // {
-  //   path: "/developerlistincompanypartner",
-  //   component: <DeveloperListInCompanyPartner />,
-  // },
-  // {
-  //   path: "/developerlistincompanypartnerdetail",
-  //   component: <DeveloperListInCompanyPartnerDetail />,
-  // },
 
-  //Jobs Section
   { path: "/jobscategories", component: <JobsCategories /> },
   { path: "/jobdetails", component: <JobDetails /> },
   { path: "/jobgrid2", component: <JobGrid2 /> },
@@ -211,7 +203,7 @@ const userRoutes = [
   { path: "/createcompanyaccount", component: <CreateCompanyAccount /> },
   { path: "/faqs", component: <Faqs /> },
   { path: "/privacyandpolicy", component: <PrivacyAndPolicy /> },
-  { path: "/paymentagreement", component: <PaymenAgreement /> },
+  { path: "/laborSubleasingAgreement", component: <PaymenAgreement /> },
   { path: "/pricing", component: <Pricing /> },
   { path: "/team", component: <Team /> },
   { path: "/services", component: <Services /> },
@@ -228,6 +220,7 @@ const authRoutes = [
   { path: "/comingsoon", component: <ComingSoon /> },
   { path: "/resetpassword", component: <ResetPassword /> },
   { path: "/signout", component: <SignOut /> },
+  { path: "/callback", component: <Callback /> },
   { path: "/signup", component: <SignUp /> },
   { path: "/signin", component: <SignIn /> },
   { path: "/signcompany", component: <SignCompany /> },
@@ -245,4 +238,5 @@ const authRoutes = [
   { path: "/projectlistinmanager", component: <ProjectListInManager /> },
   { path: "/listcontract", component: <ContractList /> },
 ];
+
 export { userRoutes, authRoutes };

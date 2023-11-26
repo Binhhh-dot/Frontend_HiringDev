@@ -21,7 +21,8 @@ import {
   DropdownMenu,
   DropdownItem
 } from "reactstrap";
-import { Modal as AntdModal } from "antd";
+
+import { Modal as AntdModal, Button as AntdButton } from "antd";
 import { Container } from "reactstrap";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
@@ -45,10 +46,14 @@ import img0 from "../../../assets/images/user/img-00.jpg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEllipsisVertical,
-  faGear
+  faGear,
+  faEllipsis
 } from "@fortawesome/free-solid-svg-icons";
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, SkypeOutlined } from '@ant-design/icons';
 import { Dropdown as DropdownAntd, Space } from 'antd';
+import teamMeetingServices from "../../../services/teamMeeting.services";
+import customUrl from "../../../utils/customUrl";
+import { useNavigate } from "react-router-dom";
 
 
 const HiringRequestDetails = () => {
@@ -76,6 +81,11 @@ const HiringRequestDetails = () => {
   const [timeStartError, setTimeStartError] = useState(null);
   const [timeEndError, setTimeEndError] = useState(null);
   const [desError, setDesError] = useState(null);
+  const [interviewTitleUpdateError, setInterviewTitleUpdateError] = useState(null);
+  const [dateOfInterViewUpdateError, setDateOfInterViewUpdateError] = useState(null);
+  const [timeStartUpdateError, setTimeStartUpdateError] = useState(null);
+  const [timeEndUpdateError, setTimeEndUpdateError] = useState(null);
+  const [desUpdateError, setDesUpdateError] = useState(null);
   const [loadListDeveloper, setLoadListDeveloper] = useState(false);
   let [currentPageInterview, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -83,13 +93,32 @@ const HiringRequestDetails = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectInterviewDetail, setSelectInterviewDetail] = useState({});
   const [devInterviewDetail, setDevInterviewDetail] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const [isInputEditable, setIsInputEditable] = useState(false);
   const [interviewTitleInput, setInterviewTitleInput] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
   const [dateOfInterviewInput, setDateOfInterviewInput] = useState('');
   const [startTimeInput, setStartTimeInput] = useState('');
   const [endTimeInput, setEndTimeInput] = useState('');
+  const [authenCode, setAuthencode] = useState(null);
+  const [authenCodeCancel, setAuthenCodeCancel] = useState(null);
+  const [authenCodeUpdate, setAuthenCodeUpdate] = useState(null);
+  const [authenCodeOld, setAuthencodeOld] = useState(null);
+  const [authenCodeCancelOld, setAuthenCodeCancelOld] = useState(null);
+  const [authenCodeUpdateOld, setAuthenCodeUpdateOld] = useState(null);
+
+  const [isUpdateInterview, setIsUpdateInterview] = useState(false);
+  const [interviewIdCancel, setInterviewIdCancel] = useState(null);
+  const [interviewIdUpdate, setInterviewIdUpdate] = useState(null);
+  const [minDate, setMinDate] = useState('');
+  const today = new Date();
+  today.setDate(today.getDate() + 1);
+  const tomorrow = today.toISOString().split('T')[0];
+  const navigate = useNavigate();
+
+  useState(() => {
+    setMinDate(tomorrow); // Thiết lập giá trị minDate thành ngày kế tiếp
+  }, []);
 
   const generateItems = () => {
     if (selectInterviewDetail.statusString === "Waiting Approval") {
@@ -106,14 +135,44 @@ const HiringRequestDetails = () => {
           key: '0',
         },
         {
-          label: <a href="https://www.aliyun.com">Cancel</a>,
+          label: (
+            <div
+              style={{ width: "100px" }}
+              onClick={() => {
+                AntdModal.confirm({
+                  title: 'Confirm cancel interview',
+                  content: 'Are you sure to cancel this interview?',
+                  onOk() {
+                    // Action when the user clicks OK
+                    console.log('Confirmed!');
+                    openWindowCancelInterview(selectInterviewDetail.interviewId);
+                  },
+                  onCancel() {
+                    // Action when the user cancels
+                    console.log('Cancelled!');
+                  },
+                  footer: (_, { OkBtn, CancelBtn }) => (
+                    <>
+                      <CancelBtn />
+                      <OkBtn />
+                    </>
+                  ),
+                });
+              }}
+            >
+              Cancel
+            </div>
+          ),
           key: '1',
         },
       ];
     } else {
       return [
         {
-          label: <a href="https://www.aliyun.com">Cancel</a>,
+          label: <div
+            onClick={() => cancelInterview()}
+            style={{ width: "100px" }}
+          >Cancel</div>,
           key: '1',
         },
       ];
@@ -142,8 +201,13 @@ const HiringRequestDetails = () => {
   };
 
   const completedInterview = async (interviewId) => {
+    setLoading(true);
     try {
       const response = await interviewServices.completedInterview(interviewId);
+      setShowPopup(false)
+      setLoadListDeveloper(!loadListDeveloper);
+      setLoading(false);
+      toast.success("Complete interview successfuly")
       console.log(response);
     } catch (error) {
       toast.error(error.response.data.message, {
@@ -160,12 +224,82 @@ const HiringRequestDetails = () => {
     }
   };
 
+  const openSkype = async (linkMeeting) => {
+    window.open(linkMeeting, '_blank');
+  };
+
   const updateInterview = async (interviewId) => {
-    try {
-      const response = await interviewServices.completedInterview(interviewId);
-      console.log(response);
-    } catch (error) {
-      console.error("Error completedInterview:", error);
+    let check = true;
+    if (!document.getElementById("interview-title-popup").value) {
+      setInterviewTitleUpdateError("Please enter a interview title");
+      check = false;
+    } else {
+      setInterviewTitleUpdateError(null);
+    }
+    if (!document.getElementById("description-title-popup").value) {
+      setDesUpdateError("Please enter a description");
+      check = false;
+    } else {
+      setDesUpdateError(null);
+    }
+    if (!document.getElementById("date-of-interview-popup").value) {
+      setDateOfInterViewUpdateError("Please enter a date of interview");
+      check = false;
+    } else {
+      setDateOfInterViewUpdateError(null);
+      console.log(document.getElementById("date-of-interview-popup").value)
+    }
+    if (!document.getElementById("start-time-popup").value) {
+      setTimeStartUpdateError("Please enter the start time of the interview ");
+      check = false;
+    } else {
+      setTimeStartUpdateError(null);
+    }
+    if (!document.getElementById("end-time-popup").value) {
+      setTimeEndUpdateError("Please enter the end time of the interview");
+      check = false;
+    } else {
+      setTimeEndUpdateError(null);
+    }
+    if (document.getElementById("date-of-interview-popup").value) {
+      const currentDate = new Date();
+      const selectedDate = new Date(
+        document.getElementById("date-of-interview-popup").value
+      );
+
+      if (selectedDate <= currentDate) {
+        setDateOfInterViewUpdateError(
+          "Please enter a date greater than the current date"
+        );
+        check = false;
+      } else {
+        setDateOfInterViewUpdateError(null);
+      }
+    }
+
+    if (
+      document.getElementById("end-time-popup").value &&
+      document.getElementById("start-time-popup").value &&
+      document.getElementById("start-time-popup") !==
+      document.getElementById("end-time-popup").value
+    ) {
+      const startTimeDate = new Date(
+        "1970-01-01T" + document.getElementById("start-time-popup").value + "Z"
+      );
+      const endTimeDate = new Date(
+        "1970-01-01T" + document.getElementById("end-time-popup").value + "Z"
+      );
+      if (startTimeDate > endTimeDate) {
+        // Hiển thị thông báo lỗi
+        setTimeStartUpdateError("Start Time must be before End Time");
+        // Cập nhật DOM để hiển thị thông báo
+        check = false;
+      } else {
+        setTimeStartUpdateError(null);
+      }
+    }
+    if (check) {
+      openWindowUpdateInterview(interviewId);
     }
   };
 
@@ -176,6 +310,11 @@ const HiringRequestDetails = () => {
   };
 
   const cancelEditInterview = (id) => {
+    setInterviewTitleUpdateError(null);
+    setDesUpdateError(null);
+    setDateOfInterViewUpdateError(null);
+    setTimeStartUpdateError(null);
+    setTimeEndUpdateError(null);
     document.getElementById('buttonSaveFormInterview').style.display = 'none';
     document.getElementById('buttonCancelFormInterview').style.display = 'none';
     fetchGetDetailInterviewByInterviewId(id);
@@ -253,11 +392,8 @@ const HiringRequestDetails = () => {
     const requestId = queryParams.get("Id");
     const companyId = localStorage.getItem('companyId');
     try {
-      response = await interviewServices.getAllInterviewByHRAndPaging(
-        companyId,
+      response = await interviewServices.getListInterviewByRequestId(
         requestId,
-        8,
-        currentPageInterview,
       );
       const data = response.data;
       const formattedJobVacancies = data.data.map((job) => {
@@ -278,16 +414,6 @@ const HiringRequestDetails = () => {
         };
       });
       setlistInterview(formattedJobVacancies);
-      setTotalPages(Math.ceil(data.paging.total / pageSize));
-      if (data.paging.total < 7) {
-        // Lấy tham chiếu đến phần tử có id="paging"
-        var rowElement = document.getElementById("paging");
-
-        // Ẩn phần tử bằng cách đặt style.display thành "none"
-        if (rowElement) {
-          rowElement.style.display = "none";
-        }
-      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -298,7 +424,148 @@ const HiringRequestDetails = () => {
     fetchJobVacancies();
   }, []);
 
+  const handleInterviewCreation = async () => {
+    setLoading(true);
+    try {
+      const title = document.getElementById("interview-title").value;
+      const description = document.getElementById("description").value;
+      const dateOfInterview =
+        document.getElementById("date-of-interview").value;
 
+      const startTime = document.getElementById("startTime").value + ":00";
+      console.log(startTime);
+      const endTime = document.getElementById("endTime").value + ":00";
+      const queryParams = new URLSearchParams(location.search);
+      const requestId = queryParams.get("Id");
+      const developerId = developerIdSelectedCreateInterview;
+      const response = await interviewServices.createAnInterview(
+        requestId,
+        developerId,
+        title,
+        description,
+        dateOfInterview,
+        startTime,
+        endTime
+      );
+      let interviewId = response.data.data.interviewId;
+      if (response.data.code == 201) {
+        console.log("tao thanh cong")
+        try {
+          const redirectUrl = customUrl.redirectUrlCreateMeetting;
+          const responseCreateMeeting = await teamMeetingServices.createTeamMeeting(interviewId, redirectUrl, authenCode)
+          console.log(responseCreateMeeting)
+          console.log("tao meet thanh cong")
+        } catch (error) {
+          console.log("error:", error)
+        }
+      }
+      setLoadListDeveloper(!loadListDeveloper);
+      toast.success('Create successfully!');
+      setModalCreateInterview(false);
+      setAuthencodeOld(authenCode);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      setLoading(false);
+    }
+  };
+
+  const handleCancelInterview = async () => {
+    console.log("nhay do")
+    setLoading(true);
+    try {
+      const interviewId = interviewIdCancel;
+      console.log(interviewId);
+      const response = await interviewServices.cancelInterview(interviewId);
+      console.log("cancel thanh cong")
+
+      if (response.data.code == 200) {
+        try {
+          console.log("nhay do")
+          const redirectUrl = customUrl.redirectUrlCreateMeetting;
+          console.log(interviewId);
+          console.log(redirectUrl);
+          console.log(authenCodeCancel);
+          const responseCancelMeeting = await teamMeetingServices.deleteTeamMeeting(interviewId, redirectUrl, authenCodeCancel)
+          console.log(responseCancelMeeting)
+        } catch (error) {
+          console.log("error:", error)
+        }
+      }
+      setLoadListDeveloper(!loadListDeveloper);
+      toast.success('Cancel successfully!');
+      setAuthenCodeCancelOld(authenCodeCancel);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateInterview = async () => {
+    console.log("chui do dc day ")
+    setLoading(true);
+    try {
+      const interviewId = interviewIdUpdate;
+      let response;
+      try {
+        const title = document.getElementById("interview-title-popup").value;
+        const description = document.getElementById("description-title-popup").value;
+        const dateOfInterview = document.getElementById("date-of-interview-popup").value;
+        const startDate = document.getElementById("start-time-popup").value + ":00";
+        const endDate = document.getElementById("end-time-popup").value + ":00";
+        response = await interviewServices.updateInterview(interviewId, title, description, dateOfInterview, startDate, endDate);
+        console.log("api update :")
+        console.log(response);
+      } catch (error) {
+        console.error("Error completedInterview:", error);
+      }
+      if (response.data.code == 200) {
+        try {
+          const redirectUrl = customUrl.redirectUrlCreateMeetting;
+          console.log(interviewId);
+          console.log(redirectUrl);
+          console.log(authenCodeUpdate);
+          const responseCancelMeeting = await teamMeetingServices.editTeamMeeting(interviewId, redirectUrl, authenCodeUpdate)
+          console.log(responseCancelMeeting)
+        } catch (error) {
+          console.log("error:", error)
+        }
+      }
+      setIsUpdateInterview(!isUpdateInterview);
+      setLoadListDeveloper(!loadListDeveloper);
+      toast.success('Update successfully!');
+      setAuthenCodeUpdateOld(authenCodeUpdate);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (authenCode == authenCodeOld) {
+      console.log("lap lai")
+    } else {
+      handleInterviewCreation();
+    }
+  }, [authenCode]);
+
+  useEffect(() => {
+    if (authenCodeCancel == authenCodeCancelOld) {
+      console.log("lap lai")
+    } else {
+      handleCancelInterview();
+    }
+  }, [authenCodeCancel]);
+
+  useEffect(() => {
+    if (authenCodeUpdate == authenCodeUpdateOld) {
+      console.log("lap lai")
+    } else {
+      handleUpdateInterview();
+    }
+  }, [authenCodeUpdate]);
 
   useEffect(() => {
     fetchJobVacancies();
@@ -308,6 +575,10 @@ const HiringRequestDetails = () => {
   useEffect(() => {
     fetchListInterview();
   }, [currentPageInterview]);
+
+  useEffect(() => {
+    fetchListInterview();
+  }, [isUpdateInterview]);
 
   const [showItems, setShowItems] = useState(5);
   const listInterviewArray = Object.values(listInterview);
@@ -319,6 +590,10 @@ const HiringRequestDetails = () => {
 
   const handleInterviewClick = async (id) => {
     setLoadingInterview((prevLoading) => ({
+      ...prevLoading,
+      [id]: true,
+    }));
+    setLoadingReject((prevLoading) => ({
       ...prevLoading,
       [id]: true,
     }));
@@ -355,12 +630,20 @@ const HiringRequestDetails = () => {
       ...prevLoading,
       [id]: false,
     }));
+    setLoadingReject((prevLoading) => ({
+      ...prevLoading,
+      [id]: false,
+    }));
     // Replace with the actual duration of your action
   };
 
   const rejectInterview2 = async (id) => {
     // Simulate an asynchronous action, e.g., making an API request
     setLoadingReject((prevLoading) => ({
+      ...prevLoading,
+      [id]: true,
+    }));
+    setLoadingInterview((prevLoading) => ({
       ...prevLoading,
       [id]: true,
     }));
@@ -380,11 +663,19 @@ const HiringRequestDetails = () => {
         ...prevLoading,
         [id]: false,
       }));
+      setLoadingInterview((prevLoading) => ({
+        ...prevLoading,
+        [id]: false,
+      }));
     } catch (error) {
       // Xử lý lỗi nếu có
       console.error("Error rejecting interview:", error);
       // Hiển thị thông báo lỗi hoặc thực hiện các hành động khác
       setLoadingReject((prevLoading) => ({
+        ...prevLoading,
+        [id]: false,
+      }));
+      setLoadingInterview((prevLoading) => ({
         ...prevLoading,
         [id]: false,
       }));
@@ -396,7 +687,6 @@ const HiringRequestDetails = () => {
   };
 
   const handleOnboard = async (id) => {
-    // Simulate an asynchronous action, e.g., making an API request
     setLoadingOnboard((prevLoading) => ({
       ...prevLoading,
       [id]: true,
@@ -405,11 +695,17 @@ const HiringRequestDetails = () => {
       // Sử dụng giá trị từ state hoặc DOM
       const queryParams = new URLSearchParams(location.search);
       const requestId = queryParams.get("Id");
+
+      const state = {
+        requestId: requestId,
+        developerId: id
+      };
+      navigate("/laborSubleasingAgreement", { state });
       // Gọi API để reject interview
-      const response = await developerServices.onbardingDeveloper(requestId, id);
+      // const response = await developerServices.onbardingDeveloper(requestId, id);
       setIsListLoading2(true);
       // Xử lý kết quả nếu cần thiết
-      fetchJobVacancies();
+      // fetchJobVacancies();
       // Cập nhật giao diện hoặc thực hiện các hành động khác sau khi reject thành công
       // Ví dụ: Ẩn nút hoặc cập nhật trạng thái
       setIsListLoading2(false);
@@ -433,10 +729,7 @@ const HiringRequestDetails = () => {
   };
 
   const createAnInterview = async () => {
-    console.log(developerIdSelectedCreateInterview)
-
     let check = true;
-    // setLoading(true);
     if (!document.getElementById("interview-title").value) {
       setInterviewTitlError("Please enter a interview title");
       check = false;
@@ -450,10 +743,12 @@ const HiringRequestDetails = () => {
       setDesError(null);
     }
     if (!document.getElementById("date-of-interview").value) {
+      console.log(document.getElementById("date-of-interview").value)
       setDateOfInterViewError("Please enter a date of interview");
       check = false;
     } else {
       setDateOfInterViewError(null);
+      console.log(document.getElementById("date-of-interview").value)
     }
     if (!document.getElementById("startTime").value) {
       setTimeStartError("Please enter the start time of the interview ");
@@ -473,7 +768,7 @@ const HiringRequestDetails = () => {
         document.getElementById("date-of-interview").value
       );
 
-      if (selectedDate < currentDate) {
+      if (selectedDate <= currentDate) {
         setDateOfInterViewError(
           "Please enter a date greater than the current date"
         );
@@ -504,139 +799,125 @@ const HiringRequestDetails = () => {
         setTimeStartError(null);
       }
     }
-
+    let checkCreateInterview = false;
+    let code;
     if (check) {
-      try {
-        const title = document.getElementById("interview-title").value;
-        const description = document.getElementById("description").value;
-        const dateOfInterview =
-          document.getElementById("date-of-interview").value;
+      const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-        const startTime = document.getElementById("startTime").value + ":00";
-        console.log(startTime);
-        const endTime = document.getElementById("endTime").value + ":00";
-        const queryParams = new URLSearchParams(location.search);
-        const requestId = queryParams.get("Id");
-        const developerId = developerIdSelectedCreateInterview;
-        const response = await interviewServices.createAnInterview(
-          requestId,
-          developerId,
-          title,
-          description,
-          dateOfInterview,
-          startTime,
-          endTime
-        );
-        let data = response.data;
-        setLoadListDeveloper(!loadListDeveloper);
-        toast.success('Create successfully!');
-        setModalCreateInterview(false);
-        // fetchListDevInterview();
-        // setLoading(false);
-        // navigate(`/hiringrequestlistincompanypartnerdetail?Id=${requestId}`);
-      } catch (error) {
-        console.error("Error fetching job vacancies:", error);
-        // setLoading(false);
+      const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+
+      // Lắng nghe các thông điệp từ cửa sổ popup
+      window.addEventListener('message', (event) => {
+        code = event.data;
+        // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
+        if (code) {
+          checkCreateInterview = true;
+          popupWindow.close();
+          console.log(event.data)
+          setAuthencode(event.data)
+        }
+      });
+      setLoading(true);
+    }
+    setLoading(false);
+  };
+
+
+  const openWindowCancelInterview = async (interviewId) => {
+    const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
+
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+    let code;
+
+    // Lắng nghe các thông điệp từ cửa sổ popup
+    window.addEventListener('message', (event) => {
+      code = event.data;
+      // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
+      if (code) {
+        popupWindow.close();
+        console.log(event.data)
+        setAuthenCodeCancel(event.data)
+        setInterviewIdCancel(interviewId)
       }
-    }
-    // setLoading(false);
+    });
+
   };
 
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-    const maxPageButtons = 4;
-    let startPage = Math.max(1, currentPageInterview - Math.floor(maxPageButtons / 2));
-    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-    if (
-      totalPages > maxPageButtons &&
-      currentPageInterview <= Math.floor(maxPageButtons / 2) + 1
-    ) {
-      endPage = maxPageButtons;
-    }
-    for (let i = startPage; i <= endPage; i++) {
-      pageNumbers.push(
-        <li
-          key={i}
-          className={`page-item ${i === currentPageInterview ? "active" : ""}`}
-        >
-          <p className="page-link" to="#" onClick={() => handlePageClick(i)}>
-            {i}
-          </p>
-        </li>
-      );
-    }
+  const openWindowUpdateInterview = async (interviewId) => {
+    const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-    return pageNumbers;
-  };
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+    let code;
 
-
-
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-  const handleNextPage = () => {
-    if (currentPageInterview < totalPages) {
-      setCurrentPage(currentPageInterview + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentPageInterview > 1) {
-      setCurrentPage(currentPageInterview - 1);
-    }
+    // Lắng nghe các thông điệp từ cửa sổ popup
+    window.addEventListener('message', (event) => {
+      code = event.data;
+      // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
+      if (code) {
+        popupWindow.close();
+        console.log(event.data)
+        setAuthenCodeUpdate(event.data)
+        setInterviewIdUpdate(interviewId)
+      }
+    });
+    // setLoading(true);
   };
 
   const midleSelect = (id) => {
+    setInterviewTitleUpdateError(null);
+    setDesUpdateError(null);
+    setDateOfInterViewUpdateError(null);
+    setTimeStartUpdateError(null);
+    setTimeEndUpdateError(null);
     fetchGetDetailInterviewByInterviewId(id);
-
     setShowPopup(true);
   };
 
-  const handleClick = () => {
-    // Mở cửa sổ mới khi người dùng ấn vào button
-    const authWindow = window.open(
-      'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345',
-      '_blank',
-      'width=600,height=400'
-    );
 
-    // Kiểm tra khi cửa sổ đó được đóng lại
-    const interval = setInterval(() => {
-      if (authWindow.closed) {
-        clearInterval(interval);
+  const openFacebook = () => {
+    const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-        // Lấy mã code từ URL của cửa sổ mới
-        const searchParams = new URLSearchParams(authWindow.location.search);
-        const code = searchParams.get('code');
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
 
-        if (code) {
-          console.log('Mã code:', code);
-          // Thực hiện xử lý tiếp theo sau khi lấy được mã code
-        } else {
-          console.log('Không nhận được mã code.');
-        }
+    // Lắng nghe các thông điệp từ cửa sổ popup
+    window.addEventListener('message', (event) => {
+      const code = event.data;
+      // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
+      if (code) {
+        console.log(code)
+        popupWindow.close();
       }
-    }, 1000);
-  }
-
+    });
+  };
 
 
   const onUpdateInterview = () => {
     document.getElementById('buttonSaveFormInterview').style.display = 'block';
     document.getElementById('buttonCancelFormInterview').style.display = 'block';
     setIsInputEditable(true);
+  };
 
+  const cancelInterview = async (interviewId) => {
+    try {
+      console.log(interviewId);
+      const response = await interviewServices.cancelInterview(interviewId);
+      toast.success("Cancel sucessfully")
+    } catch (error) {
+      toast.success("Cancel error")
+      console.log(error)
+    }
   };
 
   const fetchGetDetailInterviewByInterviewId = async (id) => {
     let response;
-
     try {
       response = await interviewServices.getDetailInterviewByInterviewId(
         id
       );
       document.getElementById("interview-title-popup").value = response.data.data.title;
+      setInterviewTitleInput(response.data.data.title);
       document.getElementById("description-title-popup").value = response.data.data.description;
+      setDescriptionInput(response.data.data.description);
       var parts = response.data.data.dateOfInterview.split('-');
       if (parts.length === 3) {
         var day = parts[1];
@@ -645,11 +926,14 @@ const HiringRequestDetails = () => {
         // Format the date as "yyyy-dd-mm"
         var formattedDate = year + '-' + day + '-' + month;
         document.getElementById("date-of-interview-popup").value = formattedDate;
+        setDateOfInterviewInput(formattedDate);
       } else {
         console.error("Invalid date format");
       }
       document.getElementById("start-time-popup").value = response.data.data.startTime;
+      setStartTimeInput(response.data.data.startTime);
       document.getElementById("end-time-popup").value = response.data.data.endTime;
+      setEndTimeInput(response.data.data.endTime);
       setSelectInterviewDetail(response.data.data);
       setDevInterviewDetail(response.data.data.developer);
     } catch (error) {
@@ -658,19 +942,19 @@ const HiringRequestDetails = () => {
   };
 
 
+
   return (
     <React.Fragment>
+      {loading && (
+        <div className="overlay" style={{ zIndex: "2000" }}>
+          <div className="spinner"></div>
+        </div>
+      )}
       <section class="section">
         <div class="row  justify-content-center " style={{ margin: "0px" }}>
           <div class="col-lg-8 " style={{ padding: "0px" }}>
             <Card className="job-detail overflow-hidden">
               <div>
-                <img
-                  src={JobDetailImage}
-                  alt=""
-                  className="img-fluid"
-                  style={{ width: "100%" }}
-                />
                 <div className="job-details-compnay-profile">
                   <img
                     src={JobImage10}
@@ -684,13 +968,6 @@ const HiringRequestDetails = () => {
                   <Row>
                     <Col md={8}>
                       <h4 className="mb-1">{hiringRequestDetail.jobTitle}</h4>
-                      {/* <ul className="list-inline text-muted mb-0">
-                          <li className="list-inline-item text-warning review-rating">
-                            <span className="badge bg-warning">
-                              {hiringRequestDetail.statusString}
-                            </span>{" "}
-                          </li>
-                        </ul> */}
                     </Col>
                     <Col lg={4}>
                       <ul className="list-inline mb-0 text-lg-end mt-3 mt-lg-0">
@@ -848,6 +1125,7 @@ const HiringRequestDetails = () => {
                         type="date"
                         className="form-control"
                         id="date-of-interview"
+                        min={minDate}
                       />
                       {dateOfInterViewError && (
                         <p className="text-danger mt-2">
@@ -918,11 +1196,6 @@ const HiringRequestDetails = () => {
                         Create an interview
                       </div>
                     </div>
-
-                    <div>
-                      <button onClick={() => handleClick()}  >Mở cửa sổ đăng nhập</button>
-
-                    </div>
                   </Form>
 
                 </div>
@@ -936,7 +1209,7 @@ const HiringRequestDetails = () => {
             onOk={() => setShowPopup(false)}
             onCancel={() => {
               setShowPopup(false);
-              exitPopup(); // Log message when the modal is closed
+              exitPopup();
             }}
             width={1100}
             footer={null}
@@ -979,7 +1252,6 @@ const HiringRequestDetails = () => {
                       htmlFor="usernameInput"
                       className="form-label"
                       style={{ marginBottom: "0px" }}
-
                     >
                       Interview Title
                     </Label>
@@ -990,15 +1262,14 @@ const HiringRequestDetails = () => {
                       style={{
                         width: "98%",
                         fontWeight: "500",
-                        borderRadius: "10px",
+                        borderRadius: "5px",
                       }}
                       readOnly={!isInputEditable}
-                      // value={selectInterviewDetail.title}
                       onChange={(e) => setInterviewTitleInput(e.target.value)}
                     />
-                    {interviewTitlError && (
+                    {interviewTitleUpdateError && (
                       <p className="text-danger mt-2">
-                        {interviewTitlError}
+                        {interviewTitleUpdateError}
                       </p>
                     )}
                   </FormGroup>
@@ -1017,15 +1288,14 @@ const HiringRequestDetails = () => {
                       style={{
                         width: "98%",
                         fontWeight: "500",
-                        borderRadius: "10px",
+                        borderRadius: "5px",
                       }}
                       readOnly={!isInputEditable}
-                      // value={selectInterviewDetail.title}
                       onChange={(e) => setDescriptionInput(e.target.value)}
                     />
-                    {interviewTitlError && (
+                    {desUpdateError && (
                       <p className="text-danger mt-2">
-                        {interviewTitlError}
+                        {desUpdateError}
                       </p>
                     )}
                   </FormGroup>
@@ -1044,15 +1314,14 @@ const HiringRequestDetails = () => {
                       style={{
                         width: "98%",
                         fontWeight: "500",
-                        borderRadius: "10px",
+                        borderRadius: "5px",
                       }}
                       readOnly={!isInputEditable}
-                      // value={selectInterviewDetail.title}
                       onChange={(e) => setDateOfInterviewInput(e.target.value)}
                     />
-                    {interviewTitlError && (
+                    {dateOfInterViewUpdateError && (
                       <p className="text-danger mt-2">
-                        {interviewTitlError}
+                        {dateOfInterViewUpdateError}
                       </p>
                     )}
                   </FormGroup>
@@ -1072,15 +1341,15 @@ const HiringRequestDetails = () => {
                         style={{
                           width: "98%",
                           fontWeight: "500",
-                          borderRadius: "10px",
+                          borderRadius: "5px",
                         }}
                         readOnly={!isInputEditable}
                         // value={selectInterviewDetail.title}
                         onChange={(e) => setStartTimeInput(e.target.value)}
                       />
-                      {interviewTitlError && (
+                      {timeStartUpdateError && (
                         <p className="text-danger mt-2">
-                          {interviewTitlError}
+                          {timeStartUpdateError}
                         </p>
                       )}
                     </FormGroup>
@@ -1099,45 +1368,48 @@ const HiringRequestDetails = () => {
                         style={{
                           width: "96%",
                           fontWeight: "500",
-                          borderRadius: "10px",
+                          borderRadius: "5px",
                         }}
                         readOnly={!isInputEditable}
                         // value={selectInterviewDetail.title}
                         onChange={(e) => setEndTimeInput(e.target.value)}
                       />
-                      {interviewTitlError && (
+                      {timeEndUpdateError && (
                         <p className="text-danger mt-2">
-                          {interviewTitlError}
+                          {timeEndUpdateError}
                         </p>
                       )}
                     </FormGroup>
                   </div>
                 </Form>
                 {selectInterviewDetail.statusString === "Approved" && (
-                  <div className="mt-3 d-flex justify-content-end" id="buttonCompleted">
+                  <div className="  d-flex justify-content-end" id="buttonCompleted">
                     <button
-                      className="btn btn-success"
+                      className="btn btn-blue me-2"
+                      onClick={() => {
+                        openSkype(selectInterviewDetail.meetingUrl);
+                      }}
+                      id="buttonCompletedFormInterview"
+                    >
+                      <div className="d-flex">
+                        <SkypeOutlined className="me-1" style={{ fontSize: "17px" }} />
+                        Join Skype
+                      </div>
+                    </button>
+
+                    <button
+                      className="btn btn-success me-2"
                       onClick={() => {
                         completedInterview(selectInterviewDetail.interviewId);
                       }}
                       id="buttonCompletedFormInterview"
                     >
-                      Completed
+                      Complete
                     </button>
                   </div>
                 )}
                 <div className="d-flex gap-2 justify-content-end" >
-                  <div className="mt-3 d-flex justify-content-end">
-                    <button className="btn btn-blue"
-                      onClick={() => {
-                        updateInterview(selectInterviewDetail.interviewId);
-                      }}
-                      id="buttonSaveFormInterview"
-                      style={{ display: "none" }}
-                    >
-                      Save
-                    </button>
-                  </div>
+
                   <div className="mt-3 d-flex justify-content-end">
                     <button className="btn btn-danger"
                       onClick={() => {
@@ -1149,10 +1421,20 @@ const HiringRequestDetails = () => {
                       Cancel
                     </button>
                   </div>
+                  <div className="mt-3 d-flex justify-content-end">
+                    <button className="btn btn-blue"
+                      onClick={() => {
+                        updateInterview(selectInterviewDetail.interviewId);
+                      }}
+                      id="buttonSaveFormInterview"
+                      style={{ display: "none" }}
+                    >
+                      Save
+                    </button>
+                  </div>
                 </div>
               </Col>
               <Col lg={6} className="border-start ">
-                {/* ------------------------------------------------------ */}
                 <Row>
                   <Col lg={6}>
                     <div className="p-2">
@@ -1387,99 +1669,11 @@ const HiringRequestDetails = () => {
                 </ul>
               </CardBody>
             </Card>
-            {/* {listInterview.length > 0 ? (
-              <div className="job-overview ">
-                <div>
-                  <div className="d-flex flex-column gap-3">
-                    <div className="d-flex justify-content-between align-items-center ">
-                      <h4 class="justify-content-center ">List Interviews</h4>
-                      <Link
-                        to="/listInterview"
-                        className="btn btn-link mb-0"
-                        // style={{ backgroundColor: "#02AF74" }}
-                        state={{ jobId: hiringRequestDetail.requestId }}
-                      >
-                        View All
-                      </Link>
-                    </div>
-                    <Row className="d-flex flex-column gap-4">
-                      {listInterviewToShow.map((listInterviewDetails, key) => (
-                        <Col lg={12} md={12} key={key}>
-                          <div className="dev-accepted ">
-                            <div className="px-4 py-3">
-                              <Row>
-                                <Col lg={12}>
-                                  <div className="mt-3 mt-lg-0 d-flex flex-column gap-3">
-                                    <div className="d-flex justify-content-between align-items-center">
-                                      <h5 className="mb-0">
-                                        <Link
-                                          to="/jobdetails"
-                                          className="text-dark"
-                                        >
-                                          {listInterviewDetails.title}
-                                        </Link>{" "}
-                                      </h5>
-                                      <span
-                                        className={
-                                          "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
-                                        }
-                                      >
-                                        {listInterviewDetails.statusString}
-                                      </span>
-                                    </div>
-                                    <div className="d-flex flex-column gap-1">
-                                      <p className="text-muted fs-14 mb-0">
-                                        Date:{" "}
-                                        {listInterviewDetails.dateOfInterview}
-                                      </p>
-                                      <p className="text-muted fs-14 mb-0">
-                                        Time: {listInterviewDetails.startTime} -{" "}
-                                        {listInterviewDetails.endTime}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </Col>
-                              </Row>
-                            </div>
-                          </div>
-                        </Col>
-                      ))}
-                      <Col lg={12} md={12}>
-                        <div className="dev-accepted">
-                          <div className="px-4 py-3 ">
-                            <Row>
-                              <div
-                                className="d-flex justify-content-center align-items-center"
-                                style={{
-                                  height: "50px",
-                                }}
-                              >
-                                <i
-                                  className=" uil uil-plus"
-                                  style={{ fontSize: "20px" }}
-                                ></i>
-                                <span className="ms-1">Add interview</span>
-                              </div>
-                            </Row>
-                          </div>
-                        </div>
-                      </Col>
-                    </Row>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div>
-                <p>No interviews available.</p>
-              </div>
-            )} */}
-
           </div>
           <div class="col-lg-11 p-0">
             <Card
               className="profile-content-page mt-4 mt-lg-0"
-              style={{ borderTop: "none" }}
-
+              style={{ border: "none" }}
             >
               <Nav
                 className="profile-content-nav nav-pills border-bottom"
@@ -1680,13 +1874,14 @@ const HiringRequestDetails = () => {
                                           candidategridDetailsNew.id
                                         )
                                       }
+                                      disabled={loadingInterview[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
                                     >
                                       {loadingInterview[
                                         candidategridDetailsNew.id
                                       ] ? (
                                         <HashLoader
                                           size={20}
-                                          color={"#36D7B7"}
+                                          color={"white"}
                                           loading={true}
                                         />
                                       ) : (
@@ -1702,17 +1897,18 @@ const HiringRequestDetails = () => {
                                       onClick={() =>
                                         rejectInterview2(candidategridDetailsNew.id)
                                       }
+                                      disabled={loadingInterview[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
                                     >
                                       {loadingReject[candidategridDetailsNew.id] ? (
                                         <HashLoader
                                           size={20}
-                                          color={"red"}
+                                          color={"white"}
                                           loading={true}
                                         />
                                       ) : isListLoading ? (
                                         <HashLoader
                                           size={20}
-                                          color={"red"}
+                                          color={"white"}
                                           loading={true}
                                         />
                                       ) : (
@@ -1743,17 +1939,19 @@ const HiringRequestDetails = () => {
                                         onClick={() =>
                                           handleOnboard(candidategridDetailsNew.id)
                                         }
+                                        disabled={loadingOnboard[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
+
                                       >
                                         {loadingOnboard[candidategridDetailsNew.id] ? (
                                           <HashLoader
                                             size={20}
-                                            color={"blue"}
+                                            color={"white"}
                                             loading={true}
                                           />
                                         ) : isListLoading2 ? (
                                           <HashLoader
                                             size={20}
-                                            color={"blue"}
+                                            color={"white"}
                                             loading={true}
                                           />
                                         ) : (
@@ -1767,17 +1965,18 @@ const HiringRequestDetails = () => {
                                       onClick={() =>
                                         rejectInterview2(candidategridDetailsNew.id)
                                       }
+                                      disabled={loadingOnboard[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
                                     >
                                       {loadingReject[candidategridDetailsNew.id] ? (
                                         <HashLoader
                                           size={20}
-                                          color={"red"}
+                                          color={"white"}
                                           loading={true}
                                         />
                                       ) : isListLoading ? (
                                         <HashLoader
                                           size={20}
-                                          color={"red"}
+                                          color={"white"}
                                           loading={true}
                                         />
                                       ) : (
@@ -1795,6 +1994,8 @@ const HiringRequestDetails = () => {
                                         onClick={() =>
                                           rejectInterview2(candidategridDetailsNew.id)
                                         }
+                                        disabled={loadingReject[candidategridDetailsNew.id]}
+
                                       >
                                         {loadingReject[candidategridDetailsNew.id] ? (
                                           <HashLoader
@@ -1871,16 +2072,25 @@ const HiringRequestDetails = () => {
                                 </div>
                               </div>
                               <div className="d-flex flex-column gap-1 ">
-                                <div className="d-flex mb-0">
+                                {/* <div className="d-flex  mb-0">
                                   <div className="flex-shrink-0">
                                     <i className="uil uil-clock-three text-primary me-1"></i>
                                   </div>
                                   <p className="text-muted  mb-0 ">{jobVacancy2Details.startTime} to {jobVacancy2Details.endTime}</p>
-                                  {/* <p className="text-muted mb-0 ms-1">|</p> */}
                                   <div className="flex-shrink-0 ms-2">
                                     <i className="uil uil-calendar-alt text-primary "></i>
                                   </div>
                                   <p className="text-muted mb-0 ms-1">{jobVacancy2Details.dateOfInterview} </p>
+                                </div> */}
+                                <div className="d-flex justify-content-between">
+                                  <div className="d-flex">
+                                    <i className="uil uil-clock-three text-primary me-1"></i>
+                                    <p className="text-muted  mb-0 ">{jobVacancy2Details.startTime} to {jobVacancy2Details.endTime}</p>
+                                  </div>
+                                  <div className="d-flex">
+                                    <i className="uil uil-calendar-alt text-primary "></i>
+                                    <p className="text-muted mb-0 ms-1">{jobVacancy2Details.dateOfInterview} </p>
+                                  </div>
                                 </div>
                                 <p className="text-muted mb-0" style={{ height: "45px" }}>{jobVacancy2Details.description}</p>
                               </div>
@@ -1942,9 +2152,9 @@ const HiringRequestDetails = () => {
               </CardBody>
             </Card>
           </div>
-        </div>
+        </div >
 
-      </section>
+      </section >
       <div>
       </div>
     </React.Fragment >

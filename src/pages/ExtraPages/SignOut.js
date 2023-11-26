@@ -16,7 +16,17 @@ const SignOut = () => {
     document.title = "Sign Out | Jobcy - Job Listing Template | Themesdesign";
     // Clear all data in local storage
     localStorage.clear();
+    sendMessageToParent();
   }, []);
+
+  const sendMessageToParent = () => {
+    if (window.opener) {
+      window.opener.postMessage('code:', '*');
+    } else {
+      console.error("No parent window found.");
+    }
+  };
+
 
   return (
     <React.Fragment>
