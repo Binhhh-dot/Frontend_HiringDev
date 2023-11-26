@@ -4,8 +4,27 @@ import { Link } from "react-router-dom";
 import companyServices from "../../services/company.services";
 import { Input, Space, Layout } from "antd";
 import SiderBarWeb from "./SlideBar/SiderBarWeb";
+import { useNavigate, useLocation } from "react-router-dom";
+import userAuthorization from "../../utils/userAuthorization";
 
 const CompanyListPartner = () => {
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoad, setIdLoad] = useState(false);
+  useEffect(() => {
+    const localStorageRole = localStorage.getItem('role');
+    if (!localStorageRole) {
+      navigate("/signin");
+    } else {
+      if (!userAuthorization(localStorageRole, location.pathname)) {
+        navigate("/error404");
+      } else {
+        setIdLoad(true)
+      }
+    }
+  }, []);
+
   const [listCompany, setListCompany] = useState([]);
 
   let [currentPage, setCurrentPage] = useState(1);
@@ -199,20 +218,20 @@ const CompanyListPartner = () => {
                             listCompanyNew.statusString === "Waiting Approval"
                               ? "badge bg-warning text-light fs-12"
                               : listCompanyNew.statusString === "In Progress"
-                              ? "badge bg-blue text-light fs-12"
-                              : listCompanyNew.statusString === "Rejected"
-                              ? "badge bg-danger text-light fs-12"
-                              : listCompanyNew.statusString === "Expired"
-                              ? "badge bg-danger text-light fs-12"
-                              : listCompanyNew.statusString === "Cancelled"
-                              ? "badge bg-danger text-light fs-12"
-                              : listCompanyNew.statusString === "Finished"
-                              ? "badge bg-primary text-light fs-12"
-                              : listCompanyNew.statusString === "Completed"
-                              ? "badge bg-primary text-light fs-12"
-                              : listCompanyNew.statusString === "Active"
-                              ? "badge bg-info text-light fs-12"
-                              : ""
+                                ? "badge bg-blue text-light fs-12"
+                                : listCompanyNew.statusString === "Rejected"
+                                  ? "badge bg-danger text-light fs-12"
+                                  : listCompanyNew.statusString === "Expired"
+                                    ? "badge bg-danger text-light fs-12"
+                                    : listCompanyNew.statusString === "Cancelled"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : listCompanyNew.statusString === "Finished"
+                                        ? "badge bg-primary text-light fs-12"
+                                        : listCompanyNew.statusString === "Completed"
+                                          ? "badge bg-primary text-light fs-12"
+                                          : listCompanyNew.statusString === "Active"
+                                            ? "badge bg-info text-light fs-12"
+                                            : ""
                           }
                         >
                           {listCompanyNew.statusString}
@@ -232,9 +251,8 @@ const CompanyListPartner = () => {
               <nav aria-label="Page navigation example">
                 <div className="pagination job-pagination mb-0 justify-content-center">
                   <li
-                    className={`page-item ${
-                      currentPage === 1 ? "disabled" : ""
-                    }`}
+                    className={`page-item ${currentPage === 1 ? "disabled" : ""
+                      }`}
                   >
                     <Link
                       className="page-link"
@@ -247,9 +265,8 @@ const CompanyListPartner = () => {
                   </li>
                   {renderPageNumbers()}
                   <li
-                    className={`page-item ${
-                      currentPage === totalPages ? "disabled" : ""
-                    }`}
+                    className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                      }`}
                   >
                     <Link className="page-link" to="#" onClick={handleNextPage}>
                       <i className="mdi mdi-chevron-double-right fs-15"></i>

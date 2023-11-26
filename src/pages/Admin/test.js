@@ -25,7 +25,7 @@ import {
   BankOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Input, Button } from "antd";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Col,
   Row,
@@ -41,6 +41,7 @@ import {
 
 import { Link } from "react-router-dom";
 import classname from "classnames";
+import userAuthorization from "../../utils/userAuthorization";
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
@@ -124,6 +125,22 @@ const items = [
 ];
 
 const Test = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoad, setIdLoad] = useState(false);
+  useEffect(() => {
+    const localStorageRole = localStorage.getItem('role');
+    if (!localStorageRole) {
+      navigate("/signin");
+    } else {
+      if (!userAuthorization(localStorageRole, location.pathname)) {
+        navigate("/error404");
+      } else {
+        setIdLoad(true)
+      }
+    }
+  }, []);
+
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]); // Định nghĩa selectedKeys
   const [isLeftIcon, setIsLeftIcon] = useState(true);
