@@ -17,8 +17,27 @@ import projectServices from "../../services/project.services";
 import classnames from "classnames";
 import { useBootstrapBreakpoints } from "react-bootstrap/esm/ThemeProvider";
 import SiderBarWeb from "./SlideBar/SiderBarWeb";
+import userAuthorization from "../../utils/userAuthorization";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ProjectListInManager = () => {
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoad, setIdLoad] = useState(false);
+  useEffect(() => {
+    const localStorageRole = localStorage.getItem('role');
+    if (!localStorageRole) {
+      navigate("/signin");
+    } else {
+      if (!userAuthorization(localStorageRole, location.pathname)) {
+        navigate("/error404");
+      } else {
+        setIdLoad(true)
+      }
+    }
+  }, []);
+
   const [projectList, setProjectList] = useState([]);
   //------------------------------------------------------------------------------------------------
   const [projectListPreparing, setProjectListPreparing] = useState([]);
@@ -601,14 +620,14 @@ const ProjectListInManager = () => {
                                     ? "badge bg-blue text-light fs-12"
                                     : projectListDetail.statusString ===
                                       "cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : projectListDetail.statusString ===
-                                      "Inprogress"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : projectListDetail.statusString ===
-                                      "completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : ""
+                                      ? "badge bg-danger text-light fs-12"
+                                      : projectListDetail.statusString ===
+                                        "Inprogress"
+                                        ? "badge bg-primary text-light fs-12"
+                                        : projectListDetail.statusString ===
+                                          "completed"
+                                          ? "badge bg-primary text-light fs-12"
+                                          : ""
                                 }
                               >
                                 {projectListDetail.statusString}
@@ -626,9 +645,8 @@ const ProjectListInManager = () => {
                     <nav aria-label="Page navigation example">
                       <div className="pagination job-pagination mb-0 justify-content-center">
                         <li
-                          className={`page-item ${
-                            currentPage === 1 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === 1 ? "disabled" : ""
+                            }`}
                         >
                           <Link
                             className="page-link"
@@ -641,9 +659,8 @@ const ProjectListInManager = () => {
                         </li>
                         {renderPageNumbers()}
                         <li
-                          className={`page-item ${
-                            currentPage === totalPages ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                            }`}
                         >
                           <Link
                             className="page-link"
@@ -753,14 +770,14 @@ const ProjectListInManager = () => {
                                     ? "badge bg-blue text-light fs-12"
                                     : projectListDetail.statusString ===
                                       "cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : projectListDetail.statusString ===
-                                      "Inprogress"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : projectListDetail.statusString ===
-                                      "completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : ""
+                                      ? "badge bg-danger text-light fs-12"
+                                      : projectListDetail.statusString ===
+                                        "Inprogress"
+                                        ? "badge bg-primary text-light fs-12"
+                                        : projectListDetail.statusString ===
+                                          "completed"
+                                          ? "badge bg-primary text-light fs-12"
+                                          : ""
                                 }
                               >
                                 {projectListDetail.statusString}
@@ -778,9 +795,8 @@ const ProjectListInManager = () => {
                     <nav aria-label="Page navigation example">
                       <div className="pagination job-pagination mb-0 justify-content-center">
                         <li
-                          className={`page-item ${
-                            currentPagePreparing === 1 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPagePreparing === 1 ? "disabled" : ""
+                            }`}
                         >
                           <Link
                             className="page-link"
@@ -793,11 +809,10 @@ const ProjectListInManager = () => {
                         </li>
                         {renderPageNumbersPreparing()}
                         <li
-                          className={`page-item ${
-                            currentPagePreparing === totalPagesPreparing
+                          className={`page-item ${currentPagePreparing === totalPagesPreparing
                               ? "disabled"
                               : ""
-                          }`}
+                            }`}
                         >
                           <Link
                             className="page-link"
@@ -907,14 +922,14 @@ const ProjectListInManager = () => {
                                     ? "badge bg-blue text-light fs-12"
                                     : projectListDetail.statusString ===
                                       "cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : projectListDetail.statusString ===
-                                      "Inprogress"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : projectListDetail.statusString ===
-                                      "completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : ""
+                                      ? "badge bg-danger text-light fs-12"
+                                      : projectListDetail.statusString ===
+                                        "Inprogress"
+                                        ? "badge bg-primary text-light fs-12"
+                                        : projectListDetail.statusString ===
+                                          "completed"
+                                          ? "badge bg-primary text-light fs-12"
+                                          : ""
                                 }
                               >
                                 {projectListDetail.statusString}
@@ -932,9 +947,8 @@ const ProjectListInManager = () => {
                     <nav aria-label="Page navigation example">
                       <div className="pagination job-pagination mb-0 justify-content-center">
                         <li
-                          className={`page-item ${
-                            currentPageInprogress === 1 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPageInprogress === 1 ? "disabled" : ""
+                            }`}
                         >
                           <Link
                             className="page-link"
@@ -947,11 +961,10 @@ const ProjectListInManager = () => {
                         </li>
                         {renderPageNumbersInprogress()}
                         <li
-                          className={`page-item ${
-                            currentPageInprogress === totalPagesInprogress
+                          className={`page-item ${currentPageInprogress === totalPagesInprogress
                               ? "disabled"
                               : ""
-                          }`}
+                            }`}
                         >
                           <Link
                             className="page-link"
@@ -1061,14 +1074,14 @@ const ProjectListInManager = () => {
                                     ? "badge bg-blue text-light fs-12"
                                     : projectListDetail.statusString ===
                                       "cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : projectListDetail.statusString ===
-                                      "Inprogress"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : projectListDetail.statusString ===
-                                      "completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : ""
+                                      ? "badge bg-danger text-light fs-12"
+                                      : projectListDetail.statusString ===
+                                        "Inprogress"
+                                        ? "badge bg-primary text-light fs-12"
+                                        : projectListDetail.statusString ===
+                                          "completed"
+                                          ? "badge bg-primary text-light fs-12"
+                                          : ""
                                 }
                               >
                                 {projectListDetail.statusString}
@@ -1086,9 +1099,8 @@ const ProjectListInManager = () => {
                     <nav aria-label="Page navigation example">
                       <div className="pagination job-pagination mb-0 justify-content-center">
                         <li
-                          className={`page-item ${
-                            currentPageComplete === 1 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPageComplete === 1 ? "disabled" : ""
+                            }`}
                         >
                           <Link
                             className="page-link"
@@ -1101,11 +1113,10 @@ const ProjectListInManager = () => {
                         </li>
                         {renderPageNumbersComplete()}
                         <li
-                          className={`page-item ${
-                            currentPageComplete === totalPagesComplete
+                          className={`page-item ${currentPageComplete === totalPagesComplete
                               ? "disabled"
                               : ""
-                          }`}
+                            }`}
                         >
                           <Link
                             className="page-link"
@@ -1215,14 +1226,14 @@ const ProjectListInManager = () => {
                                     ? "badge bg-blue text-light fs-12"
                                     : projectListDetail.statusString ===
                                       "cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : projectListDetail.statusString ===
-                                      "Inprogress"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : projectListDetail.statusString ===
-                                      "completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : ""
+                                      ? "badge bg-danger text-light fs-12"
+                                      : projectListDetail.statusString ===
+                                        "Inprogress"
+                                        ? "badge bg-primary text-light fs-12"
+                                        : projectListDetail.statusString ===
+                                          "completed"
+                                          ? "badge bg-primary text-light fs-12"
+                                          : ""
                                 }
                               >
                                 {projectListDetail.statusString}
@@ -1240,9 +1251,8 @@ const ProjectListInManager = () => {
                     <nav aria-label="Page navigation example">
                       <div className="pagination job-pagination mb-0 justify-content-center">
                         <li
-                          className={`page-item ${
-                            currentPageCancel === 1 ? "disabled" : ""
-                          }`}
+                          className={`page-item ${currentPageCancel === 1 ? "disabled" : ""
+                            }`}
                         >
                           <Link
                             className="page-link"
@@ -1255,11 +1265,10 @@ const ProjectListInManager = () => {
                         </li>
                         {renderPageNumbersCancel()}
                         <li
-                          className={`page-item ${
-                            currentPageCancel === totalPagesCancel
+                          className={`page-item ${currentPageCancel === totalPagesCancel
                               ? "disabled"
                               : ""
-                          }`}
+                            }`}
                         >
                           <Link
                             className="page-link"

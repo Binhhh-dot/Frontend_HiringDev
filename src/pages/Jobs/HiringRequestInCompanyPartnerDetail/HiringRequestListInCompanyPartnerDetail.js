@@ -1,23 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "reactstrap";
 //import JobFilters from "../CandidateList/JobFilters";
 import HiringRequestDetails from "./HiringRequestDetails";
 import Section from "./Section";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import userAuthorization from "../../../utils/userAuthorization";
 
 //import Pagination from "../JobList2/Pagination";
 
 const HiringRequestListInCompanyPartnerDetail = () => {
   document.title = "Hiring Request List In Company Partner Detail";
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoad, setIdLoad] = useState(false);
   useEffect(() => {
-    const role = localStorage.getItem('role');
-    if (role === null) {
+    const localStorageRole = localStorage.getItem('role');
+    if (!localStorageRole) {
       navigate("/signin");
-    } else if (role === 'manager') {
-      navigate("/error404");
+    } else {
+      if (!userAuthorization(localStorageRole, location.pathname)) {
+        navigate("/error404");
+      } else {
+        setIdLoad(true)
+      }
     }
-  });
+  }, []);
   return (
     <React.Fragment>
       <Section />

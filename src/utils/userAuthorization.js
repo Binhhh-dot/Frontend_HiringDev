@@ -2,15 +2,22 @@ const userAuthorization = (localStorageRole, linkPage) => {
     const listPageHrAccept = [
         '/projectdetailhr',
         '/projectlist',
-        '/myprofile',
         '/hiringrequestlistincompanypartnerdetail',
         '/laborSubleasingAgreement'
     ];
+    const listPageManagerAccpet = [
+        '/newlistinterview',
+        '/projectlistinmanager',
+        '/listcontract',
+        '/listcompanyPartner',
+        '/manager',
+    ]
 
     if (localStorageRole === "HR") {
         return listPageHrAccept.includes(linkPage);
-    } else {
-        return false;
+    }
+    if (localStorageRole === "Manager") {
+        return listPageManagerAccpet.includes(linkPage);
     }
 };
 
