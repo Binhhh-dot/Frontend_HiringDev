@@ -2,6 +2,8 @@ import urlConstant from "../Common/urlConstant";
 import utils from "../utils/customAxios";
 
 const createHiringRequest = async (
+  companyId,
+  jobPositionId,
   jobTitle,
   jobDescription,
   numberOfDev,
@@ -11,12 +13,12 @@ const createHiringRequest = async (
   levelRequireId,
   skillIds,
   isSaved,
-  projectId,
   employmentTypeId,
-  scheduleTypeId
 ) => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.createHiringRequest;
   const response = await utils.axiosLocalHost.post(serviceUrl, {
+    companyId,
+    jobPositionId,
     jobTitle,
     jobDescription,
     numberOfDev,
@@ -26,8 +28,6 @@ const createHiringRequest = async (
     levelRequireId,
     skillIds,
     isSaved,
-    projectId,
-    scheduleTypeId,
     employmentTypeId,
   });
   return response;
@@ -35,10 +35,10 @@ const createHiringRequest = async (
 
 const updateHiringRequest = async (
   requestId,
+  jobPositionId,
   jobTitle,
   jobDescription,
   numberOfDev,
-  targetedDev,
   salaryPerDev,
   duration,
   typeRequireId,
@@ -46,27 +46,21 @@ const updateHiringRequest = async (
   skillIds,
   isSaved,
   employmentTypeId,
-  scheduleTypeId
 ) => {
   const serviceUrl =
-    urlConstant.endpoint.hiringRequest.getHiringRequestByRequestId.replace(
-      "${requestId}",
-      requestId
-    );
-  console.log(serviceUrl);
+    urlConstant.endpoint.hiringRequest.updateHiringRequest.replace("${requestId}", requestId);
   const response = await utils.axiosLocalHost.put(serviceUrl, {
     requestId,
+    jobPositionId,
     jobTitle,
     jobDescription,
     numberOfDev,
-    targetedDev,
     salaryPerDev,
     duration,
     typeRequireId,
     levelRequireId,
     skillIds,
     isSaved,
-    scheduleTypeId,
     employmentTypeId,
   });
   return response;
@@ -354,6 +348,18 @@ const getHiringRequestByProjectIdAndPaging = async (
   return response;
 };
 
+const getHiringRequestByProjectId = async (
+  projectId
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getAllHiringRequestByProjectId.replace(
+      "${projectId}",
+      projectId
+    )
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -374,4 +380,6 @@ export default {
   cancelHirringRequestStatus,
   cancelHirringRequestStatusAfter,
   getHiringRequestByProjectIdAndPaging,
+  getHiringRequestByProjectId
+
 };

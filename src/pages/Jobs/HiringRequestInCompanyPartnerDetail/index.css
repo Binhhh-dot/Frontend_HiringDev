@@ -22,9 +22,9 @@
   transition: width 0.5s ease;
   /* Để có hiệu ứng chuyển động */
   border-radius: 8px;
-
 }
 
 
-
-
+input:read-only {
+  background-color: #f6f6f6;
+}

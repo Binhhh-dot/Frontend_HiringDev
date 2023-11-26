@@ -34,7 +34,7 @@ const NavBar = (props) => {
   const [company, setCompany] = useState(false);
   const [pages, setPages] = useState(false);
   const [blog, setBlog] = useState(false);
-
+  const navStyle = userId ? { marginTop: "0px" } : {};
   //Notification Dropdown
   const [notification, setNotification] = useState(false);
   const dropDownnotification = () => setNotification((prevState) => !prevState);
@@ -143,10 +143,11 @@ const NavBar = (props) => {
     <React.Fragment>
       <nav
         className={"navbar navbar-expand-lg fixed-top sticky p-0 " + navClass}
+        style={navStyle}
         id="navigation"
       >
         <Container fluid className="custom-container">
-          <Link className="navbar-brand text-dark fw-bold me-auto" to="/">
+          <Link className="navbar-brand text-dark fw-bold me-auto" to="/layout3">
             <img src={darkLogo} height="22" alt="" className="logo-dark" />
             <img src={lightLogo} height="22" alt="" className="logo-light" />
           </Link>
