@@ -54,7 +54,7 @@ import ResetPassword from "../pages/ExtraPages/ResetPassword";
 import ComingSoon from "../pages/ExtraPages/ComingSoon";
 import Error404 from "../pages/ExtraPages/Error404";
 import Components from "../pages/ExtraPages/Components/Components";
-import Test from "../pages/Admin/test";
+import Manager from "../pages/Admin/Manager";
 //profile section(User Profile)
 import BookMarkJobPost from "../pages/Profile/BookMarkJobPost/BookMarkJobPost";
 import ManageJobs from "../pages/Profile/ManageJobs/ManageJobs";
@@ -150,7 +150,6 @@ const userRoutes = [
   { path: "/listInterview", component: <InterviewListManager /> },
   { path: "/listInterviewHR", component: <InterviewList /> },
 
-
   { path: "/jobscategories", component: <JobsCategories /> },
   { path: "/jobdetails", component: <JobDetails /> },
   { path: "/jobgrid2", component: <JobGrid2 /> },
@@ -224,7 +223,7 @@ const authRoutes = [
   { path: "/signup", component: <SignUp /> },
   { path: "/signin", component: <SignIn /> },
   { path: "/signcompany", component: <SignCompany /> },
-  { path: "/manager", component: <Test /> },
+  { path: "/manager", component: <Manager /> },
   { path: "/newhiringrequestdetail", component: <NewHiringRequestDetail /> },
   { path: "/projectdetail", component: <ProjectDetail /> },
   { path: "/sidebarmanager", component: <SideBarManager /> },

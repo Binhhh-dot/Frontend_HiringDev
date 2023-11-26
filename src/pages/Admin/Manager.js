@@ -123,7 +123,7 @@ const items = [
   },
 ];
 
-const Test = () => {
+const Manager = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]); // Định nghĩa selectedKeys
   const [isLeftIcon, setIsLeftIcon] = useState(true);
@@ -407,4 +407,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default Manager;
