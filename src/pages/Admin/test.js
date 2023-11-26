@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import JobVacancyList from "./JobVacancyList";
 import NewListInterviewInfo from "./NewListInterviewInfo";
-import ProjectList from "./ProjectList";
+import ProjectList from "./ProjectListInManager";
 import ContractList from "./ContractList";
 import CompanyListPartner from "./CompanyListPartner";
 import img0 from "../../assets/images/user/img-00.jpg";
 import { Badge, Space } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import SiderBarWeb from "./SlideBar/SiderBarWeb";
 import {
   PieChartOutlined,
   DesktopOutlined,
@@ -50,38 +51,43 @@ const items = [
     icon: <HomeOutlined />,
     className: "option-1",
   },
-  {
-    label: "Option 2",
-    key: "menu-key/2",
-    icon: <DesktopOutlined />,
-    className: "option-2",
-  },
-  {
-    label: "User",
-    key: "menu-key/sub-menu-key",
-    icon: <UserOutlined />,
-    children: [
-      { label: "Tom", key: "menu-key/sub-menu-key/3" },
-      { label: "Bill", key: "menu-key/sub-menu-key/4" },
-      { label: "Alex", key: "menu-key/sub-menu-key/5" },
-    ],
-    className: "option-2",
-  },
-  {
-    label: "Team",
-    key: "menu-key/sub-menu-key2",
-    icon: <TeamOutlined />,
-    children: [
-      { label: "Team 1", key: "menu-key/sub-menu-key2/6" },
-      { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
-    ],
-  },
-  {
-    label: "Files",
-    key: "menu-key/9",
-    icon: <FileOutlined />,
-    className: "files",
-  },
+
+  // -----------COMMENT NAY DUNG XOA, CON DUNG LAI-----------------------
+  // {
+  //   label: "Option 2",
+  //   key: "menu-key/2",
+  //   icon: <DesktopOutlined />,
+  //   className: "option-2",
+  // },
+  // {
+  //   label: "User",
+  //   key: "menu-key/sub-menu-key",
+  //   icon: <UserOutlined />,
+  //   children: [
+  //     { label: "Tom", key: "menu-key/sub-menu-key/3" },
+  //     { label: "Bill", key: "menu-key/sub-menu-key/4" },
+  //     { label: "Alex", key: "menu-key/sub-menu-key/5" },
+  //   ],
+  //   className: "option-2",
+  // },
+  // {
+  //   label: "Team",
+  //   key: "menu-key/sub-menu-key2",
+  //   icon: <TeamOutlined />,
+  //   children: [
+  //     { label: "Team 1", key: "menu-key/sub-menu-key2/6" },
+  //     { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
+  //   ],
+  // },
+
+  // {
+  //   label: "Files",
+  //   key: "menu-key/9",
+  //   icon: <FileOutlined />,
+  //   className: "files",
+  // },
+
+  //-----------------------------------------------------------------------
   {
     label: "Hiring Request",
     key: "menu-key/10",
@@ -140,7 +146,7 @@ const Test = () => {
   console.log(selectedKeys);
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Sider
+      {/* <Sider
         collapsed={collapsed}
         width={250}
         style={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}
@@ -219,36 +225,14 @@ const Test = () => {
             )
           )}
         </Menu>
-      </Sider>
+      </Sider> */}
+      <SiderBarWeb></SiderBarWeb>
       <Layout>
-        {/* <Header style={{ padding: 16, backgroundColor: '#f8f7fd', display: 'flex', justifyContent: 'space-between' }}>
-  <div style={{ backgroundColor: "white", padding: "25px", width: "100%", display: 'flex', justifyContent: 'space-between' }}>
-    <div style={{ display: 'flex', alignItems: 'center'}}>
-    <Search
-  placeholder="Search..."
-  onSearch={(value) => {
-    console.log(value);
-  }}
-/>
-    </div>
-    
-    <div style={{ display: 'flex', alignItems: 'center'}}>
-
-      <Button type="primary" onClick={() => {}}>
-        Create
-      </Button>
-    </div>
-
-    
-  </div>
-</Header> */}
-
         <div
           style={{
             backgroundColor: "#FFFF",
             height: "70px",
             display: "flex",
-            //justifyContent: "space-between",
             alignItems: "center",
             borderRadius: "7px",
             boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
@@ -329,7 +313,7 @@ const Test = () => {
             </section>
           )}
           {/* -------------------------------------------------------- */}
-          {selectedKeys[0] === "menu-key/11" && (
+          {/* {selectedKeys[0] === "menu-key/11" && (
             <section
               className="section p-3"
               style={{
@@ -349,9 +333,9 @@ const Test = () => {
                 </Row>
               </Container>
             </section>
-          )}
+          )} */}
           {/* ----------------------------------------------------------- */}
-          {selectedKeys[0] === "menu-key/12" && (
+          {/* {selectedKeys[0] === "menu-key/12" && (
             <section
               className="section p-3 "
               style={{
@@ -371,9 +355,9 @@ const Test = () => {
                 </Row>
               </Container>
             </section>
-          )}
+          )} */}
           {/* ----------------------------------------------------------- */}
-          {selectedKeys[0] === "menu-key/14" && (
+          {/* {selectedKeys[0] === "menu-key/14" && (
             <section
               className="section p-3"
               style={{
@@ -393,9 +377,9 @@ const Test = () => {
                 </Row>
               </Container>
             </section>
-          )}
+          )} */}
           {/* ------------------------------------------------------------ */}
-          {selectedKeys[0] === "menu-key/15" && (
+          {/* {selectedKeys[0] === "menu-key/15" && (
             <section
               className="section p-3"
               style={{
@@ -415,7 +399,7 @@ const Test = () => {
                 </Row>
               </Container>
             </section>
-          )}
+          )} */}
         </Content>
         <Footer>Footer</Footer>
       </Layout>

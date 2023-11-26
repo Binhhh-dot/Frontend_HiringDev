@@ -13,7 +13,8 @@ import {
 import classnames from "classnames";
 import { Link } from "react-router-dom";
 import contractServices from "../../services/contract.services";
-import { Input, Space } from "antd";
+import { Input, Space, Layout } from "antd";
+import SiderBarWeb from "./SlideBar/SiderBarWeb";
 
 const ContractList = () => {
   //------------------------------------------------------------------------
@@ -330,727 +331,785 @@ const ContractList = () => {
   //------------------------------------------------------------------------
   return (
     <React.Fragment>
-      <div>
-        <div className="mb-2">
-          <h4 className="mb-0">Contract List</h4>
-        </div>
+      <Layout style={{ minHeight: "100vh" }}>
+        <SiderBarWeb></SiderBarWeb>
+        <Layout>
+          {" "}
+          <div>
+            <div className="mb-2">
+              <h4 className="mb-0">Contract List</h4>
+            </div>
 
-        <div>
-          <div className="d-flex justify-content-between">
-            <Nav
-              className="profile-content-nav nav-pills border-bottom gap-3 mb-3"
-              id="pills-tab"
-              role="tablist"
-            >
-              <NavItem role="presentation">
-                <NavLink
-                  to="#"
-                  className={classnames("nav-link", {
-                    active: activeTab === "1",
-                  })}
-                  onClick={() => {
-                    tabChange("1");
-                  }}
-                  type="button"
+            <div>
+              <div className="d-flex justify-content-between">
+                <Nav
+                  className="profile-content-nav nav-pills border-bottom gap-3 mb-3"
+                  id="pills-tab"
+                  role="tablist"
                 >
-                  All
-                </NavLink>
-              </NavItem>
-              <NavItem role="presentation">
-                <NavLink
-                  to="#"
-                  className={classnames("nav-link", {
-                    active: activeTab === "2",
-                  })}
-                  onClick={() => {
-                    tabChange("2");
-                  }}
-                  type="button"
-                >
-                  Pending
-                </NavLink>
-              </NavItem>
-              <NavItem role="presentation">
-                <NavLink
-                  to="#"
-                  className={classnames("nav-link", {
-                    active: activeTab === "3",
-                  })}
-                  onClick={() => {
-                    tabChange("3");
-                  }}
-                  type="button"
-                >
-                  Signed
-                </NavLink>
-              </NavItem>
-              <NavItem role="presentation">
-                <NavLink
-                  to="#"
-                  className={classnames("nav-link", {
-                    active: activeTab === "4",
-                  })}
-                  onClick={() => {
-                    tabChange("4");
-                  }}
-                  type="button"
-                >
-                  Failed
-                </NavLink>
-              </NavItem>
-            </Nav>
+                  <NavItem role="presentation">
+                    <NavLink
+                      to="#"
+                      className={classnames("nav-link", {
+                        active: activeTab === "1",
+                      })}
+                      onClick={() => {
+                        tabChange("1");
+                      }}
+                      type="button"
+                    >
+                      All
+                    </NavLink>
+                  </NavItem>
+                  <NavItem role="presentation">
+                    <NavLink
+                      to="#"
+                      className={classnames("nav-link", {
+                        active: activeTab === "2",
+                      })}
+                      onClick={() => {
+                        tabChange("2");
+                      }}
+                      type="button"
+                    >
+                      Pending
+                    </NavLink>
+                  </NavItem>
+                  <NavItem role="presentation">
+                    <NavLink
+                      to="#"
+                      className={classnames("nav-link", {
+                        active: activeTab === "3",
+                      })}
+                      onClick={() => {
+                        tabChange("3");
+                      }}
+                      type="button"
+                    >
+                      Signed
+                    </NavLink>
+                  </NavItem>
+                  <NavItem role="presentation">
+                    <NavLink
+                      to="#"
+                      className={classnames("nav-link", {
+                        active: activeTab === "4",
+                      })}
+                      onClick={() => {
+                        tabChange("4");
+                      }}
+                      type="button"
+                    >
+                      Failed
+                    </NavLink>
+                  </NavItem>
+                </Nav>
 
-            <div className="d-flex align-items-center ">
-              <Space>
-                <Search
-                  className="custom-search-input"
-                  placeholder="input search text"
-                  allowClear
-                  enterButton="Search"
-                  size="large"
-                  onSearch={onSearch}
-                />
-              </Space>
+                <div className="d-flex align-items-center ">
+                  <Space>
+                    <Search
+                      className="custom-search-input"
+                      placeholder="input search text"
+                      allowClear
+                      enterButton="Search"
+                      size="large"
+                      onSearch={onSearch}
+                    />
+                  </Space>
+                </div>
+              </div>
+
+              <CardBody className="px-0">
+                <TabContent activeTab={activeTab}>
+                  <TabPane tabId="1">
+                    {contractListAll.map((contractListAllNew, key) => (
+                      <div
+                        key={key}
+                        className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                        style={{
+                          boxShadow:
+                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                        }}
+                      >
+                        <CardBody className="p-2">
+                          <Row className="align-items-center ">
+                            <Col md={1}>
+                              <div className="d-flex justify-content-center">
+                                <i
+                                  className="uil uil-file-plus-alt"
+                                  style={{ fontSize: "50px" }}
+                                ></i>
+                              </div>
+                            </Col>
+
+                            <Col md={3}>
+                              <div>
+                                <h5 className="fs-18 mb-0">
+                                  <Link
+                                    to="/contractdetail"
+                                    className="text-dark"
+                                    state={{
+                                      contractId: contractListAllNew.contractId,
+                                    }}
+                                  >
+                                    {contractListAllNew.contractCode}
+                                  </Link>
+                                </h5>
+                                <p className="text-muted fs-14 mb-0">
+                                  {contractListAllNew.companyPartnerName}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex flex-column gap-1 justify-content-center">
+                                <div>
+                                  <p className="text-muted mb-0 fs-13">
+                                    Create at
+                                  </p>
+                                  <p
+                                    className="mb-0 fs-17"
+                                    style={{ fontWeight: "600" }}
+                                  >
+                                    {contractListAllNew.createdAt}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-0 fs-13">
+                                    Human resource
+                                  </p>
+                                  <p
+                                    className="mb-0 fs-17"
+                                    style={{ fontWeight: "600" }}
+                                  >
+                                    {contractListAllNew.humanResourceName}
+                                  </p>
+                                </div>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex mb-0 align-items-center">
+                                <div className="flex-shrink-0">
+                                  <i
+                                    className="uil uil-user-check text-primary me-1"
+                                    style={{ fontSize: "19px" }}
+                                  ></i>
+                                </div>
+                                <p className="text-muted mb-0">
+                                  {contractListAllNew.developerName}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div>
+                                <p className="text-muted mb-0 fs-13">
+                                  Date signed
+                                </p>
+                                <p
+                                  className="mb-0 fs-17"
+                                  style={{ fontWeight: "600" }}
+                                >
+                                  {contractListAllNew.dateSigned}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div className="d-flex align-items-center">
+                                <span
+                                  className={
+                                    contractListAllNew.statusString ===
+                                    "Pending"
+                                      ? "badge bg-warning text-light fs-12"
+                                      : contractListAllNew.statusString ===
+                                        "Signed"
+                                      ? "badge bg-success text-light fs-12"
+                                      : contractListAllNew.statusString ===
+                                        "Failed"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : ""
+                                  }
+                                >
+                                  {contractListAllNew.statusString}
+                                </span>
+                              </div>
+                            </Col>
+                          </Row>
+                        </CardBody>
+                      </div>
+                    ))}
+
+                    {/* phan trang */}
+                    <Row>
+                      <Col lg={12} className="mt-4 pt-2">
+                        <nav aria-label="Page navigation example">
+                          <div className="pagination job-pagination mb-0 justify-content-center">
+                            <li
+                              className={`page-item ${
+                                currentPage === 1 ? "disabled" : ""
+                              }`}
+                            >
+                              <Link
+                                className="page-link"
+                                to="#"
+                                tabIndex="-1"
+                                onClick={handlePrevPage}
+                              >
+                                <i className="mdi mdi-chevron-double-left fs-15"></i>
+                              </Link>
+                            </li>
+                            {renderPageNumbers()}
+                            <li
+                              className={`page-item ${
+                                currentPage === totalPages ? "disabled" : ""
+                              }`}
+                            >
+                              <Link
+                                className="page-link"
+                                to="#"
+                                onClick={handleNextPage}
+                              >
+                                <i className="mdi mdi-chevron-double-right fs-15"></i>
+                              </Link>
+                            </li>
+                          </div>
+                        </nav>
+                      </Col>
+                    </Row>
+                  </TabPane>
+                  <TabPane tabId="2">
+                    {contractListPending.map((contractListAllNew, key) => (
+                      <div
+                        key={key}
+                        className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                        style={{
+                          boxShadow:
+                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                        }}
+                      >
+                        <CardBody className="p-2">
+                          <Row className="align-items-center ">
+                            <Col md={1}>
+                              <div>
+                                <Link to="#">
+                                  <img
+                                    style={{
+                                      width: "80px",
+                                      height: "80px",
+                                    }}
+                                    src={contractListAllNew.companyImage}
+                                    alt=""
+                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                  />
+                                </Link>
+                              </div>
+                            </Col>
+
+                            <Col md={3}>
+                              <div>
+                                <h5 className="fs-18 mb-0">
+                                  <Link
+                                    to="/newhiringrequestdetail"
+                                    className="text-dark"
+                                    state={{
+                                      contractId: contractListAllNew.contractId,
+                                    }}
+                                  >
+                                    {contractListAllNew.contractCode}
+                                  </Link>
+                                </h5>
+                                <p className="text-muted fs-14 mb-0">
+                                  {contractListAllNew.companyPartnerName}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex flex-column gap-1 justify-content-center">
+                                <div>
+                                  <p className="text-muted mb-0 fs-11">
+                                    Create at
+                                  </p>
+                                  <p
+                                    className="mb-0 fs-17"
+                                    style={{ fontWeight: "600" }}
+                                  >
+                                    {contractListAllNew.createdAt}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-0 fs-11">
+                                    Human resource
+                                  </p>
+                                  <p
+                                    className="mb-0 fs-17"
+                                    style={{ fontWeight: "600" }}
+                                  >
+                                    {contractListAllNew.humanResourceName}
+                                  </p>
+                                </div>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex mb-0 align-items-center">
+                                <div className="flex-shrink-0">
+                                  <i
+                                    className="uil uil-user-check text-primary me-1"
+                                    style={{ fontSize: "19px" }}
+                                  ></i>
+                                </div>
+                                <p className="text-muted mb-0">
+                                  {contractListAllNew.developerName}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div>
+                                <p className="text-muted mb-0 fs-11">
+                                  Date signed
+                                </p>
+                                <p
+                                  className="mb-0 fs-17"
+                                  style={{ fontWeight: "600" }}
+                                >
+                                  {contractListAllNew.dateSigned}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div className="d-flex align-items-center">
+                                <span
+                                  className={
+                                    contractListAllNew.statusString ===
+                                    "Pending"
+                                      ? "badge bg-warning text-light fs-12"
+                                      : contractListAllNew.statusString ===
+                                        "Signed"
+                                      ? "badge bg-success text-light fs-12"
+                                      : contractListAllNew.statusString ===
+                                        "Failed"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : ""
+                                  }
+                                >
+                                  {contractListAllNew.statusString}
+                                </span>
+                              </div>
+                            </Col>
+                          </Row>
+                        </CardBody>
+                      </div>
+                    ))}
+
+                    {/* phan trang */}
+                    <Row>
+                      <Col lg={12} className="mt-4 pt-2">
+                        <nav aria-label="Page navigation example">
+                          <div className="pagination job-pagination mb-0 justify-content-center">
+                            <li
+                              className={`page-item ${
+                                currentPagePending === 1 ? "disabled" : ""
+                              }`}
+                            >
+                              <Link
+                                className="page-link"
+                                to="#"
+                                tabIndex="-1"
+                                onClick={handlePrevPagePending}
+                              >
+                                <i className="mdi mdi-chevron-double-left fs-15"></i>
+                              </Link>
+                            </li>
+                            {renderPageNumbersPending()}
+                            <li
+                              className={`page-item ${
+                                currentPagePending === totalPagesPending
+                                  ? "disabled"
+                                  : ""
+                              }`}
+                            >
+                              <Link
+                                className="page-link"
+                                to="#"
+                                onClick={handleNextPagePending}
+                              >
+                                <i className="mdi mdi-chevron-double-right fs-15"></i>
+                              </Link>
+                            </li>
+                          </div>
+                        </nav>
+                      </Col>
+                    </Row>
+                  </TabPane>
+                  <TabPane tabId="3">
+                    {contractListSigned.map((contractListAllNew, key) => (
+                      <div
+                        key={key}
+                        className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                        style={{
+                          boxShadow:
+                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                        }}
+                      >
+                        <CardBody className="p-2">
+                          <Row className="align-items-center ">
+                            <Col md={1}>
+                              <div>
+                                <Link to="#">
+                                  <img
+                                    style={{
+                                      width: "80px",
+                                      height: "80px",
+                                    }}
+                                    src={contractListAllNew.companyImage}
+                                    alt=""
+                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                  />
+                                </Link>
+                              </div>
+                            </Col>
+
+                            <Col md={3}>
+                              <div>
+                                <h5 className="fs-18 mb-0">
+                                  <Link
+                                    to="/newhiringrequestdetail"
+                                    className="text-dark"
+                                    state={{
+                                      contractId: contractListAllNew.contractId,
+                                    }}
+                                  >
+                                    {contractListAllNew.contractCode}
+                                  </Link>
+                                </h5>
+                                <p className="text-muted fs-14 mb-0">
+                                  {contractListAllNew.companyPartnerName}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex flex-column gap-1 justify-content-center">
+                                <div>
+                                  <p className="text-muted mb-0 fs-11">
+                                    Create at
+                                  </p>
+                                  <p
+                                    className="mb-0 fs-17"
+                                    style={{ fontWeight: "600" }}
+                                  >
+                                    {contractListAllNew.createdAt}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-0 fs-11">
+                                    Human resource
+                                  </p>
+                                  <p
+                                    className="mb-0 fs-17"
+                                    style={{ fontWeight: "600" }}
+                                  >
+                                    {contractListAllNew.humanResourceName}
+                                  </p>
+                                </div>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex mb-0 align-items-center">
+                                <div className="flex-shrink-0">
+                                  <i
+                                    className="uil uil-user-check text-primary me-1"
+                                    style={{ fontSize: "19px" }}
+                                  ></i>
+                                </div>
+                                <p className="text-muted mb-0">
+                                  {contractListAllNew.developerName}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div>
+                                <p className="text-muted mb-0 fs-11">
+                                  Date signed
+                                </p>
+                                <p
+                                  className="mb-0 fs-17"
+                                  style={{ fontWeight: "600" }}
+                                >
+                                  {contractListAllNew.dateSigned}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div className="d-flex align-items-center">
+                                <span
+                                  className={
+                                    contractListAllNew.statusString ===
+                                    "Pending"
+                                      ? "badge bg-warning text-light fs-12"
+                                      : contractListAllNew.statusString ===
+                                        "Signed"
+                                      ? "badge bg-success text-light fs-12"
+                                      : contractListAllNew.statusString ===
+                                        "Failed"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : ""
+                                  }
+                                >
+                                  {contractListAllNew.statusString}
+                                </span>
+                              </div>
+                            </Col>
+                          </Row>
+                        </CardBody>
+                      </div>
+                    ))}
+
+                    {/* phan trang */}
+                    <Row>
+                      <Col lg={12} className="mt-4 pt-2">
+                        <nav aria-label="Page navigation example">
+                          <div className="pagination job-pagination mb-0 justify-content-center">
+                            <li
+                              className={`page-item ${
+                                currentPageSigned === 1 ? "disabled" : ""
+                              }`}
+                            >
+                              <Link
+                                className="page-link"
+                                to="#"
+                                tabIndex="-1"
+                                onClick={handlePrevPageSigned}
+                              >
+                                <i className="mdi mdi-chevron-double-left fs-15"></i>
+                              </Link>
+                            </li>
+                            {renderPageNumbersSigned()}
+                            <li
+                              className={`page-item ${
+                                currentPageSigned === totalPagesSigned
+                                  ? "disabled"
+                                  : ""
+                              }`}
+                            >
+                              <Link
+                                className="page-link"
+                                to="#"
+                                onClick={handleNextPageSigned}
+                              >
+                                <i className="mdi mdi-chevron-double-right fs-15"></i>
+                              </Link>
+                            </li>
+                          </div>
+                        </nav>
+                      </Col>
+                    </Row>
+                  </TabPane>
+                  <TabPane tabId="4">
+                    {contractListFailed.map((contractListAllNew, key) => (
+                      <div
+                        key={key}
+                        className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                        style={{
+                          boxShadow:
+                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                        }}
+                      >
+                        <CardBody className="p-2">
+                          <Row className="align-items-center ">
+                            <Col md={1}>
+                              <div>
+                                <Link to="#">
+                                  <img
+                                    style={{
+                                      width: "80px",
+                                      height: "80px",
+                                    }}
+                                    src={contractListAllNew.companyImage}
+                                    alt=""
+                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                  />
+                                </Link>
+                              </div>
+                            </Col>
+
+                            <Col md={3}>
+                              <div>
+                                <h5 className="fs-18 mb-0">
+                                  <Link
+                                    to="/newhiringrequestdetail"
+                                    className="text-dark"
+                                    state={{
+                                      contractId: contractListAllNew.contractId,
+                                    }}
+                                  >
+                                    {contractListAllNew.contractCode}
+                                  </Link>
+                                </h5>
+                                <p className="text-muted fs-14 mb-0">
+                                  {contractListAllNew.companyPartnerName}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex flex-column gap-1 justify-content-center">
+                                <div>
+                                  <p className="text-muted mb-0 fs-11">
+                                    Create at
+                                  </p>
+                                  <p
+                                    className="mb-0 fs-17"
+                                    style={{ fontWeight: "600" }}
+                                  >
+                                    {contractListAllNew.createdAt}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-0 fs-11">
+                                    Human resource
+                                  </p>
+                                  <p
+                                    className="mb-0 fs-17"
+                                    style={{ fontWeight: "600" }}
+                                  >
+                                    {contractListAllNew.humanResourceName}
+                                  </p>
+                                </div>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex mb-0 align-items-center">
+                                <div className="flex-shrink-0">
+                                  <i
+                                    className="uil uil-user-check text-primary me-1"
+                                    style={{ fontSize: "19px" }}
+                                  ></i>
+                                </div>
+                                <p className="text-muted mb-0">
+                                  {contractListAllNew.developerName}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div>
+                                <p className="text-muted mb-0 fs-11">
+                                  Date signed
+                                </p>
+                                <p
+                                  className="mb-0 fs-17"
+                                  style={{ fontWeight: "600" }}
+                                >
+                                  {contractListAllNew.dateSigned}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-center"
+                            >
+                              <div className="d-flex align-items-center">
+                                <span
+                                  className={
+                                    contractListAllNew.statusString ===
+                                    "Pending"
+                                      ? "badge bg-warning text-light fs-12"
+                                      : contractListAllNew.statusString ===
+                                        "Signed"
+                                      ? "badge bg-success text-light fs-12"
+                                      : contractListAllNew.statusString ===
+                                        "Failed"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : ""
+                                  }
+                                >
+                                  {contractListAllNew.statusString}
+                                </span>
+                              </div>
+                            </Col>
+                          </Row>
+                        </CardBody>
+                      </div>
+                    ))}
+
+                    {/* phan trang */}
+                    <Row>
+                      <Col lg={12} className="mt-4 pt-2">
+                        <nav aria-label="Page navigation example">
+                          <div className="pagination job-pagination mb-0 justify-content-center">
+                            <li
+                              className={`page-item ${
+                                currentPageFailed === 1 ? "disabled" : ""
+                              }`}
+                            >
+                              <Link
+                                className="page-link"
+                                to="#"
+                                tabIndex="-1"
+                                onClick={handlePrevPageFailed}
+                              >
+                                <i className="mdi mdi-chevron-double-left fs-15"></i>
+                              </Link>
+                            </li>
+                            {renderPageNumbersFailed()}
+                            <li
+                              className={`page-item ${
+                                currentPageFailed === totalPagesFailed
+                                  ? "disabled"
+                                  : ""
+                              }`}
+                            >
+                              <Link
+                                className="page-link"
+                                to="#"
+                                onClick={handleNextPageFailed}
+                              >
+                                <i className="mdi mdi-chevron-double-right fs-15"></i>
+                              </Link>
+                            </li>
+                          </div>
+                        </nav>
+                      </Col>
+                    </Row>
+                  </TabPane>
+                </TabContent>
+              </CardBody>
             </div>
           </div>
-
-          <CardBody className="px-0">
-            <TabContent activeTab={activeTab}>
-              <TabPane tabId="1">
-                {contractListAll.map((contractListAllNew, key) => (
-                  <div
-                    key={key}
-                    className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                    style={{
-                      boxShadow:
-                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                    }}
-                  >
-                    <CardBody className="p-2">
-                      <Row className="align-items-center ">
-                        <Col md={1}>
-                          <div className="d-flex justify-content-center">
-                            <i
-                              className="uil uil-file-plus-alt"
-                              style={{ fontSize: "50px" }}
-                            ></i>
-                          </div>
-                        </Col>
-
-                        <Col md={3}>
-                          <div>
-                            <h5 className="fs-18 mb-0">
-                              <Link
-                                to="/contractdetail"
-                                className="text-dark"
-                                state={{
-                                  contractId: contractListAllNew.contractId,
-                                }}
-                              >
-                                {contractListAllNew.contractCode}
-                              </Link>
-                            </h5>
-                            <p className="text-muted fs-14 mb-0">
-                              {contractListAllNew.companyPartnerName}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2}>
-                          <div className="d-flex flex-column gap-1 justify-content-center">
-                            <div>
-                              <p className="text-muted mb-0 fs-13">Create at</p>
-                              <p
-                                className="mb-0 fs-17"
-                                style={{ fontWeight: "600" }}
-                              >
-                                {contractListAllNew.createdAt}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-muted mb-0 fs-13">
-                                Human resource
-                              </p>
-                              <p
-                                className="mb-0 fs-17"
-                                style={{ fontWeight: "600" }}
-                              >
-                                {contractListAllNew.humanResourceName}
-                              </p>
-                            </div>
-                          </div>
-                        </Col>
-
-                        <Col md={2}>
-                          <div className="d-flex mb-0 align-items-center">
-                            <div className="flex-shrink-0">
-                              <i
-                                className="uil uil-user-check text-primary me-1"
-                                style={{ fontSize: "19px" }}
-                              ></i>
-                            </div>
-                            <p className="text-muted mb-0">
-                              {contractListAllNew.developerName}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2} className="d-flex justify-content-center">
-                          <div>
-                            <p className="text-muted mb-0 fs-13">Date signed</p>
-                            <p
-                              className="mb-0 fs-17"
-                              style={{ fontWeight: "600" }}
-                            >
-                              {contractListAllNew.dateSigned}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2} className="d-flex justify-content-center">
-                          <div className="d-flex align-items-center">
-                            <span
-                              className={
-                                contractListAllNew.statusString === "Pending"
-                                  ? "badge bg-warning text-light fs-12"
-                                  : contractListAllNew.statusString === "Signed"
-                                  ? "badge bg-success text-light fs-12"
-                                  : contractListAllNew.statusString === "Failed"
-                                  ? "badge bg-danger text-light fs-12"
-                                  : ""
-                              }
-                            >
-                              {contractListAllNew.statusString}
-                            </span>
-                          </div>
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </div>
-                ))}
-
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPage === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPage}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbers()}
-                        <li
-                          className={`page-item ${
-                            currentPage === totalPages ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPage}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
-                      </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </TabPane>
-              <TabPane tabId="2">
-                {contractListPending.map((contractListAllNew, key) => (
-                  <div
-                    key={key}
-                    className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                    style={{
-                      boxShadow:
-                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                    }}
-                  >
-                    <CardBody className="p-2">
-                      <Row className="align-items-center ">
-                        <Col md={1}>
-                          <div>
-                            <Link to="#">
-                              <img
-                                style={{
-                                  width: "80px",
-                                  height: "80px",
-                                }}
-                                src={contractListAllNew.companyImage}
-                                alt=""
-                                className="img-fluid rounded-3 img-avt-hiring-request"
-                              />
-                            </Link>
-                          </div>
-                        </Col>
-
-                        <Col md={3}>
-                          <div>
-                            <h5 className="fs-18 mb-0">
-                              <Link
-                                to="/newhiringrequestdetail"
-                                className="text-dark"
-                                state={{
-                                  contractId: contractListAllNew.contractId,
-                                }}
-                              >
-                                {contractListAllNew.contractCode}
-                              </Link>
-                            </h5>
-                            <p className="text-muted fs-14 mb-0">
-                              {contractListAllNew.companyPartnerName}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2}>
-                          <div className="d-flex flex-column gap-1 justify-content-center">
-                            <div>
-                              <p className="text-muted mb-0 fs-11">Create at</p>
-                              <p
-                                className="mb-0 fs-17"
-                                style={{ fontWeight: "600" }}
-                              >
-                                {contractListAllNew.createdAt}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-muted mb-0 fs-11">
-                                Human resource
-                              </p>
-                              <p
-                                className="mb-0 fs-17"
-                                style={{ fontWeight: "600" }}
-                              >
-                                {contractListAllNew.humanResourceName}
-                              </p>
-                            </div>
-                          </div>
-                        </Col>
-
-                        <Col md={2}>
-                          <div className="d-flex mb-0 align-items-center">
-                            <div className="flex-shrink-0">
-                              <i
-                                className="uil uil-user-check text-primary me-1"
-                                style={{ fontSize: "19px" }}
-                              ></i>
-                            </div>
-                            <p className="text-muted mb-0">
-                              {contractListAllNew.developerName}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2} className="d-flex justify-content-center">
-                          <div>
-                            <p className="text-muted mb-0 fs-11">Date signed</p>
-                            <p
-                              className="mb-0 fs-17"
-                              style={{ fontWeight: "600" }}
-                            >
-                              {contractListAllNew.dateSigned}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2} className="d-flex justify-content-center">
-                          <div className="d-flex align-items-center">
-                            <span
-                              className={
-                                contractListAllNew.statusString === "Pending"
-                                  ? "badge bg-warning text-light fs-12"
-                                  : contractListAllNew.statusString === "Signed"
-                                  ? "badge bg-success text-light fs-12"
-                                  : contractListAllNew.statusString === "Failed"
-                                  ? "badge bg-danger text-light fs-12"
-                                  : ""
-                              }
-                            >
-                              {contractListAllNew.statusString}
-                            </span>
-                          </div>
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </div>
-                ))}
-
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPagePending === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPagePending}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbersPending()}
-                        <li
-                          className={`page-item ${
-                            currentPagePending === totalPagesPending
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPagePending}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
-                      </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </TabPane>
-              <TabPane tabId="3">
-                {contractListSigned.map((contractListAllNew, key) => (
-                  <div
-                    key={key}
-                    className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                    style={{
-                      boxShadow:
-                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                    }}
-                  >
-                    <CardBody className="p-2">
-                      <Row className="align-items-center ">
-                        <Col md={1}>
-                          <div>
-                            <Link to="#">
-                              <img
-                                style={{
-                                  width: "80px",
-                                  height: "80px",
-                                }}
-                                src={contractListAllNew.companyImage}
-                                alt=""
-                                className="img-fluid rounded-3 img-avt-hiring-request"
-                              />
-                            </Link>
-                          </div>
-                        </Col>
-
-                        <Col md={3}>
-                          <div>
-                            <h5 className="fs-18 mb-0">
-                              <Link
-                                to="/newhiringrequestdetail"
-                                className="text-dark"
-                                state={{
-                                  contractId: contractListAllNew.contractId,
-                                }}
-                              >
-                                {contractListAllNew.contractCode}
-                              </Link>
-                            </h5>
-                            <p className="text-muted fs-14 mb-0">
-                              {contractListAllNew.companyPartnerName}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2}>
-                          <div className="d-flex flex-column gap-1 justify-content-center">
-                            <div>
-                              <p className="text-muted mb-0 fs-11">Create at</p>
-                              <p
-                                className="mb-0 fs-17"
-                                style={{ fontWeight: "600" }}
-                              >
-                                {contractListAllNew.createdAt}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-muted mb-0 fs-11">
-                                Human resource
-                              </p>
-                              <p
-                                className="mb-0 fs-17"
-                                style={{ fontWeight: "600" }}
-                              >
-                                {contractListAllNew.humanResourceName}
-                              </p>
-                            </div>
-                          </div>
-                        </Col>
-
-                        <Col md={2}>
-                          <div className="d-flex mb-0 align-items-center">
-                            <div className="flex-shrink-0">
-                              <i
-                                className="uil uil-user-check text-primary me-1"
-                                style={{ fontSize: "19px" }}
-                              ></i>
-                            </div>
-                            <p className="text-muted mb-0">
-                              {contractListAllNew.developerName}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2} className="d-flex justify-content-center">
-                          <div>
-                            <p className="text-muted mb-0 fs-11">Date signed</p>
-                            <p
-                              className="mb-0 fs-17"
-                              style={{ fontWeight: "600" }}
-                            >
-                              {contractListAllNew.dateSigned}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2} className="d-flex justify-content-center">
-                          <div className="d-flex align-items-center">
-                            <span
-                              className={
-                                contractListAllNew.statusString === "Pending"
-                                  ? "badge bg-warning text-light fs-12"
-                                  : contractListAllNew.statusString === "Signed"
-                                  ? "badge bg-success text-light fs-12"
-                                  : contractListAllNew.statusString === "Failed"
-                                  ? "badge bg-danger text-light fs-12"
-                                  : ""
-                              }
-                            >
-                              {contractListAllNew.statusString}
-                            </span>
-                          </div>
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </div>
-                ))}
-
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPageSigned === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPageSigned}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbersSigned()}
-                        <li
-                          className={`page-item ${
-                            currentPageSigned === totalPagesSigned
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPageSigned}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
-                      </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </TabPane>
-              <TabPane tabId="4">
-                {contractListFailed.map((contractListAllNew, key) => (
-                  <div
-                    key={key}
-                    className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                    style={{
-                      boxShadow:
-                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                    }}
-                  >
-                    <CardBody className="p-2">
-                      <Row className="align-items-center ">
-                        <Col md={1}>
-                          <div>
-                            <Link to="#">
-                              <img
-                                style={{
-                                  width: "80px",
-                                  height: "80px",
-                                }}
-                                src={contractListAllNew.companyImage}
-                                alt=""
-                                className="img-fluid rounded-3 img-avt-hiring-request"
-                              />
-                            </Link>
-                          </div>
-                        </Col>
-
-                        <Col md={3}>
-                          <div>
-                            <h5 className="fs-18 mb-0">
-                              <Link
-                                to="/newhiringrequestdetail"
-                                className="text-dark"
-                                state={{
-                                  contractId: contractListAllNew.contractId,
-                                }}
-                              >
-                                {contractListAllNew.contractCode}
-                              </Link>
-                            </h5>
-                            <p className="text-muted fs-14 mb-0">
-                              {contractListAllNew.companyPartnerName}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2}>
-                          <div className="d-flex flex-column gap-1 justify-content-center">
-                            <div>
-                              <p className="text-muted mb-0 fs-11">Create at</p>
-                              <p
-                                className="mb-0 fs-17"
-                                style={{ fontWeight: "600" }}
-                              >
-                                {contractListAllNew.createdAt}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-muted mb-0 fs-11">
-                                Human resource
-                              </p>
-                              <p
-                                className="mb-0 fs-17"
-                                style={{ fontWeight: "600" }}
-                              >
-                                {contractListAllNew.humanResourceName}
-                              </p>
-                            </div>
-                          </div>
-                        </Col>
-
-                        <Col md={2}>
-                          <div className="d-flex mb-0 align-items-center">
-                            <div className="flex-shrink-0">
-                              <i
-                                className="uil uil-user-check text-primary me-1"
-                                style={{ fontSize: "19px" }}
-                              ></i>
-                            </div>
-                            <p className="text-muted mb-0">
-                              {contractListAllNew.developerName}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2} className="d-flex justify-content-center">
-                          <div>
-                            <p className="text-muted mb-0 fs-11">Date signed</p>
-                            <p
-                              className="mb-0 fs-17"
-                              style={{ fontWeight: "600" }}
-                            >
-                              {contractListAllNew.dateSigned}
-                            </p>
-                          </div>
-                        </Col>
-
-                        <Col md={2} className="d-flex justify-content-center">
-                          <div className="d-flex align-items-center">
-                            <span
-                              className={
-                                contractListAllNew.statusString === "Pending"
-                                  ? "badge bg-warning text-light fs-12"
-                                  : contractListAllNew.statusString === "Signed"
-                                  ? "badge bg-success text-light fs-12"
-                                  : contractListAllNew.statusString === "Failed"
-                                  ? "badge bg-danger text-light fs-12"
-                                  : ""
-                              }
-                            >
-                              {contractListAllNew.statusString}
-                            </span>
-                          </div>
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </div>
-                ))}
-
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPageFailed === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPageFailed}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbersFailed()}
-                        <li
-                          className={`page-item ${
-                            currentPageFailed === totalPagesFailed
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPageFailed}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
-                      </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </TabPane>
-            </TabContent>
-          </CardBody>
-        </div>
-      </div>
+        </Layout>
+      </Layout>
     </React.Fragment>
   );
 };
