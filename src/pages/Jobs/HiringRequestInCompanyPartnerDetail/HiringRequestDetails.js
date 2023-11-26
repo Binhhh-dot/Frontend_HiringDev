@@ -1874,6 +1874,7 @@ const HiringRequestDetails = () => {
                                           candidategridDetailsNew.id
                                         )
                                       }
+                                      disabled={loadingInterview[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
                                     >
                                       {loadingInterview[
                                         candidategridDetailsNew.id
@@ -1896,6 +1897,7 @@ const HiringRequestDetails = () => {
                                       onClick={() =>
                                         rejectInterview2(candidategridDetailsNew.id)
                                       }
+                                      disabled={loadingInterview[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
                                     >
                                       {loadingReject[candidategridDetailsNew.id] ? (
                                         <HashLoader
@@ -1937,6 +1939,8 @@ const HiringRequestDetails = () => {
                                         onClick={() =>
                                           handleOnboard(candidategridDetailsNew.id)
                                         }
+                                        disabled={loadingOnboard[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
+
                                       >
                                         {loadingOnboard[candidategridDetailsNew.id] ? (
                                           <HashLoader
@@ -1961,6 +1965,7 @@ const HiringRequestDetails = () => {
                                       onClick={() =>
                                         rejectInterview2(candidategridDetailsNew.id)
                                       }
+                                      disabled={loadingOnboard[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
                                     >
                                       {loadingReject[candidategridDetailsNew.id] ? (
                                         <HashLoader
@@ -1989,6 +1994,8 @@ const HiringRequestDetails = () => {
                                         onClick={() =>
                                           rejectInterview2(candidategridDetailsNew.id)
                                         }
+                                        disabled={loadingReject[candidategridDetailsNew.id]}
+
                                       >
                                         {loadingReject[candidategridDetailsNew.id] ? (
                                           <HashLoader

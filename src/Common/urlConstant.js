@@ -186,6 +186,13 @@ export default {
       exportToExcel: "/PayPeriod/ExportToExcel/${projectId}?inputDate=${inputDate}",
       importExcel: "/PayPeriod/ImportExcel/${projectId}",
       getPayPeriodDetailByProjectIdAndDate: "/PayPeriod/${projectId}?inputDate=${inputDate}",
+    },
+    paySlip: {
+      getPaySlipByPayPeriodId: "PaySlip/ByPayPeriod/${payPeriodId}"
+    },
+    workLog: {
+      getWorkLogByPaySlipId: "/WorkLog/ByPaySlip/${paySlipId}",
+      updateWorkLog: "/WorkLog",
     }
   },
 };

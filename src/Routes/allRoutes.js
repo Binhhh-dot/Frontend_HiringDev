@@ -145,16 +145,7 @@ const userRoutes = [
   { path: "/listInterview", component: <InterviewListManager /> },
   { path: "/listInterviewHR", component: <InterviewList /> },
 
-  // {
-  //   path: "/developerlistincompanypartner",
-  //   component: <DeveloperListInCompanyPartner />,
-  // },
-  // {
-  //   path: "/developerlistincompanypartnerdetail",
-  //   component: <DeveloperListInCompanyPartnerDetail />,
-  // },
 
-  //Jobs Section
   { path: "/jobscategories", component: <JobsCategories /> },
   { path: "/jobdetails", component: <JobDetails /> },
   { path: "/jobgrid2", component: <JobGrid2 /> },
@@ -237,4 +228,5 @@ const authRoutes = [
   { path: "/listAccountStaff", component: <ListAccountStaff /> },
   { path: "/listAccountDeveloper", component: <ListAccountDeveloper /> },
 ];
+
 export { userRoutes, authRoutes };

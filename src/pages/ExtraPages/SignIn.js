@@ -61,7 +61,7 @@ const SignIn = () => {
     console.log(userData.data.companyId)
     console.log(role)
     if (role == "Manager") {
-      navigate("/layout3")
+      navigate("/manager")
     } else {
       if (userData.data.companyId != null) {
         localStorage.setItem('companyId', userData.data.companyId);

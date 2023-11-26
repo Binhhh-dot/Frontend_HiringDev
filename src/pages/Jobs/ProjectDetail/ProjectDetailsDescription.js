@@ -30,7 +30,8 @@ import {
   faTimes,
   faEllipsis,
   faAngleRight,
-  faAngleLeft
+  faAngleLeft,
+  faGear
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
@@ -69,6 +70,14 @@ import FileSaver from 'file-saver';
 import axios from "axios";
 import { Dropdown as DropdownAntd } from 'antd';
 import { Empty } from 'antd';
+import { theme } from 'antd';
+import moment from 'moment';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import paySlipServices from "../../../services/paySlip.services";
+import workLogServices from "../../../services/workLog.services";
+import { HashLoader } from "react-spinners";
+
 dayjs.extend(customParseFormat);
 
 
@@ -92,6 +101,8 @@ const ProjectDetailDesciption = () => {
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
   const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
   const [payPeriodDetail, setPayPeriodDetail] = useState(null);
+  const [payRollDetail, setPayRollDetail] = useState([]);
+  const [workLoglist, setWorkLoglist] = useState([]);
   const [selectedHiringRequestInfo, setSelectedHiringRequestInfo] = useState({});
   const [selectedJobPositionInfo, setSelectedJobPositionInfo] = useState({});
   const [checkHeightListHiringRequest, setCheckHeightListHiringRequest] = useState(false);
@@ -100,23 +111,45 @@ const ProjectDetailDesciption = () => {
   const [listMonth, setListMonth] = useState([]);
   const [listStartDay, setListStartDay] = useState([]);
   const [listEndDay, setListEndDay] = useState([]);
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
+  const [isInputEditable, setIsInputEditable] = useState([]);
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(null);
   const [minDateDuration, setMinDateDuration] = useState();
   const [maxDateDuration, setMaxDateDuration] = useState();
+  const [workLogIdOnClick, setWorkLogIdOnClick] = useState(0);
   const [editingPositions, setEditingPositions] = useState({});
   const [editingPositionSelect, setEditingPositionSelect] = useState(null);
   const [inputValue, setInputValue] = useState('');
-  const inputRef = useRef(null);
+  const [countSetTime, setCountSetTime] = useState(0);
+  const [isEditWorkLog, setIsEditWorkLog] = useState(false);
+  const [isCancelEditWorkLog, setIsCancelEditWorkLog] = useState(false);
+  const [startTimeWorkLogSave, setStartTimeWorkLogSave] = useState(false);
+  const [endTimeWorkLogSave, setEndTimeWorkLogSave] = useState(false);
+  const [timeErrorWorkLog, setTimeErrorWorkLog] = useState([]);
+
   const [key, setKey] = useState(Date.now());
+  const [editableRowId, setEditableRowId] = useState(null);
+
+  const [dateValue, setDateValue] = useState(new Date());
+  const [loadingGenerateExel, setLoadingGenerateExel] = useState(false);
+  const [loadingImportExel, setLoadingImportExel] = useState(false);
+
+  const [keyPayRoll, setKeyPayRoll] = useState(null);
+  const [keyWorkLog, setKeyWorkLog] = useState(null);
+
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleDateChange = (date) => {
+    setDateValue(date);
+    // Thực hiện các thao tác khác khi người dùng thay đổi ngày
+  };
 
   const generateItems = () => {
-
     return [
       {
         label: (
           <div
             style={{ width: "100px" }}
-            onClick={() => onUpdateJobPosition()}
+            onClick={() => onUpdateWorkLog()}
           >
             Edit
           </div>
@@ -155,22 +188,25 @@ const ProjectDetailDesciption = () => {
         key: '1',
       },
     ];
-
   };
+
+  const [showCollapse, setShowCollapse] = useState(Array(payRollDetail.length).fill(false));
 
   const items = generateItems();
 
-
-  const toggleCollapse = (index) => {
+  const toggleCollapse = (key2, paySlipId) => {
+    setKeyPayRoll(key2);
     const newShowCollapse = [...showCollapse];
-    newShowCollapse[index] = !newShowCollapse[index];
+    newShowCollapse[key2] = !newShowCollapse[key2];
     setShowCollapse(newShowCollapse);
+    fetchWorklog(paySlipId);
   };
-  const [currentProjectName, setCurrentProjectName] = useState(null);
-  const [devInProject, setDevInProject] = useState([]);
-  const [showCollapse, setShowCollapse] = useState(
-    Array(devInProject.length).fill(false)
-  );
+
+  const setKeyAndIdWorkLog = (workLogId, key) => {
+    setWorkLogIdOnClick(workLogId)
+    setKeyWorkLog(key)
+  };
+
 
   const [activeTabMini, setActiveTabMini] = useState("5");
   const tabChangeMini = (tabMini) => {
@@ -196,27 +232,7 @@ const ProjectDetailDesciption = () => {
     setIsModalOpen(false);
   };
 
-  const onUpdateJobPosition = (id) => {
-    setEditingPositions((prevEditingPositions) => ({
-      ...prevEditingPositions,
-      [id]: true,
-    }));
-    setEditingPositionSelect(id);
-    console.log(id)
-  };
 
-  const handleKeyPress = (event, id) => {
-    if (event.key === 'Enter') {
-      setEditingPositions((prevEditingPositions) => ({
-        ...prevEditingPositions,
-        [id]: false,
-      }));
-    }
-  };
-
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  };
 
   const closeModalCreateHiringRequest = () => {
     setSelectedHiringRequestInfo(null);
@@ -225,17 +241,6 @@ const ProjectDetailDesciption = () => {
     fetchJobVacancies();
   };
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
   const fetchListDeveloperOnboard = async () => {
     try {
@@ -388,6 +393,7 @@ const ProjectDetailDesciption = () => {
       setListEndDay(endDateArray);
 
       setLoadPayPeriod(!loadPayPeriod);
+      setCurrentMonthIndex(0);
       return response;
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -414,18 +420,64 @@ const ProjectDetailDesciption = () => {
     }
   };
 
+  const fetchWorklog = async (paySlipId) => {
+    let response;
+    try {
+      response = await workLogServices.getWorkLogByPaySlipId(paySlipId);
+      setWorkLoglist(response.data.data);
+      console.log("worklog")
+      console.log(response.data.data)
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
+
+  const updatedWorkLog = async (timeIn, timeOut) => {
+    let response;
+    try {
+      console.log(workLogIdOnClick)
+      console.log(timeIn)
+      console.log(timeOut)
+      response = await workLogServices.updateWorkLog(workLogIdOnClick, timeIn, timeOut);
+      console.log("worklog21312312312")
+      console.log(response.data.data)
+      const temp = "hourInDay" + response.data.data.workLogId;
+      // const temp2 = "totalhourspayroll" + response.data.data.payPeriodId;
+      document.getElementById(temp).innerHTML = "Hours in day: " + response.data.data.hourWorkInDay;
+      // document.getElementById(temp2).innerHTML = response.data.data.totalAmount;
+      const temp2 = listEndDay[currentMonthIndex];
+      if (temp2) {
+        const parts = temp2.split('.');
+        const newDate = `${parts[2]}-${parts[1]}-25`;
+        fetchDetailPayPeriod(newDate)
+      }
+      toast.success("Update worklog successfully")
+      setEditableRowId(null);
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      toast.error("Update worklog fail")
+    }
+  };
+
   const fetchDetailPayPeriod = async (newDate) => {
     let response;
+    console.log("ham nay bi goi lai")
     try {
       const queryParams = new URLSearchParams(location.search);
       const projectId = queryParams.get("Id");
       response = await payPeriodServices.getPayPeriodDetailByProjectIdAndDate(projectId, newDate);
       setPayPeriodDetail(response.data.data);
-      console.log("payperiod", response.data.data)
+      if (response.data.code === 200) {
+        console.log("cho nay ms bi goi lai")
+        const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
+        setPayRollDetail(response2.data.data);
+
+      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
       console.log("payperiod loi")
       setPayPeriodDetail(null);
+      setPayRollDetail([]);
     }
   }
 
@@ -434,19 +486,43 @@ const ProjectDetailDesciption = () => {
   }, []);
 
   useEffect(() => {
+    console.log(payRollDetail)
+  }, [payRollDetail]);
+
+  useEffect(() => {
+    // if (countSetTime) {
+    console.log("thaydoi")
+    console.log(keyPayRoll)
+    var count = 0;
+    workLoglist.map((log) => {
+      const temp2 = "endTimeWorkLog" + keyPayRoll + count;
+      document.getElementById(temp2).value = log.timeIn;
+      const temp = "endTimeWorkLog2" + keyPayRoll + count;
+      document.getElementById(temp).value = log.timeOut;
+      count += 1;
+    });
+
+    setCountSetTime(countSetTime + 1)
+  }, [workLoglist]);
+
+  const onUpdateWorkLog = () => {
+    const foundLog = workLoglist.find(log => log.workLogId === workLogIdOnClick);
+    setStartTimeWorkLogSave(foundLog.timeIn);
+    setEndTimeWorkLogSave(foundLog.timeOut);
+    setEditableRowId(workLogIdOnClick);
+  };
+
+  useEffect(() => {
     fetchListDeveloperOnboard();
   }, []);
 
-  const turnOnScroll = () => {
-    setShowScroll(true)
-  }
 
   useEffect(() => {
     fetchProjectDetails();
   }, []);
 
   useEffect(() => {
-    const temp = listStartDay[currentMonthIndex];
+    const temp = listEndDay[currentMonthIndex];
     if (temp) {
       const parts = temp.split('.');
       const newDate = `${parts[2]}-${parts[1]}-25`;
@@ -460,8 +536,52 @@ const ProjectDetailDesciption = () => {
       const parts = temp.split('.');
       const newDate = `${parts[2]}-${parts[1]}-25`;
       fetchDetailPayPeriod(newDate)
+      console.log("set Calendar")
+
     }
   }, [loadPayPeriod]);
+
+  function formatTime00(inputTime) {
+    if (inputTime.indexOf(":") !== -1 && inputTime.lastIndexOf(":") === inputTime.indexOf(":")) {
+      // Nếu có ít hơn hai dấu hai chấm (":") trong chuỗi, thêm ":00" vào cuối
+      return inputTime + ":00";
+    } else {
+      // Nếu đã có hai dấu hai chấm, giữ nguyên chuỗi
+      return inputTime;
+    }
+  }
+
+  useEffect(() => {
+    if (!isCancelEditWorkLog) {
+      if (workLogIdOnClick) {
+        const temp2 = "endTimeWorkLog" + keyPayRoll + keyWorkLog;
+        const temp = "endTimeWorkLog2" + keyPayRoll + keyWorkLog;
+        if (formatTime00(document.getElementById(temp2).value) >= formatTime00(document.getElementById(temp).value)) {
+          const temp3 = "timeErrorWorkLog" + workLogIdOnClick;
+          document.getElementById(temp3).innerHTML = "The start time of work must be less than the end time of work";
+        } else {
+          if (formatTime00(document.getElementById(temp2).value) != startTimeWorkLogSave || formatTime00(document.getElementById(temp).value) != endTimeWorkLogSave) {
+            updatedWorkLog(formatTime00(document.getElementById(temp2).value), formatTime00(document.getElementById(temp).value))
+          } else {
+            setEditableRowId(null);
+          }
+        }
+      }
+
+    } else {
+      try {
+        console.log("false")
+        const temp2 = "endTimeWorkLog" + keyPayRoll + keyWorkLog;
+        document.getElementById(temp2).value = startTimeWorkLogSave;
+
+        const temp = "endTimeWorkLog2" + keyPayRoll + keyWorkLog;
+        document.getElementById(temp).value = endTimeWorkLogSave;
+        setEditableRowId(null);
+      } catch (error) {
+        console.log("Loi khi update worklog", error)
+      }
+    }
+  }, [isEditWorkLog]);
 
   const fetchJobVacancies = async () => {
     let response;
@@ -520,12 +640,6 @@ const ProjectDetailDesciption = () => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
-  const createHiringRequest = async (jobPositionId) => {
-    const state = { projectId: projectId, jobPositionId: jobPositionId };
-    console.log(projectId);
-    console.log(jobPositionId);
-    navigate("/createhiringrequest", { state });
-  };
 
   const openHiringRequestDetail = (requestId, statusString, jobPositionId) => {
     if (statusString === "Saved") {
@@ -554,6 +668,15 @@ const ProjectDetailDesciption = () => {
     }
   };
 
+  const cancelUpdateWorkLog = () => {
+    setIsEditWorkLog(!isEditWorkLog);
+    setIsCancelEditWorkLog(true);
+  };
+
+  const saveUpdateWorkLog = () => {
+    setIsEditWorkLog(!isEditWorkLog);
+    setIsCancelEditWorkLog(false);
+  };
 
   const nextMonth = () => {
     if (currentMonthIndex < listMonth.length - 1) {
@@ -570,7 +693,7 @@ const ProjectDetailDesciption = () => {
 
 
   const generateExel = async () => {
-
+    setLoadingGenerateExel(true)
     const queryParams = new URLSearchParams(location.search);
     const projectId = queryParams.get("Id");
 
@@ -582,7 +705,6 @@ const ProjectDetailDesciption = () => {
 
     downloadExcelFile(projectId, formattedDate, filename)
 
-
   };
 
   const importExcel = async (formData2) => {
@@ -592,21 +714,26 @@ const ProjectDetailDesciption = () => {
         const projectId = queryParams.get("Id");
         const response = await payPeriodServices.importExcel(projectId, formData2);
         toast.success(response.data.data.code)
+        setLoadingImportExel(false);
       }
+      setLoadingImportExel(false);
     } catch (error) {
       console.log(error)
       toast.error(error.response.data.message)
+      setLoadingImportExel(false);
     }
   };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      setLoadingImportExel(true);
       const formData2 = new FormData();
       formData2.append('file', file);
       importExcel(formData2);
     }
     setKey(Date.now())
+    setLoadingImportExel(false);
   };
 
   const downloadExcelFile = async (projectId, inputDate, filename) => {
@@ -621,11 +748,14 @@ const ProjectDetailDesciption = () => {
       downloadLink.href = window.URL.createObjectURL(blob);
       downloadLink.setAttribute('download', filename);
       downloadLink.click();
+      setLoadingGenerateExel(false)
     } catch (error) {
       console.error('Error downloading the file:', error);
       toast.error("There are no developers worked in " + listMonth[currentMonthIndex].replace(/\s+/g, ' '))
+      setLoadingGenerateExel(false)
     }
   };
+
 
 
   return (
@@ -1138,21 +1268,43 @@ const ProjectDetailDesciption = () => {
                                   style={{ display: 'none' }}
                                   onChange={handleFileChange}
                                   id="fileInput" // Đặt id để tham chiếu trong nút Import Excel
+                                  disabled={loadingImportExel}
                                 />
                                 <label
                                   htmlFor="fileInput"
                                   className="btn btn-soft-blue fw-bold"
                                 >
-                                  Import Excel
+                                  {loadingImportExel ? (
+                                    <div style={{ width: "100px" }} className="d-flex align-items-center justify-content-center">
+                                      <HashLoader
+                                        size={20}
+                                        color={"white"}
+                                        loading={true}
+                                      />
+                                    </div>
+                                  ) : (
+                                    "Import Excel"
+                                  )}
                                 </label>
                               </div>
-                              <div className="btn btn-soft-blue fw-bold"
+                              <button className="btn btn-soft-blue fw-bold"
                                 onClick={() => {
                                   generateExel();
                                 }}
+                                disabled={loadingGenerateExel}
                               >
-                                Generate Excel
-                              </div>
+                                {loadingGenerateExel ? (
+                                  <div style={{ width: "110px" }} className="d-flex align-items-center justify-content-center">
+                                    <HashLoader
+                                      size={20}
+                                      color={"white"}
+                                      loading={true}
+                                    />
+                                  </div>
+                                ) : (
+                                  "Generate Excel"
+                                )}
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -1202,114 +1354,209 @@ const ProjectDetailDesciption = () => {
                         {/* -------------------------------------------------------------- */}
                         <div>
                           <TabContent activeTab={activeTabMini}>
-                            <TabPane tabId="5" className="pt-4">
+                            <TabPane tabId="5" className="pt-4 ps-3 ">
                               {payPeriodDetail ? (
                                 <>
-                                  <Row>
-                                    <Col>
-                                    </Col>
-                                  </Row>
-                                  <div className="d-flex align-items-center gap-3 ">
-                                    <div style={{ fontSize: "30px", fontWeight: "bold" }}>
-                                      {payPeriodDetail.payPeriodCode}
+                                  <div className="row">
+                                    <div className="col-lg-9 p-4 d-flex flex-column gap-4 card " style={{
+                                      boxShadow:
+                                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                    }}>
+                                      <div className="d-flex align-items-center justify-content-between">
+                                        <div style={{ color: "black", fontWeight: "500" }}>Total salary payable for the month</div>
+                                        <div>
+                                          <span
+                                            className={
+                                              payPeriodDetail.statusString === "Created"
+                                                ? "badge bg-blue text-light fs-12 "
+                                                : payPeriodDetail.statusString === "Expired"
+                                                  ? "badge bg-danger text-light fs-12 "
+                                                  : payPeriodDetail.statusString === "Deleted"
+                                                    ? "badge bg-secondary text-light fs-12 "
+                                                    : payPeriodDetail.statusString === "Paid"
+                                                      ? "badge bg-primary text-light fs-12 "
+                                                      : ""
+                                            }
+                                          >
+                                            {payPeriodDetail.statusString}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div style={{ border: "1px solid black" }}></div>
+                                      <div className="d-flex justify-content-between" style={{ fontSize: "35px" }}>
+                                        <div>Total salary for developers in {listMonth[currentMonthIndex].split(' ')[0]}</div>
+                                        <div>1000$</div>
+                                      </div>
+                                      <div>
+                                        <div>Luong cua Quoc Binh</div>
+                                        <div>Luong cua Guu</div>
+                                      </div>
+                                      <div className="d-flex justify-content-between" style={{ marginTop: "80px" }}>
+                                        <div>Last updated : 00:00:00 18/18/2023</div>
+                                        <div className="btn btn-soft-primary fw-bold"
+                                          onClick={() => {
+                                            setShowPopup(true);
+                                          }}
+                                        >Continues</div>
+                                      </div>
                                     </div>
-                                    <span
-                                      className={
-                                        payPeriodDetail.statusString === "Rejected"
-                                          ? "badge bg-danger text-light "
-                                          : payPeriodDetail.statusString ===
-                                            "Preparing"
-                                            ? "badge bg-warning text-light "
-                                            : payPeriodDetail.statusString ===
-                                              "In Progress"
-                                              ? "badge bg-blue text-light "
-                                              : payPeriodDetail.statusString ===
-                                                "Expired"
-                                                ? "badge bg-danger text-light "
-                                                : payPeriodDetail.statusString ===
-                                                  "Cancelled"
-                                                  ? "badge bg-danger text-light "
-                                                  : payPeriodDetail.statusString ===
-                                                    "Finished"
-                                                    ? "badge bg-primary text-light "
-                                                    : payPeriodDetail.statusString ===
-                                                      "Created"
-                                                      ? "badge bg-primary text-light"
-                                                      : payPeriodDetail.statusString === "Saved"
-                                                        ? "badge bg-info text-light "
-                                                        : ""
-                                      }
-                                    >
-                                      {payPeriodDetail.statusString}
-                                    </span>{" "}
-                                  </div>
-                                  <div style={{ color: "black" }} className="d-flex gap-4">
-                                    <div>
-                                      <FontAwesomeIcon icon={faFlag} style={{ marginRight: "8px" }} />
-                                      Start date :{" "}
-                                      {payPeriodDetail.startDateMMM}
-                                    </div>
-                                    <div>
-                                      <FontAwesomeIcon icon={faCircleXmark} style={{ marginRight: "8px" }} />
-                                      End date : {" "}
-                                      {payPeriodDetail.endDateMMM}
+                                    <div className="col-lg-3"
+                                      style={{ paddingLeft: "24px" }}>
+                                      <Calendar
+                                        onChange={handleDateChange}
+                                        value={dateValue}
+                                      // Các propkhác của Calendar nếu cần
+                                      />
                                     </div>
                                   </div>
 
-                                  <div>{payPeriodDetail.totalAmount}</div>
-                                  <div>{payPeriodDetail.createdAt}</div>
+                                  <AntdModal
+                                    centered
+                                    open={showPopup}
+                                    onOk={() => setShowPopup(false)}
+                                    onCancel={() => {
+                                      setShowPopup(false);
+                                    }}
+                                    width={900}
+                                    footer={null}
+                                  >
+                                    <div className="px-3 pt-3 d-flex justify-content-between ">
+                                      <div>
+                                        <div className=" profile-user">
+                                          <img
+                                            src={userImage0}  // Giá trị mặc định là "userImage2"
+                                            className="rounded-circle img-thumbnail"
+                                            style={{ width: "120px" }}
+                                            id="profile-img-2"
+                                            alt=""
+                                          />
+                                        </div>
+                                        <div className="candidate-profile-overview p-2">
+                                          <h6 className="fs-17 fw-semibold ">Cong ty ma Co.</h6>
+                                          <h6 style={{ color: "grey" }}>Project name</h6>
+                                        </div>
+                                      </div>
+                                      <div className="d-flex flex-column gap-4" >
+                                        <div className="d-flex flex-column">
+                                          <div style={{ fontSize: "30px", fontWeight: "bold" }}>STATUS</div>
+                                          <div style={{ fontSize: "15px", color: "grey" }}>payrollCode</div>
+                                          <div style={{ fontSize: "15px", color: "grey" }}>26/11/2023</div>
+                                        </div>
+                                        <div style={{ fontSize: "30px", color: "green", fontWeight: "600", marginTop: "20px" }} >
+                                          $ 3000
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <Divider></Divider>
+                                    <div className="d-flex gap-4 justify-content-between">
+                                      <div className="d-flex flex-column gap-2" >
+                                        <div style={{ color: "grey" }}>
+                                          TO
+                                        </div>
+                                        <div style={{ fontWeight: "600" }}>
+                                          WeHire Co.
+                                        </div>
+                                        <div className="d-flex flex-column" style={{ color: "grey" }}>
+                                          <div>
+                                            Quan 9
+                                          </div>
+                                          <div>
+                                            Ho Chi Minh City
+                                          </div>
+                                          VietNam
+                                        </div>
+                                        <div style={{ color: "grey" }}>
+                                          wehire@gmail.com
+                                        </div>
+                                      </div>
+                                      <div className="d-flex flex-column gap-2" >
+                                        <div style={{ color: "grey" }}>
+                                          FROM
+                                        </div>
+                                        <div style={{ fontWeight: "600" }}>
+                                          Espress Design Co.
+                                        </div>
+                                        <div className="d-flex flex-column" style={{ color: "grey" }}>
+                                          <div>
+                                            Quan 9
+                                          </div>
+                                          <div>
+                                            Ho Chi Minh City
+                                          </div>
+                                          VietNam
+                                        </div>
+                                        <div style={{ color: "grey" }}>
+                                          wehire@gmail.com
+                                        </div>
+                                      </div>
+                                      <div className="d-flex flex-column gap-2" >
+                                        <div style={{ color: "grey" }}>
+                                          NOTE
+                                        </div>
+                                        <div>
+                                          Note
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </AntdModal>
+
                                 </>
                               ) : (
                                 <Empty />
                               )}
                             </TabPane>
-                            <TabPane tabId="6">
+                            <TabPane tabId="6" className="pt-4">
                               <div>
-                                <Row className="mb-2 px-3">
-                                  <Col md={2} style={{ textAlign: "center" }}>
-                                    First Name
-                                  </Col>
-                                  <Col
-                                    md={2}
-                                    className="px-0"
-                                    style={{ textAlign: "center" }}
-                                  >
-                                    Last Name
-                                  </Col>
-                                  <Col
-                                    md={2}
-                                    className="px-0"
-                                    style={{ textAlign: "center" }}
-                                  >
-                                    Email
-                                  </Col>
-                                  <Col
-                                    md={2}
-                                    className="px-0"
-                                    style={{ textAlign: "center" }}
-                                  >
-                                    Total Hours
-                                  </Col>
-                                  <Col
-                                    md={1}
-                                    className="px-0"
-                                    style={{ textAlign: "center" }}
-                                  >
-                                    Total OT
-                                  </Col>
-                                  <Col
-                                    md={2}
-                                    className="px-0"
-                                    style={{ textAlign: "center" }}
-                                  >
-                                    Total Salary
-                                  </Col>
-                                  <Col md={1}></Col>
-                                </Row>
-
+                                {payRollDetail[0] ? (
+                                  <>
+                                    <Row className="mb-2 px-3">
+                                      <Col md={2} style={{ textAlign: "center" }}>
+                                        First Name
+                                      </Col>
+                                      <Col
+                                        md={2}
+                                        className="px-0"
+                                        style={{ textAlign: "center" }}
+                                      >
+                                        Last Name
+                                      </Col>
+                                      <Col
+                                        md={2}
+                                        className="px-0"
+                                        style={{ textAlign: "center" }}
+                                      >
+                                        Email
+                                      </Col>
+                                      <Col
+                                        md={2}
+                                        className="px-0"
+                                        style={{ textAlign: "center" }}
+                                      >
+                                        Total Hours
+                                      </Col>
+                                      <Col
+                                        md={1}
+                                        className="px-0"
+                                        style={{ textAlign: "center" }}
+                                      >
+                                        Total OT
+                                      </Col>
+                                      <Col
+                                        md={2}
+                                        className="px-0"
+                                        style={{ textAlign: "center" }}
+                                      >
+                                        Total Salary
+                                      </Col>
+                                      <Col md={1}></Col>
+                                    </Row>
+                                  </>
+                                ) : (
+                                  <Empty />
+                                )}
                                 <div className="d-flex flex-column gap-2">
-                                  {devInProject.map((devInProjectNew, key) => (
-                                    <div key={key}>
+                                  {payRollDetail.map((payRollDetailNew, key2) => (
+                                    <div key2={key2}>
                                       <div
                                         style={{
                                           boxShadow:
@@ -1326,7 +1573,7 @@ const ProjectDetailDesciption = () => {
                                               style={{ textAlign: "center" }}
                                             >
                                               <div>
-                                                <span className="mb-0">Nguyen</span>
+                                                <span className="mb-0">{payRollDetailNew.firstName}</span>
                                               </div>
                                             </Col>
 
@@ -1336,7 +1583,7 @@ const ProjectDetailDesciption = () => {
                                               style={{ textAlign: "center" }}
                                             >
                                               <div>
-                                                <p className="mb-0">Van A</p>
+                                                <p className="mb-0">{payRollDetailNew.lastName}</p>
                                               </div>
                                             </Col>
 
@@ -1346,7 +1593,7 @@ const ProjectDetailDesciption = () => {
                                               style={{ textAlign: "center" }}
                                             >
                                               <div>
-                                                <p className="mb-0">a@gmail.com</p>
+                                                <p className="mb-0">{payRollDetailNew.email}</p>
                                               </div>
                                             </Col>
 
@@ -1354,8 +1601,10 @@ const ProjectDetailDesciption = () => {
                                               md={2}
                                               className="px-0"
                                               style={{ textAlign: "center" }}
+
+
                                             >
-                                              <p className="mb-0">168 hours</p>
+                                              <p className="mb-0" > {payRollDetailNew.totalActualWorkedHours}</p>
                                             </Col>
 
                                             <Col
@@ -1363,29 +1612,33 @@ const ProjectDetailDesciption = () => {
                                               className=" px-0"
                                               style={{ textAlign: "center" }}
                                             >
-                                              10 hours
+                                              {payRollDetailNew.totalOvertimeHours}
                                             </Col>
 
                                             <Col
                                               md={2}
                                               style={{ textAlign: "center" }}
+
+
                                             >
                                               <div>
-                                                <span>20000$</span>
+                                                <span >{payRollDetailNew.totalEarnings}$</span>
                                               </div>
                                             </Col>
 
                                             <Col md={1}>
                                               <div
-                                                className="d-flex justify-content-center rounded-circle"
-                                                onClick={() => toggleCollapse(key)}
+                                                className="d-flex justify-content-center align-items-center rounded-circle"
+                                                onClick={() => toggleCollapse(key2, payRollDetailNew.paySlipId)}
                                                 style={{
                                                   backgroundColor: "#ECECED",
+                                                  width: "50px",
+                                                  height: "50px",
                                                 }}
                                               >
                                                 <i
                                                   className="uil uil-angle-down"
-                                                  style={{ fontSize: "26px" }}
+                                                  style={{ fontSize: "30px" }}
                                                 ></i>
                                               </div>
                                             </Col>
@@ -1393,67 +1646,119 @@ const ProjectDetailDesciption = () => {
                                         </div>
                                       </div>
 
-                                      <Collapse isOpen={showCollapse[key]}>
+                                      <Collapse isOpen={showCollapse[key2]}>
                                         <div
                                           style={{
                                             backgroundColor: "#EFF0F2",
                                             borderRadius: "7px",
                                           }}
-                                          className="mt-1 p-2"
+                                          className="mt-1 p-2 d-flex flex-column gap-2"
                                         >
-                                          <div className="d-flex flex-column gap-2">
-                                            <div
-                                              className="job-box-dev-in-list-hiringRequest-for-dev card  p-2"
-                                              style={{ backgroundColor: "#FFFFFF" }}
-                                            >
-                                              <Row>
-                                                <Col
-                                                  md={3}
-                                                  className="d-flex justify-content-center align-items-center"
-                                                >
-                                                  Work Date
-                                                </Col>
-                                                <Col md={3}>
-                                                  <div>
-                                                    {" "}
-                                                    <Input
-                                                      type="text"
-                                                      className="form-control"
-                                                      id="time-In"
-                                                      value={"07:00"}
-                                                      onChange={(e) =>
-                                                        setCurrentProjectName(
-                                                          e.target.value
-                                                        )
+                                          {workLoglist.map((workLogDetail, key) => (
+                                            <div className="d-flex flex-column gap-2">
+                                              <div
+                                                className="job-box-dev-in-list-hiringRequest-for-dev card d-flex flex-column gap-2 p-2"
+                                                style={{ backgroundColor: "#FFFFFF" }}
+                                              >
+                                                <Row>
+                                                  <Col
+                                                    md={3}
+                                                    className="d-flex justify-content-center align-items-center"
+                                                    id={`time-In2-${workLogDetail.workLogId}`}
+                                                  >
+                                                    {workLogDetail.workDateMMM}
+                                                  </Col>
+                                                  <Col md={3}>
+                                                    <div>
+                                                      <input
+                                                        type="time"
+                                                        className="form-control"
+                                                        id={`endTimeWorkLog${key2}${key}`}
+                                                        readOnly={editableRowId !== workLogDetail.workLogId}
+                                                      />
+                                                    </div>
+                                                  </Col>
+                                                  <Col md={3}>
+                                                    <div>
+                                                      <input
+                                                        type="time"
+                                                        className="form-control"
+                                                        id={`endTimeWorkLog2${key2}${key}`}
+                                                        readOnly={editableRowId !== workLogDetail.workLogId}
+                                                      />
+                                                    </div>
+                                                  </Col>
+                                                  <Col
+                                                    md={2}
+                                                    className="d-flex justify-content-center align-items-center"
+                                                    id={`hourInDay${workLogDetail.workLogId}`}
+                                                  >
+                                                    Hours in day: {workLogDetail.hourWorkInDay}
+                                                  </Col>
+                                                  <Col
+                                                    md={1}
+                                                    className="d-flex justify-content-center align-items-center"
+                                                  >
+                                                    <DropdownAntd
+                                                      menu={{
+                                                        items,
+                                                      }}
+                                                      trigger={['click']}
+                                                      onClick={() =>
+                                                        setKeyAndIdWorkLog(workLogDetail.workLogId, key)
                                                       }
-                                                    />
-                                                  </div>
-                                                </Col>
-                                                <Col md={3}>
-                                                  <div>
-                                                    {" "}
-                                                    <Input
-                                                      type="text"
-                                                      className="form-control"
-                                                      id="time-Out"
-                                                      value={"07:00"}
-                                                      onChange={(e) =>
-                                                        setCurrentProjectName(
-                                                          e.target.value
-                                                        )
-                                                      }
-                                                    />
-                                                  </div>
-                                                </Col>
-                                                <Col
-                                                  md={3}
-                                                  className="d-flex justify-content-center align-items-center"
-                                                >
-                                                  Hours In Day{" "}
-                                                </Col>
-                                              </Row>
+                                                      disabled={editableRowId}
+                                                    >
+                                                      <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                        <FontAwesomeIcon
+                                                          icon={faGear}
+                                                          size="xl"
+                                                          color="#909191"
+                                                        />
+                                                      </a>
+                                                    </DropdownAntd>
+                                                  </Col>
+                                                </Row>
+                                                {editableRowId == workLogDetail.workLogId ? (
+                                                  <>
+                                                    <Row>
+                                                      <Col
+                                                        md={2}
+                                                        style={{ textAlign: "end" }}
+                                                        className="d-flex gap-2 justify-content-end"
+                                                      >
+                                                      </Col>
+                                                      <Col
+                                                        md={6}
+                                                        style={{ textAlign: "end" }}
+                                                        className="d-flex gap-2 justify-content-end"
+                                                      >
+                                                        <p id={`timeErrorWorkLog${workLogDetail.workLogId}`} className="text-danger mt-2"></p>
+                                                      </Col>
+                                                      <Col
+                                                        md={4}
+                                                        style={{ textAlign: "end" }}
+                                                        className="d-flex gap-2 justify-content-end"
+                                                      >
+                                                        <div className="btn btn-soft-danger"
+                                                          onClick={() => cancelUpdateWorkLog()}
+                                                        >
+                                                          Cancel
+                                                        </div>
+                                                        <div className="btn btn-soft-blue"
+                                                          onClick={() => saveUpdateWorkLog()}
+                                                        >
+                                                          Save
+                                                        </div>
+                                                      </Col>
+                                                    </Row>
+                                                  </>
+                                                ) : (
+                                                  null
+                                                )}
+                                              </div>
                                             </div>
-                                          </div>
+                                          ))}
                                         </div>
                                       </Collapse>
                                     </div>
@@ -1468,10 +1773,10 @@ const ProjectDetailDesciption = () => {
                   </TabContent>
                 </CardBody>
               </Card>
-            </div>
-          </div>
+            </div >
+          </div >
 
-        </CardBody>
+        </CardBody >
       </div >
     </React.Fragment >
   );

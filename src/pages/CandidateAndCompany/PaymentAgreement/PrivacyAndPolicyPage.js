@@ -46,7 +46,7 @@ const PrivacyAndPolicyPage = () => {
 
       var parts = preContractData.fromDate.split('/');
       if (parts.length === 3) {
-        var day = parts[1];
+        var day = parts[1] + 7;
         var month = parts[0];
         var year = parts[2];
         // Format the date as "yyyy-dd-mm"
@@ -409,7 +409,7 @@ const PrivacyAndPolicyPage = () => {
                   <h5>(Signature, Seal)</h5>
                 </div>
                 <div class="col">
-                  <h5>LABOR SUBLESSOR</h5>
+                  <h5>LABOR SUBLESSEE</h5>
                   <h5>(Signature, Seal)</h5>
                 </div>
               </div>
@@ -646,7 +646,7 @@ const PrivacyAndPolicyPage = () => {
                     <h5>(Signature, Seal)</h5>
                   </div>
                   <div class="col">
-                    <h5>LABOR SUBLESSOR</h5>
+                    <h5>LABOR SUBLESSEE</h5>
                     <h5>(Signature, Seal)</h5>
                   </div>
                 </div>
