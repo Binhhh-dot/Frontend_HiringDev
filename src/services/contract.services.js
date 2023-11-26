@@ -27,6 +27,23 @@ const getContractAndPaging = async (PageIndex, PageSize) => {
 const postContract = async (requestId, developerId, fromDate, toDate, legalRepresentation, legalRepresentationPosition) => {
   const serviceUrl = urlConstant.endpoint.contract.postContract;
   const response = await utils.axiosLocalHost.post(serviceUrl, { requestId, developerId, fromDate, toDate, legalRepresentation, legalRepresentationPosition });
+  const getContractById = async (contractId) => {
+    const serviceUrl = urlConstant.endpoint.contract.getContractById.replace(
+      "${contractId}",
+      contractId
+    );
+    const response = await utils.axiosLocalHost.get(serviceUrl);
+    return response;
+  }
+};
+
+const confirmContract = async (contractId) => {
+  const serviceUrl = urlConstant.endpoint.contract.confirmContract.replace(
+    "${contractId}",
+    contractId
+  );
+
+  const response = await utils.axiosLocalHost.put(serviceUrl);
   return response;
 };
 
@@ -34,5 +51,8 @@ export default {
   getPreContract,
   getContract,
   getContractAndPaging,
-  postContract
+  postContract,
+  getContractAndPaging,
+  getContractById,
+  confirmContract,
 };

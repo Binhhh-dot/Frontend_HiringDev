@@ -81,6 +81,8 @@ export default {
       createCompany: "/CompanyPartner",
       getCompanyByCompanyId: "/CompanyPartner/${companyId}",
       updateCompany: "/CompanyPartner?companyId=${companyId}",
+      getCompany: "/CompanyPartner",
+      getCompanyAndPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
     },
     country: {
       getAll:
@@ -170,6 +172,14 @@ export default {
       getContractAndPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
       getPreContract: "/Contract/PreContract?developerId=${developerId}&requestId=${requestId}",
       postContract: "/Contract",
+      getContractById: "/Contract/${contractId}",
+      confirmContract: "/Contract/ConfirmSigned?contractId=${contractId}",
+    },
+    pay: {
+      getPayPeriod: "/PayPeriod/${projectId}?inputDate=${inputDate}",
+      getPaySlip: "/PaySlip/ByPayPeriod/${payPeriodId}",
+      getPaySlipPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getWorklog: "/WorkLog/ByPaySlip/${paySlipId}",
     },
     jobPosition: {
       createJobPosition: "/JobPosition",

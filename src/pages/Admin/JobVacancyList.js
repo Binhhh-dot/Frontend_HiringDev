@@ -102,9 +102,9 @@ const JobVacancyList = (a) => {
   return (
     <React.Fragment>
       <h4>Hiring Request List</h4>
-      <div style={{ width: "20%" }} className="mt-3 mb-3">
+      {/* <div style={{ width: "20%" }} className="mt-3 mb-3">
         <Input placeholder="Search" style={{ height: "40px" }} />
-      </div>
+      </div> */}
 
       <div>
         {jobVacancyList.map((jobVacancyListDetail, key) => (
