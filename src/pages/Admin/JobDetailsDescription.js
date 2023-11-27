@@ -1397,6 +1397,9 @@ const JobDetailsDescription = () => {
                                   : devHasBeenSentNew.selectedDevStatus ===
                                     "Contract Failed"
                                   ? "badge bg-danger text-light"
+                                  : devHasBeenSentNew.selectedDevStatus ===
+                                    "Request Closed"
+                                  ? "badge bg-danger text-light"
                                   : ""
                               }
                             >
@@ -1591,6 +1594,9 @@ const JobDetailsDescription = () => {
                               ? "badge bg-warning text-light"
                               : devHasBeenSentNew.selectedDevStatus ===
                                 "Contract Failed"
+                              ? "badge bg-danger text-light"
+                              : devHasBeenSentNew.selectedDevStatus ===
+                                "Request Closed"
                               ? "badge bg-danger text-light"
                               : ""
                           }

@@ -488,13 +488,6 @@ const ListAccountDeveloper = () => {
       setEmploymentTypeError(null);
     }
 
-    // if (!selectedOptions5.value) {
-    //     setEmploymentTypeError("Please select the employment type ");
-    //     check = false;
-    // } else {
-    //     setEmploymentTypeError(null);
-    // }
-
     if (!selectedOptions7.value) {
       setGenderError("Please select the gender");
       check = false;
