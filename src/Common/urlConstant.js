@@ -53,7 +53,7 @@ export default {
         "/HiringRequest/ByCompany?companyId=${companyId}",
       approvedHirringRequestStatus: "/HiringRequestStatus/ChangeWaitingStatus",
       cancelHirringRequestStatus: "/HiringRequestStatus/ChangeWaitingStatus",
-      cancelHirringRequestStatusAfter: "/HiringRequestStatus/Cancel",
+      cancelHirringRequestStatusAfter: "/HiringRequestStatus/Closed",
       getHiringRequestByRequestId: "/HiringRequest?requestId=${requestId}",
       getAllHiringRequestByProjectId:
         "/HiringRequest/ByProject?projectId=${projectId}",
@@ -98,7 +98,6 @@ export default {
       changeStatusDevUnofficialInTaskDetailForStaff:
         "/AssignTask/ChangeStatusDevTask",
       getListDeveloperOnboardByProjectId: "/Developer/ByProject/${projectId}",
-
     },
     interview: {
       createAnInterview: "/Interview",
@@ -170,7 +169,8 @@ export default {
     contract: {
       getContract: "/Contract",
       getContractAndPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
-      getPreContract: "/Contract/PreContract?developerId=${developerId}&requestId=${requestId}",
+      getPreContract:
+        "/Contract/PreContract?developerId=${developerId}&requestId=${requestId}",
       postContract: "/Contract",
       getContractById: "/Contract/${contractId}",
       confirmContract: "/Contract/ConfirmSigned?contractId=${contractId}",
@@ -184,7 +184,8 @@ export default {
     jobPosition: {
       createJobPosition: "/JobPosition",
       getJobPositionByProjectId: "/JobPosition/ByProject/${projectId}",
-      getJobPositionsWithHiringRequest: "/JobPosition/JobPositionsWithHiringRequest/${projectId}",
+      getJobPositionsWithHiringRequest:
+        "/JobPosition/JobPositionsWithHiringRequest/${projectId}",
     },
     teamMeeting: {
       createTeamMeeting: "/TeamMeeting",
@@ -193,16 +194,18 @@ export default {
     },
 
     payPeriod: {
-      exportToExcel: "/PayPeriod/ExportToExcel/${projectId}?inputDate=${inputDate}",
+      exportToExcel:
+        "/PayPeriod/ExportToExcel/${projectId}?inputDate=${inputDate}",
       importExcel: "/PayPeriod/ImportExcel/${projectId}",
-      getPayPeriodDetailByProjectIdAndDate: "/PayPeriod/${projectId}?inputDate=${inputDate}",
+      getPayPeriodDetailByProjectIdAndDate:
+        "/PayPeriod/${projectId}?inputDate=${inputDate}",
     },
     paySlip: {
-      getPaySlipByPayPeriodId: "PaySlip/ByPayPeriod/${payPeriodId}"
+      getPaySlipByPayPeriodId: "PaySlip/ByPayPeriod/${payPeriodId}",
     },
     workLog: {
       getWorkLogByPaySlipId: "/WorkLog/ByPaySlip/${paySlipId}",
       updateWorkLog: "/WorkLog",
-    }
+    },
   },
 };

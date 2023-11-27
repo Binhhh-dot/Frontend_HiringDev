@@ -19,9 +19,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 const { Sider } = Layout;
 
-const SiderBarWeb = () => {
+const SiderBarWeb = ({ choose }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]);
+  //"menu-key/10"
+  const [selectedKeys, setSelectedKeys] = useState([choose]);
   const [isLeftIcon, setIsLeftIcon] = useState(true);
   const [showWeHire, setShowWeHire] = useState(true);
 
@@ -57,10 +58,10 @@ const SiderBarWeb = () => {
       key: "menu-key/sub-menu-key",
       icon: <UserOutlined />,
       children: [
-        { label: "Manager", key: "menu-key/sub-menu-key/3" },
-        { label: "Staff", key: "menu-key/sub-menu-key/4" },
-        { label: "HR", key: "menu-key/sub-menu-key/5" },
-        { label: "Developer", key: "menu-key/sub-menu-key/6" },
+        { label: "List Manager", key: "menu-key/sub-menu-key/3" },
+        { label: "List Staff", key: "menu-key/sub-menu-key/4" },
+        { label: "List HR", key: "menu-key/sub-menu-key/5" },
+        { label: "List Developer", key: "menu-key/sub-menu-key/6" },
       ],
       className: "option-2",
     },
@@ -170,7 +171,8 @@ const SiderBarWeb = () => {
       <Menu
         className="mt-4"
         style={{ border: "0px" }}
-        defaultSelectedKeys={["menu-key/10"]}
+        //"menu-key/10"
+        defaultSelectedKeys={[choose]}
         selectedKeys={selectedKeys}
         mode="inline"
         onClick={handleMenuClick}
@@ -185,16 +187,16 @@ const SiderBarWeb = () => {
             >
               {item.children.map((child) => (
                 <Menu.Item key={child.key}>
-                  {child.label === "Manager" && (
+                  {child.label === "List Manager" && (
                     <Link to="/listAccountManager">{child.label}</Link>
                   )}
-                  {child.label === "Staff" && (
+                  {child.label === "List Staff" && (
                     <Link to="/listAccountStaff">{child.label}</Link>
                   )}
-                  {child.label === "HR" && (
+                  {child.label === "List HR" && (
                     <Link to="/listAccountHR">{child.label}</Link>
                   )}
-                  {child.label === "Developer" && (
+                  {child.label === "List Developer" && (
                     <Link to="/listAccountDeveloper">{child.label}</Link>
                   )}
                 </Menu.Item>
