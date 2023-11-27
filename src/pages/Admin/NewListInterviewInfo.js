@@ -9,6 +9,7 @@ import {
   Nav,
   TabPane,
   TabContent,
+  Container,
 } from "reactstrap";
 import { Form } from "react-bootstrap";
 import jobImage1 from "../../assets/images/featured-job/img-01.png";
@@ -29,9 +30,27 @@ import classnames from "classnames";
 import { Input, Space, Layout, Badge } from "antd";
 
 import SiderBarWeb from "./SlideBar/SiderBarWeb";
+import userAuthorization from "../../utils/userAuthorization";
+import { useNavigate, useLocation } from "react-router-dom";
 const { Header, Footer, Content } = Layout;
 
 const NewListInterviewInfo = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoad, setIdLoad] = useState(false);
+  useEffect(() => {
+    const localStorageRole = localStorage.getItem("role");
+    if (!localStorageRole) {
+      navigate("/signin");
+    } else {
+      if (!userAuthorization(localStorageRole, location.pathname)) {
+        navigate("/error404");
+      } else {
+        setIdLoad(true);
+      }
+    }
+  }, []);
+
   const [newInterviewListInManager, setNewInterviewListInManager] = useState(
     []
   );
@@ -462,7 +481,8 @@ const NewListInterviewInfo = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SiderBarWeb></SiderBarWeb>
+        <SiderBarWeb choose={"menu-key/11"}></SiderBarWeb>
+
         <Layout>
           <div
             style={{
@@ -527,7 +547,7 @@ const NewListInterviewInfo = () => {
           </div>
 
           <Content>
-            {/* <section
+            <section
               className="section p-3 "
               style={{
                 backgroundColor: "#FFFF",
@@ -535,1274 +555,1354 @@ const NewListInterviewInfo = () => {
                 margin: "30px",
                 boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
               }}
-            ></section> */}
-            <h4>Interview List</h4>
-
-            <div className="d-flex justify-content-between">
-              <Nav
-                className="profile-content-nav nav-pills border-bottom gap-3 mb-3"
-                id="pills-tab"
-                role="tablist"
-              >
-                <NavItem role="presentation">
-                  <NavLink
-                    to="#"
-                    className={classnames("nav-link", {
-                      active: activeTab === "1",
-                    })}
-                    onClick={() => {
-                      tabChange("1");
-                    }}
-                    type="button"
-                  >
-                    All
-                  </NavLink>
-                </NavItem>
-                <NavItem role="presentation">
-                  <NavLink
-                    to="#"
-                    className={classnames("nav-link", {
-                      active: activeTab === "2",
-                    })}
-                    onClick={() => {
-                      tabChange("2");
-                    }}
-                    type="button"
-                  >
-                    Waiting Approval
-                  </NavLink>
-                </NavItem>
-                <NavItem role="presentation">
-                  <NavLink
-                    to="#"
-                    className={classnames("nav-link", {
-                      active: activeTab === "3",
-                    })}
-                    onClick={() => {
-                      tabChange("3");
-                    }}
-                    type="button"
-                  >
-                    Approved
-                  </NavLink>
-                </NavItem>
-                <NavItem role="presentation">
-                  <NavLink
-                    to="#"
-                    className={classnames("nav-link", {
-                      active: activeTab === "4",
-                    })}
-                    onClick={() => {
-                      tabChange("4");
-                    }}
-                    type="button"
-                  >
-                    Complete
-                  </NavLink>
-                </NavItem>
-                <NavItem role="presentation">
-                  <NavLink
-                    to="#"
-                    className={classnames("nav-link", {
-                      active: activeTab === "5",
-                    })}
-                    onClick={() => {
-                      tabChange("5");
-                    }}
-                    type="button"
-                  >
-                    Rejected
-                  </NavLink>
-                </NavItem>
-              </Nav>
-
-              <div className="d-flex align-items-center ">
-                <Space>
-                  <Search
-                    className="custom-search-input"
-                    placeholder="input search text"
-                    allowClear
-                    enterButton="Search"
-                    size="large"
-                    onSearch={onSearch}
-                  />
-                </Space>
-              </div>
-            </div>
-
-            <Modal
-              centered
-              open={showPopup}
-              onOk={() => setShowPopup(false)}
-              onCancel={() => setShowPopup(false)}
-              width={1100}
-              footer={null}
             >
-              <Row className="p-3">
-                <Col lg={6} className="border-end ">
-                  <div
-                    className="d-flex justify-content-between"
-                    style={{ width: "98%" }}
-                  >
-                    <h4 className="mb-0">Interview Detail</h4>
-                    <p className="badge bg-success text-light fs-13 ">
-                      {selectInterviewDetail.statusString}
-                    </p>
-                  </div>
-                  <div className="mt-3">
-                    <p className="mb-0 text-muted">Title </p>
-                    <div
-                      className="p-2 border border-2"
-                      style={{
-                        width: "98%",
-                        fontWeight: "500",
-                        borderRadius: "10px",
-                      }}
-                    >
-                      {selectInterviewDetail.title}
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <p className="mb-0 text-muted">Description </p>
-                    <div
-                      className="p-2 border border-2 "
-                      style={{
-                        width: "98%",
-                        fontWeight: "500",
-                        borderRadius: "10px",
-                      }}
-                    >
-                      {selectInterviewDetail.description}
-                    </div>
-                  </div>
+              <Container className="px-0">
+                <Row className="px-0">
+                  <Col className="px-0">
+                    <div className="me-lg-6">
+                      <h4>Interview List</h4>
 
-                  <div className="mt-3">
-                    <p className="mb-0 text-muted">Date Of Interview </p>
-                    <div
-                      className="p-2 border border-2"
-                      style={{
-                        width: "98%",
-                        fontWeight: "500",
-                        borderRadius: "10px",
-                      }}
-                    >
-                      {selectInterviewDetail.dateOfInterview}
-                    </div>
-                  </div>
-                  <div
-                    className="d-flex  justify-content-between"
-                    style={{ gap: "20px", width: "98%" }}
-                  >
-                    <div className="mt-3" style={{ width: "50%" }}>
-                      <p className="mb-0 text-muted">Start Time </p>
-                      <div
-                        className="p-2 border border-2"
-                        style={{
-                          // width: "fit-content",
-                          fontWeight: "500",
-                          borderRadius: "10px",
-                        }}
-                      >
-                        {selectInterviewDetail.startTime}
-                      </div>
-                    </div>
-
-                    <div className="mt-3" style={{ width: "50%" }}>
-                      <p className="mb-0 text-muted">End Time </p>
-                      <div
-                        className="p-2 border border-2"
-                        style={{
-                          // width: "fit-content",
-                          fontWeight: "500",
-                          borderRadius: "10px",
-                        }}
-                      >
-                        {selectInterviewDetail.endTime}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-3">
-                    <p className="mb-0 text-muted">Posted Time</p>
-                    <div
-                      className="p-2 border border-2"
-                      style={{
-                        width: "98%",
-                        fontWeight: "500",
-                        borderRadius: "10px",
-                      }}
-                    >
-                      {selectInterviewDetail.postedTime}
-                    </div>
-                  </div>
-
-                  {selectInterviewDetail.meetingLink == null ? (
-                    <div></div>
-                  ) : (
-                    <div className="mt-3">
-                      <p className="mb-0 text-muted">Meeting Link </p>
-                      <div
-                        className="p-2 border border-2"
-                        style={{
-                          width: "99%",
-                          fontWeight: "500",
-                          borderRadius: "10px",
-                        }}
-                      >
-                        {selectInterviewDetail.meetingLink == null ? (
-                          <span>None</span>
-                        ) : (
-                          selectInterviewDetail.meetingLink
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </Col>
-                <Col lg={6} className="border-start ">
-                  {/* ------------------------------------------------------ */}
-                  <Row>
-                    <Col lg={6}>
-                      <div className="p-2">
-                        <div className="candidate-profile text-center">
-                          <img
-                            src={img0}
-                            alt=""
-                            className="avatar-lg rounded-circle"
-                          />
-                          <h6 className="fs-18 mb-0 mt-4">
-                            {devInterviewDetail.firstName}{" "}
-                            {devInterviewDetail.lastName}
-                          </h6>
-                          <p className="text-muted mb-4">
-                            {devInterviewDetail.codeName}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="candidate-profile-overview p-2">
-                        <h6 className="fs-17 fw-semibold mb-3">
-                          Profile Overview
-                        </h6>
-                        <ul className="list-unstyled mb-0">
-                          <li>
-                            <div className="d-flex justify-content-start">
-                              <label className="text-dark">Gender</label>
-                              <div>
-                                <p className="text-muted mb-0">
-                                  {devInterviewDetail.genderString}
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-
-                          <li>
-                            <div className="d-flex justify-content-start">
-                              <label className="text-dark">Email</label>
-                              <div>
-                                <p className="text-muted mb-0 ">
-                                  {devInterviewDetail.email}
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-
-                          <li>
-                            <div className="d-flex justify-content-start">
-                              <label className="text-dark">Phone</label>
-                              <div>
-                                <p className="text-muted mb-0">0123456789</p>
-                              </div>
-                            </div>
-                          </li>
-
-                          <li>
-                            <div className="d-flex justify-content-start">
-                              <label className="text-dark">Experience</label>
-                              <div>
-                                <p className="text-muted mb-0 ">
-                                  {devInterviewDetail.yearOfExperience} Year
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="d-flex justify-content-start">
-                              <label className="text-dark">Salary</label>
-                              <div>
-                                <p className="text-muted mb-0">
-                                  {devInterviewDetail.averageSalary}$
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="p-2 ">
-                        <h6 className="fs-17 fw-semibold mb-2">Level</h6>
-                        <div className="d-flex flex-wrap align-items-start gap-1">
-                          <span className="badge bg-warning text-light fs-12">
-                            {devInterviewDetail.levelRequireName}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="p-2 ">
-                        <h6 className="fs-17 fw-semibold mb-2">Type</h6>
-                        <div className="d-flex flex-wrap align-items-start gap-1">
-                          {devInterviewDetail.typeRequireStrings?.map(
-                            (skillRequire, key) => (
-                              <span
-                                key={key}
-                                className="badge bg-info-subtle text-info fs-13 mt-1"
-                              >
-                                {skillRequire}
-                              </span>
-                            )
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="p-2 ">
-                        <h6 className="fs-17 fw-semibold mb-2">
-                          Professional Skills
-                        </h6>
-                        <div className="d-flex flex-wrap align-items-start gap-1">
-                          {devInterviewDetail.skillRequireStrings?.map(
-                            (skillRequire, key) => (
-                              <span
-                                key={key}
-                                className="badge bg-success-subtle text-success fs-13"
-                              >
-                                {skillRequire}
-                              </span>
-                            )
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="candidate-contact-details p-2">
-                        <h6 className="fs-17 fw-semibold mb-3">
-                          Work Arrangement
-                        </h6>
-                        <ul className="list-unstyled mb-0">
-                          <div className="d-flex gap-1">
-                            <p className="mb-0 badge bg-purplel text-purple fs-13">
-                              {devInterviewDetail.scheduleTypeName}
-                            </p>
-                            <p className="mb-0 badge bg-orangeRed2l text-orangeRed2 fs-13">
-                              {devInterviewDetail.employmentTypeName}
-                            </p>
-                          </div>
-                        </ul>
-                      </div>
-                    </Col>
-                  </Row>
-                  {/* ------------------------------------------------------ */}
-                </Col>
-                <Row>
-                  {selectInterviewDetail.rejectionReason == null ? (
-                    <div></div>
-                  ) : (
-                    <div className="mt-3 ">
-                      <p className="mb-0 text-muted">Rejection Reason</p>
-                      <div
-                        className="p-2 border border-2"
-                        style={{
-                          width: "100%",
-                          fontWeight: "500",
-                          borderRadius: "10px",
-                        }}
-                      >
-                        {selectInterviewDetail.rejectionReason == null ? (
-                          <span></span>
-                        ) : (
-                          selectInterviewDetail.rejectionReason
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </Row>
-              </Row>
-            </Modal>
-
-            <CardBody className="px-0">
-              <TabContent activeTab={activeTab}>
-                <TabPane tabId="1">
-                  <div>
-                    {newInterviewListInManager.map(
-                      (newInterviewListInManagerDetail, key) => (
-                        <div
-                          style={{
-                            boxShadow:
-                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                          }}
-                          key={key}
-                          className={
-                            "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                          }
+                      <div className="d-flex justify-content-between">
+                        <Nav
+                          className="profile-content-nav nav-pills border-bottom gap-3 mb-3"
+                          id="pills-tab"
+                          role="tablist"
                         >
-                          <div className="p-2">
-                            <Row className="align-items-center">
-                              <Col md={2}>
-                                <div>
-                                  <Link to="#">
-                                    <img
-                                      style={{
-                                        width: "80px",
-                                        height: "80px",
-                                      }}
-                                      src={
-                                        newInterviewListInManagerDetail.companyImage
-                                      }
-                                      alt=""
-                                      className="img-fluid rounded-3 img-avt-hiring-request"
-                                    />
-                                  </Link>
-                                </div>
-                              </Col>
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTab === "1",
+                              })}
+                              onClick={() => {
+                                tabChange("1");
+                              }}
+                              type="button"
+                            >
+                              All
+                            </NavLink>
+                          </NavItem>
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTab === "2",
+                              })}
+                              onClick={() => {
+                                tabChange("2");
+                              }}
+                              type="button"
+                            >
+                              Waiting Approval
+                            </NavLink>
+                          </NavItem>
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTab === "3",
+                              })}
+                              onClick={() => {
+                                tabChange("3");
+                              }}
+                              type="button"
+                            >
+                              Approved
+                            </NavLink>
+                          </NavItem>
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTab === "4",
+                              })}
+                              onClick={() => {
+                                tabChange("4");
+                              }}
+                              type="button"
+                            >
+                              Complete
+                            </NavLink>
+                          </NavItem>
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTab === "5",
+                              })}
+                              onClick={() => {
+                                tabChange("5");
+                              }}
+                              type="button"
+                            >
+                              Rejected
+                            </NavLink>
+                          </NavItem>
+                        </Nav>
 
-                              <Col md={3} className="px-0">
+                        <div className="d-flex align-items-center ">
+                          <Space>
+                            <Search
+                              className="custom-search-input"
+                              placeholder="input search text"
+                              allowClear
+                              enterButton="Search"
+                              size="large"
+                              onSearch={onSearch}
+                            />
+                          </Space>
+                        </div>
+                      </div>
+
+                      <Modal
+                        centered
+                        open={showPopup}
+                        onOk={() => setShowPopup(false)}
+                        onCancel={() => setShowPopup(false)}
+                        width={1100}
+                        footer={null}
+                      >
+                        <Row className="p-3">
+                          <Col lg={6} className="border-end ">
+                            <div
+                              className="d-flex justify-content-between"
+                              style={{ width: "98%" }}
+                            >
+                              <h4 className="mb-0">Interview Detail</h4>
+                              <p className="badge bg-success text-light fs-13 ">
+                                {selectInterviewDetail.statusString}
+                              </p>
+                            </div>
+                            <div className="mt-3">
+                              <p className="mb-0 text-muted">Title </p>
+                              <div
+                                className="p-2 border border-2"
+                                style={{
+                                  width: "98%",
+                                  fontWeight: "500",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {selectInterviewDetail.title}
+                              </div>
+                            </div>
+                            <div className="mt-3">
+                              <p className="mb-0 text-muted">Description </p>
+                              <div
+                                className="p-2 border border-2 "
+                                style={{
+                                  width: "98%",
+                                  fontWeight: "500",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {selectInterviewDetail.description}
+                              </div>
+                            </div>
+
+                            <div className="mt-3">
+                              <p className="mb-0 text-muted">
+                                Date Of Interview{" "}
+                              </p>
+                              <div
+                                className="p-2 border border-2"
+                                style={{
+                                  width: "98%",
+                                  fontWeight: "500",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {selectInterviewDetail.dateOfInterview}
+                              </div>
+                            </div>
+                            <div
+                              className="d-flex  justify-content-between"
+                              style={{ gap: "20px", width: "98%" }}
+                            >
+                              <div className="mt-3" style={{ width: "50%" }}>
+                                <p className="mb-0 text-muted">Start Time </p>
                                 <div
-                                  onClick={() =>
-                                    midleSelect(
-                                      newInterviewListInManagerDetail.interviewId
-                                    )
-                                  }
+                                  className="p-2 border border-2"
+                                  style={{
+                                    // width: "fit-content",
+                                    fontWeight: "500",
+                                    borderRadius: "10px",
+                                  }}
                                 >
-                                  <h5
-                                    className="fs-18 mb-0"
-                                    style={{ cursor: "pointer" }}
-                                  >
-                                    {newInterviewListInManagerDetail.title}
-                                  </h5>
-                                  <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
-                                    {
-                                      newInterviewListInManagerDetail.interviewCode
-                                    }
-                                  </p>
+                                  {selectInterviewDetail.startTime}
                                 </div>
-                              </Col>
-                              {/* ------------------ */}
+                              </div>
 
-                              {/* -------------------*/}
-
-                              <Col md={2} className="d-flex  gap-2">
-                                <div className="d-flex flex-column gap-2">
-                                  <FontAwesomeIcon
-                                    icon={faCalendarDays}
-                                    size="lg"
-                                    className="text-primary"
-                                  />
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    size="lg"
-                                    className="text-primary"
-                                  />
-                                </div>
-
-                                <div>
-                                  <p className="mb-0">
-                                    {
-                                      newInterviewListInManagerDetail.dateOfInterview
-                                    }
-                                  </p>
-                                  <p className="mb-0 mt-1">
-                                    {newInterviewListInManagerDetail.startTime}{" "}
-                                    - {newInterviewListInManagerDetail.endTime}
-                                  </p>
-                                </div>
-                              </Col>
-
-                              <Col
-                                md={2}
-                                className="d-flex justify-content-center align-items-center"
-                              >
-                                <p className="mb-0">
-                                  {newInterviewListInManagerDetail.postedTime}
-                                </p>
-                              </Col>
-
-                              <Col
-                                md={3}
-                                className="d-flex justify-content-center"
-                              >
-                                <span
-                                  className={
-                                    newInterviewListInManagerDetail.statusString ===
-                                    "Waiting Approval"
-                                      ? "badge bg-warning text-light fs-12"
-                                      : newInterviewListInManagerDetail.statusString ===
-                                        "Approved"
-                                      ? "badge bg-newGreen text-light fs-12"
-                                      : newInterviewListInManagerDetail.statusString ===
-                                        "Rejected"
-                                      ? "badge bg-danger text-light fs-12"
-                                      : newInterviewListInManagerDetail.statusString ===
-                                        "Expired"
-                                      ? "badge bg-danger text-light fs-12"
-                                      : newInterviewListInManagerDetail.statusString ===
-                                        "Completed"
-                                      ? "badge bg-success text-light fs-12"
-                                      : ""
-                                  }
+                              <div className="mt-3" style={{ width: "50%" }}>
+                                <p className="mb-0 text-muted">End Time </p>
+                                <div
+                                  className="p-2 border border-2"
+                                  style={{
+                                    // width: "fit-content",
+                                    fontWeight: "500",
+                                    borderRadius: "10px",
+                                  }}
                                 >
-                                  {newInterviewListInManagerDetail.statusString}
-                                </span>
+                                  {selectInterviewDetail.endTime}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="mt-3">
+                              <p className="mb-0 text-muted">Posted Time</p>
+                              <div
+                                className="p-2 border border-2"
+                                style={{
+                                  width: "98%",
+                                  fontWeight: "500",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {selectInterviewDetail.postedTime}
+                              </div>
+                            </div>
+
+                            {selectInterviewDetail.meetingLink == null ? (
+                              <div></div>
+                            ) : (
+                              <div className="mt-3">
+                                <p className="mb-0 text-muted">Meeting Link </p>
+                                <div
+                                  className="p-2 border border-2"
+                                  style={{
+                                    width: "99%",
+                                    fontWeight: "500",
+                                    borderRadius: "10px",
+                                  }}
+                                >
+                                  {selectInterviewDetail.meetingLink == null ? (
+                                    <span>None</span>
+                                  ) : (
+                                    selectInterviewDetail.meetingLink
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </Col>
+                          <Col lg={6} className="border-start ">
+                            {/* ------------------------------------------------------ */}
+                            <Row>
+                              <Col lg={6}>
+                                <div className="p-2">
+                                  <div className="candidate-profile text-center">
+                                    <img
+                                      src={img0}
+                                      alt=""
+                                      className="avatar-lg rounded-circle"
+                                    />
+                                    <h6 className="fs-18 mb-0 mt-4">
+                                      {devInterviewDetail.firstName}{" "}
+                                      {devInterviewDetail.lastName}
+                                    </h6>
+                                    <p className="text-muted mb-4">
+                                      {devInterviewDetail.codeName}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div className="candidate-profile-overview p-2">
+                                  <h6 className="fs-17 fw-semibold mb-3">
+                                    Profile Overview
+                                  </h6>
+                                  <ul className="list-unstyled mb-0">
+                                    <li>
+                                      <div className="d-flex justify-content-start">
+                                        <label className="text-dark">
+                                          Gender
+                                        </label>
+                                        <div>
+                                          <p className="text-muted mb-0">
+                                            {devInterviewDetail.genderString}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li>
+
+                                    <li>
+                                      <div className="d-flex justify-content-start">
+                                        <label className="text-dark">
+                                          Email
+                                        </label>
+                                        <div>
+                                          <p className="text-muted mb-0 ">
+                                            {devInterviewDetail.email}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li>
+
+                                    <li>
+                                      <div className="d-flex justify-content-start">
+                                        <label className="text-dark">
+                                          Phone
+                                        </label>
+                                        <div>
+                                          <p className="text-muted mb-0">
+                                            0123456789
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li>
+
+                                    <li>
+                                      <div className="d-flex justify-content-start">
+                                        <label className="text-dark">
+                                          Experience
+                                        </label>
+                                        <div>
+                                          <p className="text-muted mb-0 ">
+                                            {
+                                              devInterviewDetail.yearOfExperience
+                                            }{" "}
+                                            Year
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div className="d-flex justify-content-start">
+                                        <label className="text-dark">
+                                          Salary
+                                        </label>
+                                        <div>
+                                          <p className="text-muted mb-0">
+                                            {devInterviewDetail.averageSalary}$
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </Col>
+                              <Col lg={6}>
+                                <div className="p-2 ">
+                                  <h6 className="fs-17 fw-semibold mb-2">
+                                    Level
+                                  </h6>
+                                  <div className="d-flex flex-wrap align-items-start gap-1">
+                                    <span className="badge bg-warning text-light fs-12">
+                                      {devInterviewDetail.levelRequireName}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <div className="p-2 ">
+                                  <h6 className="fs-17 fw-semibold mb-2">
+                                    Type
+                                  </h6>
+                                  <div className="d-flex flex-wrap align-items-start gap-1">
+                                    {devInterviewDetail.typeRequireStrings?.map(
+                                      (skillRequire, key) => (
+                                        <span
+                                          key={key}
+                                          className="badge bg-info-subtle text-info fs-13 mt-1"
+                                        >
+                                          {skillRequire}
+                                        </span>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="p-2 ">
+                                  <h6 className="fs-17 fw-semibold mb-2">
+                                    Professional Skills
+                                  </h6>
+                                  <div className="d-flex flex-wrap align-items-start gap-1">
+                                    {devInterviewDetail.skillRequireStrings?.map(
+                                      (skillRequire, key) => (
+                                        <span
+                                          key={key}
+                                          className="badge bg-success-subtle text-success fs-13"
+                                        >
+                                          {skillRequire}
+                                        </span>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="candidate-contact-details p-2">
+                                  <h6 className="fs-17 fw-semibold mb-3">
+                                    Work Arrangement
+                                  </h6>
+                                  <ul className="list-unstyled mb-0">
+                                    <div className="d-flex gap-1">
+                                      <p className="mb-0 badge bg-purplel text-purple fs-13">
+                                        {devInterviewDetail.scheduleTypeName}
+                                      </p>
+                                      <p className="mb-0 badge bg-orangeRed2l text-orangeRed2 fs-13">
+                                        {devInterviewDetail.employmentTypeName}
+                                      </p>
+                                    </div>
+                                  </ul>
+                                </div>
                               </Col>
                             </Row>
-                          </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                  {/* ----------------------------------------------------------------------------- */}
-                  {/* phan trang */}
-                  <Row>
-                    <Col lg={12} className="mt-4 pt-2">
-                      <nav aria-label="Page navigation example">
-                        <div className="pagination job-pagination mb-0 justify-content-center">
-                          <li
-                            className={`page-item ${
-                              currentPage === 1 ? "disabled" : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              tabIndex="-1"
-                              onClick={handlePrevPage}
-                            >
-                              <i className="mdi mdi-chevron-double-left fs-15"></i>
-                            </Link>
-                          </li>
-                          {renderPageNumbers()}
-                          <li
-                            className={`page-item ${
-                              currentPage === totalPages ? "disabled" : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              onClick={handleNextPage}
-                            >
-                              <i className="mdi mdi-chevron-double-right fs-15"></i>
-                            </Link>
-                          </li>
-                        </div>
-                      </nav>
-                    </Col>
-                  </Row>
-                </TabPane>
-                <TabPane tabId="2">
-                  <div>
-                    <div>
-                      {interviewListWaitingApproval.map(
-                        (newInterviewListInManagerDetail, key) => (
-                          <div
-                            style={{
-                              boxShadow:
-                                "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                            }}
-                            key={key}
-                            className={
-                              "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                            }
-                          >
-                            <div className="p-2">
-                              <Row className="align-items-center">
-                                <Col md={2}>
-                                  <div>
-                                    <Link to="#">
-                                      <img
-                                        style={{
-                                          width: "80px",
-                                          height: "80px",
-                                        }}
-                                        src={
-                                          newInterviewListInManagerDetail.companyImage
-                                        }
-                                        alt=""
-                                        className="img-fluid rounded-3 img-avt-hiring-request"
-                                      />
-                                    </Link>
-                                  </div>
-                                </Col>
+                            {/* ------------------------------------------------------ */}
+                          </Col>
+                          <Row>
+                            {selectInterviewDetail.rejectionReason == null ? (
+                              <div></div>
+                            ) : (
+                              <div className="mt-3 ">
+                                <p className="mb-0 text-muted">
+                                  Rejection Reason
+                                </p>
+                                <div
+                                  className="p-2 border border-2"
+                                  style={{
+                                    width: "100%",
+                                    fontWeight: "500",
+                                    borderRadius: "10px",
+                                  }}
+                                >
+                                  {selectInterviewDetail.rejectionReason ==
+                                  null ? (
+                                    <span></span>
+                                  ) : (
+                                    selectInterviewDetail.rejectionReason
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </Row>
+                        </Row>
+                      </Modal>
 
-                                <Col md={3} className="px-0">
+                      <CardBody className="px-0">
+                        <TabContent activeTab={activeTab}>
+                          <TabPane tabId="1">
+                            <div>
+                              {newInterviewListInManager.map(
+                                (newInterviewListInManagerDetail, key) => (
                                   <div
-                                    onClick={() =>
-                                      midleSelect(
-                                        newInterviewListInManagerDetail.interviewId
-                                      )
-                                    }
-                                  >
-                                    <h5
-                                      className="fs-18 mb-0"
-                                      style={{ cursor: "pointer" }}
-                                    >
-                                      {newInterviewListInManagerDetail.title}
-                                    </h5>
-                                    <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
-                                      {
-                                        newInterviewListInManagerDetail.interviewCode
-                                      }
-                                    </p>
-                                  </div>
-                                </Col>
-                                {/* ------------------ */}
-
-                                {/* -------------------*/}
-
-                                <Col md={2} className="d-flex  gap-2">
-                                  <div className="d-flex flex-column gap-2">
-                                    <FontAwesomeIcon
-                                      icon={faCalendarDays}
-                                      size="lg"
-                                      className="text-primary"
-                                    />
-                                    <FontAwesomeIcon
-                                      icon={faClock}
-                                      size="lg"
-                                      className="text-primary"
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <p className="mb-0">
-                                      {
-                                        newInterviewListInManagerDetail.dateOfInterview
-                                      }
-                                    </p>
-                                    <p className="mb-0 mt-1">
-                                      {
-                                        newInterviewListInManagerDetail.startTime
-                                      }{" "}
-                                      -{" "}
-                                      {newInterviewListInManagerDetail.endTime}
-                                    </p>
-                                  </div>
-                                </Col>
-
-                                <Col
-                                  md={2}
-                                  className="d-flex justify-content-center align-items-center"
-                                >
-                                  <p className="mb-0">
-                                    {newInterviewListInManagerDetail.postedTime}
-                                  </p>
-                                </Col>
-
-                                <Col
-                                  md={3}
-                                  className="d-flex justify-content-center"
-                                >
-                                  <span
+                                    style={{
+                                      boxShadow:
+                                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                    }}
+                                    key={key}
                                     className={
-                                      newInterviewListInManagerDetail.statusString ===
-                                      "Waiting Approval"
-                                        ? "badge bg-warning text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Approved"
-                                        ? "badge bg-newGreen text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Rejected"
-                                        ? "badge bg-danger text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Expired"
-                                        ? "badge bg-danger text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Completed"
-                                        ? "badge bg-success text-light fs-12"
-                                        : ""
+                                      "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
                                     }
                                   >
-                                    {
-                                      newInterviewListInManagerDetail.statusString
-                                    }
-                                  </span>
-                                </Col>
-                              </Row>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                  {/* ----------------------------------------------------------------------------- */}
-                  {/* phan trang */}
-                  <Row>
-                    <Col lg={12} className="mt-4 pt-2">
-                      <nav aria-label="Page navigation example">
-                        <div className="pagination job-pagination mb-0 justify-content-center">
-                          <li
-                            className={`page-item ${
-                              currentPageWaitingApproval === 1 ? "disabled" : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              tabIndex="-1"
-                              onClick={handlePrevPageWaitingApproval}
-                            >
-                              <i className="mdi mdi-chevron-double-left fs-15"></i>
-                            </Link>
-                          </li>
-                          {renderPageNumbersWaitingApproval()}
-                          <li
-                            className={`page-item ${
-                              currentPageWaitingApproval ===
-                              totalPagesWaitingApproval
-                                ? "disabled"
-                                : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              onClick={handleNextPageWaitingApproval}
-                            >
-                              <i className="mdi mdi-chevron-double-right fs-15"></i>
-                            </Link>
-                          </li>
-                        </div>
-                      </nav>
-                    </Col>
-                  </Row>
-                </TabPane>
-                <TabPane tabId="3">
-                  <div>
-                    <div>
-                      {interviewListApproval.map(
-                        (newInterviewListInManagerDetail, key) => (
-                          <div
-                            style={{
-                              boxShadow:
-                                "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                            }}
-                            key={key}
-                            className={
-                              "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                            }
-                          >
-                            <div className="p-2">
-                              <Row className="align-items-center">
-                                <Col md={2}>
-                                  <div>
-                                    <Link to="#">
-                                      <img
-                                        style={{
-                                          width: "80px",
-                                          height: "80px",
-                                        }}
-                                        src={
-                                          newInterviewListInManagerDetail.companyImage
-                                        }
-                                        alt=""
-                                        className="img-fluid rounded-3 img-avt-hiring-request"
-                                      />
-                                    </Link>
-                                  </div>
-                                </Col>
+                                    <div className="p-2">
+                                      <Row className="align-items-center">
+                                        <Col md={2}>
+                                          <div>
+                                            <Link to="#">
+                                              <img
+                                                style={{
+                                                  width: "80px",
+                                                  height: "80px",
+                                                }}
+                                                src={
+                                                  newInterviewListInManagerDetail.companyImage
+                                                }
+                                                alt=""
+                                                className="img-fluid rounded-3 img-avt-hiring-request"
+                                              />
+                                            </Link>
+                                          </div>
+                                        </Col>
 
-                                <Col md={3} className="px-0">
-                                  <div
-                                    onClick={() =>
-                                      midleSelect(
-                                        newInterviewListInManagerDetail.interviewId
-                                      )
-                                    }
-                                  >
-                                    <h5
-                                      className="fs-18 mb-0"
-                                      style={{ cursor: "pointer" }}
+                                        <Col md={3} className="px-0">
+                                          <div
+                                            onClick={() =>
+                                              midleSelect(
+                                                newInterviewListInManagerDetail.interviewId
+                                              )
+                                            }
+                                          >
+                                            <h5
+                                              className="fs-18 mb-0"
+                                              style={{ cursor: "pointer" }}
+                                            >
+                                              {
+                                                newInterviewListInManagerDetail.title
+                                              }
+                                            </h5>
+                                            <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                                              {
+                                                newInterviewListInManagerDetail.interviewCode
+                                              }
+                                            </p>
+                                          </div>
+                                        </Col>
+                                        {/* ------------------ */}
+
+                                        {/* -------------------*/}
+
+                                        <Col md={2} className="d-flex  gap-2">
+                                          <div className="d-flex flex-column gap-2">
+                                            <FontAwesomeIcon
+                                              icon={faCalendarDays}
+                                              size="lg"
+                                              className="text-primary"
+                                            />
+                                            <FontAwesomeIcon
+                                              icon={faClock}
+                                              size="lg"
+                                              className="text-primary"
+                                            />
+                                          </div>
+
+                                          <div>
+                                            <p className="mb-0">
+                                              {
+                                                newInterviewListInManagerDetail.dateOfInterview
+                                              }
+                                            </p>
+                                            <p className="mb-0 mt-1">
+                                              {
+                                                newInterviewListInManagerDetail.startTime
+                                              }{" "}
+                                              -{" "}
+                                              {
+                                                newInterviewListInManagerDetail.endTime
+                                              }
+                                            </p>
+                                          </div>
+                                        </Col>
+
+                                        <Col
+                                          md={2}
+                                          className="d-flex justify-content-center align-items-center"
+                                        >
+                                          <p className="mb-0">
+                                            {
+                                              newInterviewListInManagerDetail.postedTime
+                                            }
+                                          </p>
+                                        </Col>
+
+                                        <Col
+                                          md={3}
+                                          className="d-flex justify-content-center"
+                                        >
+                                          <span
+                                            className={
+                                              newInterviewListInManagerDetail.statusString ===
+                                              "Waiting Approval"
+                                                ? "badge bg-warning text-light fs-12"
+                                                : newInterviewListInManagerDetail.statusString ===
+                                                  "Approved"
+                                                ? "badge bg-newGreen text-light fs-12"
+                                                : newInterviewListInManagerDetail.statusString ===
+                                                  "Rejected"
+                                                ? "badge bg-danger text-light fs-12"
+                                                : newInterviewListInManagerDetail.statusString ===
+                                                  "Expired"
+                                                ? "badge bg-danger text-light fs-12"
+                                                : newInterviewListInManagerDetail.statusString ===
+                                                  "Completed"
+                                                ? "badge bg-success text-light fs-12"
+                                                : ""
+                                            }
+                                          >
+                                            {
+                                              newInterviewListInManagerDetail.statusString
+                                            }
+                                          </span>
+                                        </Col>
+                                      </Row>
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                            {/* ----------------------------------------------------------------------------- */}
+                            {/* phan trang */}
+                            <Row>
+                              <Col lg={12} className="mt-4 pt-2">
+                                <nav aria-label="Page navigation example">
+                                  <div className="pagination job-pagination mb-0 justify-content-center">
+                                    <li
+                                      className={`page-item ${
+                                        currentPage === 1 ? "disabled" : ""
+                                      }`}
                                     >
-                                      {newInterviewListInManagerDetail.title}
-                                    </h5>
-                                    <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
-                                      {
-                                        newInterviewListInManagerDetail.interviewCode
-                                      }
-                                    </p>
-                                  </div>
-                                </Col>
-                                {/* ------------------ */}
-
-                                {/* -------------------*/}
-
-                                <Col md={2} className="d-flex  gap-2">
-                                  <div className="d-flex flex-column gap-2">
-                                    <FontAwesomeIcon
-                                      icon={faCalendarDays}
-                                      size="lg"
-                                      className="text-primary"
-                                    />
-                                    <FontAwesomeIcon
-                                      icon={faClock}
-                                      size="lg"
-                                      className="text-primary"
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <p className="mb-0">
-                                      {
-                                        newInterviewListInManagerDetail.dateOfInterview
-                                      }
-                                    </p>
-                                    <p className="mb-0 mt-1">
-                                      {
-                                        newInterviewListInManagerDetail.startTime
-                                      }{" "}
-                                      -{" "}
-                                      {newInterviewListInManagerDetail.endTime}
-                                    </p>
-                                  </div>
-                                </Col>
-
-                                <Col
-                                  md={2}
-                                  className="d-flex justify-content-center align-items-center"
-                                >
-                                  <p className="mb-0">
-                                    {newInterviewListInManagerDetail.postedTime}
-                                  </p>
-                                </Col>
-
-                                <Col
-                                  md={3}
-                                  className="d-flex justify-content-center"
-                                >
-                                  <span
-                                    className={
-                                      newInterviewListInManagerDetail.statusString ===
-                                      "Waiting Approval"
-                                        ? "badge bg-warning text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Approved"
-                                        ? "badge bg-newGreen text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Rejected"
-                                        ? "badge bg-danger text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Expired"
-                                        ? "badge bg-danger text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Completed"
-                                        ? "badge bg-success text-light fs-12"
-                                        : ""
-                                    }
-                                  >
-                                    {
-                                      newInterviewListInManagerDetail.statusString
-                                    }
-                                  </span>
-                                </Col>
-                              </Row>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                  {/* ----------------------------------------------------------------------------- */}
-                  {/* phan trang */}
-                  <Row>
-                    <Col lg={12} className="mt-4 pt-2">
-                      <nav aria-label="Page navigation example">
-                        <div className="pagination job-pagination mb-0 justify-content-center">
-                          <li
-                            className={`page-item ${
-                              currentPageApproval === 1 ? "disabled" : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              tabIndex="-1"
-                              onClick={handlePrevPageApproval}
-                            >
-                              <i className="mdi mdi-chevron-double-left fs-15"></i>
-                            </Link>
-                          </li>
-                          {renderPageNumbersApproval()}
-                          <li
-                            className={`page-item ${
-                              currentPageApproval === totalPagesApproval
-                                ? "disabled"
-                                : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              onClick={handleNextPageApproval}
-                            >
-                              <i className="mdi mdi-chevron-double-right fs-15"></i>
-                            </Link>
-                          </li>
-                        </div>
-                      </nav>
-                    </Col>
-                  </Row>
-                </TabPane>
-                <TabPane tabId="4">
-                  <div>
-                    <div>
-                      {interviewListComplete.map(
-                        (newInterviewListInManagerDetail, key) => (
-                          <div
-                            style={{
-                              boxShadow:
-                                "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                            }}
-                            key={key}
-                            className={
-                              "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                            }
-                          >
-                            <div className="p-2">
-                              <Row className="align-items-center">
-                                <Col md={2}>
-                                  <div>
-                                    <Link to="#">
-                                      <img
-                                        style={{
-                                          width: "80px",
-                                          height: "80px",
-                                        }}
-                                        src={
-                                          newInterviewListInManagerDetail.companyImage
-                                        }
-                                        alt=""
-                                        className="img-fluid rounded-3 img-avt-hiring-request"
-                                      />
-                                    </Link>
-                                  </div>
-                                </Col>
-
-                                <Col md={3} className="px-0">
-                                  <div
-                                    onClick={() =>
-                                      midleSelect(
-                                        newInterviewListInManagerDetail.interviewId
-                                      )
-                                    }
-                                  >
-                                    <h5
-                                      className="fs-18 mb-0"
-                                      style={{ cursor: "pointer" }}
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        tabIndex="-1"
+                                        onClick={handlePrevPage}
+                                      >
+                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                      </Link>
+                                    </li>
+                                    {renderPageNumbers()}
+                                    <li
+                                      className={`page-item ${
+                                        currentPage === totalPages
+                                          ? "disabled"
+                                          : ""
+                                      }`}
                                     >
-                                      {newInterviewListInManagerDetail.title}
-                                    </h5>
-                                    <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
-                                      {
-                                        newInterviewListInManagerDetail.interviewCode
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        onClick={handleNextPage}
+                                      >
+                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                      </Link>
+                                    </li>
+                                  </div>
+                                </nav>
+                              </Col>
+                            </Row>
+                          </TabPane>
+                          <TabPane tabId="2">
+                            <div>
+                              <div>
+                                {interviewListWaitingApproval.map(
+                                  (newInterviewListInManagerDetail, key) => (
+                                    <div
+                                      style={{
+                                        boxShadow:
+                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                      }}
+                                      key={key}
+                                      className={
+                                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
                                       }
-                                    </p>
-                                  </div>
-                                </Col>
-                                {/* ------------------ */}
-
-                                {/* -------------------*/}
-
-                                <Col md={2} className="d-flex  gap-2">
-                                  <div className="d-flex flex-column gap-2">
-                                    <FontAwesomeIcon
-                                      icon={faCalendarDays}
-                                      size="lg"
-                                      className="text-primary"
-                                    />
-                                    <FontAwesomeIcon
-                                      icon={faClock}
-                                      size="lg"
-                                      className="text-primary"
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <p className="mb-0">
-                                      {
-                                        newInterviewListInManagerDetail.dateOfInterview
-                                      }
-                                    </p>
-                                    <p className="mb-0 mt-1">
-                                      {
-                                        newInterviewListInManagerDetail.startTime
-                                      }{" "}
-                                      -{" "}
-                                      {newInterviewListInManagerDetail.endTime}
-                                    </p>
-                                  </div>
-                                </Col>
-
-                                <Col
-                                  md={2}
-                                  className="d-flex justify-content-center align-items-center"
-                                >
-                                  <p className="mb-0">
-                                    {newInterviewListInManagerDetail.postedTime}
-                                  </p>
-                                </Col>
-
-                                <Col
-                                  md={3}
-                                  className="d-flex justify-content-center"
-                                >
-                                  <span
-                                    className={
-                                      newInterviewListInManagerDetail.statusString ===
-                                      "Waiting Approval"
-                                        ? "badge bg-warning text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Approved"
-                                        ? "badge bg-newGreen text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Rejected"
-                                        ? "badge bg-danger text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Expired"
-                                        ? "badge bg-danger text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Completed"
-                                        ? "badge bg-success text-light fs-12"
-                                        : ""
-                                    }
-                                  >
-                                    {
-                                      newInterviewListInManagerDetail.statusString
-                                    }
-                                  </span>
-                                </Col>
-                              </Row>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                  {/* ----------------------------------------------------------------------------- */}
-                  {/* phan trang */}
-                  <Row>
-                    <Col lg={12} className="mt-4 pt-2">
-                      <nav aria-label="Page navigation example">
-                        <div className="pagination job-pagination mb-0 justify-content-center">
-                          <li
-                            className={`page-item ${
-                              currentPageComplete === 1 ? "disabled" : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              tabIndex="-1"
-                              onClick={handlePrevPageComplete}
-                            >
-                              <i className="mdi mdi-chevron-double-left fs-15"></i>
-                            </Link>
-                          </li>
-                          {renderPageNumbersComplete()}
-                          <li
-                            className={`page-item ${
-                              currentPageComplete === totalPagesComplete
-                                ? "disabled"
-                                : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              onClick={handleNextPageComplete}
-                            >
-                              <i className="mdi mdi-chevron-double-right fs-15"></i>
-                            </Link>
-                          </li>
-                        </div>
-                      </nav>
-                    </Col>
-                  </Row>
-                </TabPane>
-                <TabPane tabId="5">
-                  <div>
-                    <div>
-                      {interviewListReject.map(
-                        (newInterviewListInManagerDetail, key) => (
-                          <div
-                            style={{
-                              boxShadow:
-                                "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                            }}
-                            key={key}
-                            className={
-                              "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                            }
-                          >
-                            <div className="p-2">
-                              <Row className="align-items-center">
-                                <Col md={2}>
-                                  <div>
-                                    <Link to="#">
-                                      <img
-                                        style={{
-                                          width: "80px",
-                                          height: "80px",
-                                        }}
-                                        src={
-                                          newInterviewListInManagerDetail.companyImage
-                                        }
-                                        alt=""
-                                        className="img-fluid rounded-3 img-avt-hiring-request"
-                                      />
-                                    </Link>
-                                  </div>
-                                </Col>
-
-                                <Col md={3} className="px-0">
-                                  <div
-                                    onClick={() =>
-                                      midleSelect(
-                                        newInterviewListInManagerDetail.interviewId
-                                      )
-                                    }
-                                  >
-                                    <h5
-                                      className="fs-18 mb-0"
-                                      style={{ cursor: "pointer" }}
                                     >
-                                      {newInterviewListInManagerDetail.title}
-                                    </h5>
-                                    <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
-                                      {
-                                        newInterviewListInManagerDetail.interviewCode
-                                      }
-                                    </p>
-                                  </div>
-                                </Col>
-                                {/* ------------------ */}
+                                      <div className="p-2">
+                                        <Row className="align-items-center">
+                                          <Col md={2}>
+                                            <div>
+                                              <Link to="#">
+                                                <img
+                                                  style={{
+                                                    width: "80px",
+                                                    height: "80px",
+                                                  }}
+                                                  src={
+                                                    newInterviewListInManagerDetail.companyImage
+                                                  }
+                                                  alt=""
+                                                  className="img-fluid rounded-3 img-avt-hiring-request"
+                                                />
+                                              </Link>
+                                            </div>
+                                          </Col>
 
-                                {/* -------------------*/}
+                                          <Col md={3} className="px-0">
+                                            <div
+                                              onClick={() =>
+                                                midleSelect(
+                                                  newInterviewListInManagerDetail.interviewId
+                                                )
+                                              }
+                                            >
+                                              <h5
+                                                className="fs-18 mb-0"
+                                                style={{ cursor: "pointer" }}
+                                              >
+                                                {
+                                                  newInterviewListInManagerDetail.title
+                                                }
+                                              </h5>
+                                              <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                                                {
+                                                  newInterviewListInManagerDetail.interviewCode
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+                                          {/* ------------------ */}
 
-                                <Col md={2} className="d-flex  gap-2">
-                                  <div className="d-flex flex-column gap-2">
-                                    <FontAwesomeIcon
-                                      icon={faCalendarDays}
-                                      size="lg"
-                                      className="text-primary"
-                                    />
-                                    <FontAwesomeIcon
-                                      icon={faClock}
-                                      size="lg"
-                                      className="text-primary"
-                                    />
-                                  </div>
+                                          {/* -------------------*/}
 
-                                  <div>
-                                    <p className="mb-0">
-                                      {
-                                        newInterviewListInManagerDetail.dateOfInterview
-                                      }
-                                    </p>
-                                    <p className="mb-0 mt-1">
-                                      {
-                                        newInterviewListInManagerDetail.startTime
-                                      }{" "}
-                                      -{" "}
-                                      {newInterviewListInManagerDetail.endTime}
-                                    </p>
-                                  </div>
-                                </Col>
+                                          <Col md={2} className="d-flex  gap-2">
+                                            <div className="d-flex flex-column gap-2">
+                                              <FontAwesomeIcon
+                                                icon={faCalendarDays}
+                                                size="lg"
+                                                className="text-primary"
+                                              />
+                                              <FontAwesomeIcon
+                                                icon={faClock}
+                                                size="lg"
+                                                className="text-primary"
+                                              />
+                                            </div>
 
-                                <Col
-                                  md={2}
-                                  className="d-flex justify-content-center align-items-center"
-                                >
-                                  <p className="mb-0">
-                                    {newInterviewListInManagerDetail.postedTime}
-                                  </p>
-                                </Col>
+                                            <div>
+                                              <p className="mb-0">
+                                                {
+                                                  newInterviewListInManagerDetail.dateOfInterview
+                                                }
+                                              </p>
+                                              <p className="mb-0 mt-1">
+                                                {
+                                                  newInterviewListInManagerDetail.startTime
+                                                }{" "}
+                                                -{" "}
+                                                {
+                                                  newInterviewListInManagerDetail.endTime
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
 
-                                <Col
-                                  md={3}
-                                  className="d-flex justify-content-center"
-                                >
-                                  <span
-                                    className={
-                                      newInterviewListInManagerDetail.statusString ===
-                                      "Waiting Approval"
-                                        ? "badge bg-warning text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Approved"
-                                        ? "badge bg-newGreen text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Rejected"
-                                        ? "badge bg-danger text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Expired"
-                                        ? "badge bg-danger text-light fs-12"
-                                        : newInterviewListInManagerDetail.statusString ===
-                                          "Completed"
-                                        ? "badge bg-success text-light fs-12"
-                                        : ""
-                                    }
-                                  >
-                                    {
-                                      newInterviewListInManagerDetail.statusString
-                                    }
-                                  </span>
-                                </Col>
-                              </Row>
+                                          <Col
+                                            md={2}
+                                            className="d-flex justify-content-center align-items-center"
+                                          >
+                                            <p className="mb-0">
+                                              {
+                                                newInterviewListInManagerDetail.postedTime
+                                              }
+                                            </p>
+                                          </Col>
+
+                                          <Col
+                                            md={3}
+                                            className="d-flex justify-content-center"
+                                          >
+                                            <span
+                                              className={
+                                                newInterviewListInManagerDetail.statusString ===
+                                                "Waiting Approval"
+                                                  ? "badge bg-warning text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Approved"
+                                                  ? "badge bg-newGreen text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Rejected"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Expired"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Completed"
+                                                  ? "badge bg-success text-light fs-12"
+                                                  : ""
+                                              }
+                                            >
+                                              {
+                                                newInterviewListInManagerDetail.statusString
+                                              }
+                                            </span>
+                                          </Col>
+                                        </Row>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        )
-                      )}
+                            {/* ----------------------------------------------------------------------------- */}
+                            {/* phan trang */}
+                            <Row>
+                              <Col lg={12} className="mt-4 pt-2">
+                                <nav aria-label="Page navigation example">
+                                  <div className="pagination job-pagination mb-0 justify-content-center">
+                                    <li
+                                      className={`page-item ${
+                                        currentPageWaitingApproval === 1
+                                          ? "disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        tabIndex="-1"
+                                        onClick={handlePrevPageWaitingApproval}
+                                      >
+                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                      </Link>
+                                    </li>
+                                    {renderPageNumbersWaitingApproval()}
+                                    <li
+                                      className={`page-item ${
+                                        currentPageWaitingApproval ===
+                                        totalPagesWaitingApproval
+                                          ? "disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        onClick={handleNextPageWaitingApproval}
+                                      >
+                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                      </Link>
+                                    </li>
+                                  </div>
+                                </nav>
+                              </Col>
+                            </Row>
+                          </TabPane>
+                          <TabPane tabId="3">
+                            <div>
+                              <div>
+                                {interviewListApproval.map(
+                                  (newInterviewListInManagerDetail, key) => (
+                                    <div
+                                      style={{
+                                        boxShadow:
+                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                      }}
+                                      key={key}
+                                      className={
+                                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                                      }
+                                    >
+                                      <div className="p-2">
+                                        <Row className="align-items-center">
+                                          <Col md={2}>
+                                            <div>
+                                              <Link to="#">
+                                                <img
+                                                  style={{
+                                                    width: "80px",
+                                                    height: "80px",
+                                                  }}
+                                                  src={
+                                                    newInterviewListInManagerDetail.companyImage
+                                                  }
+                                                  alt=""
+                                                  className="img-fluid rounded-3 img-avt-hiring-request"
+                                                />
+                                              </Link>
+                                            </div>
+                                          </Col>
+
+                                          <Col md={3} className="px-0">
+                                            <div
+                                              onClick={() =>
+                                                midleSelect(
+                                                  newInterviewListInManagerDetail.interviewId
+                                                )
+                                              }
+                                            >
+                                              <h5
+                                                className="fs-18 mb-0"
+                                                style={{ cursor: "pointer" }}
+                                              >
+                                                {
+                                                  newInterviewListInManagerDetail.title
+                                                }
+                                              </h5>
+                                              <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                                                {
+                                                  newInterviewListInManagerDetail.interviewCode
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+                                          {/* ------------------ */}
+
+                                          {/* -------------------*/}
+
+                                          <Col md={2} className="d-flex  gap-2">
+                                            <div className="d-flex flex-column gap-2">
+                                              <FontAwesomeIcon
+                                                icon={faCalendarDays}
+                                                size="lg"
+                                                className="text-primary"
+                                              />
+                                              <FontAwesomeIcon
+                                                icon={faClock}
+                                                size="lg"
+                                                className="text-primary"
+                                              />
+                                            </div>
+
+                                            <div>
+                                              <p className="mb-0">
+                                                {
+                                                  newInterviewListInManagerDetail.dateOfInterview
+                                                }
+                                              </p>
+                                              <p className="mb-0 mt-1">
+                                                {
+                                                  newInterviewListInManagerDetail.startTime
+                                                }{" "}
+                                                -{" "}
+                                                {
+                                                  newInterviewListInManagerDetail.endTime
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            className="d-flex justify-content-center align-items-center"
+                                          >
+                                            <p className="mb-0">
+                                              {
+                                                newInterviewListInManagerDetail.postedTime
+                                              }
+                                            </p>
+                                          </Col>
+
+                                          <Col
+                                            md={3}
+                                            className="d-flex justify-content-center"
+                                          >
+                                            <span
+                                              className={
+                                                newInterviewListInManagerDetail.statusString ===
+                                                "Waiting Approval"
+                                                  ? "badge bg-warning text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Approved"
+                                                  ? "badge bg-newGreen text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Rejected"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Expired"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Completed"
+                                                  ? "badge bg-success text-light fs-12"
+                                                  : ""
+                                              }
+                                            >
+                                              {
+                                                newInterviewListInManagerDetail.statusString
+                                              }
+                                            </span>
+                                          </Col>
+                                        </Row>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                            {/* ----------------------------------------------------------------------------- */}
+                            {/* phan trang */}
+                            <Row>
+                              <Col lg={12} className="mt-4 pt-2">
+                                <nav aria-label="Page navigation example">
+                                  <div className="pagination job-pagination mb-0 justify-content-center">
+                                    <li
+                                      className={`page-item ${
+                                        currentPageApproval === 1
+                                          ? "disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        tabIndex="-1"
+                                        onClick={handlePrevPageApproval}
+                                      >
+                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                      </Link>
+                                    </li>
+                                    {renderPageNumbersApproval()}
+                                    <li
+                                      className={`page-item ${
+                                        currentPageApproval ===
+                                        totalPagesApproval
+                                          ? "disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        onClick={handleNextPageApproval}
+                                      >
+                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                      </Link>
+                                    </li>
+                                  </div>
+                                </nav>
+                              </Col>
+                            </Row>
+                          </TabPane>
+                          <TabPane tabId="4">
+                            <div>
+                              <div>
+                                {interviewListComplete.map(
+                                  (newInterviewListInManagerDetail, key) => (
+                                    <div
+                                      style={{
+                                        boxShadow:
+                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                      }}
+                                      key={key}
+                                      className={
+                                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                                      }
+                                    >
+                                      <div className="p-2">
+                                        <Row className="align-items-center">
+                                          <Col md={2}>
+                                            <div>
+                                              <Link to="#">
+                                                <img
+                                                  style={{
+                                                    width: "80px",
+                                                    height: "80px",
+                                                  }}
+                                                  src={
+                                                    newInterviewListInManagerDetail.companyImage
+                                                  }
+                                                  alt=""
+                                                  className="img-fluid rounded-3 img-avt-hiring-request"
+                                                />
+                                              </Link>
+                                            </div>
+                                          </Col>
+
+                                          <Col md={3} className="px-0">
+                                            <div
+                                              onClick={() =>
+                                                midleSelect(
+                                                  newInterviewListInManagerDetail.interviewId
+                                                )
+                                              }
+                                            >
+                                              <h5
+                                                className="fs-18 mb-0"
+                                                style={{ cursor: "pointer" }}
+                                              >
+                                                {
+                                                  newInterviewListInManagerDetail.title
+                                                }
+                                              </h5>
+                                              <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                                                {
+                                                  newInterviewListInManagerDetail.interviewCode
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+                                          {/* ------------------ */}
+
+                                          {/* -------------------*/}
+
+                                          <Col md={2} className="d-flex  gap-2">
+                                            <div className="d-flex flex-column gap-2">
+                                              <FontAwesomeIcon
+                                                icon={faCalendarDays}
+                                                size="lg"
+                                                className="text-primary"
+                                              />
+                                              <FontAwesomeIcon
+                                                icon={faClock}
+                                                size="lg"
+                                                className="text-primary"
+                                              />
+                                            </div>
+
+                                            <div>
+                                              <p className="mb-0">
+                                                {
+                                                  newInterviewListInManagerDetail.dateOfInterview
+                                                }
+                                              </p>
+                                              <p className="mb-0 mt-1">
+                                                {
+                                                  newInterviewListInManagerDetail.startTime
+                                                }{" "}
+                                                -{" "}
+                                                {
+                                                  newInterviewListInManagerDetail.endTime
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            className="d-flex justify-content-center align-items-center"
+                                          >
+                                            <p className="mb-0">
+                                              {
+                                                newInterviewListInManagerDetail.postedTime
+                                              }
+                                            </p>
+                                          </Col>
+
+                                          <Col
+                                            md={3}
+                                            className="d-flex justify-content-center"
+                                          >
+                                            <span
+                                              className={
+                                                newInterviewListInManagerDetail.statusString ===
+                                                "Waiting Approval"
+                                                  ? "badge bg-warning text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Approved"
+                                                  ? "badge bg-newGreen text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Rejected"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Expired"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Completed"
+                                                  ? "badge bg-success text-light fs-12"
+                                                  : ""
+                                              }
+                                            >
+                                              {
+                                                newInterviewListInManagerDetail.statusString
+                                              }
+                                            </span>
+                                          </Col>
+                                        </Row>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                            {/* ----------------------------------------------------------------------------- */}
+                            {/* phan trang */}
+                            <Row>
+                              <Col lg={12} className="mt-4 pt-2">
+                                <nav aria-label="Page navigation example">
+                                  <div className="pagination job-pagination mb-0 justify-content-center">
+                                    <li
+                                      className={`page-item ${
+                                        currentPageComplete === 1
+                                          ? "disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        tabIndex="-1"
+                                        onClick={handlePrevPageComplete}
+                                      >
+                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                      </Link>
+                                    </li>
+                                    {renderPageNumbersComplete()}
+                                    <li
+                                      className={`page-item ${
+                                        currentPageComplete ===
+                                        totalPagesComplete
+                                          ? "disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        onClick={handleNextPageComplete}
+                                      >
+                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                      </Link>
+                                    </li>
+                                  </div>
+                                </nav>
+                              </Col>
+                            </Row>
+                          </TabPane>
+                          <TabPane tabId="5">
+                            <div>
+                              <div>
+                                {interviewListReject.map(
+                                  (newInterviewListInManagerDetail, key) => (
+                                    <div
+                                      style={{
+                                        boxShadow:
+                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                      }}
+                                      key={key}
+                                      className={
+                                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                                      }
+                                    >
+                                      <div className="p-2">
+                                        <Row className="align-items-center">
+                                          <Col md={2}>
+                                            <div>
+                                              <Link to="#">
+                                                <img
+                                                  style={{
+                                                    width: "80px",
+                                                    height: "80px",
+                                                  }}
+                                                  src={
+                                                    newInterviewListInManagerDetail.companyImage
+                                                  }
+                                                  alt=""
+                                                  className="img-fluid rounded-3 img-avt-hiring-request"
+                                                />
+                                              </Link>
+                                            </div>
+                                          </Col>
+
+                                          <Col md={3} className="px-0">
+                                            <div
+                                              onClick={() =>
+                                                midleSelect(
+                                                  newInterviewListInManagerDetail.interviewId
+                                                )
+                                              }
+                                            >
+                                              <h5
+                                                className="fs-18 mb-0"
+                                                style={{ cursor: "pointer" }}
+                                              >
+                                                {
+                                                  newInterviewListInManagerDetail.title
+                                                }
+                                              </h5>
+                                              <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                                                {
+                                                  newInterviewListInManagerDetail.interviewCode
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+                                          {/* ------------------ */}
+
+                                          {/* -------------------*/}
+
+                                          <Col md={2} className="d-flex  gap-2">
+                                            <div className="d-flex flex-column gap-2">
+                                              <FontAwesomeIcon
+                                                icon={faCalendarDays}
+                                                size="lg"
+                                                className="text-primary"
+                                              />
+                                              <FontAwesomeIcon
+                                                icon={faClock}
+                                                size="lg"
+                                                className="text-primary"
+                                              />
+                                            </div>
+
+                                            <div>
+                                              <p className="mb-0">
+                                                {
+                                                  newInterviewListInManagerDetail.dateOfInterview
+                                                }
+                                              </p>
+                                              <p className="mb-0 mt-1">
+                                                {
+                                                  newInterviewListInManagerDetail.startTime
+                                                }{" "}
+                                                -{" "}
+                                                {
+                                                  newInterviewListInManagerDetail.endTime
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            className="d-flex justify-content-center align-items-center"
+                                          >
+                                            <p className="mb-0">
+                                              {
+                                                newInterviewListInManagerDetail.postedTime
+                                              }
+                                            </p>
+                                          </Col>
+
+                                          <Col
+                                            md={3}
+                                            className="d-flex justify-content-center"
+                                          >
+                                            <span
+                                              className={
+                                                newInterviewListInManagerDetail.statusString ===
+                                                "Waiting Approval"
+                                                  ? "badge bg-warning text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Approved"
+                                                  ? "badge bg-newGreen text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Rejected"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Expired"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Completed"
+                                                  ? "badge bg-success text-light fs-12"
+                                                  : ""
+                                              }
+                                            >
+                                              {
+                                                newInterviewListInManagerDetail.statusString
+                                              }
+                                            </span>
+                                          </Col>
+                                        </Row>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                            {/* ----------------------------------------------------------------------------- */}
+                            {/* phan trang */}
+                            <Row>
+                              <Col lg={12} className="mt-4 pt-2">
+                                <nav aria-label="Page navigation example">
+                                  <div className="pagination job-pagination mb-0 justify-content-center">
+                                    <li
+                                      className={`page-item ${
+                                        currentPageReject === 1
+                                          ? "disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        tabIndex="-1"
+                                        onClick={handlePrevPageReject}
+                                      >
+                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                      </Link>
+                                    </li>
+                                    {renderPageNumbersReject()}
+                                    <li
+                                      className={`page-item ${
+                                        currentPageReject === totalPagesReject
+                                          ? "disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        onClick={handleNextPageReject}
+                                      >
+                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                      </Link>
+                                    </li>
+                                  </div>
+                                </nav>
+                              </Col>
+                            </Row>
+                          </TabPane>
+                        </TabContent>
+                      </CardBody>
                     </div>
-                  </div>
-                  {/* ----------------------------------------------------------------------------- */}
-                  {/* phan trang */}
-                  <Row>
-                    <Col lg={12} className="mt-4 pt-2">
-                      <nav aria-label="Page navigation example">
-                        <div className="pagination job-pagination mb-0 justify-content-center">
-                          <li
-                            className={`page-item ${
-                              currentPageReject === 1 ? "disabled" : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              tabIndex="-1"
-                              onClick={handlePrevPageReject}
-                            >
-                              <i className="mdi mdi-chevron-double-left fs-15"></i>
-                            </Link>
-                          </li>
-                          {renderPageNumbersReject()}
-                          <li
-                            className={`page-item ${
-                              currentPageReject === totalPagesReject
-                                ? "disabled"
-                                : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              onClick={handleNextPageReject}
-                            >
-                              <i className="mdi mdi-chevron-double-right fs-15"></i>
-                            </Link>
-                          </li>
-                        </div>
-                      </nav>
-                    </Col>
-                  </Row>
-                </TabPane>
-              </TabContent>
-            </CardBody>
+                  </Col>
+                </Row>
+              </Container>
+            </section>
           </Content>
         </Layout>
       </Layout>

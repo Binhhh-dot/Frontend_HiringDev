@@ -25,7 +25,7 @@ import {
   BankOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Input, Button } from "antd";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Col,
   Row,
@@ -41,109 +41,127 @@ import {
 
 import { Link } from "react-router-dom";
 import classname from "classnames";
+import userAuthorization from "../../utils/userAuthorization";
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
-const items = [
-  {
-    label: "Dashboard",
-    key: "menu-key/1",
-    icon: <HomeOutlined />,
-    className: "option-1",
-  },
 
-  // -----------COMMENT NAY DUNG XOA, CON DUNG LAI-----------------------
-  // {
-  //   label: "Option 2",
-  //   key: "menu-key/2",
-  //   icon: <DesktopOutlined />,
-  //   className: "option-2",
-  // },
-  // {
-  //   label: "User",
-  //   key: "menu-key/sub-menu-key",
-  //   icon: <UserOutlined />,
-  //   children: [
-  //     { label: "Tom", key: "menu-key/sub-menu-key/3" },
-  //     { label: "Bill", key: "menu-key/sub-menu-key/4" },
-  //     { label: "Alex", key: "menu-key/sub-menu-key/5" },
-  //   ],
-  //   className: "option-2",
-  // },
-  // {
-  //   label: "Team",
-  //   key: "menu-key/sub-menu-key2",
-  //   icon: <TeamOutlined />,
-  //   children: [
-  //     { label: "Team 1", key: "menu-key/sub-menu-key2/6" },
-  //     { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
-  //   ],
-  // },
+// -----------COMMENT NAY DUNG XOA, CON DUNG LAI-----------------------
+// const items = [
+// {
+//   label: "Dashboard",
+//   key: "menu-key/1",
+//   icon: <HomeOutlined />,
+//   className: "option-1",
+// },
 
-  // {
-  //   label: "Files",
-  //   key: "menu-key/9",
-  //   icon: <FileOutlined />,
-  //   className: "files",
-  // },
+// {
+//   label: "Option 2",
+//   key: "menu-key/2",
+//   icon: <DesktopOutlined />,
+//   className: "option-2",
+// },
+// {
+//   label: "User",
+//   key: "menu-key/sub-menu-key",
+//   icon: <UserOutlined />,
+//   children: [
+//     { label: "Tom", key: "menu-key/sub-menu-key/3" },
+//     { label: "Bill", key: "menu-key/sub-menu-key/4" },
+//     { label: "Alex", key: "menu-key/sub-menu-key/5" },
+//   ],
+//   className: "option-2",
+// },
+// {
+//   label: "Team",
+//   key: "menu-key/sub-menu-key2",
+//   icon: <TeamOutlined />,
+//   children: [
+//     { label: "Team 1", key: "menu-key/sub-menu-key2/6" },
+//     { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
+//   ],
+// },
 
-  //-----------------------------------------------------------------------
-  {
-    label: "Hiring Request",
-    key: "menu-key/10",
-    icon: <SnippetsOutlined />,
-    className: "hiringRequest",
-  },
-  {
-    label: "Interview",
-    key: "menu-key/11",
-    icon: <SolutionOutlined />,
-    className: "interview",
-  },
+// {
+//   label: "Files",
+//   key: "menu-key/9",
+//   icon: <FileOutlined />,
+//   className: "files",
+// },
 
-  {
-    label: "Project",
-    key: "menu-key/12",
-    icon: <CodeOutlined />,
-    className: "project",
-  },
+//-----------------------------------------------------------------------
+//   {
+//     label: "Hiring Request",
+//     key: "menu-key/10",
+//     icon: <SnippetsOutlined />,
+//     className: "hiringRequest",
+//   },
+//   {
+//     label: "Interview",
+//     key: "menu-key/11",
+//     icon: <SolutionOutlined />,
+//     className: "interview",
+//   },
 
-  {
-    label: "Contract",
-    key: "menu-key/14",
-    icon: <AuditOutlined />,
-    className: "contract",
-  },
+//   {
+//     label: "Project",
+//     key: "menu-key/12",
+//     icon: <CodeOutlined />,
+//     className: "project",
+//   },
 
-  {
-    label: "Company",
-    key: "menu-key/15",
-    icon: <BankOutlined />,
-    className: "company",
-  },
-];
+//   {
+//     label: "Contract",
+//     key: "menu-key/14",
+//     icon: <AuditOutlined />,
+//     className: "contract",
+//   },
+
+//   {
+//     label: "Company",
+//     key: "menu-key/15",
+//     icon: <BankOutlined />,
+//     className: "company",
+//   },
+// ];
 
 const Manager = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]); // Định nghĩa selectedKeys
-  const [isLeftIcon, setIsLeftIcon] = useState(true);
-  const [showWeHire, setShowWeHire] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoad, setIdLoad] = useState(false);
+  useEffect(() => {
+    const localStorageRole = localStorage.getItem("role");
+    if (!localStorageRole) {
+      navigate("/signin");
+    } else {
+      if (!userAuthorization(localStorageRole, location.pathname)) {
+        navigate("/error404");
+      } else {
+        setIdLoad(true);
+      }
+    }
+  }, []);
 
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
-    setIsLeftIcon(!isLeftIcon); // Cập nhật biến trạng thái khi toggleSidebar
-    setShowWeHire(!showWeHire);
-  };
+  // const [collapsed, setCollapsed] = useState(false);
+  // const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]); // Định nghĩa selectedKeys
+  // const [isLeftIcon, setIsLeftIcon] = useState(true);
+  // const [showWeHire, setShowWeHire] = useState(true);
 
-  const handleMenuClick = (item) => {
-    setSelectedKeys([item.key]);
-  };
+  // const toggleSidebar = () => {
+  //   setCollapsed(!collapsed);
+  //   setIsLeftIcon(!isLeftIcon); // Cập nhật biến trạng thái khi toggleSidebar
+  //   setShowWeHire(!showWeHire);
+  // };
 
-  const handleSubMenuClick = (item) => {
-    setSelectedKeys([item.key]);
-  };
+  // const handleMenuClick = (item) => {
+  //   setSelectedKeys([item.key]);
+  // };
 
-  console.log(selectedKeys);
+  // const handleSubMenuClick = (item) => {
+  //   setSelectedKeys([item.key]);
+  // };
+
+  // console.log(selectedKeys);
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* <Sider
@@ -226,7 +244,7 @@ const Manager = () => {
           )}
         </Menu>
       </Sider> */}
-      <SiderBarWeb></SiderBarWeb>
+      <SiderBarWeb choose={"menu-key/10"}></SiderBarWeb>
       <Layout>
         <div
           style={{
@@ -291,117 +309,29 @@ const Manager = () => {
         </div>
 
         <Content>
-          {selectedKeys[0] === "menu-key/10" && (
-            <section
-              className="section p-3 "
-              style={{
-                backgroundColor: "#FFFF",
-                borderRadius: "10px",
-                margin: "30px",
-                boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-              }}
-            >
-              <Container className="px-0">
-                <Row className="px-0">
-                  <Col className="px-0">
-                    <div className="me-lg-6">
-                      <JobVacancyList />
-                    </div>
-                  </Col>
-                </Row>
-              </Container>
-            </section>
-          )}
-          {/* -------------------------------------------------------- */}
-          {/* {selectedKeys[0] === "menu-key/11" && (
-            <section
-              className="section p-3"
-              style={{
-                backgroundColor: "#FFFF",
-                borderRadius: "10px",
-                margin: "30px",
-                boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-              }}
-            >
-              <Container className="px-0">
-                <Row className="px-0">
-                  <Col className="px-0">
-                    <div className="me-lg-6">
-                      <NewListInterviewInfo />
-                    </div>
-                  </Col>
-                </Row>
-              </Container>
-            </section>
-          )} */}
-          {/* ----------------------------------------------------------- */}
-          {/* {selectedKeys[0] === "menu-key/12" && (
-            <section
-              className="section p-3 "
-              style={{
-                backgroundColor: "#FFFF",
-                borderRadius: "10px",
-                margin: "30px",
-                boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-              }}
-            >
-              <Container className="px-0">
-                <Row className="px-0">
-                  <Col className="px-0">
-                    <div className="me-lg-6">
-                      <ProjectList />
-                    </div>
-                  </Col>
-                </Row>
-              </Container>
-            </section>
-          )} */}
-          {/* ----------------------------------------------------------- */}
-          {/* {selectedKeys[0] === "menu-key/14" && (
-            <section
-              className="section p-3"
-              style={{
-                backgroundColor: "#FFFF",
-                borderRadius: "10px",
-                margin: "30px",
-                boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-              }}
-            >
-              <Container className="px-0">
-                <Row className="px-0">
-                  <Col className="px-0">
-                    <div className="me-lg-6">
-                      <ContractList />
-                    </div>
-                  </Col>
-                </Row>
-              </Container>
-            </section>
-          )} */}
-          {/* ------------------------------------------------------------ */}
-          {/* {selectedKeys[0] === "menu-key/15" && (
-            <section
-              className="section p-3"
-              style={{
-                backgroundColor: "#FFFF",
-                borderRadius: "10px",
-                margin: "30px",
-                boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-              }}
-            >
-              <Container className="px-0">
-                <Row className="px-0">
-                  <Col className="px-0">
-                    <div className="me-lg-6">
-                      <CompanyListPartner />
-                    </div>
-                  </Col>
-                </Row>
-              </Container>
-            </section>
-          )} */}
+          {/* {selectedKeys[0] === "menu-key/10" && ( */}
+          <section
+            className="section p-3 "
+            style={{
+              backgroundColor: "#FFFF",
+              borderRadius: "10px",
+              margin: "30px",
+              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+            }}
+          >
+            <Container className="px-0">
+              <Row className="px-0">
+                <Col className="px-0">
+                  <div className="me-lg-6">
+                    <JobVacancyList />
+                  </div>
+                </Col>
+              </Row>
+            </Container>
+          </section>
+          {/* )} */}
         </Content>
-        <Footer>Footer</Footer>
+        {/* <Footer>Footer</Footer> */}
       </Layout>
     </Layout>
   );

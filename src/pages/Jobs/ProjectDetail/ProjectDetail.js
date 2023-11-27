@@ -14,9 +14,6 @@ const ProjectDetail = () => {
   const [isLoad, setIdLoad] = useState(false);
   useEffect(() => {
     const localStorageRole = localStorage.getItem('role');
-    console.log(location.pathname);
-    console.log("location.pathname");
-
     if (!localStorageRole) {
       navigate("/signin");
     } else {
