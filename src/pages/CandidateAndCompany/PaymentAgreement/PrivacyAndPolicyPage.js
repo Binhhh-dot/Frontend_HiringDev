@@ -44,29 +44,56 @@ const PrivacyAndPolicyPage = () => {
       document.getElementById("legalRepresentative").value = preContractData.legalRepresentation;
       document.getElementById("position").value = preContractData.legalRepresentationPosition;
 
+
+
       var parts = preContractData.fromDate.split('/');
       if (parts.length === 3) {
-        var day = parts[1] + 7;
+        var day = parts[1];
         var month = parts[0];
         var year = parts[2];
         // Format the date as "yyyy-dd-mm"
-        var formattedDurationStartDay = year + '-' + day + '-' + month;
-        document.getElementById("startDate").value = formattedDurationStartDay;
-        setMinDate(formattedDurationStartDay)
+        const currentDate = new Date();
+        var formattedDurationStartDay;
+        const formattedDurationStartDay2 = new Date(year, parseInt(day) - 1, month);
+        const differenceInTime = formattedDurationStartDay2.getTime() - currentDate.getTime();
+
+        // Chuyển đổi miligiây thành số ngày
+        const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+        if (differenceInDays <= 3) {
+          formattedDurationStartDay = year + '-' + day + '-' + (parseInt(month) + 3);
+          document.getElementById("startDate").value = formattedDurationStartDay;
+          setMinDate(formattedDurationStartDay)
+        } else {
+          formattedDurationStartDay = year + '-' + day + '-' + month;
+          document.getElementById("startDate").value = formattedDurationStartDay;
+          setMinDate(formattedDurationStartDay)
+        }
       } else {
         console.error("Invalid date format");
       }
 
+      // const currentDate = new Date();
+      // const year = currentDate.getFullYear();
+      // let month = currentDate.getMonth() + 1;
+      // let day = currentDate.getDate();
+
+      // // Thêm số 0 phía trước nếu tháng hoặc ngày chỉ có 1 chữ số
+      // month = month < 10 ? `0${month}` : month;
+      // day = day < 10 ? `0${day}` : day;
+
+      // const formattedDate = `${year}-${month}-${day}`;
+      // document.getElementById("startDate").value = formattedDate;
+
       var parts2 = preContractData.toDate.split('/');
       if (parts2.length === 3) {
-        var day = parts2[1];
-        var month = parts2[0];
-        var year = parts2[2];
+        var day2 = parts2[1];
+        var month2 = parts2[0];
+        var year2 = parts2[2];
         // Format the date as "yyyy-dd-mm"
-        var formattedDurationEndDay = year + '-' + day + '-' + month;
+        var formattedDurationEndDay = year2 + '-' + day2 + '-' + month2;
         document.getElementById("endDate").value = formattedDurationEndDay;
         setMaxDate(formattedDurationEndDay)
-
       } else {
         console.error("Invalid date format");
       }

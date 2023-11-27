@@ -79,8 +79,8 @@ const CreateProject = () => {
   const [minDateEndDay, setMinDateEndDay] = useState('');
   const today = new Date();
   const today2 = new Date();
-  today.setDate(today.getDate());
-  today2.setDate(today.getDate() + 35);
+  today.setDate(today.getDate() + 10);
+  today2.setDate(today2.getDate() + 40);
   const tomorrow = today.toISOString().split('T')[0];
   const _30DayLater = today2.toISOString().split('T')[0];
 
@@ -341,7 +341,7 @@ const CreateProject = () => {
           var timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
           var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Chuyển đổi khoảng cách thời gian thành số ngày
 
-          if (diffDays <= 30) {
+          if (diffDays < 30) {
             setStartDateError("The difference between start and end date must be greater than 1 month");
             check = false;
           }
@@ -403,7 +403,7 @@ const CreateProject = () => {
     if (document.getElementById("start-date").value) {
       const startDateValue = document.getElementById("start-date").value;
       const startDate = new Date(startDateValue);
-      startDate.setDate(startDate.getDate() + 35); // Thêm 30 ngày vào ngày bắt đầu
+      startDate.setDate(startDate.getDate() + 30); // Thêm 30 ngày vào ngày bắt đầu
 
       const minDay = startDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
 
@@ -418,7 +418,7 @@ const CreateProject = () => {
     if (document.getElementById("end-date").value) {
       const endDateValue = document.getElementById("end-date").value;
       const endDate = new Date(endDateValue);
-      endDate.setDate(endDate.getDate() - 35); // Thêm 30 ngày vào ngày bắt đầu
+      endDate.setDate(endDate.getDate() - 30); // Thêm 30 ngày vào ngày bắt đầu
 
       const minDay = endDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
 

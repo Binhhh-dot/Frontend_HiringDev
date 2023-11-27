@@ -475,6 +475,8 @@ const HiringRequestDetails = () => {
         endTime
       );
       let interviewId = response.data.data.interviewId;
+      console.log("tao interview")
+      console.log(response)
       if (response.data.code == 201) {
         console.log("tao thanh cong")
         try {
@@ -483,6 +485,7 @@ const HiringRequestDetails = () => {
           console.log(responseCreateMeeting)
           console.log("tao meet thanh cong")
         } catch (error) {
+          console.log("tao meet ko thanh cong")
           console.log("error:", error)
         }
       }
@@ -831,7 +834,7 @@ const HiringRequestDetails = () => {
     if (check) {
       const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-      const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+      const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=http://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
 
       // Lắng nghe các thông điệp từ cửa sổ popup
       window.addEventListener('message', (event) => {
@@ -853,7 +856,7 @@ const HiringRequestDetails = () => {
   const openWindowCancelInterview = async (interviewId) => {
     const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=http://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
     let code;
 
     // Lắng nghe các thông điệp từ cửa sổ popup
@@ -873,7 +876,7 @@ const HiringRequestDetails = () => {
   const openWindowUpdateInterview = async (interviewId) => {
     const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=http://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
     let code;
 
     // Lắng nghe các thông điệp từ cửa sổ popup
@@ -904,7 +907,7 @@ const HiringRequestDetails = () => {
   const openFacebook = () => {
     const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=http://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
 
     // Lắng nghe các thông điệp từ cửa sổ popup
     window.addEventListener('message', (event) => {
@@ -1637,13 +1640,13 @@ const HiringRequestDetails = () => {
           <div class="col-lg-3 d-flex flex-column gap-4">
             <Card className="job-overview ">
               <CardBody className="p-4">
-                <h4>Job Overview</h4>
+                <h4>Hiring Request Overview</h4>
                 <ul className="list-unstyled mt-4 mb-0">
                   <li>
                     <div className="d-flex mt-4">
                       <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
-                        <h6 className="fs-14 mb-0">Job Title</h6>
+                        <h6 className="fs-14 mb-0">Hiring Request Title</h6>
                         <p className="text-muted mb-0">
                           {hiringRequestDetail.jobTitle}
                         </p>
@@ -1667,8 +1670,8 @@ const HiringRequestDetails = () => {
                     <div className="d-flex mt-4">
                       <i className="uil uil-star-half-alt icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
-                        <h6 className="fs-14 mb-0">Experience</h6>
-                        <p className="text-muted mb-0"> 0-3 Years</p>
+                        <h6 className="fs-14 mb-0">Employment Type</h6>
+                        <p className="text-muted mb-0">{hiringRequestDetail.employmentTypeName}</p>
                       </div>
                     </div>
                   </li>
@@ -1676,7 +1679,7 @@ const HiringRequestDetails = () => {
                     <div className="d-flex mt-4">
                       <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
-                        <h6 className="fs-14 mb-0">Offered Salary</h6>
+                        <h6 className="fs-14 mb-0">Offered Salary Per Dev</h6>
                         <p className="text-muted mb-0">
                           {hiringRequestDetail.salaryPerDev} VND
                         </p>
@@ -1687,8 +1690,8 @@ const HiringRequestDetails = () => {
                     <div className="d-flex mt-4">
                       <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
-                        <h6 className="fs-14 mb-0">Qualification</h6>
-                        <p className="text-muted mb-0">Bachelor Degree</p>
+                        <h6 className="fs-14 mb-0">Position</h6>
+                        <p className="text-muted mb-0">{hiringRequestDetail.positionName}</p>
                       </div>
                     </div>
                   </li>
@@ -1794,27 +1797,30 @@ const HiringRequestDetails = () => {
                                           "Rejected"
                                           ? "badge bg-danger text-light mb-2"
                                           : candidategridDetailsNew.selectedDevStatus ===
-                                            "Under Consideration"
-                                            ? "badge bg-warning text-light mb-2"
+                                            "Contract Failed"
+                                            ? "badge bg-danger text-light mb-2"
                                             : candidategridDetailsNew.selectedDevStatus ===
-                                              "Interview Scheduled"
-                                              ? "badge bg-blue text-light mb-2"
+                                              "Under Consideration"
+                                              ? "badge bg-warning text-light mb-2"
                                               : candidategridDetailsNew.selectedDevStatus ===
-                                                "Expired"
-                                                ? "badge bg-danger text-light mb-2"
+                                                "Contract Processing"
+                                                ? "badge bg-warning text-light mb-2"
                                                 : candidategridDetailsNew.selectedDevStatus ===
-                                                  "Cancelled"
-                                                  ? "badge bg-danger text-light mb-2"
+                                                  "Interview Scheduled"
+                                                  ? "badge bg-blue text-light mb-2"
                                                   : candidategridDetailsNew.selectedDevStatus ===
-                                                    "Waiting Interview"
-                                                    ? "badge bg-warning text-light mb-2"
+                                                    "Expired"
+                                                    ? "badge bg-danger text-light mb-2"
                                                     : candidategridDetailsNew.selectedDevStatus ===
-                                                      "Onboarding"
-                                                      ? "badge bg-primary text-light mb-2"
+                                                      "Waiting Interview"
+                                                      ? "badge bg-warning text-light mb-2"
                                                       : candidategridDetailsNew.selectedDevStatus ===
-                                                        "Saved"
-                                                        ? "badge bg-info text-light mb-2"
-                                                        : ""
+                                                        "Onboarding"
+                                                        ? "badge bg-primary text-light mb-2"
+                                                        : candidategridDetailsNew.selectedDevStatus ===
+                                                          "RequestClosed"
+                                                          ? "badge  bg-teal text-light mb-2"
+                                                          : ""
                                       }
                                     >
                                       {candidategridDetailsNew.selectedDevStatus}

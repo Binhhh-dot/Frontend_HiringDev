@@ -203,6 +203,10 @@ export default {
     workLog: {
       getWorkLogByPaySlipId: "/WorkLog/ByPaySlip/${paySlipId}",
       updateWorkLog: "/WorkLog",
+    },
+    payment: {
+      createPayment: "/Payment/Create",
+      executePayment: "/Payment/Execute?paymentId=${paymentId}&payerId=${payerId}",
     }
   },
 };

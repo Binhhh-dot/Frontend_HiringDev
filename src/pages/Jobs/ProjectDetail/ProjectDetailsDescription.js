@@ -40,6 +40,7 @@ import {
   faEnvelope,
   faCalendar
 } from "@fortawesome/free-regular-svg-icons";
+import { PayPalButtons } from '@paypal/react-paypal-js'; // Import PayPal Buttons from PayPal SDK
 import { Modal as AntdModal, Button as AntdButton } from "antd";
 import "./index.css";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
@@ -69,7 +70,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import FileSaver from 'file-saver';
 import axios from "axios";
 import { Dropdown as DropdownAntd } from 'antd';
-import { Empty } from 'antd';
+import { Empty, TimePicker } from 'antd';
 import { theme } from 'antd';
 import moment from 'moment';
 import Calendar from 'react-calendar';
@@ -77,21 +78,21 @@ import 'react-calendar/dist/Calendar.css';
 import paySlipServices from "../../../services/paySlip.services";
 import workLogServices from "../../../services/workLog.services";
 import { HashLoader } from "react-spinners";
-
+import customUrl from "../../../utils/customUrl";
+import paymentServices from "../../../services/payment.services";
 dayjs.extend(customParseFormat);
 
 
 const ProjectDetailDesciption = () => {
+  const formatTimePicker = 'HH:mm';
   const location = useLocation();
+  const [loading, setLoading] = useState(false);
   const [hiringRequestDetail, setHiringRequestDetail] = useState([]);
   const [listJobPosition, setListJobPosition] = useState([]);
   const [activeTab, setActiveTab] = useState("1");
   const [jobVacancyList, setJobVacancyList] = useState([]);
   const [projectId, setProjectId] = useState(null);
   const navigate = useNavigate();
-  let [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [projectCount, setProjectCount] = useState(1);
   const rowRef = useRef(null);
   const [showScroll, setShowScroll] = useState(false);
   const [showInput, setShowInput] = useState(false);
@@ -125,18 +126,61 @@ const ProjectDetailDesciption = () => {
   const [startTimeWorkLogSave, setStartTimeWorkLogSave] = useState(false);
   const [endTimeWorkLogSave, setEndTimeWorkLogSave] = useState(false);
   const [timeErrorWorkLog, setTimeErrorWorkLog] = useState([]);
-
+  const [currentDateBill, setCurrentDateBill] = useState();
   const [key, setKey] = useState(Date.now());
   const [editableRowId, setEditableRowId] = useState(null);
 
   const [dateValue, setDateValue] = useState(new Date());
   const [loadingGenerateExel, setLoadingGenerateExel] = useState(false);
   const [loadingImportExel, setLoadingImportExel] = useState(false);
+  const [loadingPayNow, setLoadingPaynow] = useState(false);
 
   const [keyPayRoll, setKeyPayRoll] = useState(null);
   const [keyWorkLog, setKeyWorkLog] = useState(null);
 
   const [showPopup, setShowPopup] = useState(false);
+
+  const createPayment = async () => {
+    try {
+      // Gọi API Create để tạo payment
+      const response = await fetch('https://wehireapi.azurewebsites.net/api/Payment/Create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          payPeriodId: 2,
+          payerId: 1,
+          description: "Mô tả cho payment",
+          returnUrl: "https://localhost:3000/projectdetailhr?Id=8"
+        }),
+      });
+      const data = await response.json();
+      return data.approvalUrl; // Trả về approvalUrl từ API backend
+    } catch (error) {
+      console.error('Error creating payment:', error);
+      // Xử lý lỗi nếu cần thiết
+    }
+  };
+
+  // Function to handle payment execution on backend
+  const executePayment = async (paymentId, payerId) => {
+    try {
+      const response = await paymentServices.executePayment(paymentId, payerId);
+      console.log(response);
+      toast.success("Payment successfully")
+      setLoadPayPeriod(!loadPayPeriod);
+      setLoadingPaynow(false)
+      setShowPopup(false)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error executing payment:', error);
+      // Xử lý lỗi nếu cần thiết
+      setLoadingPaynow(false)
+      setShowPopup(false)
+      setLoading(false)
+    }
+  };
 
   const handleDateChange = (date) => {
     setDateValue(date);
@@ -325,7 +369,7 @@ const ProjectDetailDesciption = () => {
       var formattedSevenDaysBeforeMinDate = sevenDaysBeforeMinDate.toISOString().split('T')[0];
 
       // Kiểm tra nếu startDate trừ đi 7 ngày bé hơn ngày hiện tại
-      if (sevenDaysBeforeMinDate < currentDate) {
+      if (sevenDaysBeforeMinDate > currentDate) {
         // Thêm 3 ngày vào startDate
         currentDate.setDate(currentDate.getDate() + 4);
         formattedSevenDaysBeforeMinDate = currentDate.toISOString().split('T')[0];
@@ -334,9 +378,7 @@ const ProjectDetailDesciption = () => {
       setMinDateDuration(formattedSevenDaysBeforeMinDate);
 
       // Trừ đi 1 tháng từ formattedMaxDate
-      var oneMonthBeforeMaxDate = new Date(temp2.getTime());
-      oneMonthBeforeMaxDate.setMonth(oneMonthBeforeMaxDate.getMonth() - 1);
-      oneMonthBeforeMaxDate.setDate(oneMonthBeforeMaxDate.getDate() + 1);
+      var oneMonthBeforeMaxDate = new Date(temp.getTime());
       var formattedOneMonthBeforeMaxDate = oneMonthBeforeMaxDate.toISOString().split('T')[0];
 
       setMaxDateDuration(formattedOneMonthBeforeMaxDate);
@@ -460,6 +502,58 @@ const ProjectDetailDesciption = () => {
     }
   };
 
+  const openPayment = async (payPeriodId) => {
+    setLoading(true);
+    setLoadingPaynow(true)
+    try {
+      const payerId = localStorage.getItem("userId");
+      const description = "khong biet la cai gi het";
+      const queryParams = new URLSearchParams(location.search);
+      const projectId = queryParams.get("Id");
+      console.log(payPeriodId);
+      console.log(payerId);
+      console.log(description);
+      const returnUrl = customUrl.redirectUrlReturnPay + "/callbackpayment";
+      console.log(returnUrl);
+      const response = await paymentServices.createPayment(payPeriodId, payerId, description, returnUrl);
+      console.log(response);
+      if (response.data.code === 200) {
+        console.log("mo cua so")
+        const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
+        const popupWindow = window.open(response.data.data, "popupWindow", windowFeatures);
+        function checkPopupStatus() {
+          if (popupWindow && popupWindow.closed) {
+            console.log("Cửa sổ đã đóng");
+            setLoadingPaynow(false)
+            setShowPopup(false)
+            setLoading(false)
+            clearInterval(intervalId);
+          } else {
+            console.log("Cửa sổ đang mở");
+            // Thực hiện hành động nếu cửa sổ vẫn đang mở (nếu cần)
+          }
+        }
+        const intervalId = setInterval(checkPopupStatus, 1000);
+
+        window.addEventListener('message', (event) => {
+          const { PayerID, paymentId } = event.data;
+          if (PayerID && paymentId) {
+            event.source.close();
+            executePayment(paymentId, PayerID);
+          }
+        });
+
+      }
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      setLoadingPaynow(false)
+      setShowPopup(false)
+      setLoading(false)
+      toast.error("Payment fail")
+    }
+  };
+
+
   const fetchDetailPayPeriod = async (newDate) => {
     let response;
     console.log("ham nay bi goi lai")
@@ -472,7 +566,6 @@ const ProjectDetailDesciption = () => {
         console.log("cho nay ms bi goi lai")
         const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
         setPayRollDetail(response2.data.data);
-
       }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -483,6 +576,16 @@ const ProjectDetailDesciption = () => {
   }
 
   useEffect(() => {
+    const currentDate = new Date();
+
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1; // Tháng bắt đầu từ 0, cần cộng thêm 1
+    const year = currentDate.getFullYear();
+
+    const formattedDate = `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}/${year}`;
+
+    setCurrentDateBill(formattedDate);
+
     fetchJobPosition();
   }, []);
 
@@ -714,11 +817,15 @@ const ProjectDetailDesciption = () => {
         const queryParams = new URLSearchParams(location.search);
         const projectId = queryParams.get("Id");
         const response = await payPeriodServices.importExcel(projectId, formData2);
-        toast.success(response.data.data.code)
+        console.log("import")
+        console.log(response)
+        toast.success(response.data.code)
         setLoadingImportExel(false);
       }
+      setLoadPayPeriod(!loadPayPeriod);
       setLoadingImportExel(false);
     } catch (error) {
+      console.log("import")
       console.log(error)
       toast.error(error.response.data.message)
       setLoadingImportExel(false);
@@ -761,6 +868,11 @@ const ProjectDetailDesciption = () => {
 
   return (
     <React.Fragment>
+      {loading && (
+        <div className="overlay" style={{ zIndex: "3000" }}>
+          <div className="spinnerNoCloud"></div>
+        </div>
+      )}
       <div className="job-detail " style={{ marginTop: "50px" }}>
         <CardBody className="">
           <div class="row  justify-content-center " style={{ margin: "0px" }}>
@@ -1041,7 +1153,7 @@ const ProjectDetailDesciption = () => {
                                                       : jobVacancyListDetails.rejected === true
                                                         ? "badge bg-danger text-light fs-12 mt-3"
                                                         : jobVacancyListDetails.expired === true
-                                                          ? "badge bg-darkcyan text-light fs-12 mt-3"
+                                                          ? "badge bg-danger text-light fs-12 mt-3"
                                                           : jobVacancyListDetails.cancelled === true
                                                             ? "badge bg-secondary text-light fs-12 mt-3"
                                                             : jobVacancyListDetails.finished === true
@@ -1256,6 +1368,7 @@ const ProjectDetailDesciption = () => {
                           <div style={{ fontSize: "30px", fontWeight: "bold" }}>
                             Payroll
                           </div>
+
                           <div className="d-flex gap-5 justify-content-end">
                             <div className="btn btn-soft-primary fw-bold"
                             >
@@ -1383,22 +1496,23 @@ const ProjectDetailDesciption = () => {
                                           </span>
                                         </div>
                                       </div>
-                                      <div style={{ border: "1px solid black" }}></div>
+                                      <div style={{ border: "1px solid #d9d9d9" }}></div>
                                       <div className="d-flex justify-content-between" style={{ fontSize: "35px" }}>
                                         <div>Total salary for developers in {listMonth[currentMonthIndex].split(' ')[0]}</div>
-                                        <div>1000$</div>
+                                        <div>{payPeriodDetail.totalAmount}</div>
                                       </div>
                                       <div>
-                                        <div>Luong cua Quoc Binh</div>
-                                        <div>Luong cua Guu</div>
+                                        {payPeriodDetail.developerFullName.map((fullName, index) => (
+                                          <div style={{ color: "black", fontWeight: "480" }} key={index}>Salary of {fullName}</div>
+                                        ))}
                                       </div>
-                                      <div className="d-flex justify-content-between" style={{ marginTop: "80px" }}>
-                                        <div>Last updated : 00:00:00 18/18/2023</div>
-                                        <div className="btn btn-soft-primary fw-bold"
-                                          onClick={() => {
+                                      <div style={{ color: "grey", marginTop: "80px" }} className="d-flex justify-content-between" >
+                                        <div>Last updated : {payPeriodDetail.updatedAt}</div>
+                                        {payPeriodDetail.statusString !== "Paid" && (
+                                          <div className="btn btn-soft-primary fw-bold" onClick={() => {
                                             setShowPopup(true);
-                                          }}
-                                        >Continues</div>
+                                          }}>Continues</div>
+                                        )}
                                       </div>
                                     </div>
                                     <div className="col-lg-3"
@@ -1418,11 +1532,12 @@ const ProjectDetailDesciption = () => {
                                     onCancel={() => {
                                       setShowPopup(false);
                                     }}
-                                    width={900}
+                                    width={750}
                                     footer={null}
+                                    zIndex={2000}
                                   >
-                                    <div className="px-3 pt-3 d-flex justify-content-between ">
-                                      <div>
+                                    <div className="ps-3 pr-5 row ">
+                                      <div className="col-lg-9">
                                         <div className=" profile-user">
                                           <img
                                             src={userImage0}  // Giá trị mặc định là "userImage2"
@@ -1432,25 +1547,48 @@ const ProjectDetailDesciption = () => {
                                             alt=""
                                           />
                                         </div>
-                                        <div className="candidate-profile-overview p-2">
-                                          <h6 className="fs-17 fw-semibold ">Cong ty ma Co.</h6>
-                                          <h6 style={{ color: "grey" }}>Project name</h6>
+                                        <div className="candidate-profile-overview ">
+                                          <h6 className="fs-17 fw-semibold ">{payPeriodDetail.companyName}</h6>
+                                          <h6 style={{ color: "grey" }}>{hiringRequestDetail.projectName}</h6>
                                         </div>
                                       </div>
-                                      <div className="d-flex flex-column gap-4" >
-                                        <div className="d-flex flex-column">
-                                          <div style={{ fontSize: "30px", fontWeight: "bold" }}>STATUS</div>
-                                          <div style={{ fontSize: "15px", color: "grey" }}>payrollCode</div>
-                                          <div style={{ fontSize: "15px", color: "grey" }}>26/11/2023</div>
-                                        </div>
-                                        <div style={{ fontSize: "30px", color: "green", fontWeight: "600", marginTop: "20px" }} >
-                                          $ 3000
-                                        </div>
+                                      <div className="col-lg-3 d-flex flex-column justify-content-start" style={{ textAlign: "end", paddingTop: "30px", paddingRight: '30px' }} >
+                                        <div style={{ fontSize: "15px", color: "grey" }}>{payPeriodDetail.payPeriodCode}</div>
+                                        <div style={{ fontSize: "15px", color: "grey" }}>{currentDateBill}</div>
                                       </div>
                                     </div>
-                                    <Divider></Divider>
-                                    <div className="d-flex gap-4 justify-content-between">
-                                      <div className="d-flex flex-column gap-2" >
+                                    <Divider style={{ marginBottom: "12px" }}></Divider>
+
+                                    <div className="px-3 d-flex justify-content-between align-items-center">
+                                      <div style={{ fontWeight: "600" }}>
+                                        Actual total amount
+                                      </div>
+                                      <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
+                                        {payPeriodDetail.totalActualAmount}
+                                      </div>
+                                    </div>
+                                    <Divider style={{ marginBottom: "12px" }}></Divider>
+
+                                    <div className="px-3 d-flex justify-content-between align-items-center">
+                                      <div style={{ fontWeight: "600" }}>
+                                        Total OT amount
+                                      </div>
+                                      <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
+                                        {payPeriodDetail.totalOTAmount}
+                                      </div>
+                                    </div>
+                                    <Divider style={{ marginBottom: "12px" }}></Divider>
+
+                                    <div className="px-3 d-flex justify-content-end align-items-end">
+                                      <div style={{ fontWeight: "600", fontSize: "20px" }}>
+                                        TOTAL DUE : {payPeriodDetail.totalAmount}
+                                      </div>
+                                    </div>
+                                    <Divider style={{ marginBottom: "12px" }}></Divider>
+
+
+                                    <div className="row" style={{ paddingLeft: "30px", paddingRight: "30px" }}>
+                                      <div className="col-lg-4  d-flex flex-column gap-2" >
                                         <div style={{ color: "grey" }}>
                                           TO
                                         </div>
@@ -1470,27 +1608,21 @@ const ProjectDetailDesciption = () => {
                                           wehire@gmail.com
                                         </div>
                                       </div>
-                                      <div className="d-flex flex-column gap-2" >
+                                      <div className=" col-lg-4 d-flex flex-column gap-2" >
                                         <div style={{ color: "grey" }}>
                                           FROM
                                         </div>
                                         <div style={{ fontWeight: "600" }}>
-                                          Espress Design Co.
+                                          {payPeriodDetail.companyName}
                                         </div>
                                         <div className="d-flex flex-column" style={{ color: "grey" }}>
-                                          <div>
-                                            Quan 9
-                                          </div>
-                                          <div>
-                                            Ho Chi Minh City
-                                          </div>
-                                          VietNam
+                                          {payPeriodDetail.companyAddress}
                                         </div>
                                         <div style={{ color: "grey" }}>
-                                          wehire@gmail.com
+                                          {payPeriodDetail.companyEmail}
                                         </div>
                                       </div>
-                                      <div className="d-flex flex-column gap-2" >
+                                      <div className="d-flex col-lg-4 flex-column gap-2" >
                                         <div style={{ color: "grey" }}>
                                           NOTE
                                         </div>
@@ -1498,6 +1630,27 @@ const ProjectDetailDesciption = () => {
                                           Note
                                         </div>
                                       </div>
+                                    </div>
+                                    <div className="px-3 d-flex justify-content-end align-items-end">
+                                      <button className="btn btn-soft-primary fw-bold"
+                                        onClick={() => {
+                                          openPayment(payPeriodDetail.payPeriodId);
+                                        }}
+                                        disabled={loadingPayNow}
+                                      >
+                                        {loadingPayNow ? (
+                                          <div style={{ width: "65px" }} className="d-flex align-items-center justify-content-center">
+                                            <HashLoader
+                                              size={20}
+                                              color={"white"}
+                                              loading={true}
+                                            />
+                                          </div>
+                                        ) : (
+                                          "Pay Now"
+                                        )}
+                                      </button>
+
                                     </div>
                                   </AntdModal>
 
@@ -1623,7 +1776,7 @@ const ProjectDetailDesciption = () => {
 
                                             >
                                               <div>
-                                                <span >{payRollDetailNew.totalEarnings}$</span>
+                                                <span >{payRollDetailNew.totalEarnings}</span>
                                               </div>
                                             </Col>
 
@@ -1668,6 +1821,7 @@ const ProjectDetailDesciption = () => {
                                                     id={`time-In2-${workLogDetail.workLogId}`}
                                                   >
                                                     {workLogDetail.workDateMMM}
+
                                                   </Col>
                                                   <Col md={3}>
                                                     <div>
