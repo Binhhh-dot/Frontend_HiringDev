@@ -703,12 +703,12 @@ const CreateHiringRequestPopup = (
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Salary per dev</label>
+                                                        <label class="text-muted">Salary per dev (VND)</label>
                                                         <input
                                                             id="budget"
                                                             type="number"
                                                             class="form-control resume"
-                                                            placeholder="300$"
+                                                            placeholder="3000000 VND"
                                                         ></input>
                                                         {budgetError && (
                                                             <p className="text-danger mt-2">{budgetError}</p>

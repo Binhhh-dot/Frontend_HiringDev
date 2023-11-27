@@ -336,6 +336,7 @@ const ProjectDetailDesciption = () => {
       // Trừ đi 1 tháng từ formattedMaxDate
       var oneMonthBeforeMaxDate = new Date(temp2.getTime());
       oneMonthBeforeMaxDate.setMonth(oneMonthBeforeMaxDate.getMonth() - 1);
+      oneMonthBeforeMaxDate.setDate(oneMonthBeforeMaxDate.getDate() + 1);
       var formattedOneMonthBeforeMaxDate = oneMonthBeforeMaxDate.toISOString().split('T')[0];
 
       setMaxDateDuration(formattedOneMonthBeforeMaxDate);

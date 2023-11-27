@@ -54,6 +54,8 @@ import { Dropdown as DropdownAntd, Space } from 'antd';
 import teamMeetingServices from "../../../services/teamMeeting.services";
 import customUrl from "../../../utils/customUrl";
 import { useNavigate } from "react-router-dom";
+import { Empty } from 'antd';
+import { fi } from "date-fns/locale";
 
 
 const HiringRequestDetails = () => {
@@ -67,6 +69,8 @@ const HiringRequestDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
   const [listInterview, setlistInterview] = useState([]);
+  const [isHaveListInterview, setIsHaveListInterview] = useState(false);
+  const [isHaveListDeveloper, setIsHaveListDeveloper] = useState(false);
   const [loadingButtons, setLoadingButtons] = useState({});
   const [loadingInterview, setLoadingInterview] = useState(false);
   const [activeTab, setActiveTab] = useState("1");
@@ -111,6 +115,7 @@ const HiringRequestDetails = () => {
   const [interviewIdCancel, setInterviewIdCancel] = useState(null);
   const [interviewIdUpdate, setInterviewIdUpdate] = useState(null);
   const [minDate, setMinDate] = useState('');
+  const [maxDate, setMaxDate] = useState('');
   const today = new Date();
   today.setDate(today.getDate() + 1);
   const tomorrow = today.toISOString().split('T')[0];
@@ -358,6 +363,11 @@ const HiringRequestDetails = () => {
         };
       });
       setCandidategridDetails(candidategridDetails);
+      if (candidategridDetails.length > 0) {
+        setIsHaveListDeveloper(true)
+      } else {
+        setIsHaveListDeveloper(false)
+      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -379,6 +389,18 @@ const HiringRequestDetails = () => {
         jobId
       );
       setHiringRequestDetail(response.data.data);
+
+      var parts2 = response.data.data.duration.split('-');
+      if (parts2.length === 3) {
+        var day = parts2[1];
+        var month = parts2[0];
+        var year = parts2[2];
+        // Format the date as "yyyy-dd-mm"
+        var formattedDurationEndDay = year + '-' + day + '-' + month;
+        setMaxDate(formattedDurationEndDay)
+      } else {
+        console.error("Invalid date format");
+      }
 
       return response;
     } catch (error) {
@@ -414,6 +436,11 @@ const HiringRequestDetails = () => {
         };
       });
       setlistInterview(formattedJobVacancies);
+      if (formattedJobVacancies.length > 0) {
+        setIsHaveListInterview(true)
+      } else {
+        setIsHaveListInterview(false)
+      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -955,6 +982,14 @@ const HiringRequestDetails = () => {
           <div class="col-lg-8 " style={{ padding: "0px" }}>
             <Card className="job-detail overflow-hidden">
               <div>
+                <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
+                  <img
+                    src="https://firebasestorage.googleapis.com/v0/b/fuprojectteammanagement.appspot.com/o/vivid-blurred-colorful-background.jpg?alt=media&token=dd0ed801-1438-4d7a-af45-98906b7bf882"
+                    alt=""
+                    className="img-fluid"
+                    style={{ width: "100%", height: "200px", objectFit: "cover" }}
+                  />
+                </div>
                 <div className="job-details-compnay-profile">
                   <img
                     src={JobImage10}
@@ -1126,6 +1161,7 @@ const HiringRequestDetails = () => {
                         className="form-control"
                         id="date-of-interview"
                         min={minDate}
+                        max={maxDate}
                       />
                       {dateOfInterViewError && (
                         <p className="text-danger mt-2">
@@ -1642,7 +1678,7 @@ const HiringRequestDetails = () => {
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Offered Salary</h6>
                         <p className="text-muted mb-0">
-                          {hiringRequestDetail.salaryPerDev}
+                          {hiringRequestDetail.salaryPerDev} VND
                         </p>
                       </div>
                     </div>
@@ -1710,6 +1746,11 @@ const HiringRequestDetails = () => {
                 <TabContent activeTab={activeTab}>
                   <TabPane tabId="1">
                     <Row>
+                      {!isHaveListDeveloper ? (
+                        <Empty style={{ marginTop: "20px" }} />
+                      ) : (
+                        null
+                      )}
                       {candidategridDetails.map((candidategridDetailsNew, key) => (
                         <Col lg={3} md={6} key={key}>
                           <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
@@ -2032,6 +2073,11 @@ const HiringRequestDetails = () => {
                   </TabPane>
                   <TabPane tabId="2">
                     <Row>
+                      {!isHaveListInterview ? (
+                        <Empty style={{ marginTop: "20px" }} />
+                      ) : (
+                        null
+                      )}
                       {listInterview.map((jobVacancy2Details, key) => (
                         <Col lg={3} md={6} className="mt-4" s key={key}>
                           <div
@@ -2117,36 +2163,6 @@ const HiringRequestDetails = () => {
                         </Col>
                       ))}
                     </Row>
-
-                    {/* <Row id="paging">
-                      <Col lg={12} className="mt-4 pt-2">
-                        <nav aria-label="Page navigation example">
-                          <div className="pagination job-pagination mb-0 justify-content-center">
-                            <li
-                              className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-                            >
-                              <p
-                                className="page-link"
-                                to="#"
-                                tabIndex="-1"
-                                onClick={handlePrevPage}
-                              >
-                                <i className="mdi mdi-chevron-double-left fs-15"></i>
-                              </p>
-                            </li>
-                            {renderPageNumbers()}
-                            <li
-                              className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                                }`}
-                            >
-                              <p className="page-link" to="#" onClick={handleNextPage}>
-                                <i className="mdi mdi-chevron-double-right fs-15"></i>
-                              </p>
-                            </li>
-                          </div>
-                        </nav>
-                      </Col>
-                    </Row> */}
                   </TabPane>
                 </TabContent>
               </CardBody>
