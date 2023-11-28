@@ -226,6 +226,8 @@ const HiringRequestDetails = () => {
         theme: "light",
       });
       console.error("Error completedInterview:", error);
+      setLoading(false);
+
     }
   };
 
@@ -2002,7 +2004,7 @@ const HiringRequestDetails = () => {
                                             loading={true}
                                           />
                                         ) : (
-                                          "Onboard"
+                                          "Go to contract"
                                         )}
                                       </button>
                                     )}

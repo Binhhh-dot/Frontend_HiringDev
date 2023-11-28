@@ -185,6 +185,7 @@ export default {
       createJobPosition: "/JobPosition",
       getJobPositionByProjectId: "/JobPosition/ByProject/${projectId}",
       getJobPositionsWithHiringRequest: "/JobPosition/JobPositionsWithHiringRequest/${projectId}",
+      deleteJobPosition: "/JobPosition/${jobPosition}",
     },
     teamMeeting: {
       createTeamMeeting: "/TeamMeeting",

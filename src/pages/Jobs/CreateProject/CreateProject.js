@@ -91,8 +91,7 @@ const CreateProject = () => {
   const [jobDescriptionError, setJobDescriptionError] = useState(null);
 
   useState(() => {
-    setMinDate(tomorrow);
-    setMinDateEndDay(_30DayLater);
+    // setMinDateEndDay(_30DayLater);
     // Thiết lập giá trị minDate thành ngày kế tiếp
   }, []);
 

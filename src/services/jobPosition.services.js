@@ -20,9 +20,17 @@ const getJobPositionsWithHiringRequest = async (projectId) => {
     return response
 }
 
+const deleteJobPosition = async (jobPositionId) => {
+    const serviceUrl = urlConstant.endpoint.jobPosition.deleteJobPosition.replace("${jobPosition}", jobPositionId);
+    const response = await utils.axiosLocalHost.delete(serviceUrl, jobPositionId)
+    return response
+}
+
+
 
 export default {
     createJobPosition,
     getJobPostionByProjectId,
-    getJobPositionsWithHiringRequest
+    getJobPositionsWithHiringRequest,
+    deleteJobPosition
 }

@@ -31,7 +31,8 @@ import {
   faEllipsis,
   faAngleRight,
   faAngleLeft,
-  faGear
+  faGear,
+  faCircle
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
@@ -59,6 +60,8 @@ import {
 import jobPositionServices from "../../../services/jobPosition.services";
 import JobImage10 from "../../../assets/images/featured-job/img-10.png";
 import JobDetailImage from "../../../assets/images/job-detail.jpg";
+import paypalImage from "../../../assets/images/pngwing.png";
+// import paypalImage from "../../src/assets/images/pngwing.png";
 import { Avatar, Divider, Tooltip } from 'antd';
 import developerServices from "../../../services/developer.services";
 import dayjs from "dayjs";
@@ -80,8 +83,8 @@ import workLogServices from "../../../services/workLog.services";
 import { HashLoader } from "react-spinners";
 import customUrl from "../../../utils/customUrl";
 import paymentServices from "../../../services/payment.services";
+import { Menu } from 'antd';
 dayjs.extend(customParseFormat);
-
 
 const ProjectDetailDesciption = () => {
   const formatTimePicker = 'HH:mm';
@@ -137,31 +140,20 @@ const ProjectDetailDesciption = () => {
 
   const [keyPayRoll, setKeyPayRoll] = useState(null);
   const [keyWorkLog, setKeyWorkLog] = useState(null);
+  const [positionIdChose, setPositionIdChose] = useState(null);
 
   const [showPopup, setShowPopup] = useState(false);
+  const [isHavePayment, setIsHavePaymemt] = useState(false);
+  const [showDropdown, setShowDropdown] = useState({});
 
-  const createPayment = async () => {
-    try {
-      // Gọi API Create để tạo payment
-      const response = await fetch('https://wehireapi.azurewebsites.net/api/Payment/Create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          payPeriodId: 2,
-          payerId: 1,
-          description: "Mô tả cho payment",
-          returnUrl: "https://localhost:3000/projectdetailhr?Id=8"
-        }),
-      });
-      const data = await response.json();
-      return data.approvalUrl; // Trả về approvalUrl từ API backend
-    } catch (error) {
-      console.error('Error creating payment:', error);
-      // Xử lý lỗi nếu cần thiết
-    }
+  const toggleDropdown = (jobPositionId) => {
+    setShowDropdown(prevState => ({
+      ...prevState,
+      [jobPositionId]: !prevState[jobPositionId] // Toggle the dropdown state for the corresponding jobPositionId
+    }));
   };
+
+
 
   // Function to handle payment execution on backend
   const executePayment = async (paymentId, payerId) => {
@@ -199,44 +191,101 @@ const ProjectDetailDesciption = () => {
           </div>
         ),
         key: '0',
-      },
+      }
+    ];
+  };
+
+  const profileItems = [
+    {
+      key: "1",
+      label: (
+        <div
+          style={{ width: "100px" }}
+        // onClick={() => onUpdateWorkLog()}
+        >
+          Edit
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          // onClick={() => onUpdateWorkLog()}
+          onClick={() => {
+            AntdModal.confirm({
+              title: 'Confirm delete job position',
+              content: (<div>
+                <p>Are you sure to delete this job position?</p>
+                <p>All activities in the hiring request of this job position will stop</p>
+              </div>),
+              onOk() {
+                // Action when the user clicks OK
+                console.log('Confirmed!');
+                deleteJobPosition(positionIdChose);
+              },
+              onCancel() {
+                // Action when the user cancels
+                console.log('Cancelled!');
+              },
+              footer: (_, { OkBtn, CancelBtn }) => (
+                <>
+                  <CancelBtn />
+                  <OkBtn />
+                </>
+              ),
+            });
+          }}
+        >
+          Delete
+        </div>
+      ),
+    },
+  ]
+
+  const profileItems2 = [
+    {
+      key: "1",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => onUpdateWorkLog()}
+        >
+          Edit
+        </div>
+      ),
+    },
+  ]
+
+
+
+
+
+  const generateItems2 = () => {
+    return [
       {
         label: (
           <div
             style={{ width: "100px" }}
-            onClick={() => {
-              AntdModal.confirm({
-                title: 'Confirm cancel interview',
-                content: 'Are you sure to cancel this interview?',
-                onOk() {
-                  // Action when the user clicks OK
-                  console.log('Confirmed!');
-                  // openWindowCancelInterview(selectInterviewDetail.interviewId);
-                },
-                onCancel() {
-                  // Action when the user cancels
-                  console.log('Cancelled!');
-                },
-                footer: (_, { OkBtn, CancelBtn }) => (
-                  <>
-                    <CancelBtn />
-                    <OkBtn />
-                  </>
-                ),
-              });
-            }}
+          // onClick={() => onUpdateWorkLog()}
           >
-            Cancel
+            Edit 2
           </div>
         ),
         key: '1',
-      },
+      }
     ];
   };
 
   const [showCollapse, setShowCollapse] = useState(Array(payRollDetail.length).fill(false));
 
+
   const items = generateItems();
+
+  const items2 = generateItems();
+
+
 
   const toggleCollapse = (key2, paySlipId) => {
     setKeyPayRoll(key2);
@@ -354,89 +403,94 @@ const ProjectDetailDesciption = () => {
         const [day, month, year] = dateString.split('-').map(Number);
         return new Date(year, month - 1, day); // month - 1 because months are zero-indexed in JavaScript
       }
-      const startDate = convertToDateObject(response.data.data.startDate);
-      const endDate = convertToDateObject(response.data.data.endDate);
 
-      var temp = new Date(startDate);
-      var formattedMinDate = temp.toISOString().split('T')[0];
+      if (response.data.data.minStartDate !== "" && response.data.data.maxEndDate !== "") {
+        const startDate = convertToDateObject(response.data.data.minStartDate);
+        const endDate = convertToDateObject(response.data.data.maxEndDate);
 
-      var temp2 = new Date(endDate);
-      var formattedMaxDate = temp2.toISOString().split('T')[0]; // Sử dụng temp2 thay vì temp
-      var currentDate = new Date();
-      // Trừ đi 7 ngày từ formattedMinDate
-      var sevenDaysBeforeMinDate = new Date(temp.getTime());
-      sevenDaysBeforeMinDate.setDate(sevenDaysBeforeMinDate.getDate() - 6);
-      var formattedSevenDaysBeforeMinDate = sevenDaysBeforeMinDate.toISOString().split('T')[0];
+        var temp = new Date(startDate);
+        var formattedMinDate = temp.toISOString().split('T')[0];
 
-      // Kiểm tra nếu startDate trừ đi 7 ngày bé hơn ngày hiện tại
-      if (sevenDaysBeforeMinDate > currentDate) {
+        var temp2 = new Date(endDate);
+        var formattedMaxDate = temp2.toISOString().split('T')[0]; // Sử dụng temp2 thay vì temp
+        var currentDate = new Date();
+        // Trừ đi 7 ngày từ formattedMinDate
+
+
+        // Kiểm tra nếu startDate trừ đi 7 ngày bé hơn ngày hiện tại
+
         // Thêm 3 ngày vào startDate
         currentDate.setDate(currentDate.getDate() + 4);
-        formattedSevenDaysBeforeMinDate = currentDate.toISOString().split('T')[0];
-      }
+        const formattedSevenDaysBeforeMinDate = currentDate.toISOString().split('T')[0];
 
-      setMinDateDuration(formattedSevenDaysBeforeMinDate);
 
-      // Trừ đi 1 tháng từ formattedMaxDate
-      var oneMonthBeforeMaxDate = new Date(temp.getTime());
-      var formattedOneMonthBeforeMaxDate = oneMonthBeforeMaxDate.toISOString().split('T')[0];
+        setMinDateDuration(formattedSevenDaysBeforeMinDate);
 
-      setMaxDateDuration(formattedOneMonthBeforeMaxDate);
 
-      const monthsArray = [];
-      const startDateArray = [];
-      const endDateArray = [];
+        const monthsArray = [];
+        const startDateArray = [];
+        const endDateArray = [];
 
-      let currentMonthStart = new Date(startDate.getFullYear(), startDate.getMonth() - 1, 25);
-      let currentMonthEnd = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() + 1, 24);
+        let currentMonthStart = new Date(startDate.getFullYear(), startDate.getMonth() - 1, 25);
+        let currentMonthEnd = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() + 1, 24);
 
-      let checkFirstMonth = false;
-      while (currentMonthStart <= endDate) {
-        let formattedMonth;
-        let formattedStartDay;
-        let formattedEndDay;
-        if (!checkFirstMonth) {
-          if (currentMonthStart < startDate && startDate < currentMonthEnd) {
-            formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
-            formattedStartDay = formatDate(startDate);
-            formattedEndDay = formatDate(new Date(currentMonthEnd));
-            monthsArray.push(formattedMonth);
-            startDateArray.push(formattedStartDay);
-            endDateArray.push(formattedEndDay);
-          }
+        let checkFirstMonth = false;
+        while (currentMonthStart <= endDate) {
+          let formattedMonth;
+          let formattedStartDay;
+          let formattedEndDay;
+          if (!checkFirstMonth) {
+            if (currentMonthStart < startDate && startDate < currentMonthEnd) {
+              formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+              formattedStartDay = formatDate(startDate);
+              formattedEndDay = formatDate(new Date(currentMonthEnd));
+              monthsArray.push(formattedMonth);
+              startDateArray.push(formattedStartDay);
+              endDateArray.push(formattedEndDay);
+            }
 
-          checkFirstMonth = true;
-        } else {
-          if (currentMonthStart < startDate) {
-            formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
-            formattedStartDay = formatDate(startDate);
-            formattedEndDay = formatDate(new Date(currentMonthEnd));
-            monthsArray.push(formattedMonth);
-            startDateArray.push(formattedStartDay);
-            endDateArray.push(formattedEndDay);
+            checkFirstMonth = true;
           } else {
+            if (currentMonthStart < startDate) {
+              formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+              formattedStartDay = formatDate(startDate);
+              formattedEndDay = formatDate(new Date(currentMonthEnd));
+              monthsArray.push(formattedMonth);
+              startDateArray.push(formattedStartDay);
+              endDateArray.push(formattedEndDay);
+            } else {
 
-            formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
-            formattedStartDay = formatDate(new Date(currentMonthStart));
-            formattedEndDay = formatDate(currentMonthEnd > endDate ? endDate : new Date(currentMonthEnd));
-            monthsArray.push(formattedMonth);
-            startDateArray.push(formattedStartDay);
-            endDateArray.push(formattedEndDay);
+              formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+              formattedStartDay = formatDate(new Date(currentMonthStart));
+              formattedEndDay = formatDate(currentMonthEnd > endDate ? endDate : new Date(currentMonthEnd));
+              monthsArray.push(formattedMonth);
+              startDateArray.push(formattedStartDay);
+              endDateArray.push(formattedEndDay);
+            }
           }
+
+          currentMonthStart.setMonth(currentMonthStart.getMonth() + 1);
+          currentMonthStart.setDate(25);
+
+          currentMonthEnd = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() + 1, 24);
         }
 
-        currentMonthStart.setMonth(currentMonthStart.getMonth() + 1);
-        currentMonthStart.setDate(25);
+        setListMonth(monthsArray);
+        if (monthsArray.length === 0) {
+          setIsHavePaymemt(false);
+          console.log("monthsArray")
+          console.log(monthsArray)
+        } else {
+          setIsHavePaymemt(true);
+          console.log("monthsArray")
+          console.log(monthsArray)
+          setListStartDay(startDateArray);
+          setListEndDay(endDateArray);
+        }
 
-        currentMonthEnd = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() + 1, 24);
+        setLoadPayPeriod(!loadPayPeriod);
+        setCurrentMonthIndex(0);
       }
-
-      setListMonth(monthsArray);
-      setListStartDay(startDateArray);
-      setListEndDay(endDateArray);
-
-      setLoadPayPeriod(!loadPayPeriod);
-      setCurrentMonthIndex(0);
       return response;
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -502,6 +556,20 @@ const ProjectDetailDesciption = () => {
     }
   };
 
+  const deleteJobPosition = async (jobPositionId) => {
+    let response;
+    try {
+      response = await jobPositionServices.deleteJobPosition(jobPositionId);
+      console.log(response.data.data)
+      toast.success("Delete job position successfully")
+      fetchJobPosition();
+      fetchJobVacancies();
+    } catch (error) {
+      toast.error("Delete job position fail")
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
+
   const openPayment = async (payPeriodId) => {
     setLoading(true);
     setLoadingPaynow(true)
@@ -557,13 +625,17 @@ const ProjectDetailDesciption = () => {
   const fetchDetailPayPeriod = async (newDate) => {
     let response;
     console.log("ham nay bi goi lai")
+    console.log(newDate)
     try {
       const queryParams = new URLSearchParams(location.search);
       const projectId = queryParams.get("Id");
+      console.log(projectId)
       response = await payPeriodServices.getPayPeriodDetailByProjectIdAndDate(projectId, newDate);
+      console.log(response)
       setPayPeriodDetail(response.data.data);
       if (response.data.code === 200) {
         console.log("cho nay ms bi goi lai")
+        console.log(response.data.data.payPeriodId)
         const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
         setPayRollDetail(response2.data.data);
       }
@@ -819,7 +891,7 @@ const ProjectDetailDesciption = () => {
         const response = await payPeriodServices.importExcel(projectId, formData2);
         console.log("import")
         console.log(response)
-        toast.success(response.data.code)
+        toast.success("Import successfully")
         setLoadingImportExel(false);
       }
       setLoadPayPeriod(!loadPayPeriod);
@@ -913,7 +985,7 @@ const ProjectDetailDesciption = () => {
                                     "Preparing"
                                     ? "badge bg-warning text-light "
                                     : hiringRequestDetail.statusString ===
-                                      "In Progress"
+                                      "In process"
                                       ? "badge bg-blue text-light "
                                       : hiringRequestDetail.statusString ===
                                         "Expired"
@@ -985,7 +1057,7 @@ const ProjectDetailDesciption = () => {
                         <div
                           className="dev-matching-level-in-company"
                           style={{
-                            width: `${70}% `,
+                            width: `${hiringRequestDetail.dayLeftPercent}% `,
                           }}
                         ></div>
                       </div>
@@ -1101,19 +1173,12 @@ const ProjectDetailDesciption = () => {
                                     {jobPosition.positionName}
                                   </div>
                                   {/* )} */}
-                                  <DropdownAntd
-                                    menu={{
-                                      items,
-                                    }}
-                                    trigger={['click']}
-                                  >
-                                    <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
-                                      <FontAwesomeIcon icon={faEllipsis}
-                                        style={{ fontSize: "24px", paddingRight: "15px", color: 'black', cursor: "pointer" }}
-                                      />
-                                    </a>
+                                  <DropdownAntd menu={{ items: profileItems }}>
+                                    <FontAwesomeIcon icon={faEllipsis}
+                                      style={{ fontSize: "24px", paddingRight: "15px", color: 'black', cursor: "pointer" }}
+                                      onClick={() => setPositionIdChose(jobPosition.jobPositionId)}
+                                    />
                                   </DropdownAntd>
-
                                 </div>
                                 <div className="d-flex flex-column gap-3" style={{ height: "100%" }}>
                                   {jobVacancyList.map((jobVacancyListDetails, key) => {
@@ -1255,8 +1320,6 @@ const ProjectDetailDesciption = () => {
                           closeModal={closeModalCreateHiringRequest}
                           requestId={selectedHiringRequestInfo}
                           jobPositionId={selectedJobPositionInfo}
-                          minDateDuration={minDateDuration}
-                          maxDateDuration={maxDateDuration}
                         />
                       </div>
                     </TabPane>
@@ -1363,567 +1426,572 @@ const ProjectDetailDesciption = () => {
                       </div>
                     </TabPane>
                     <TabPane tabId="4">
-                      <div>
-                        <div className="d-flex justify-content-between mb-3">
-                          <div style={{ fontSize: "30px", fontWeight: "bold" }}>
-                            Payroll
-                          </div>
-
-                          <div className="d-flex gap-5 justify-content-end">
-                            <div className="btn btn-soft-primary fw-bold"
-                            >
-                              Create new
-                            </div>
-                            <div className="d-flex justify-content-end gap-2">
-                              <div>
-                                <input
-                                  key={key}
-                                  type="file"
-                                  style={{ display: 'none' }}
-                                  onChange={handleFileChange}
-                                  id="fileInput" // Đặt id để tham chiếu trong nút Import Excel
-                                  disabled={loadingImportExel}
-                                />
-                                <label
-                                  htmlFor="fileInput"
-                                  className="btn btn-soft-blue fw-bold"
-                                >
-                                  {loadingImportExel ? (
-                                    <div style={{ width: "100px" }} className="d-flex align-items-center justify-content-center">
-                                      <HashLoader
-                                        size={20}
-                                        color={"white"}
-                                        loading={true}
-                                      />
-                                    </div>
-                                  ) : (
-                                    "Import Excel"
-                                  )}
-                                </label>
+                      {isHavePayment ? (
+                        <>
+                          <div>
+                            <div className="d-flex justify-content-between mb-3">
+                              <div style={{ fontSize: "30px", fontWeight: "bold" }}>
+                                Payroll
                               </div>
-                              <button className="btn btn-soft-blue fw-bold"
-                                onClick={() => {
-                                  generateExel();
-                                }}
-                                disabled={loadingGenerateExel}
-                              >
-                                {loadingGenerateExel ? (
-                                  <div style={{ width: "110px" }} className="d-flex align-items-center justify-content-center">
-                                    <HashLoader
-                                      size={20}
-                                      color={"white"}
-                                      loading={true}
+
+                              <div className="d-flex gap-5 justify-content-end">
+                                <div className="btn btn-soft-primary fw-bold"
+                                >
+                                  Create new
+                                </div>
+                                <div className="d-flex justify-content-end gap-2">
+                                  <div>
+                                    <input
+                                      key={key}
+                                      type="file"
+                                      style={{ display: 'none' }}
+                                      onChange={handleFileChange}
+                                      id="fileInput" // Đặt id để tham chiếu trong nút Import Excel
+                                      disabled={loadingImportExel}
                                     />
-                                  </div>
-                                ) : (
-                                  "Generate Excel"
-                                )}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-
-                        <Nav
-                          className="profile-content-nav nav-pills border-bottom d-flex justify-content-between"
-                          id="pills-tab"
-                          role="tablist"
-                        >
-                          <div className="d-flex align-items-center gap-3">
-                            <FontAwesomeIcon icon={faAngleLeft} style={{ fontSize: '20px' }} onClick={previousMonth} />
-                            <FontAwesomeIcon icon={faAngleRight} style={{ fontSize: '20px' }} onClick={nextMonth} />
-                            <div className="d-flex flex-column">
-                              <div id="monthYearSelected" style={{ fontSize: "20px", fontWeight: "600" }}>{listMonth[currentMonthIndex]}</div>
-                              <div id="dateSelected" style={{ fontSize: "15px", color: "grey" }}>{listStartDay[currentMonthIndex]} - {listEndDay[currentMonthIndex]}</div>
-                            </div>
-                          </div>
-                          <div className="d-flex">
-                            <NavItem role="presentation">
-                              <NavLink
-                                to="#"
-                                className={classnames({ active: activeTabMini === "5" })}
-                                onClick={() => {
-                                  tabChangeMini("5");
-                                }}
-                                type="button"
-                              // style={{paddingLeft:"0px"}}
-                              >
-                                Overview
-                              </NavLink>
-                            </NavItem>
-                            <NavItem role="presentation">
-                              <NavLink
-                                to="#"
-                                className={classnames({ active: activeTabMini === "6" })}
-                                onClick={() => {
-                                  tabChangeMini("6");
-                                }}
-                                type="button"
-                              // style={{paddingLeft:"0px"}}
-                              >
-                                Pay Period
-                              </NavLink>
-                            </NavItem>
-                          </div>
-                        </Nav>
-                        {/* -------------------------------------------------------------- */}
-                        <div>
-                          <TabContent activeTab={activeTabMini}>
-                            <TabPane tabId="5" className="pt-4 ps-3 ">
-                              {payPeriodDetail ? (
-                                <>
-                                  <div className="row">
-                                    <div className="col-lg-9 p-4 d-flex flex-column gap-4 card " style={{
-                                      boxShadow:
-                                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                    }}>
-                                      <div className="d-flex align-items-center justify-content-between">
-                                        <div style={{ color: "black", fontWeight: "500" }}>Total salary payable for the month</div>
-                                        <div>
-                                          <span
-                                            className={
-                                              payPeriodDetail.statusString === "Created"
-                                                ? "badge bg-blue text-light fs-12 "
-                                                : payPeriodDetail.statusString === "Expired"
-                                                  ? "badge bg-danger text-light fs-12 "
-                                                  : payPeriodDetail.statusString === "Deleted"
-                                                    ? "badge bg-secondary text-light fs-12 "
-                                                    : payPeriodDetail.statusString === "Paid"
-                                                      ? "badge bg-primary text-light fs-12 "
-                                                      : ""
-                                            }
-                                          >
-                                            {payPeriodDetail.statusString}
-                                          </span>
-                                        </div>
-                                      </div>
-                                      <div style={{ border: "1px solid #d9d9d9" }}></div>
-                                      <div className="d-flex justify-content-between" style={{ fontSize: "35px" }}>
-                                        <div>Total salary for developers in {listMonth[currentMonthIndex].split(' ')[0]}</div>
-                                        <div>{payPeriodDetail.totalAmount}</div>
-                                      </div>
-                                      <div>
-                                        {payPeriodDetail.developerFullName.map((fullName, index) => (
-                                          <div style={{ color: "black", fontWeight: "480" }} key={index}>Salary of {fullName}</div>
-                                        ))}
-                                      </div>
-                                      <div style={{ color: "grey", marginTop: "80px" }} className="d-flex justify-content-between" >
-                                        <div>Last updated : {payPeriodDetail.updatedAt}</div>
-                                        {payPeriodDetail.statusString !== "Paid" && (
-                                          <div className="btn btn-soft-primary fw-bold" onClick={() => {
-                                            setShowPopup(true);
-                                          }}>Continues</div>
-                                        )}
-                                      </div>
-                                    </div>
-                                    <div className="col-lg-3"
-                                      style={{ paddingLeft: "24px" }}>
-                                      <Calendar
-                                        onChange={handleDateChange}
-                                        value={dateValue}
-                                      // Các propkhác của Calendar nếu cần
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <AntdModal
-                                    centered
-                                    open={showPopup}
-                                    onOk={() => setShowPopup(false)}
-                                    onCancel={() => {
-                                      setShowPopup(false);
-                                    }}
-                                    width={750}
-                                    footer={null}
-                                    zIndex={2000}
-                                  >
-                                    <div className="ps-3 pr-5 row ">
-                                      <div className="col-lg-9">
-                                        <div className=" profile-user">
-                                          <img
-                                            src={userImage0}  // Giá trị mặc định là "userImage2"
-                                            className="rounded-circle img-thumbnail"
-                                            style={{ width: "120px" }}
-                                            id="profile-img-2"
-                                            alt=""
+                                    <label
+                                      htmlFor="fileInput"
+                                      className="btn btn-soft-blue fw-bold"
+                                    >
+                                      {loadingImportExel ? (
+                                        <div style={{ width: "100px" }} className="d-flex align-items-center justify-content-center">
+                                          <HashLoader
+                                            size={20}
+                                            color={"white"}
+                                            loading={true}
                                           />
                                         </div>
-                                        <div className="candidate-profile-overview ">
-                                          <h6 className="fs-17 fw-semibold ">{payPeriodDetail.companyName}</h6>
-                                          <h6 style={{ color: "grey" }}>{hiringRequestDetail.projectName}</h6>
-                                        </div>
+                                      ) : (
+                                        "Import Excel"
+                                      )}
+                                    </label>
+                                  </div>
+                                  <button className="btn btn-soft-blue fw-bold"
+                                    onClick={() => {
+                                      generateExel();
+                                    }}
+                                    disabled={loadingGenerateExel}
+                                  >
+                                    {loadingGenerateExel ? (
+                                      <div style={{ width: "110px" }} className="d-flex align-items-center justify-content-center">
+                                        <HashLoader
+                                          size={20}
+                                          color={"white"}
+                                          loading={true}
+                                        />
                                       </div>
-                                      <div className="col-lg-3 d-flex flex-column justify-content-start" style={{ textAlign: "end", paddingTop: "30px", paddingRight: '30px' }} >
-                                        <div style={{ fontSize: "15px", color: "grey" }}>{payPeriodDetail.payPeriodCode}</div>
-                                        <div style={{ fontSize: "15px", color: "grey" }}>{currentDateBill}</div>
-                                      </div>
-                                    </div>
-                                    <Divider style={{ marginBottom: "12px" }}></Divider>
-
-                                    <div className="px-3 d-flex justify-content-between align-items-center">
-                                      <div style={{ fontWeight: "600" }}>
-                                        Actual total amount
-                                      </div>
-                                      <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
-                                        {payPeriodDetail.totalActualAmount}
-                                      </div>
-                                    </div>
-                                    <Divider style={{ marginBottom: "12px" }}></Divider>
-
-                                    <div className="px-3 d-flex justify-content-between align-items-center">
-                                      <div style={{ fontWeight: "600" }}>
-                                        Total OT amount
-                                      </div>
-                                      <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
-                                        {payPeriodDetail.totalOTAmount}
-                                      </div>
-                                    </div>
-                                    <Divider style={{ marginBottom: "12px" }}></Divider>
-
-                                    <div className="px-3 d-flex justify-content-end align-items-end">
-                                      <div style={{ fontWeight: "600", fontSize: "20px" }}>
-                                        TOTAL DUE : {payPeriodDetail.totalAmount}
-                                      </div>
-                                    </div>
-                                    <Divider style={{ marginBottom: "12px" }}></Divider>
-
-
-                                    <div className="row" style={{ paddingLeft: "30px", paddingRight: "30px" }}>
-                                      <div className="col-lg-4  d-flex flex-column gap-2" >
-                                        <div style={{ color: "grey" }}>
-                                          TO
-                                        </div>
-                                        <div style={{ fontWeight: "600" }}>
-                                          WeHire Co.
-                                        </div>
-                                        <div className="d-flex flex-column" style={{ color: "grey" }}>
-                                          <div>
-                                            Quan 9
-                                          </div>
-                                          <div>
-                                            Ho Chi Minh City
-                                          </div>
-                                          VietNam
-                                        </div>
-                                        <div style={{ color: "grey" }}>
-                                          wehire@gmail.com
-                                        </div>
-                                      </div>
-                                      <div className=" col-lg-4 d-flex flex-column gap-2" >
-                                        <div style={{ color: "grey" }}>
-                                          FROM
-                                        </div>
-                                        <div style={{ fontWeight: "600" }}>
-                                          {payPeriodDetail.companyName}
-                                        </div>
-                                        <div className="d-flex flex-column" style={{ color: "grey" }}>
-                                          {payPeriodDetail.companyAddress}
-                                        </div>
-                                        <div style={{ color: "grey" }}>
-                                          {payPeriodDetail.companyEmail}
-                                        </div>
-                                      </div>
-                                      <div className="d-flex col-lg-4 flex-column gap-2" >
-                                        <div style={{ color: "grey" }}>
-                                          NOTE
-                                        </div>
-                                        <div>
-                                          Note
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="px-3 d-flex justify-content-end align-items-end">
-                                      <button className="btn btn-soft-primary fw-bold"
-                                        onClick={() => {
-                                          openPayment(payPeriodDetail.payPeriodId);
-                                        }}
-                                        disabled={loadingPayNow}
-                                      >
-                                        {loadingPayNow ? (
-                                          <div style={{ width: "65px" }} className="d-flex align-items-center justify-content-center">
-                                            <HashLoader
-                                              size={20}
-                                              color={"white"}
-                                              loading={true}
-                                            />
-                                          </div>
-                                        ) : (
-                                          "Pay Now"
-                                        )}
-                                      </button>
-
-                                    </div>
-                                  </AntdModal>
-
-                                </>
-                              ) : (
-                                <Empty />
-                              )}
-                            </TabPane>
-                            <TabPane tabId="6" className="pt-4">
-                              <div>
-                                {payRollDetail[0] ? (
-                                  <>
-                                    <Row className="mb-2 px-3">
-                                      <Col md={2} style={{ textAlign: "center" }}>
-                                        First Name
-                                      </Col>
-                                      <Col
-                                        md={2}
-                                        className="px-0"
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        Last Name
-                                      </Col>
-                                      <Col
-                                        md={2}
-                                        className="px-0"
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        Email
-                                      </Col>
-                                      <Col
-                                        md={2}
-                                        className="px-0"
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        Total Hours
-                                      </Col>
-                                      <Col
-                                        md={1}
-                                        className="px-0"
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        Total OT
-                                      </Col>
-                                      <Col
-                                        md={2}
-                                        className="px-0"
-                                        style={{ textAlign: "center" }}
-                                      >
-                                        Total Salary
-                                      </Col>
-                                      <Col md={1}></Col>
-                                    </Row>
-                                  </>
-                                ) : (
-                                  <Empty />
-                                )}
-                                <div className="d-flex flex-column gap-2">
-                                  {payRollDetail.map((payRollDetailNew, key2) => (
-                                    <div key2={key2}>
-                                      <div
-                                        style={{
-                                          boxShadow:
-                                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                        }}
-                                        className={
-                                          "job-box-dev-in-list-hiringRequest-for-dev card"
-                                        }
-                                      >
-                                        <div className="p-3">
-                                          <Row className="align-items-center">
-                                            <Col
-                                              md={2}
-                                              style={{ textAlign: "center" }}
-                                            >
-                                              <div>
-                                                <span className="mb-0">{payRollDetailNew.firstName}</span>
-                                              </div>
-                                            </Col>
-
-                                            <Col
-                                              md={2}
-                                              className="px-0"
-                                              style={{ textAlign: "center" }}
-                                            >
-                                              <div>
-                                                <p className="mb-0">{payRollDetailNew.lastName}</p>
-                                              </div>
-                                            </Col>
-
-                                            <Col
-                                              md={2}
-                                              className="px-0"
-                                              style={{ textAlign: "center" }}
-                                            >
-                                              <div>
-                                                <p className="mb-0">{payRollDetailNew.email}</p>
-                                              </div>
-                                            </Col>
-
-                                            <Col
-                                              md={2}
-                                              className="px-0"
-                                              style={{ textAlign: "center" }}
-
-
-                                            >
-                                              <p className="mb-0" > {payRollDetailNew.totalActualWorkedHours}</p>
-                                            </Col>
-
-                                            <Col
-                                              md={1}
-                                              className=" px-0"
-                                              style={{ textAlign: "center" }}
-                                            >
-                                              {payRollDetailNew.totalOvertimeHours}
-                                            </Col>
-
-                                            <Col
-                                              md={2}
-                                              style={{ textAlign: "center" }}
-
-
-                                            >
-                                              <div>
-                                                <span >{payRollDetailNew.totalEarnings}</span>
-                                              </div>
-                                            </Col>
-
-                                            <Col md={1}>
-                                              <div
-                                                className="d-flex justify-content-center align-items-center rounded-circle"
-                                                onClick={() => toggleCollapse(key2, payRollDetailNew.paySlipId)}
-                                                style={{
-                                                  backgroundColor: "#ECECED",
-                                                  width: "50px",
-                                                  height: "50px",
-                                                }}
-                                              >
-                                                <i
-                                                  className="uil uil-angle-down"
-                                                  style={{ fontSize: "30px" }}
-                                                ></i>
-                                              </div>
-                                            </Col>
-                                          </Row>
-                                        </div>
-                                      </div>
-
-                                      <Collapse isOpen={showCollapse[key2]}>
-                                        <div
-                                          style={{
-                                            backgroundColor: "#EFF0F2",
-                                            borderRadius: "7px",
-                                          }}
-                                          className="mt-1 p-2 d-flex flex-column gap-2"
-                                        >
-                                          {workLoglist.map((workLogDetail, key) => (
-                                            <div className="d-flex flex-column gap-2">
-                                              <div
-                                                className="job-box-dev-in-list-hiringRequest-for-dev card d-flex flex-column gap-2 p-2"
-                                                style={{ backgroundColor: "#FFFFFF" }}
-                                              >
-                                                <Row>
-                                                  <Col
-                                                    md={3}
-                                                    className="d-flex justify-content-center align-items-center"
-                                                    id={`time-In2-${workLogDetail.workLogId}`}
-                                                  >
-                                                    {workLogDetail.workDateMMM}
-
-                                                  </Col>
-                                                  <Col md={3}>
-                                                    <div>
-                                                      <input
-                                                        type="time"
-                                                        className="form-control"
-                                                        id={`endTimeWorkLog${key2}${key}`}
-                                                        readOnly={editableRowId !== workLogDetail.workLogId}
-                                                      />
-                                                    </div>
-                                                  </Col>
-                                                  <Col md={3}>
-                                                    <div>
-                                                      <input
-                                                        type="time"
-                                                        className="form-control"
-                                                        id={`endTimeWorkLog2${key2}${key}`}
-                                                        readOnly={editableRowId !== workLogDetail.workLogId}
-                                                      />
-                                                    </div>
-                                                  </Col>
-                                                  <Col
-                                                    md={2}
-                                                    className="d-flex justify-content-center align-items-center"
-                                                    id={`hourInDay${workLogDetail.workLogId}`}
-                                                  >
-                                                    Hours in day: {workLogDetail.hourWorkInDay}
-                                                  </Col>
-                                                  <Col
-                                                    md={1}
-                                                    className="d-flex justify-content-center align-items-center"
-                                                  >
-                                                    <DropdownAntd
-                                                      menu={{
-                                                        items,
-                                                      }}
-                                                      trigger={['click']}
-                                                      onClick={() =>
-                                                        setKeyAndIdWorkLog(workLogDetail.workLogId, key)
-                                                      }
-                                                      disabled={editableRowId}
-                                                    >
-                                                      <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
-                                                        <FontAwesomeIcon
-                                                          icon={faGear}
-                                                          size="xl"
-                                                          color="#909191"
-                                                        />
-                                                      </a>
-                                                    </DropdownAntd>
-                                                  </Col>
-                                                </Row>
-                                                {editableRowId == workLogDetail.workLogId ? (
-                                                  <>
-                                                    <Row>
-                                                      <Col
-                                                        md={2}
-                                                        style={{ textAlign: "end" }}
-                                                        className="d-flex gap-2 justify-content-end"
-                                                      >
-                                                      </Col>
-                                                      <Col
-                                                        md={6}
-                                                        style={{ textAlign: "end" }}
-                                                        className="d-flex gap-2 justify-content-end"
-                                                      >
-                                                        <p id={`timeErrorWorkLog${workLogDetail.workLogId}`} className="text-danger mt-2"></p>
-                                                      </Col>
-                                                      <Col
-                                                        md={4}
-                                                        style={{ textAlign: "end" }}
-                                                        className="d-flex gap-2 justify-content-end"
-                                                      >
-                                                        <div className="btn btn-soft-danger"
-                                                          onClick={() => cancelUpdateWorkLog()}
-                                                        >
-                                                          Cancel
-                                                        </div>
-                                                        <div className="btn btn-soft-blue"
-                                                          onClick={() => saveUpdateWorkLog()}
-                                                        >
-                                                          Save
-                                                        </div>
-                                                      </Col>
-                                                    </Row>
-                                                  </>
-                                                ) : (
-                                                  null
-                                                )}
-                                              </div>
-                                            </div>
-                                          ))}
-                                        </div>
-                                      </Collapse>
-                                    </div>
-                                  ))}
+                                    ) : (
+                                      "Generate Excel"
+                                    )}
+                                  </button>
                                 </div>
                               </div>
-                            </TabPane>
-                          </TabContent>
-                        </div>
-                      </div>
+                            </div>
+
+                            <Nav
+                              className="profile-content-nav nav-pills border-bottom d-flex justify-content-between"
+                              id="pills-tab"
+                              role="tablist"
+                            >
+                              <div className="d-flex align-items-center gap-3" disabled="true">
+                                <FontAwesomeIcon icon={faAngleLeft} style={{ fontSize: '20px' }} onClick={previousMonth} />
+                                <FontAwesomeIcon icon={faAngleRight} style={{ fontSize: '20px' }} onClick={nextMonth} />
+                                <div className="d-flex flex-column">
+                                  <div id="monthYearSelected" style={{ fontSize: "20px", fontWeight: "600" }}>{listMonth[currentMonthIndex]}</div>
+                                  <div id="dateSelected" style={{ fontSize: "15px", color: "grey" }}>{listStartDay[currentMonthIndex]} - {listEndDay[currentMonthIndex]}</div>
+                                </div>
+                              </div>
+                              <div className="d-flex">
+                                <NavItem role="presentation">
+                                  <NavLink
+                                    to="#"
+                                    className={classnames({ active: activeTabMini === "5" })}
+                                    onClick={() => {
+                                      tabChangeMini("5");
+                                    }}
+                                    type="button"
+                                  // style={{paddingLeft:"0px"}}
+                                  >
+                                    Overview
+                                  </NavLink>
+                                </NavItem>
+                                <NavItem role="presentation">
+                                  <NavLink
+                                    to="#"
+                                    className={classnames({ active: activeTabMini === "6" })}
+                                    onClick={() => {
+                                      tabChangeMini("6");
+                                    }}
+                                    type="button"
+                                  // style={{paddingLeft:"0px"}}
+                                  >
+                                    Pay Period
+                                  </NavLink>
+                                </NavItem>
+                              </div>
+                            </Nav>
+                            {/* -------------------------------------------------------------- */}
+                            <div>
+                              <TabContent activeTab={activeTabMini}>
+                                <TabPane tabId="5" className="pt-4 ">
+                                  {payPeriodDetail ? (
+                                    <>
+                                      <div className="row">
+                                        <div className="col-lg-9 p-4 d-flex flex-column gap-4 card " style={{
+                                          boxShadow:
+                                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                        }}>
+                                          <div className="d-flex align-items-center justify-content-between">
+                                            <div style={{ color: "black", fontWeight: "500" }}>Total salary payable for the month</div>
+                                            <div>
+                                              <span
+                                                className={
+                                                  payPeriodDetail.statusString === "Created"
+                                                    ? "badge bg-blue text-light fs-12 "
+                                                    : payPeriodDetail.statusString === "Expired"
+                                                      ? "badge bg-danger text-light fs-12 "
+                                                      : payPeriodDetail.statusString === "Deleted"
+                                                        ? "badge bg-secondary text-light fs-12 "
+                                                        : payPeriodDetail.statusString === "Paid"
+                                                          ? "badge bg-primary text-light fs-12 "
+                                                          : ""
+                                                }
+                                              >
+                                                {payPeriodDetail.statusString}
+                                              </span>
+                                            </div>
+                                          </div>
+                                          <div style={{ border: "1px solid #d9d9d9" }}></div>
+                                          <div className="d-flex justify-content-between" style={{ fontSize: "35px" }}>
+                                            <div>Total salary for developers in {listMonth[currentMonthIndex].split(' ')[0]}</div>
+                                            <div>{payPeriodDetail.totalAmount}</div>
+                                          </div>
+                                          <div className="d-flex flex-column">
+                                            {payPeriodDetail.developerFullName.map((fullName, index) => (
+                                              <>
+                                                <div className="d-flex gap-2  align-items-center ">
+                                                  <FontAwesomeIcon icon={faCircle} style={{ color: "#20b144", fontSize: "10px" }} />
+                                                  <div style={{ color: "black", fontWeight: "480" }} key={index}>Salary of {fullName}</div>
+                                                </div>
+                                              </>
+                                            ))}
+                                          </div>
+                                          <div style={{ color: "grey", marginTop: "80px" }} className="d-flex justify-content-between" >
+                                            <div>Last updated : {payPeriodDetail.updatedAt}</div>
+                                            {payPeriodDetail.statusString !== "Paid" && (
+                                              <div className="btn btn-soft-primary fw-bold" onClick={() => {
+                                                setShowPopup(true);
+                                              }}>Continues</div>
+                                            )}
+                                          </div>
+                                        </div>
+                                        <div className="col-lg-3"
+                                          style={{ paddingLeft: "24px" }}>
+                                          <Calendar
+                                            onChange={handleDateChange}
+                                            value={dateValue}
+                                          // Các propkhác của Calendar nếu cần
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <AntdModal
+                                        centered
+                                        open={showPopup}
+                                        onOk={() => setShowPopup(false)}
+                                        onCancel={() => {
+                                          setShowPopup(false);
+                                        }}
+                                        width={750}
+                                        footer={null}
+                                        zIndex={2000}
+                                      >
+                                        <div className="ps-3 pr-5 row ">
+                                          <div className="col-lg-9">
+                                            <div className=" profile-user">
+                                              <img
+                                                src={userImage0}  // Giá trị mặc định là "userImage2"
+                                                className="rounded-circle img-thumbnail"
+                                                style={{ width: "120px" }}
+                                                id="profile-img-2"
+                                                alt=""
+                                              />
+                                            </div>
+                                            <div className="candidate-profile-overview ">
+                                              <h6 className="fs-17 fw-semibold ">{payPeriodDetail.companyName}</h6>
+                                              <h6 style={{ color: "grey" }}>{hiringRequestDetail.projectName}</h6>
+                                            </div>
+                                          </div>
+                                          <div className="col-lg-3 d-flex flex-column justify-content-start" style={{ textAlign: "end", paddingTop: "30px", paddingRight: '30px' }} >
+                                            <div style={{ fontSize: "15px", color: "grey" }}>{payPeriodDetail.payPeriodCode}</div>
+                                            <div style={{ fontSize: "15px", color: "grey" }}>{currentDateBill}</div>
+                                          </div>
+                                        </div>
+                                        <Divider style={{ marginBottom: "12px" }}></Divider>
+
+                                        <div className="px-3 d-flex justify-content-between align-items-center">
+                                          <div style={{ fontWeight: "600" }}>
+                                            Actual total amount
+                                          </div>
+                                          <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
+                                            {payPeriodDetail.totalActualAmount}
+                                          </div>
+                                        </div>
+                                        <Divider style={{ marginBottom: "12px" }}></Divider>
+
+                                        <div className="px-3 d-flex justify-content-between align-items-center">
+                                          <div style={{ fontWeight: "600" }}>
+                                            Total OT amount
+                                          </div>
+                                          <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
+                                            {payPeriodDetail.totalOTAmount}
+                                          </div>
+                                        </div>
+                                        <Divider style={{ marginBottom: "12px" }}></Divider>
+
+                                        <div className="px-3 d-flex justify-content-end align-items-end">
+                                          <div style={{ fontWeight: "600", fontSize: "20px" }}>
+                                            TOTAL DUE : {payPeriodDetail.totalAmount}
+                                          </div>
+                                        </div>
+                                        <Divider style={{ marginBottom: "12px" }}></Divider>
+
+
+                                        <div className="row" style={{ paddingLeft: "30px", paddingRight: "30px" }}>
+                                          <div className="col-lg-4  d-flex flex-column gap-2" >
+                                            <div style={{ color: "grey" }}>
+                                              TO
+                                            </div>
+                                            <div style={{ fontWeight: "600" }}>
+                                              WeHire Co.
+                                            </div>
+                                            <div className="d-flex flex-column" style={{ color: "grey" }}>
+                                              <div>
+                                                Quan 9
+                                              </div>
+                                              <div>
+                                                Ho Chi Minh City
+                                              </div>
+                                              VietNam
+                                            </div>
+                                            <div style={{ color: "grey" }}>
+                                              wehire@gmail.com
+                                            </div>
+                                          </div>
+                                          <div className=" col-lg-4 d-flex flex-column gap-2" >
+                                            <div style={{ color: "grey" }}>
+                                              FROM
+                                            </div>
+                                            <div style={{ fontWeight: "600" }}>
+                                              {payPeriodDetail.companyName}
+                                            </div>
+                                            <div className="d-flex flex-column" style={{ color: "grey" }}>
+                                              {payPeriodDetail.companyAddress}
+                                            </div>
+                                            <div style={{ color: "grey" }}>
+                                              {payPeriodDetail.companyEmail}
+                                            </div>
+                                          </div>
+                                          <div className="d-flex col-lg-4 flex-column gap-2" >
+                                            <div style={{ color: "grey" }}>
+                                              NOTE
+                                            </div>
+                                            <div>
+                                              Note
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="px-3 d-flex justify-content-end align-items-end">
+                                          <button className="btn btn-warning fw-bold d-flex align-items-center justify-content-center mt-3"
+                                            onClick={() => {
+                                              openPayment(payPeriodDetail.payPeriodId);
+                                            }}
+                                            disabled={loadingPayNow}
+                                            style={{ width: "1000px" }}
+                                          >
+                                            {loadingPayNow ? (
+                                              <div style={{ width: "300px" }} className="d-flex align-items-center justify-content-center">
+                                                <HashLoader
+                                                  size={20}
+                                                  color={"white"}
+                                                  loading={true}
+                                                />
+                                              </div>
+                                            ) : (
+                                              <img src={paypalImage} alt="PayPal" style={{ width: "150px" }}></img>
+                                            )}
+                                          </button>
+                                        </div>
+                                      </AntdModal>
+
+                                    </>
+                                  ) : (
+                                    <Empty />
+                                  )}
+                                </TabPane>
+                                <TabPane tabId="6" className="pt-4">
+                                  <div>
+                                    {payRollDetail[0] ? (
+                                      <>
+                                        <Row className="mb-2 px-3">
+                                          <Col md={2} style={{ textAlign: "center" }}>
+                                            First Name
+                                          </Col>
+                                          <Col
+                                            md={2}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            Last Name
+                                          </Col>
+                                          <Col
+                                            md={2}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            Email
+                                          </Col>
+                                          <Col
+                                            md={2}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            Total Hours
+                                          </Col>
+                                          <Col
+                                            md={1}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            Total OT
+                                          </Col>
+                                          <Col
+                                            md={2}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            Total Salary
+                                          </Col>
+                                          <Col md={1}></Col>
+                                        </Row>
+                                      </>
+                                    ) : (
+                                      <Empty />
+                                    )}
+                                    <div className="d-flex flex-column gap-2">
+                                      {payRollDetail.map((payRollDetailNew, key2) => (
+                                        <div key2={key2}>
+                                          <div
+                                            style={{
+                                              boxShadow:
+                                                "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                            }}
+                                            className={
+                                              "job-box-dev-in-list-hiringRequest-for-dev card"
+                                            }
+                                          >
+                                            <div className="p-3">
+                                              <Row className="align-items-center">
+                                                <Col
+                                                  md={2}
+                                                  style={{ textAlign: "center" }}
+                                                >
+                                                  <div>
+                                                    <span className="mb-0">{payRollDetailNew.firstName}</span>
+                                                  </div>
+                                                </Col>
+
+                                                <Col
+                                                  md={2}
+                                                  className="px-0"
+                                                  style={{ textAlign: "center" }}
+                                                >
+                                                  <div>
+                                                    <p className="mb-0">{payRollDetailNew.lastName}</p>
+                                                  </div>
+                                                </Col>
+
+                                                <Col
+                                                  md={2}
+                                                  className="px-0"
+                                                  style={{ textAlign: "center" }}
+                                                >
+                                                  <div>
+                                                    <p className="mb-0">{payRollDetailNew.email}</p>
+                                                  </div>
+                                                </Col>
+
+                                                <Col
+                                                  md={2}
+                                                  className="px-0"
+                                                  style={{ textAlign: "center" }}
+
+
+                                                >
+                                                  <p className="mb-0" > {payRollDetailNew.totalActualWorkedHours}</p>
+                                                </Col>
+
+                                                <Col
+                                                  md={1}
+                                                  className=" px-0"
+                                                  style={{ textAlign: "center" }}
+                                                >
+                                                  {payRollDetailNew.totalOvertimeHours}
+                                                </Col>
+
+                                                <Col
+                                                  md={2}
+                                                  style={{ textAlign: "center" }}
+
+
+                                                >
+                                                  <div>
+                                                    <span >{payRollDetailNew.totalEarnings}</span>
+                                                  </div>
+                                                </Col>
+
+                                                <Col md={1}>
+                                                  <div
+                                                    className="d-flex justify-content-center align-items-center rounded-circle"
+                                                    onClick={() => toggleCollapse(key2, payRollDetailNew.paySlipId)}
+                                                    style={{
+                                                      backgroundColor: "#ECECED",
+                                                      width: "50px",
+                                                      height: "50px",
+                                                    }}
+                                                  >
+                                                    <i
+                                                      className="uil uil-angle-down"
+                                                      style={{ fontSize: "30px" }}
+                                                    ></i>
+                                                  </div>
+                                                </Col>
+                                              </Row>
+                                            </div>
+                                          </div>
+
+                                          <Collapse isOpen={showCollapse[key2]}>
+                                            <div
+                                              style={{
+                                                backgroundColor: "#EFF0F2",
+                                                borderRadius: "7px",
+                                              }}
+                                              className="mt-1 p-2 d-flex flex-column gap-2"
+                                            >
+                                              {workLoglist.map((workLogDetail, key) => (
+                                                <div className="d-flex flex-column gap-2">
+                                                  <div
+                                                    className="job-box-dev-in-list-hiringRequest-for-dev card d-flex flex-column gap-2 p-2"
+                                                    style={{ backgroundColor: "#FFFFFF" }}
+                                                  >
+                                                    <Row>
+                                                      <Col
+                                                        md={3}
+                                                        className="d-flex justify-content-center align-items-center"
+                                                        id={`time-In2-${workLogDetail.workLogId}`}
+                                                      >
+                                                        {workLogDetail.workDateMMM}
+
+                                                      </Col>
+                                                      <Col md={3}>
+                                                        <div>
+                                                          <input
+                                                            type="time"
+                                                            className="form-control"
+                                                            id={`endTimeWorkLog${key2}${key}`}
+                                                            readOnly={editableRowId !== workLogDetail.workLogId}
+                                                          />
+                                                        </div>
+                                                      </Col>
+                                                      <Col md={3}>
+                                                        <div>
+                                                          <input
+                                                            type="time"
+                                                            className="form-control"
+                                                            id={`endTimeWorkLog2${key2}${key}`}
+                                                            readOnly={editableRowId !== workLogDetail.workLogId}
+                                                          />
+                                                        </div>
+                                                      </Col>
+                                                      <Col
+                                                        md={2}
+                                                        className="d-flex justify-content-center align-items-center"
+                                                        id={`hourInDay${workLogDetail.workLogId}`}
+                                                      >
+                                                        Hours in day: {workLogDetail.hourWorkInDay}
+                                                      </Col>
+                                                      <Col
+                                                        md={1}
+                                                        className="d-flex justify-content-center align-items-center"
+                                                      >
+
+                                                        <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
+                                                          setKeyAndIdWorkLog(workLogDetail.workLogId, key)
+                                                        } >
+                                                          <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                            <FontAwesomeIcon
+                                                              icon={faGear}
+                                                              size="xl"
+                                                              color="#909191"
+                                                            />
+                                                          </a>
+                                                        </DropdownAntd>
+                                                      </Col>
+                                                    </Row>
+                                                    {editableRowId == workLogDetail.workLogId ? (
+                                                      <>
+                                                        <Row>
+                                                          <Col
+                                                            md={2}
+                                                            style={{ textAlign: "end" }}
+                                                            className="d-flex gap-2 justify-content-end"
+                                                          >
+                                                          </Col>
+                                                          <Col
+                                                            md={6}
+                                                            style={{ textAlign: "end" }}
+                                                            className="d-flex gap-2 justify-content-end"
+                                                          >
+                                                            <p id={`timeErrorWorkLog${workLogDetail.workLogId}`} className="text-danger mt-2"></p>
+                                                          </Col>
+                                                          <Col
+                                                            md={4}
+                                                            style={{ textAlign: "end" }}
+                                                            className="d-flex gap-2 justify-content-end"
+                                                          >
+                                                            <div className="btn btn-soft-danger"
+                                                              onClick={() => cancelUpdateWorkLog()}
+                                                            >
+                                                              Cancel
+                                                            </div>
+                                                            <div className="btn btn-soft-blue"
+                                                              onClick={() => saveUpdateWorkLog()}
+                                                            >
+                                                              Save
+                                                            </div>
+                                                          </Col>
+                                                        </Row>
+                                                      </>
+                                                    ) : (
+                                                      null
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </Collapse>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </TabPane>
+                              </TabContent>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <Empty />
+                      )}
                     </TabPane>
                   </TabContent>
                 </CardBody>

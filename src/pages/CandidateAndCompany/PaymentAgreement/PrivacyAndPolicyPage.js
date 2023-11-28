@@ -25,8 +25,15 @@ const PrivacyAndPolicyPage = () => {
   const [companyPhonePreview, setCompanyPhonePreview] = useState(false);
   const [companyPreview, setCompanyPreview] = useState(false);
   const [minDate, setMinDate] = useState();
+  const [minDateEndDay, setMinDateEndDay] = useState();
   const [maxDate, setMaxDate] = useState();
   const [loading, setLoading] = useState(false);
+  const today = new Date();
+  const today2 = new Date();
+  today.setDate(today.getDate() + 10);
+  today2.setDate(today2.getDate() + 40);
+  const tomorrow = today.toISOString().split('T')[0];
+  const _30DayLater = today2.toISOString().split('T')[0];
 
   const fetchPreContract = async () => {
     let response;
@@ -44,59 +51,26 @@ const PrivacyAndPolicyPage = () => {
       document.getElementById("legalRepresentative").value = preContractData.legalRepresentation;
       document.getElementById("position").value = preContractData.legalRepresentationPosition;
 
+      const today = new Date();
+      const minDateEndDate = new Date();
+      today.setDate(today.getDate() + 10);
+      minDateEndDate.setDate(minDateEndDate.getDate() + 40);
 
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
 
-      var parts = preContractData.fromDate.split('/');
-      if (parts.length === 3) {
-        var day = parts[1];
-        var month = parts[0];
-        var year = parts[2];
-        // Format the date as "yyyy-dd-mm"
-        const currentDate = new Date();
-        var formattedDurationStartDay;
-        const formattedDurationStartDay2 = new Date(year, parseInt(day) - 1, month);
-        const differenceInTime = formattedDurationStartDay2.getTime() - currentDate.getTime();
+      const formattedDate = `${year}-${month}-${day}`;
 
-        // Chuyển đổi miligiây thành số ngày
-        const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+      const year2 = minDateEndDate.getFullYear();
+      const month2 = String(minDateEndDate.getMonth() + 1).padStart(2, '0');
+      const day2 = String(minDateEndDate.getDate()).padStart(2, '0');
 
-        if (differenceInDays <= 3) {
-          formattedDurationStartDay = year + '-' + day + '-' + (parseInt(month) + 3);
-          document.getElementById("startDate").value = formattedDurationStartDay;
-          setMinDate(formattedDurationStartDay)
-        } else {
-          formattedDurationStartDay = year + '-' + day + '-' + month;
-          document.getElementById("startDate").value = formattedDurationStartDay;
-          setMinDate(formattedDurationStartDay)
-        }
-      } else {
-        console.error("Invalid date format");
-      }
+      const formattedDate2 = `${year2}-${month2}-${day2}`;
 
-      // const currentDate = new Date();
-      // const year = currentDate.getFullYear();
-      // let month = currentDate.getMonth() + 1;
-      // let day = currentDate.getDate();
+      setMinDate(formattedDate);
+      setMinDateEndDay(formattedDate2);
 
-      // // Thêm số 0 phía trước nếu tháng hoặc ngày chỉ có 1 chữ số
-      // month = month < 10 ? `0${month}` : month;
-      // day = day < 10 ? `0${day}` : day;
-
-      // const formattedDate = `${year}-${month}-${day}`;
-      // document.getElementById("startDate").value = formattedDate;
-
-      var parts2 = preContractData.toDate.split('/');
-      if (parts2.length === 3) {
-        var day2 = parts2[1];
-        var month2 = parts2[0];
-        var year2 = parts2[2];
-        // Format the date as "yyyy-dd-mm"
-        var formattedDurationEndDay = year2 + '-' + day2 + '-' + month2;
-        document.getElementById("endDate").value = formattedDurationEndDay;
-        setMaxDate(formattedDurationEndDay)
-      } else {
-        console.error("Invalid date format");
-      }
       setLegalPreview(document.getElementById("legalRepresentative").value);
       setPositionPreview(document.getElementById("position").value);
       setStartDayPreview(document.getElementById("startDate").value);
@@ -105,6 +79,36 @@ const PrivacyAndPolicyPage = () => {
       console.error("Error fetching job vacancies:", error);
     }
   };
+
+  const setMinDateEndDayByJs = () => {
+    if (document.getElementById("startDate").value) {
+      const startDateValue = document.getElementById("startDate").value;
+      const startDate = new Date(startDateValue);
+      startDate.setDate(startDate.getDate() + 30); // Thêm 30 ngày vào ngày bắt đầu
+
+      const minDay = startDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
+
+      console.log(minDay);
+      setMinDateEndDay(minDay)
+    } else {
+      setMinDateEndDay(_30DayLater)
+    }
+  }
+
+  const setMinDateByJs = () => {
+    if (document.getElementById("endDate").value) {
+      const endDateValue = document.getElementById("endDate").value;
+      const endDate = new Date(endDateValue);
+      endDate.setDate(endDate.getDate() - 30); // Thêm 30 ngày vào ngày bắt đầu
+
+      const minDay = endDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
+
+      setMaxDate(minDay)
+    } else {
+      setMaxDate(null);
+    }
+  }
+
 
   const conFirmContract = async () => {
     let check = true;
@@ -316,6 +320,8 @@ const PrivacyAndPolicyPage = () => {
                       placeholder="Enter start date of the laborers"
                       min={minDate}
                       max={maxDate}
+                      onChange={setMinDateEndDayByJs}
+
                     />
                   </div>
                 </div>
@@ -332,8 +338,9 @@ const PrivacyAndPolicyPage = () => {
                       className="form-control"
                       id="endDate"
                       placeholder="Enter end date of the laborers"
-                      min={minDate}
-                      max={maxDate}
+                      min={minDateEndDay}
+                      onChange={setMinDateByJs}
+
                     />
                   </div>
                 </div>
