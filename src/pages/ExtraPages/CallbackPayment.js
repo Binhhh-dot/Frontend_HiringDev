@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import NewWindow from 'react-new-window';
 // import { useHistory } from 'react-router-dom';
 
-const Callback = () => {
+const CallbackPayment = () => {
     const [loading, setLoading] = useState(true);
     // const history = useHistory();
     const location = useLocation();
@@ -24,30 +24,14 @@ const Callback = () => {
         console.log(code)
         console.log(PayerID)
         console.log(paymentId)
-        sendMessageCodeToParent();
-        sendMessagePaymentToParent();
+        sendMessageToParent(PayerID, paymentId);
     }, []);
 
-    const sendMessageCodeToParent = () => {
-        if (window.opener) {
-            const queryParams = new URLSearchParams(location.search);
-            const code = queryParams.get("code");
-            window.opener.postMessage(code, '*');
-        } else {
-            console.error("No parent window found.");
-        }
+    const sendMessageToParent = (PayerID, paymentId) => {
+        window.opener.postMessage({ PayerID, paymentId }, '*');
     };
-    const sendMessagePaymentToParent = () => {
-        if (window.opener) {
-            const queryParams = new URLSearchParams(location.search);
-            const PayerID = queryParams.get("PayerID");
-            const paymentId = queryParams.get("paymentId");
-            window.opener.postMessage(PayerID, '*');
-            window.opener.postMessage(paymentId, '*');
-        } else {
-            console.error("No parent window found.");
-        }
-    };
+
+
 
     return (
         <React.Fragment>
@@ -61,13 +45,7 @@ const Callback = () => {
                     <div className="page-content">
                         <section className="bg-auth">
                             <Container>
-                                <Row className="justify-content-center">
-                                    <Col xl={10} lg={12}>
-                                        <Card className="auth-box">
 
-                                        </Card>
-                                    </Col>
-                                </Row>
                             </Container>
                         </section>
                     </div>
@@ -77,4 +55,4 @@ const Callback = () => {
     );
 };
 
-export default Callback;
+export default CallbackPayment;

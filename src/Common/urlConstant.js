@@ -184,8 +184,8 @@ export default {
     jobPosition: {
       createJobPosition: "/JobPosition",
       getJobPositionByProjectId: "/JobPosition/ByProject/${projectId}",
-      getJobPositionsWithHiringRequest:
-        "/JobPosition/JobPositionsWithHiringRequest/${projectId}",
+      getJobPositionsWithHiringRequest: "/JobPosition/JobPositionsWithHiringRequest/${projectId}",
+      deleteJobPosition: "/JobPosition/${jobPosition}",
     },
     teamMeeting: {
       createTeamMeeting: "/TeamMeeting",
@@ -207,5 +207,9 @@ export default {
       getWorkLogByPaySlipId: "/WorkLog/ByPaySlip/${paySlipId}",
       updateWorkLog: "/WorkLog",
     },
+    payment: {
+      createPayment: "/Payment/Create",
+      executePayment: "/Payment/Execute?paymentId=${paymentId}&payerId=${payerId}",
+    }
   },
 };

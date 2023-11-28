@@ -100,7 +100,7 @@ const ProjectVacancyList = () => {
 
           save: project.statusString.includes("Saved"),
           preparing: project.statusString.includes("Preparing"),
-          inProgress: project.statusString.includes("In Progress"),
+          inProgress: project.statusString.includes("In process"),
           rejected: project.statusString.includes("Rejected"),
           expired: project.statusString.includes("Expired"),
           cancelled: project.statusString.includes("Cancelled"),

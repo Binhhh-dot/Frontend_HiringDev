@@ -25,8 +25,15 @@ const PrivacyAndPolicyPage = () => {
   const [companyPhonePreview, setCompanyPhonePreview] = useState(false);
   const [companyPreview, setCompanyPreview] = useState(false);
   const [minDate, setMinDate] = useState();
+  const [minDateEndDay, setMinDateEndDay] = useState();
   const [maxDate, setMaxDate] = useState();
   const [loading, setLoading] = useState(false);
+  const today = new Date();
+  const today2 = new Date();
+  today.setDate(today.getDate() + 10);
+  today2.setDate(today2.getDate() + 40);
+  const tomorrow = today.toISOString().split('T')[0];
+  const _30DayLater = today2.toISOString().split('T')[0];
 
   const fetchPreContract = async () => {
     let response;
@@ -44,32 +51,26 @@ const PrivacyAndPolicyPage = () => {
       document.getElementById("legalRepresentative").value = preContractData.legalRepresentation;
       document.getElementById("position").value = preContractData.legalRepresentationPosition;
 
-      var parts = preContractData.fromDate.split('/');
-      if (parts.length === 3) {
-        var day = parts[1] + 7;
-        var month = parts[0];
-        var year = parts[2];
-        // Format the date as "yyyy-dd-mm"
-        var formattedDurationStartDay = year + '-' + day + '-' + month;
-        document.getElementById("startDate").value = formattedDurationStartDay;
-        setMinDate(formattedDurationStartDay)
-      } else {
-        console.error("Invalid date format");
-      }
+      const today = new Date();
+      const minDateEndDate = new Date();
+      today.setDate(today.getDate() + 10);
+      minDateEndDate.setDate(minDateEndDate.getDate() + 40);
 
-      var parts2 = preContractData.toDate.split('/');
-      if (parts2.length === 3) {
-        var day = parts2[1];
-        var month = parts2[0];
-        var year = parts2[2];
-        // Format the date as "yyyy-dd-mm"
-        var formattedDurationEndDay = year + '-' + day + '-' + month;
-        document.getElementById("endDate").value = formattedDurationEndDay;
-        setMaxDate(formattedDurationEndDay)
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
 
-      } else {
-        console.error("Invalid date format");
-      }
+      const formattedDate = `${year}-${month}-${day}`;
+
+      const year2 = minDateEndDate.getFullYear();
+      const month2 = String(minDateEndDate.getMonth() + 1).padStart(2, '0');
+      const day2 = String(minDateEndDate.getDate()).padStart(2, '0');
+
+      const formattedDate2 = `${year2}-${month2}-${day2}`;
+
+      setMinDate(formattedDate);
+      setMinDateEndDay(formattedDate2);
+
       setLegalPreview(document.getElementById("legalRepresentative").value);
       setPositionPreview(document.getElementById("position").value);
       setStartDayPreview(document.getElementById("startDate").value);
@@ -78,6 +79,36 @@ const PrivacyAndPolicyPage = () => {
       console.error("Error fetching job vacancies:", error);
     }
   };
+
+  const setMinDateEndDayByJs = () => {
+    if (document.getElementById("startDate").value) {
+      const startDateValue = document.getElementById("startDate").value;
+      const startDate = new Date(startDateValue);
+      startDate.setDate(startDate.getDate() + 30); // Thêm 30 ngày vào ngày bắt đầu
+
+      const minDay = startDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
+
+      console.log(minDay);
+      setMinDateEndDay(minDay)
+    } else {
+      setMinDateEndDay(_30DayLater)
+    }
+  }
+
+  const setMinDateByJs = () => {
+    if (document.getElementById("endDate").value) {
+      const endDateValue = document.getElementById("endDate").value;
+      const endDate = new Date(endDateValue);
+      endDate.setDate(endDate.getDate() - 30); // Thêm 30 ngày vào ngày bắt đầu
+
+      const minDay = endDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
+
+      setMaxDate(minDay)
+    } else {
+      setMaxDate(null);
+    }
+  }
+
 
   const conFirmContract = async () => {
     let check = true;
@@ -289,6 +320,8 @@ const PrivacyAndPolicyPage = () => {
                       placeholder="Enter start date of the laborers"
                       min={minDate}
                       max={maxDate}
+                      onChange={setMinDateEndDayByJs}
+
                     />
                   </div>
                 </div>
@@ -305,8 +338,9 @@ const PrivacyAndPolicyPage = () => {
                       className="form-control"
                       id="endDate"
                       placeholder="Enter end date of the laborers"
-                      min={minDate}
-                      max={maxDate}
+                      min={minDateEndDay}
+                      onChange={setMinDateByJs}
+
                     />
                   </div>
                 </div>

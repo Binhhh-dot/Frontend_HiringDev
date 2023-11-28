@@ -102,7 +102,7 @@ import ContractDetail from "../pages/Admin/ContractDetail";
 import NewListInterviewInfo from "../pages/Admin/NewListInterviewInfo";
 import ProjectListInManager from "../pages/Admin/ProjectListInManager";
 import ContractList from "../pages/Admin/ContractList";
-
+import CallbackPayment from "../pages/ExtraPages/CallbackPayment";
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -220,6 +220,7 @@ const authRoutes = [
   { path: "/resetpassword", component: <ResetPassword /> },
   { path: "/signout", component: <SignOut /> },
   { path: "/callback", component: <Callback /> },
+  { path: "/callbackpayment", component: <CallbackPayment /> },
   { path: "/signup", component: <SignUp /> },
   { path: "/signin", component: <SignIn /> },
   { path: "/signcompany", component: <SignCompany /> },
