@@ -75,11 +75,12 @@ const CreateProject = () => {
   const [companyPhoneNumberFormCreateCompany, setCompanyPhoneNumberFormCreateCompany] = useState(null);
   const [addressFormCreateCompany, setAddressFormCreateCompany] = useState(null);
   const [minDate, setMinDate] = useState('');
+  const [maxDate, setMaxDate] = useState('');
   const [minDateEndDay, setMinDateEndDay] = useState('');
   const today = new Date();
   const today2 = new Date();
-  today.setDate(today.getDate());
-  today2.setDate(today.getDate() + 30);
+  today.setDate(today.getDate() + 10);
+  today2.setDate(today2.getDate() + 40);
   const tomorrow = today.toISOString().split('T')[0];
   const _30DayLater = today2.toISOString().split('T')[0];
 
@@ -90,8 +91,7 @@ const CreateProject = () => {
   const [jobDescriptionError, setJobDescriptionError] = useState(null);
 
   useState(() => {
-    setMinDate(tomorrow);
-    setMinDateEndDay(_30DayLater);
+    // setMinDateEndDay(_30DayLater);
     // Thiết lập giá trị minDate thành ngày kế tiếp
   }, []);
 
@@ -340,7 +340,7 @@ const CreateProject = () => {
           var timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
           var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Chuyển đổi khoảng cách thời gian thành số ngày
 
-          if (diffDays <= 30) {
+          if (diffDays < 30) {
             setStartDateError("The difference between start and end date must be greater than 1 month");
             check = false;
           }
@@ -399,15 +399,34 @@ const CreateProject = () => {
   };
 
   const setMinDateEndDayByJs = () => {
-    const startDateValue = document.getElementById("start-date").value;
-    const startDate = new Date(startDateValue);
-    startDate.setDate(startDate.getDate() + 30); // Thêm 30 ngày vào ngày bắt đầu
+    if (document.getElementById("start-date").value) {
+      const startDateValue = document.getElementById("start-date").value;
+      const startDate = new Date(startDateValue);
+      startDate.setDate(startDate.getDate() + 30); // Thêm 30 ngày vào ngày bắt đầu
 
-    const minDay = startDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
+      const minDay = startDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
 
-    console.log(minDay);
-    setMinDateEndDay(minDay)
+      console.log(minDay);
+      setMinDateEndDay(minDay)
+    } else {
+      setMinDateEndDay(_30DayLater)
+    }
   }
+
+  const setMinDateByJs = () => {
+    if (document.getElementById("end-date").value) {
+      const endDateValue = document.getElementById("end-date").value;
+      const endDate = new Date(endDateValue);
+      endDate.setDate(endDate.getDate() - 30); // Thêm 30 ngày vào ngày bắt đầu
+
+      const minDay = endDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
+
+      setMaxDate(minDay)
+    } else {
+      setMaxDate(null);
+    }
+  }
+
   const handlePreviewAvatar = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -487,6 +506,7 @@ const CreateProject = () => {
                             class="form-control resume"
                             placeholder=""
                             min={minDate}
+                            max={maxDate}
                             onChange={setMinDateEndDayByJs}
                             required
                           ></input>
@@ -504,6 +524,7 @@ const CreateProject = () => {
                             type="date"
                             class="form-control resume"
                             min={minDateEndDay}
+                            onChange={setMinDateByJs}
                             placeholder=""
                             required
                           ></input>

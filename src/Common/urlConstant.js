@@ -188,6 +188,7 @@ export default {
       getJobPositionByProjectId: "/JobPosition/ByProject/${projectId}",
       getJobPositionsWithHiringRequest:
         "/JobPosition/JobPositionsWithHiringRequest/${projectId}",
+      deleteJobPosition: "/JobPosition/${jobPosition}",
     },
     teamMeeting: {
       createTeamMeeting: "/TeamMeeting",
@@ -212,6 +213,11 @@ export default {
 
     gender: {
       getAllGender: "/Gender",
+    },
+    payment: {
+      createPayment: "/Payment/Create",
+      executePayment:
+        "/Payment/Execute?paymentId=${paymentId}&payerId=${payerId}",
     },
   },
 };

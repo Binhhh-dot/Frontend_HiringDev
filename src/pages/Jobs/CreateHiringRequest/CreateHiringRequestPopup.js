@@ -16,9 +16,10 @@ import companyServices from "../../../services/company.services";
 import jobPositionServices from "../../../services/jobPosition.services";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import userSerrvices from "../../../services/user.serrvices";
 
 const CreateHiringRequestPopup = (
-    { isModalOpen, closeModal, requestId, jobPositionId, minDateDuration, maxDateDuration },
+    { isModalOpen, closeModal, requestId, jobPositionId },
     ...props
 ) => {
 
@@ -61,7 +62,19 @@ const CreateHiringRequestPopup = (
     const [emailFormCreateCompany, setEmailFormCreateCompany] = useState(null);
     const [companyPhoneNumberFormCreateCompany, setCompanyPhoneNumberFormCreateCompany] = useState(null);
     const [addressFormCreateCompany, setAddressFormCreateCompany] = useState(null);
+    const [minDateDuration, setMinDateDuration] = useState('');
 
+    const today = new Date();
+
+    today.setDate(today.getDate() + 4);
+    useState(() => {
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        setMinDateDuration(formattedDate)
+    }, []);
 
     const openModal = () => {
         setModal(!modal);
@@ -116,9 +129,9 @@ const CreateHiringRequestPopup = (
             if (!userId) {
                 openModal();
             }
-            const responseUser = await axios.get(
-                `https://wehireapi.azurewebsites.net/api/User/${userId}`
-            );
+
+
+            const responseUser = userSerrvices.getUserById(userId);
             const userData = responseUser.data;
 
             // Lưu companyId vào state và localStorage
@@ -613,7 +626,6 @@ const CreateHiringRequestPopup = (
 
     useEffect(() => {
         console.log(minDateDuration)
-        console.log(maxDateDuration)
         fetchData();
     }, [isModalOpen, requestId, jobPositionId]);
 
@@ -703,12 +715,12 @@ const CreateHiringRequestPopup = (
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Salary per dev</label>
+                                                        <label class="text-muted">Salary per dev (VND)</label>
                                                         <input
                                                             id="budget"
                                                             type="number"
                                                             class="form-control resume"
-                                                            placeholder="300$"
+                                                            placeholder="3000000 VND"
                                                         ></input>
                                                         {budgetError && (
                                                             <p className="text-danger mt-2">{budgetError}</p>
@@ -725,7 +737,6 @@ const CreateHiringRequestPopup = (
                                                             class="form-control resume"
                                                             placeholder=""
                                                             min={minDateDuration}
-                                                            max={maxDateDuration}
                                                         ></input>
                                                         {durationError && (
                                                             <p className="text-danger mt-2">{durationError}</p>

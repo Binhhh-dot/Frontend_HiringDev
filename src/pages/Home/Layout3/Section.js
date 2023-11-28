@@ -38,18 +38,12 @@ const Section = () => {
                 <div className="registration-form">
                   <Row className="g-0">
                     <Col md={4}>
-
-                    </Col>
-                    <Col md={4}>
-
-                    </Col>
-                    <Col md={4}>
                       <div className="mt-3 mt-md-0 h-100">
                         <button
-                          className="btn btn-primary submit-btn w-100 h-100"
+                          className="btn btn-primary  w-100 h-100"
                           onClick={() => linkToListJob()}
                         >
-                          <i className="uil uil-search me-1"></i> Find Job
+                          <i className="uil uil-file-plus me-1"></i> New project
                         </button>
                       </div>
                     </Col>

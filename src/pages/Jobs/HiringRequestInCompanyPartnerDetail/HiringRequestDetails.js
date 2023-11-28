@@ -54,6 +54,8 @@ import { Dropdown as DropdownAntd, Space } from 'antd';
 import teamMeetingServices from "../../../services/teamMeeting.services";
 import customUrl from "../../../utils/customUrl";
 import { useNavigate } from "react-router-dom";
+import { Empty } from 'antd';
+import { fi } from "date-fns/locale";
 
 
 const HiringRequestDetails = () => {
@@ -67,6 +69,8 @@ const HiringRequestDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
   const [listInterview, setlistInterview] = useState([]);
+  const [isHaveListInterview, setIsHaveListInterview] = useState(false);
+  const [isHaveListDeveloper, setIsHaveListDeveloper] = useState(false);
   const [loadingButtons, setLoadingButtons] = useState({});
   const [loadingInterview, setLoadingInterview] = useState(false);
   const [activeTab, setActiveTab] = useState("1");
@@ -111,6 +115,7 @@ const HiringRequestDetails = () => {
   const [interviewIdCancel, setInterviewIdCancel] = useState(null);
   const [interviewIdUpdate, setInterviewIdUpdate] = useState(null);
   const [minDate, setMinDate] = useState('');
+  const [maxDate, setMaxDate] = useState('');
   const today = new Date();
   today.setDate(today.getDate() + 1);
   const tomorrow = today.toISOString().split('T')[0];
@@ -221,6 +226,8 @@ const HiringRequestDetails = () => {
         theme: "light",
       });
       console.error("Error completedInterview:", error);
+      setLoading(false);
+
     }
   };
 
@@ -358,6 +365,11 @@ const HiringRequestDetails = () => {
         };
       });
       setCandidategridDetails(candidategridDetails);
+      if (candidategridDetails.length > 0) {
+        setIsHaveListDeveloper(true)
+      } else {
+        setIsHaveListDeveloper(false)
+      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -379,6 +391,18 @@ const HiringRequestDetails = () => {
         jobId
       );
       setHiringRequestDetail(response.data.data);
+
+      var parts2 = response.data.data.duration.split('-');
+      if (parts2.length === 3) {
+        var day = parts2[1];
+        var month = parts2[0];
+        var year = parts2[2];
+        // Format the date as "yyyy-dd-mm"
+        var formattedDurationEndDay = year + '-' + day + '-' + month;
+        setMaxDate(formattedDurationEndDay)
+      } else {
+        console.error("Invalid date format");
+      }
 
       return response;
     } catch (error) {
@@ -414,6 +438,11 @@ const HiringRequestDetails = () => {
         };
       });
       setlistInterview(formattedJobVacancies);
+      if (formattedJobVacancies.length > 0) {
+        setIsHaveListInterview(true)
+      } else {
+        setIsHaveListInterview(false)
+      }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -448,6 +477,8 @@ const HiringRequestDetails = () => {
         endTime
       );
       let interviewId = response.data.data.interviewId;
+      console.log("tao interview")
+      console.log(response)
       if (response.data.code == 201) {
         console.log("tao thanh cong")
         try {
@@ -456,6 +487,7 @@ const HiringRequestDetails = () => {
           console.log(responseCreateMeeting)
           console.log("tao meet thanh cong")
         } catch (error) {
+          console.log("tao meet ko thanh cong")
           console.log("error:", error)
         }
       }
@@ -804,7 +836,7 @@ const HiringRequestDetails = () => {
     if (check) {
       const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-      const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+      const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=http://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
 
       // Lắng nghe các thông điệp từ cửa sổ popup
       window.addEventListener('message', (event) => {
@@ -826,7 +858,7 @@ const HiringRequestDetails = () => {
   const openWindowCancelInterview = async (interviewId) => {
     const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=http://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
     let code;
 
     // Lắng nghe các thông điệp từ cửa sổ popup
@@ -846,7 +878,7 @@ const HiringRequestDetails = () => {
   const openWindowUpdateInterview = async (interviewId) => {
     const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=http://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
     let code;
 
     // Lắng nghe các thông điệp từ cửa sổ popup
@@ -877,7 +909,7 @@ const HiringRequestDetails = () => {
   const openFacebook = () => {
     const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
 
-    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=https://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
+    const popupWindow = window.open("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4362c773-bb6a-40ec-8ac3-92209a7a05e7&response_type=code&redirect_uri=http://localhost:3000/callback&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345", "popupWindow", windowFeatures);
 
     // Lắng nghe các thông điệp từ cửa sổ popup
     window.addEventListener('message', (event) => {
@@ -955,6 +987,14 @@ const HiringRequestDetails = () => {
           <div class="col-lg-8 " style={{ padding: "0px" }}>
             <Card className="job-detail overflow-hidden">
               <div>
+                <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
+                  <img
+                    src="https://firebasestorage.googleapis.com/v0/b/fuprojectteammanagement.appspot.com/o/vivid-blurred-colorful-background.jpg?alt=media&token=dd0ed801-1438-4d7a-af45-98906b7bf882"
+                    alt=""
+                    className="img-fluid"
+                    style={{ width: "100%", height: "200px", objectFit: "cover" }}
+                  />
+                </div>
                 <div className="job-details-compnay-profile">
                   <img
                     src={JobImage10}
@@ -1126,6 +1166,7 @@ const HiringRequestDetails = () => {
                         className="form-control"
                         id="date-of-interview"
                         min={minDate}
+                        max={maxDate}
                       />
                       {dateOfInterViewError && (
                         <p className="text-danger mt-2">
@@ -1601,13 +1642,13 @@ const HiringRequestDetails = () => {
           <div class="col-lg-3 d-flex flex-column gap-4">
             <Card className="job-overview ">
               <CardBody className="p-4">
-                <h4>Job Overview</h4>
+                <h4>Hiring Request Overview</h4>
                 <ul className="list-unstyled mt-4 mb-0">
                   <li>
                     <div className="d-flex mt-4">
                       <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
-                        <h6 className="fs-14 mb-0">Job Title</h6>
+                        <h6 className="fs-14 mb-0">Hiring Request Title</h6>
                         <p className="text-muted mb-0">
                           {hiringRequestDetail.jobTitle}
                         </p>
@@ -1631,8 +1672,8 @@ const HiringRequestDetails = () => {
                     <div className="d-flex mt-4">
                       <i className="uil uil-star-half-alt icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
-                        <h6 className="fs-14 mb-0">Experience</h6>
-                        <p className="text-muted mb-0"> 0-3 Years</p>
+                        <h6 className="fs-14 mb-0">Employment Type</h6>
+                        <p className="text-muted mb-0">{hiringRequestDetail.employmentTypeName}</p>
                       </div>
                     </div>
                   </li>
@@ -1640,9 +1681,9 @@ const HiringRequestDetails = () => {
                     <div className="d-flex mt-4">
                       <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
-                        <h6 className="fs-14 mb-0">Offered Salary</h6>
+                        <h6 className="fs-14 mb-0">Offered Salary Per Dev</h6>
                         <p className="text-muted mb-0">
-                          {hiringRequestDetail.salaryPerDev}
+                          {hiringRequestDetail.salaryPerDev} VND
                         </p>
                       </div>
                     </div>
@@ -1651,8 +1692,8 @@ const HiringRequestDetails = () => {
                     <div className="d-flex mt-4">
                       <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
-                        <h6 className="fs-14 mb-0">Qualification</h6>
-                        <p className="text-muted mb-0">Bachelor Degree</p>
+                        <h6 className="fs-14 mb-0">Position</h6>
+                        <p className="text-muted mb-0">{hiringRequestDetail.positionName}</p>
                       </div>
                     </div>
                   </li>
@@ -1710,6 +1751,11 @@ const HiringRequestDetails = () => {
                 <TabContent activeTab={activeTab}>
                   <TabPane tabId="1">
                     <Row>
+                      {!isHaveListDeveloper ? (
+                        <Empty style={{ marginTop: "20px" }} />
+                      ) : (
+                        null
+                      )}
                       {candidategridDetails.map((candidategridDetailsNew, key) => (
                         <Col lg={3} md={6} key={key}>
                           <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
@@ -1753,27 +1799,30 @@ const HiringRequestDetails = () => {
                                           "Rejected"
                                           ? "badge bg-danger text-light mb-2"
                                           : candidategridDetailsNew.selectedDevStatus ===
-                                            "Under Consideration"
-                                            ? "badge bg-warning text-light mb-2"
+                                            "Contract Failed"
+                                            ? "badge bg-danger text-light mb-2"
                                             : candidategridDetailsNew.selectedDevStatus ===
-                                              "Interview Scheduled"
-                                              ? "badge bg-blue text-light mb-2"
+                                              "Under Consideration"
+                                              ? "badge bg-warning text-light mb-2"
                                               : candidategridDetailsNew.selectedDevStatus ===
-                                                "Expired"
-                                                ? "badge bg-danger text-light mb-2"
+                                                "Contract Processing"
+                                                ? "badge bg-warning text-light mb-2"
                                                 : candidategridDetailsNew.selectedDevStatus ===
-                                                  "Cancelled"
-                                                  ? "badge bg-danger text-light mb-2"
+                                                  "Interview Scheduled"
+                                                  ? "badge bg-blue text-light mb-2"
                                                   : candidategridDetailsNew.selectedDevStatus ===
-                                                    "Waiting Interview"
-                                                    ? "badge bg-warning text-light mb-2"
+                                                    "Expired"
+                                                    ? "badge bg-danger text-light mb-2"
                                                     : candidategridDetailsNew.selectedDevStatus ===
-                                                      "Onboarding"
-                                                      ? "badge bg-primary text-light mb-2"
+                                                      "Waiting Interview"
+                                                      ? "badge bg-warning text-light mb-2"
                                                       : candidategridDetailsNew.selectedDevStatus ===
-                                                        "Saved"
-                                                        ? "badge bg-info text-light mb-2"
-                                                        : ""
+                                                        "Onboarding"
+                                                        ? "badge bg-primary text-light mb-2"
+                                                        : candidategridDetailsNew.selectedDevStatus ===
+                                                          "RequestClosed"
+                                                          ? "badge  bg-teal text-light mb-2"
+                                                          : ""
                                       }
                                     >
                                       {candidategridDetailsNew.selectedDevStatus}
@@ -1955,7 +2004,7 @@ const HiringRequestDetails = () => {
                                             loading={true}
                                           />
                                         ) : (
-                                          "Onboard"
+                                          "Go to contract"
                                         )}
                                       </button>
                                     )}
@@ -2032,6 +2081,11 @@ const HiringRequestDetails = () => {
                   </TabPane>
                   <TabPane tabId="2">
                     <Row>
+                      {!isHaveListInterview ? (
+                        <Empty style={{ marginTop: "20px" }} />
+                      ) : (
+                        null
+                      )}
                       {listInterview.map((jobVacancy2Details, key) => (
                         <Col lg={3} md={6} className="mt-4" s key={key}>
                           <div
@@ -2117,36 +2171,6 @@ const HiringRequestDetails = () => {
                         </Col>
                       ))}
                     </Row>
-
-                    {/* <Row id="paging">
-                      <Col lg={12} className="mt-4 pt-2">
-                        <nav aria-label="Page navigation example">
-                          <div className="pagination job-pagination mb-0 justify-content-center">
-                            <li
-                              className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-                            >
-                              <p
-                                className="page-link"
-                                to="#"
-                                tabIndex="-1"
-                                onClick={handlePrevPage}
-                              >
-                                <i className="mdi mdi-chevron-double-left fs-15"></i>
-                              </p>
-                            </li>
-                            {renderPageNumbers()}
-                            <li
-                              className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                                }`}
-                            >
-                              <p className="page-link" to="#" onClick={handleNextPage}>
-                                <i className="mdi mdi-chevron-double-right fs-15"></i>
-                              </p>
-                            </li>
-                          </div>
-                        </nav>
-                      </Col>
-                    </Row> */}
                   </TabPane>
                 </TabContent>
               </CardBody>

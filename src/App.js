@@ -3,6 +3,7 @@ import Routes from "./Routes/index";
 
 //import Custom Style scss
 import "./assets/scss/themes.scss";
+
 function App() {
   return (
     <React.Fragment>
