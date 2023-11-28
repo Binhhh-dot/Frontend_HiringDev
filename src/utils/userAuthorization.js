@@ -11,6 +11,15 @@ const userAuthorization = (localStorageRole, linkPage) => {
         '/listcontract',
         '/listcompanyPartner',
         '/manager',
+        '/listcontract',
+        '/projectlistinmanager',
+        '/listAccountDeveloper',
+    ]
+    const listPageAdminAccpet = [
+        '/listAccountHR',
+        '/listAccountManager',
+        '/listAccountStaff',
+        '/listcompanyPartner',
     ]
 
     if (localStorageRole === "HR") {
@@ -18,6 +27,9 @@ const userAuthorization = (localStorageRole, linkPage) => {
     }
     if (localStorageRole === "Manager") {
         return listPageManagerAccpet.includes(linkPage);
+    }
+    if (localStorageRole === "Admin") {
+        return listPageAdminAccpet.includes(linkPage);
     }
 };
 
