@@ -729,7 +729,7 @@ const ContractList = () => {
                                             <div>
                                               <h5 className="fs-18 mb-0">
                                                 <Link
-                                                  to="/newhiringrequestdetail"
+                                                  to="/contractdetail"
                                                   className="text-dark"
                                                   state={{
                                                     contractId:
@@ -920,7 +920,7 @@ const ContractList = () => {
                                             <div>
                                               <h5 className="fs-18 mb-0">
                                                 <Link
-                                                  to="/newhiringrequestdetail"
+                                                  to="/contractdetail"
                                                   className="text-dark"
                                                   state={{
                                                     contractId:
@@ -1111,7 +1111,7 @@ const ContractList = () => {
                                             <div>
                                               <h5 className="fs-18 mb-0">
                                                 <Link
-                                                  to="/newhiringrequestdetail"
+                                                  to="/contractdetail"
                                                   className="text-dark"
                                                   state={{
                                                     contractId:

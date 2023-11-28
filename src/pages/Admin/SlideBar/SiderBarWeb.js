@@ -58,10 +58,10 @@ const SiderBarWeb = ({ choose }) => {
       key: "menu-key/sub-menu-key",
       icon: <UserOutlined />,
       children: [
-        { label: "List Manager", key: "menu-key/sub-menu-key/3" },
-        { label: "List Staff", key: "menu-key/sub-menu-key/4" },
-        { label: "List HR", key: "menu-key/sub-menu-key/5" },
-        { label: "List Developer", key: "menu-key/sub-menu-key/6" },
+        { label: "Manager", key: "menu-key/sub-menu-key/3" },
+        { label: "Staff", key: "menu-key/sub-menu-key/4" },
+        { label: "Human Resource", key: "menu-key/sub-menu-key/5" },
+        { label: "Developer", key: "menu-key/sub-menu-key/6" },
       ],
       className: "option-2",
     },
@@ -187,16 +187,16 @@ const SiderBarWeb = ({ choose }) => {
             >
               {item.children.map((child) => (
                 <Menu.Item key={child.key}>
-                  {child.label === "List Manager" && (
+                  {child.label === "Manager" && (
                     <Link to="/listAccountManager">{child.label}</Link>
                   )}
-                  {child.label === "List Staff" && (
+                  {child.label === "Staff" && (
                     <Link to="/listAccountStaff">{child.label}</Link>
                   )}
-                  {child.label === "List HR" && (
+                  {child.label === "Human Resource" && (
                     <Link to="/listAccountHR">{child.label}</Link>
                   )}
-                  {child.label === "List Developer" && (
+                  {child.label === "Developer" && (
                     <Link to="/listAccountDeveloper">{child.label}</Link>
                   )}
                 </Menu.Item>

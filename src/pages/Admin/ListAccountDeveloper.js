@@ -83,106 +83,16 @@ const tailLayout = {
 };
 
 const page = {
-  pageSize: 6, // Number of items per page
+  pageSize: 10, // Number of items per page
 };
 
 const { Column, ColumnGroup } = Table;
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
-// const items = [
-//     {
-//         label: "Dashboard",
-//         key: "menu-key/1",
-//         icon: <HomeOutlined />,
-//         className: "option-1",
-//     },
-//     {
-//         label: "Option 2",
-//         key: "menu-key/2",
-//         icon: <DesktopOutlined />,
-//         className: "option-2",
-//     },
-//     {
-//         label: "User",
-//         key: "menu-key/sub-menu-key",
-//         icon: <UserOutlined />,
-//         children: [
-//             { label: "Manager", key: "menu-key/sub-menu-key/3" },
-//             { label: "Staff", key: "menu-key/sub-menu-key/4" },
-//             { label: "Hr", key: "menu-key/sub-menu-key/5" },
-//         ],
-//         className: "option-2",
-//     },
-//     {
-//         label: "Team",
-//         key: "menu-key/sub-menu-key2",
-//         icon: <TeamOutlined />,
-//         children: [
-//             { label: "Team 1", key: "menu-key/sub-menu-key2/6" },
-//             { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
-//         ],
-//     },
-//     {
-//         label: "Files",
-//         key: "menu-key/9",
-//         icon: <FileOutlined />,
-//         className: "files",
-//     },
-//     {
-//         label: "Hiring Request",
-//         key: "menu-key/10",
-//         icon: <SnippetsOutlined />,
-//         className: "hiringRequest",
-//     },
-//     {
-//         label: "Interview",
-//         key: "menu-key/11",
-//         icon: <SolutionOutlined />,
-//         className: "interview",
-//     },
-
-//     {
-//         label: "Project",
-//         key: "menu-key/12",
-//         icon: <CodeOutlined />,
-//         className: "project",
-//     },
-// ];
 
 const ListAccountDeveloper = () => {
-  // const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]); // Định nghĩa selectedKeys
-  // const [isLeftIcon, setIsLeftIcon] = useState(true);
-  // const [showWeHire, setShowWeHire] = useState(true);
-
-  // const toggleSidebar = () => {
-  //     setCollapsed(!collapsed);
-  //     setIsLeftIcon(!isLeftIcon); // Cập nhật biến trạng thái khi toggleSidebar
-  //     setShowWeHire(!showWeHire);
-  // };
-
-  // const handleMenuClick = (item) => {
-  //     setSelectedKeys([item.key]);
-  // };
-
-  // const handleSubMenuClick = (item) => {
-  //     setSelectedKeys([item.key]);
-  // };
-  // const [modalVisible, setModalVisible] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState({});
-
-  // const handleRowClick = (record) => {
-  //     setSelectedRecord(record);
-  //     setModalVisible(true);
-  // };
-
-  //   const handleCancelDetail = () => {
-  //     setModalVisible(false);
-  //   };
-
   const [componentDisabled, setComponentDisabled] = useState(true);
-
-  const [collapsed, setCollapsed] = useState(false);
 
   const [visibleModal1, setVisibleModal1] = useState(false);
   const [visibleModal2, setVisibleModal2] = useState(false);
@@ -219,12 +129,13 @@ const ListAccountDeveloper = () => {
   const onFinish = (values) => {
     console.log(values);
   };
-  const onReset = () => {
-    formRef.current?.resetFields();
-  };
-  const formRef = React.useRef(null);
+  // const onReset = () => {
+  //   formRef.current?.resetFields();
+  // };
+  // const formRef = React.useRef(null);
 
   const [modal, contextHolder] = Modal.useModal();
+
   const confirm = () => {
     modal.confirm({
       title: "Confirm",
@@ -234,8 +145,6 @@ const ListAccountDeveloper = () => {
       cancelText: "No",
     });
   };
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
 
   //API
   const [developer, setDeveloper] = useState([]);
@@ -254,9 +163,10 @@ const ListAccountDeveloper = () => {
     fetchDeveloperPaging().then((data) => {
       console.log("User paging data:", data);
     });
-  });
+  }, []);
 
   //Create Dev
+
   document.title = "Create Developer Account";
 
   const [options, setOptions] = useState([]);
@@ -301,26 +211,6 @@ const ListAccountDeveloper = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response4 = await axios.get(
-          "https://wehireapi.azurewebsites.net/api/Cv"
-        );
-        const cvList = response4.data.data;
-        const options4 = cvList.map((cv) => ({
-          value: cv.src, // src là giá trị
-          label: cv.cvCode, // devFulName là nhãn
-          id: cv.cvId,
-        }));
-        console.log(options4);
-        setOptions4(options4);
-        if (options4.length > 0) {
-          setSelectedOptions4(options4[0]);
-          setImageUrl(options4[0].value);
-        }
-      } catch (error) {
-        console.error("Error fetching levels:", error);
-      }
-
       try {
         const response7 = await axios.get(
           "https://wehireapi.azurewebsites.net/api/Gender"
@@ -386,22 +276,6 @@ const ListAccountDeveloper = () => {
       }
 
       try {
-        const response5 = await scheduleTypeService.getAllScheduleType();
-        const activeScheduleType = response5.data.data.filter(
-          (scheduleType) => scheduleType.statusString === "Active"
-        );
-        const formattedScheduleType = activeScheduleType.map(
-          (scheduleType) => ({
-            value: scheduleType.scheduleTypeId.toString(),
-            label: scheduleType.scheduleTypeName,
-          })
-        );
-        setOptions5(formattedScheduleType);
-      } catch (error) {
-        console.error("Error fetching schedule type:", error);
-      }
-
-      try {
         const response6 = await employmentTypeServices.getAllEmploymentType();
         const activeEmploymentType = response6.data.data.filter(
           (employmentType) => employmentType.statusString === "Active"
@@ -420,24 +294,23 @@ const ListAccountDeveloper = () => {
     fetchData();
   }, []);
 
-  const [firstNameError, setFirstNameError] = useState([]);
-  const [lastNameError, setLastNameError] = useState([]);
-  const [emailError, setEmailError] = useState([]);
-  const [typeError, setTypeError] = useState([]);
-  const [levelError, setLevelError] = useState([]);
-  const [scheduleTypeError, setScheduleTypeError] = useState([]);
-  const [employmentTypeError, setEmploymentTypeError] = useState([]);
-  const [genderError, setGenderError] = useState([]);
-  const [skillError, setSkillError] = useState([]);
-  const [avarageSalaryError, setAvarageSalaryError] = useState([]);
-  const [yearOfExperienceError, setYearOfExperienceError] = useState([]);
-  const [phoneNumberError, setPhoneNumberError] = useState([]);
-  const [dateOfBirthError, setDateOfBirthError] = useState([]);
+  const [firstNameError, setFirstNameError] = useState(null);
+  const [lastNameError, setLastNameError] = useState(null);
+  const [emailError, setEmailError] = useState(null);
+  const [typeError, setTypeError] = useState(null);
+  const [levelError, setLevelError] = useState(null);
+
+  const [employmentTypeError, setEmploymentTypeError] = useState(null);
+  const [genderError, setGenderError] = useState(null);
+  const [skillError, setSkillError] = useState(null);
+  const [avarageSalaryError, setAvarageSalaryError] = useState(null);
+  const [yearOfExperienceError, setYearOfExperienceError] = useState(null);
+  const [phoneNumberError, setPhoneNumberError] = useState(null);
+  const [dateOfBirthError, setDateOfBirthError] = useState(null);
 
   const handleOkUpdate = async () => {
     try {
       await handleCreateDev();
-      setVisibleModal1(false);
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -488,13 +361,6 @@ const ListAccountDeveloper = () => {
       setEmploymentTypeError(null);
     }
 
-    // if (!selectedOptions5.value) {
-    //     setEmploymentTypeError("Please select the employment type ");
-    //     check = false;
-    // } else {
-    //     setEmploymentTypeError(null);
-    // }
-
     if (!selectedOptions7.value) {
       setGenderError("Please select the gender");
       check = false;
@@ -544,16 +410,7 @@ const ListAccountDeveloper = () => {
       check = false;
       setDateOfBirthError("Please enter the date of birth");
     } else {
-      //     const currentDate = new Date();
-      //     const selectedDate = new Date(document.getElementById("duration").value);
-      //     const sevenDaysLater = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000); // Thêm 7 ngày
-
-      //     if (selectedDate < sevenDaysLater) {
-      //         setDurationError("Please enter a date that is at least 7 days greater than the current date.");
-      //         check = false;
-      //     } else {
       setDateOfBirthError(null);
-      // }
     }
     if (check) {
       try {
@@ -600,6 +457,9 @@ const ListAccountDeveloper = () => {
             marginRight: "50px",
           },
         });
+
+        fetchDeveloperPaging();
+        setVisibleModal1(false);
       } catch (error) {
         console.error("Error create dev:", error);
         message.error({
@@ -611,12 +471,124 @@ const ListAccountDeveloper = () => {
           },
         });
       }
+    } else {
+    }
+  };
+
+  //-----------------------------------------------------------------------------------------------------
+  const [userImage3, setUserImage3] = useState(null);
+  const [userDataDetail, setUserDataDetail] = useState({
+    userId: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    statusString: "",
+  });
+  const [userImage, setUserImage] = useState(null);
+
+  const [avatar, setAvatar] = useState(null);
+
+  const [form] = Form.useForm();
+
+  const handleChooseAvatar = () => {
+    const inputElement = document.getElementById("profile-img-file-input");
+    inputElement.click();
+  };
+
+  const handlePreviewAvatar = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      file.preview = URL.createObjectURL(file);
+      setAvatar(file);
     }
   };
 
   // Update
+  const handleEditClick = (userId) => {
+    fetchUserDetail(userId);
+    showModal2();
+    setUserId(userId);
+  };
 
-  const [hRInfo, setHrInfo] = useState(null);
+  const fetchUserDetail = async (userId) => {
+    try {
+      const response = await userSerrvices.getDeveloperById(userId);
+      const {
+        lastName,
+        firstName,
+        email,
+        phoneNumber,
+        password,
+        dateOfBirth,
+        yearOfExperience,
+        averageSalary,
+        codeName,
+        genderId,
+        levelId,
+        employmentTypeId,
+        typeId,
+        skillId,
+        userImage,
+      } = response.data.data;
+      document.getElementById("first-name-dev").value =
+        response.data.data.firstName;
+      document.getElementById("last-name-dev").value =
+        response.data.data.lastName;
+      document.getElementById("email-dev").value = response.data.data.email;
+      document.getElementById("phone-dev").value =
+        response.data.data.phoneNumber;
+      document.getElementById("password-dev").value =
+        response.data.data.password;
+      document.getElementById("dateOfBirth-dev").value =
+        response.data.data.dateOfBirth;
+      document.getElementById("yearOfExperience-dev").value =
+        response.data.data.yearOfExperience;
+      document.getElementById("averageSalary-dev").value =
+        response.data.data.averageSalary;
+      document.getElementById("codeName-dev").value =
+        response.data.data.codeName;
+      document.getElementById("genderId-dev").value =
+        response.data.data.gender.genderName;
+      document.getElementById("levelId-dev").value = response.data.data.levelId;
+      document.getElementById("employmentId-dev").value =
+        response.data.data.employmentTypeId;
+      document.getElementById("types-dev").value = response.data.data.typeId;
+      document.getElementById("skills-dev").value = response.data.data.skillId;
+
+      if (response.data.data.userImage) {
+        setUserImage3(response.data.data.userImage);
+      }
+      // else {
+      //   setUserImage3(userImage2)
+      // }
+      setUserDataDetail({
+        lastName,
+        firstName,
+        email,
+        phoneNumber,
+        dateOfBirth,
+        password,
+        yearOfExperience,
+        averageSalary,
+        codeName,
+        genderId,
+        levelId,
+        employmentTypeId,
+        typeId,
+        skillId,
+        userImage,
+      });
+    } catch (error) {
+      console.error("Lỗi khi tải dữ liệu người dùng:", error);
+    }
+  };
+
+  //-----------------------------------------------------------------------------------------------------
+
+  const [hRInfo, setHrInfo] = useState({});
   const handleRowClick = (developerId) => {
     fetchDeveloperById(developerId);
     showModal3();
@@ -627,9 +599,8 @@ const ListAccountDeveloper = () => {
       response = await userSerrvices.getDeveloperById(developerId);
       setHrInfo(response.data.data);
       console.log(response.data.data);
-      return response;
     } catch (error) {
-      console.error("Error fetching hiring request detail overview:", error);
+      console.error("Error fetching developer by id:", error);
     }
   };
   useEffect(() => {
@@ -750,7 +721,7 @@ const ListAccountDeveloper = () => {
           </div>
           <div
             style={{
-              padding: "0px 30px 0px 50px",
+              padding: "0px 5px 0px 5px",
               background: "white",
               margin: "30px",
               borderRadius: "12px",
@@ -774,12 +745,13 @@ const ListAccountDeveloper = () => {
               </a>
               <div
                 style={{
-                  padding: 24,
-                  minHeight: 360,
+                  padding: 10,
+                  minHeight: 400,
                 }}
               >
                 <div style={{ height: "600px", overflow: "auto" }}>
                   <Table
+                    className="custom-table"
                     dataSource={developer}
                     pagination={page}
                     onRow={(record, rowIndex) => {
@@ -791,9 +763,9 @@ const ListAccountDeveloper = () => {
                       };
                     }}
                     size="middle"
-                    scroll={{
-                      x: 3000,
-                    }}
+                    // scroll={{
+                    //   x: 3000,
+                    // }}
                     components={{
                       header: {
                         cell: (props) => (
@@ -812,25 +784,9 @@ const ListAccountDeveloper = () => {
                     }
                   >
                     <Column
-                      title="Image"
-                      dataIndex="userImage"
-                      key="userImage"
-                      render={(text, record) => (
-                        <img
-                          src={record.userImage}
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            borderRadius: "50%",
-                          }}
-                        />
-                      )}
-                    />
-                    <Column
-                      title="Devloper"
-                      dataIndex="developerId"
-                      key="developerId"
-                      width={80}
+                      title="Code Name"
+                      dataIndex="codeName"
+                      key="codeName"
                     />
 
                     <Column
@@ -844,11 +800,7 @@ const ListAccountDeveloper = () => {
                       key="lastName"
                     />
                     <Column title="Email" dataIndex="email" key="email" />
-                    <Column
-                      title="Code Name"
-                      dataIndex="codeName"
-                      key="codeName"
-                    />
+
                     <Column
                       title="Gender"
                       dataIndex="genderString"
@@ -865,64 +817,6 @@ const ListAccountDeveloper = () => {
                       dataIndex="averageSalary"
                       key="averageSalary"
                       width={80}
-                    />
-                    <Column
-                      title="Schedule Type"
-                      dataIndex="scheduleTypeName"
-                      key="scheduleTypeName"
-                    />
-                    <Column
-                      title="RequireName"
-                      dataIndex="levelRequireName"
-                      key="levelRequireName"
-                    />
-                    <Column
-                      title="Type Require"
-                      dataIndex="typeRequireStrings"
-                      key="typeRequireStrings"
-                      render={(text, record) => (
-                        <div style={{ display: "flex", flexWrap: "wrap" }}>
-                          {text.map((type, index) => (
-                            <div
-                              key={index}
-                              className="badge text-bg-light"
-                              style={{ padding: "5px", margin: "5px" }}
-                            >
-                              {type}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      width={400}
-                    />
-                    <Column
-                      title="Skill Require"
-                      dataIndex="skillRequireStrings"
-                      key="skillRequireStrings"
-                      render={(text, record) => (
-                        <div style={{ display: "flex", flexWrap: "wrap" }}>
-                          {text.map((skill, index) => (
-                            <div
-                              key={index}
-                              className="badge text-bg-light"
-                              style={{ padding: "5px", margin: "5px" }}
-                            >
-                              {skill}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      width={500}
-                    />
-                    <Column
-                      title="Role"
-                      dataIndex="roleString"
-                      key="roleString"
-                    />
-                    <Column
-                      title="Emplowment Type"
-                      dataIndex="employmentTypeName"
-                      key="employmentTypeName"
                     />
 
                     <Column
@@ -950,7 +844,7 @@ const ListAccountDeveloper = () => {
                         <Space size="middle">
                           <a
                             onClick={(event) => {
-                              // handleEditClick(record.userId);
+                              handleEditClick(record.userId);
 
                               event.stopPropagation();
                             }}
@@ -1020,20 +914,25 @@ const ListAccountDeveloper = () => {
           </div>
 
           <Modal
+            centered
             title="Details Account"
             visible={visibleModal3}
             onOk={handleOk}
             onCancel={handleCancel}
             footer={null}
-            width={800}
+            width={700}
             style={{
-              display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             {hRInfo && (
-              <div style={{ padding: "20px", fontSize: "16px" }}>
+              <div
+                style={{
+                  padding: "10px",
+                  fontSize: "16px",
+                }}
+              >
                 {hRInfo.userImage ? (
                   <img
                     src={hRInfo.userImage}
@@ -1041,7 +940,7 @@ const ListAccountDeveloper = () => {
                       width: "100px",
                       height: "100px",
                       borderRadius: "50%",
-                      marginBottom: "20px",
+                      marginBottom: "10px",
                     }}
                   />
                 ) : (
@@ -1051,18 +950,22 @@ const ListAccountDeveloper = () => {
                       justifyContent: "center",
                       alignItems: "center",
                       flexDirection: "column",
+                      marginBottom: "10px",
                     }}
                   >
                     <FaUserAltSlash
                       style={{
                         fontSize: "24px",
-                        marginBottom: "10px",
+
                         color: "#6d73f6",
                       }}
                     />
                     <span>No Image</span>
                   </div>
                 )}
+                <p>
+                  <strong>Code Name:</strong> {hRInfo.codeName}
+                </p>
                 <p>
                   <strong>Name:</strong>{" "}
                   {`${hRInfo.firstName} ${hRInfo.lastName}`}
@@ -1079,18 +982,18 @@ const ListAccountDeveloper = () => {
                 <p>
                   <strong>Date Of Birth:</strong> {hRInfo.dateOfBirth}
                 </p>
+
                 <p>
-                  <strong>Code Name:</strong> {hRInfo.codeName}
+                  <strong>Gender Name: </strong> {hRInfo.genderName}
                 </p>
+
                 <p>
                   <strong>Year Of Experience:</strong> {hRInfo.yearOfExperience}
                 </p>
                 <p>
                   <strong>Average Salary:</strong> {hRInfo.averageSalary}
                 </p>
-                <p>
-                  <strong>Schedule Type Name:</strong> {hRInfo.scheduleTypeName}
-                </p>
+
                 <p>
                   <strong>Employment Type Name:</strong>{" "}
                   {hRInfo.employmentTypeName}
@@ -1123,15 +1026,12 @@ const ListAccountDeveloper = () => {
                     {hRInfo.userStatusString}
                   </span>
                 </p>
-                <p>
-                  <strong>Gender Name: </strong> {hRInfo.genderName}
-                </p>
               </div>
             )}
           </Modal>
+
           {contextHolder}
           <Modal
-            title="Create Account"
             centered
             visible={visibleModal1}
             onOk={handleOkUpdate}
@@ -1140,10 +1040,10 @@ const ListAccountDeveloper = () => {
             footer={null}
           >
             <React.Fragment>
-              <section className="section" style={{ paddingTop: "0px" }}>
+              <section className="section py-0">
                 <div className=" ">
-                  <div className="row justify-content-center  w-100 ">
-                    <div className="rounded shadow bg-white p-4">
+                  <div className="row justify-content-center  ">
+                    <div className="rounded shadow bg-white">
                       <div className="custom-form">
                         <div id="message3"></div>
                         <form
@@ -1405,6 +1305,7 @@ const ListAccountDeveloper = () => {
               </section>
             </React.Fragment>
           </Modal>
+
           <Modal
             title="Update Account"
             centered
@@ -1414,147 +1315,85 @@ const ListAccountDeveloper = () => {
             footer={null}
             width={1000}
           >
-            <div>
-              <Checkbox
-                checked={componentDisabled}
-                onChange={(e) => setComponentDisabled(e.target.checked)}
-              >
-                Form disabled
-              </Checkbox>
-              <Form
-                {...layout}
-                onFinish={onFinish}
-                labelCol={{
-                  span: 8,
-                }}
-                wrapperCol={{
-                  span: 25,
-                }}
-                layout="horizontal"
-                disabled={componentDisabled}
-                style={{
-                  maxWidth: 600,
-                  margin: "auto",
-                }}
-              >
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item
-                      label="Upload"
-                      valuePropName="fileList"
-                      getValueFromEvent={normFile}
-                    >
-                      <Upload action="/upload.do" listType="picture-card">
-                        <div>
-                          <div
-                            style={{
-                              marginTop: 8,
-                            }}
-                          >
-                            Upload
-                          </div>
-                        </div>
-                      </Upload>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item label="First Name" name="input1">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item label="Last Name" name="lastName">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                </Row>
+            <Form>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="First Name" name="firstName">
+                    <Input id="first-name-dev" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Last Name" name="lastName">
+                    <Input id="last-name-dev" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Email" name="email">
+                    <Input id="email-dev" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Phone Number" name="number-phone">
+                    <Input id="phone-dev" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Password" name="password">
+                    <Input id="password-dev" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Date Of Birth" name="date-of-birth">
+                    <Input id="dateOfBirth-dev" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="Year Of Experience"
+                    name="year-of-experience"
+                  >
+                    <Input id="yearOfExperience-dev" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Average Salary" name="average-salary">
+                    <Input id="averageSalary-dev" />
+                  </Form.Item>
+                </Col>
+              </Row>
 
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item label="Email" name="email">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item label="Password" name="password">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item label="Year Of Experience" name="experience">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item label="Salary" name="salary">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item label="Schedule Type" name="email">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item label="RequireName" name="password">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                </Row>
+              <div className="text-center">
+                <div className="mb-4 profile-user">
+                  <img
+                    src={avatar ? avatar.preview : userImage}
+                    className="rounded-circle img-thumbnail profile-img"
+                    id="profile-img"
+                    alt=""
+                  />
+                  <div className="p-0 rounded-circle profile-photo-edit">
+                    <label className="profile-photo-edit avatar-xs">
+                      <i
+                        className="uil uil-edit"
+                        onClick={handleChooseAvatar}
+                      ></i>
+                    </label>
+                    <input
+                      type="file"
+                      id="profile-img-file-input"
+                      onChange={handlePreviewAvatar}
+                      style={{ display: "none" }}
+                    />
+                  </div>
+                </div>
+              </div>
 
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item label="Phone Number" name="phoneNumber">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item label="Birthday">
-                      <DatePicker />
-                    </Form.Item>
-                  </Col>
-                </Row>
-
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item label="Role" name="role">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item label="Status">
-                      <Select>
-                        <Select.Option value="active">Active</Select.Option>
-                        <Select.Option value="de-active">
-                          De-Active
-                        </Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Form.Item {...tailLayout}>
-                  <Button type="primary" htmlType="submit">
-                    Submit
-                  </Button>
-                </Form.Item>
-              </Form>
-            </div>
+              <div className="text-end">
+                <Button type="primary" onClick={handleOkUpdate}>
+                  Update
+                </Button>
+              </div>
+            </Form>
           </Modal>
-          <Footer
-            style={{
-              textAlign: "center",
-            }}
-          >
-            <p className="badge bg-warning text-light">
-              WeHire Design ©2023 Created by HDC
-            </p>
-          </Footer>
         </Layout>
       </Layout>
     </React.Fragment>

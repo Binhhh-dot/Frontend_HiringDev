@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Col, Row, Container } from "reactstrap";
 import { Link } from "react-router-dom";
 import companyServices from "../../services/company.services";
-import { Input, Space, Layout, Badge } from "antd";
+import { Input, Space, Layout, Badge, Modal } from "antd";
 import SiderBarWeb from "./SlideBar/SiderBarWeb";
 import { useNavigate, useLocation } from "react-router-dom";
 import userAuthorization from "../../utils/userAuthorization";
 import img0 from "../../assets/images/user/img-00.jpg";
+import { faLadderWater } from "@fortawesome/free-solid-svg-icons";
 const { Header, Footer, Content } = Layout;
 
 const CompanyListPartner = () => {
@@ -93,10 +94,33 @@ const CompanyListPartner = () => {
   useEffect(() => {
     fetchGetCompanyAndPaging();
   }, [currentPage]);
+
+  //--------------------------------------------------------------------------------
+  const [showPopup, setShowPopup] = useState(false);
+
+  //--------------------------------------------------------------------------------
+  const midleSelect = (id) => {
+    fetchGetCompanyByCompanyId(id);
+    setShowPopup(true);
+  };
   //--------------------------------------------------------------------------------
   //Search
   const { Search } = Input;
   const onSearch = (value, _e, info) => console.log(info?.source, value);
+  //--------------------------------------------------------------------------------
+  const [selectCompanyDetail, setSelectcompanyDetail] = useState({});
+
+  const fetchGetCompanyByCompanyId = async (id) => {
+    let response;
+    try {
+      response = await companyServices.getCompanyByCompanyId(id);
+      console.log("Company Detail");
+      console.log(response.data.data);
+      setSelectcompanyDetail(response.data.data);
+    } catch (error) {
+      console.error("Error fetching company by id:", error);
+    }
+  };
   //--------------------------------------------------------------------------------
 
   return (
@@ -196,6 +220,180 @@ const CompanyListPartner = () => {
                           </Space>
                         </div>
                       </div>
+                      {/* ---------------------------------------------------------------- */}
+
+                      <Modal
+                        centered
+                        open={showPopup}
+                        onOk={() => setShowPopup(false)}
+                        onCancel={() => setShowPopup(false)}
+                        width={1000}
+                        footer={null}
+                        style={{ padding: "10px" }}
+                      >
+                        <div>
+                          <Row
+                            className="p-1"
+                            style={{
+                              minHeight: "250px",
+                            }}
+                          >
+                            <Col lg={12} className="px-0">
+                              <div className="d-flex justify-content-center align-items-center flex-column gap-5 p-3">
+                                <div>
+                                  <div className="d-flex justify-content-center">
+                                    <img
+                                      style={{
+                                        width: "100px",
+                                        height: "100px",
+                                      }}
+                                      src={selectCompanyDetail.companyImage}
+                                      alt=""
+                                      className="img-fluid rounded-circle img-avt-hiring-request border border-3"
+                                    />
+                                  </div>
+
+                                  <div
+                                    className="mt-2 d-flex justify-content-center p-2 fs-20 "
+                                    style={{
+                                      fontWeight: "500",
+                                    }}
+                                  >
+                                    {selectCompanyDetail.companyName}
+                                  </div>
+                                </div>
+
+                                <div
+                                  className="d-flex justify-content-around mb-2"
+                                  style={{ width: "100%" }}
+                                >
+                                  <div style={{ width: "30%" }}>
+                                    <p className="mb-0 text-muted">Email</p>
+                                    <div
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                      className="d-flex align-items-center p-2 border border-2"
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.companyEmail}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <div style={{ width: "30%" }}>
+                                    <p className="mb-0 text-muted">Phone</p>
+                                    <div
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                      className="p-2 border border-2"
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.phoneNumber}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <div style={{ width: "30%" }}>
+                                    <p className="mb-0 text-muted">Address</p>
+                                    <div
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                      className="p-2 border border-2"
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.address}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </Col>
+                          </Row>
+                          <div className="border border-1 mt-1 mb-3"></div>
+                          <Row style={{ minHeight: "250px" }} className="p-3">
+                            <Col lg={12}>
+                              <div className="d-flex gap-5">
+                                <div
+                                  className="d-flex flex-column gap-4"
+                                  style={{ width: "50%" }}
+                                >
+                                  <div>
+                                    <p className="mb-0 text-muted">Country</p>
+                                    <div
+                                      className="p-2 border border-2"
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.country}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <p className="mb-0 text-muted">Rating</p>
+                                    <div
+                                      className="p-2 border border-2"
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.rating}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  style={{ width: "50%" }}
+                                  className="d-flex flex-column gap-4"
+                                >
+                                  <div>
+                                    <p className="mb-0 text-muted">HR Name</p>
+                                    <div
+                                      className="p-2 border border-2"
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.hrFullName}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <p className="mb-0 text-muted">Status</p>
+                                    <div
+                                      className="p-2 border border-2"
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.statusString}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </Col>
+                          </Row>
+                        </div>
+                      </Modal>
+
+                      {/* ---------------------------------------------------------------- */}
 
                       <div>
                         {listCompany.map((listCompanyNew, key) => (
@@ -228,17 +426,19 @@ const CompanyListPartner = () => {
                                 </Col>
 
                                 <Col md={2}>
-                                  <div>
+                                  <div style={{ cursor: "pointer" }}>
                                     <h5 className="fs-18 mb-0">
-                                      <Link
-                                        to="/newhiringrequestdetail"
+                                      <div
+                                        onClick={() =>
+                                          midleSelect(listCompanyNew.companyId)
+                                        }
                                         className="text-dark"
                                         state={{
                                           companyId: listCompanyNew.companyId,
                                         }}
                                       >
                                         {listCompanyNew.companyName}
-                                      </Link>
+                                      </div>
                                     </h5>
                                     <p className="text-muted fs-14 mb-0">
                                       {" "}

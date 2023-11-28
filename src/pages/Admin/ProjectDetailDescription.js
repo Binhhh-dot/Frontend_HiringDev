@@ -61,7 +61,6 @@ const ProjectDetailDescription = () => {
   const [currentStartDate, setcurrentStartDate] = useState(null);
   const [currentEndDate, setCurrentEndDate] = useState(null);
   const [currentDescription, setCurrentDescription] = useState(null);
-  const [currentFile, setCurrentFile] = useState(null);
 
   //const [startMonth, setStartMonth] = useState(null);
   //const [endMonth, setEndMonth] = useState(null);
@@ -84,13 +83,13 @@ const ProjectDetailDescription = () => {
     }
   };
 
-  const convertFile = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      file.preview = URL.createObjectURL(file);
-      setCurrentFile(file);
-    }
-  };
+  // const convertFile = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     file.preview = URL.createObjectURL(file);
+  //     setCurrentFile(file);
+  //   }
+  // };
 
   //-------------------------------------------------------------------------------
   const [showCollapse, setShowCollapse] = useState(
@@ -113,6 +112,10 @@ const ProjectDetailDescription = () => {
       response = await projectServices.getProjectDetailByProjectId(
         state.projectId
       );
+
+      console.log("project detail");
+      console.log(response.data.data);
+
       setProjectDetail(response.data.data);
 
       setCurrentProjectName(response.data.data.projectName);
@@ -295,13 +298,12 @@ const ProjectDetailDescription = () => {
         currentProjectName,
         currentDescription,
         currentStartDate,
-        currentEndDate,
-        currentFile
+        currentEndDate
       );
 
       console.log(response.data.data);
       setresultUpdate(response.data.data);
-      fetchGetProjectDetailByProjectId();
+      //fetchGetProjectDetailByProjectId();
     } catch (error) {
       console.error("Error fetching update project:", error);
     }
@@ -589,7 +591,7 @@ const ProjectDetailDescription = () => {
                             </FormGroup>
                           </div>
 
-                          <FormGroup className="mb-3">
+                          {/* <FormGroup className="mb-3">
                             <label htmlFor="fileInput" className="form-label">
                               File Image
                             </label>
@@ -599,7 +601,7 @@ const ProjectDetailDescription = () => {
                               id="fileInput"
                               onChange={convertFile}
                             />
-                          </FormGroup>
+                          </FormGroup> */}
 
                           <FormGroup className="mb-3">
                             <label
@@ -795,7 +797,12 @@ const ProjectDetailDescription = () => {
                             backgroundColor: "#EFF0F2",
                           }}
                         >
-                          {projectDetail.description}
+                          <p
+                            className="project-description mb-0"
+                            dangerouslySetInnerHTML={{
+                              __html: projectDetail.description,
+                            }}
+                          />
                         </div>
                       </div>
                     </Col>
