@@ -23,6 +23,7 @@ export default {
       getAll: "/Type",
       searchName: "",
     },
+
     projectType: {
       getAll: "/ProjectType?Status=${status}",
       getAllProjectType: "/ProjectType",
@@ -98,6 +99,7 @@ export default {
       changeStatusDevUnofficialInTaskDetailForStaff:
         "/AssignTask/ChangeStatusDevTask",
       getListDeveloperOnboardByProjectId: "/Developer/ByProject/${projectId}",
+      updateDeveloperByAdmin: "/Developer/ByAdmin/${developerId}",
     },
     interview: {
       createAnInterview: "/Interview",
@@ -206,6 +208,10 @@ export default {
     workLog: {
       getWorkLogByPaySlipId: "/WorkLog/ByPaySlip/${paySlipId}",
       updateWorkLog: "/WorkLog",
+    },
+
+    gender: {
+      getAllGender: "/Gender",
     },
   },
 };

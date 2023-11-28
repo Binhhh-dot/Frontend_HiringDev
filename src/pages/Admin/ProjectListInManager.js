@@ -21,6 +21,12 @@ import SiderBarWeb from "./SlideBar/SiderBarWeb";
 import userAuthorization from "../../utils/userAuthorization";
 import { useNavigate, useLocation } from "react-router-dom";
 import img0 from "../../assets/images/user/img-00.jpg";
+import {
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "reactstrap";
 const { Header, Footer, Content } = Layout;
 
 const ProjectListInManager = () => {
@@ -427,6 +433,11 @@ const ProjectListInManager = () => {
     fetchProjectListCancel();
   }, [currentPageCancel]);
   //------------------------------------------------------------------------------------------------
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
@@ -477,20 +488,55 @@ const ProjectListInManager = () => {
                   borderRadius: "10px",
                 }}
               >
-                <Link>
-                  <img
-                    src={img0}
-                    className="ms-1"
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                  <DropdownToggle
+                    className="p-2 d-flex gap-3 align-items-center"
                     style={{
-                      borderRadius: "10px",
-                      height: "50px",
+                      height: "inherit",
+                      backgroundColor: "#6546D2",
+                      color: "white",
+
+                      cursor: "pointer",
+                      border: "0px",
                     }}
-                  />
-                </Link>
-                <div className="me-1 d-flex flex-column align-items-center">
-                  <span className="fs-18">Nik jone</span>
-                  <span>Available</span>
-                </div>
+                  >
+                    <div>
+                      <img
+                        src={img0}
+                        className="ms-1"
+                        style={{
+                          borderRadius: "10px",
+                          height: "50px",
+                        }}
+                      />
+                    </div>
+                    <div className="me-1 d-flex flex-column align-items-center">
+                      <span className="fs-18">Nik jone</span>
+                      <span>Available</span>
+                    </div>
+                  </DropdownToggle>
+                  <DropdownMenu
+                    style={{
+                      marginLeft: "-25px",
+                    }}
+                  >
+                    <DropdownItem style={{ padding: "0px" }}>
+                      <div>
+                        <Link to="#" className="dropdown-item">
+                          Setting
+                        </Link>
+                      </div>
+                    </DropdownItem>
+
+                    <DropdownItem style={{ padding: "0px" }}>
+                      <div>
+                        <Link to="/signout" className="dropdown-item">
+                          Logout
+                        </Link>
+                      </div>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
               </div>
             </div>
           </div>
