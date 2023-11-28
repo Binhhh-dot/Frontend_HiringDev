@@ -41,7 +41,6 @@ import {
   faEnvelope,
   faCalendar
 } from "@fortawesome/free-regular-svg-icons";
-import { PayPalButtons } from '@paypal/react-paypal-js'; // Import PayPal Buttons from PayPal SDK
 import { Modal as AntdModal, Button as AntdButton } from "antd";
 import "./index.css";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
@@ -1131,7 +1130,12 @@ const ProjectDetailDesciption = () => {
                 <CardBody className="p-4" style={{ backgroundColor: "#fafafa", overflowX: "auto" }} >
                   <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
-                      <div>12</div>
+                      <p
+                        className=""
+                        dangerouslySetInnerHTML={{
+                          __html: hiringRequestDetail.description,
+                        }}
+                      />
                     </TabPane>
                     <TabPane tabId="2">
 
@@ -1493,7 +1497,7 @@ const ProjectDetailDesciption = () => {
                               id="pills-tab"
                               role="tablist"
                             >
-                              <div className="d-flex align-items-center gap-3" disabled="true">
+                              <div className="d-flex align-items-center gap-3">
                                 <FontAwesomeIcon icon={faAngleLeft} style={{ fontSize: '20px' }} onClick={previousMonth} />
                                 <FontAwesomeIcon icon={faAngleRight} style={{ fontSize: '20px' }} onClick={nextMonth} />
                                 <div className="d-flex flex-column">

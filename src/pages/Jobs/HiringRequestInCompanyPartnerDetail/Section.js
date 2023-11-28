@@ -20,7 +20,7 @@ const Section = () => {
                   >
                     <ol className="breadcrumb justify-content-center">
                       <li className="breadcrumb-item">
-                        <Link to="/layout3">Home</Link>
+                        <Link to="/home">Home</Link>
                       </li>
                       <li className="breadcrumb-item">
                         <Link to="/hiringrequestlistincompanypartner">HIRING REQUEST LIST</Link>
