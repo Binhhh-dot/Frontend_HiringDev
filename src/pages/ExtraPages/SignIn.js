@@ -67,7 +67,7 @@ const SignIn = () => {
         localStorage.setItem('companyId', userData.data.companyId);
         setLoadingSignIn(false);
         toast.success('Login successfully!');
-        navigate("/layout3")
+        navigate("/home")
       } else {
         navigate("/signcompany")
         setLoadingSignIn(false);

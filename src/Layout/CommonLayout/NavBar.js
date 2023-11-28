@@ -168,7 +168,7 @@ const NavBar = (props) => {
         id="navigation"
       >
         <Container fluid className="custom-container">
-          <Link className="navbar-brand text-dark fw-bold me-auto" to="/layout3">
+          <Link className="navbar-brand text-dark fw-bold me-auto" to="/home">
             <img src={darkLogo} height="22" alt="" className="logo-dark" />
             <img src={lightLogo} height="22" alt="" className="logo-light" />
           </Link>
@@ -220,7 +220,7 @@ const NavBar = (props) => {
                 </ul>
               </NavItem> */}
               <NavItem>
-                <Link className="nav-link" to="/layout3">
+                <Link className="nav-link" to="/home">
                   Home
                 </Link>
               </NavItem>

@@ -142,7 +142,7 @@ const SignCompany = () => {
                 localStorage.setItem('companyId', userData.data.companyId);
                 toast.success("Create company info sucessfully! Welcome to WeHire")
                 setLoadingCreate(false);
-                navigate("/layout3");
+                navigate("/home");
             } catch (error) {
                 // Handle errors (show an error message or log the error)
                 console.error('Error creating company:', error);
@@ -408,7 +408,7 @@ const SignCompany = () => {
                                                                     <p className="mb-0">
                                                                         {" "}
                                                                         <Link
-                                                                            to="/layout3"
+                                                                            to="/home"
                                                                             onClick={handleSkipClick}
 
                                                                             className="fw-medium text-white text-decoration-underline"
