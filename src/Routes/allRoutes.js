@@ -209,9 +209,9 @@ const userRoutes = [
   { path: "/aboutus", component: <AboutUs /> },
 
   //Home Section
-  { path: "/layout3", component: <Layout3 /> },
+  { path: "/home", component: <Layout3 /> },
   { path: "/layout2", component: <Layout1 /> },
-  { path: "/", component: <Layout2 /> },
+  { path: "/", component: <Layout3 /> },
 ];
 
 const authRoutes = [
