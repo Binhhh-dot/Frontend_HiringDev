@@ -115,6 +115,7 @@ const ProjectDetailDesciption = () => {
   const [listStartDay, setListStartDay] = useState([]);
   const [listEndDay, setListEndDay] = useState([]);
   const [isInputEditable, setIsInputEditable] = useState([]);
+  const [isToastPaid, setIsToastPaid] = useState(false);
   const [currentMonthIndex, setCurrentMonthIndex] = useState(null);
   const [minDateDuration, setMinDateDuration] = useState();
   const [maxDateDuration, setMaxDateDuration] = useState();
@@ -158,12 +159,17 @@ const ProjectDetailDesciption = () => {
   const executePayment = async (paymentId, payerId) => {
     try {
       const response = await paymentServices.executePayment(paymentId, payerId);
+      console.log("response21312312312312312312312312");
       console.log(response);
-      toast.success("Payment successfully")
       setLoadPayPeriod(!loadPayPeriod);
-      setLoadingPaynow(false)
       setShowPopup(false)
+      setLoadingPaynow(false)
       setLoading(false)
+      if (!isToastPaid) {
+        toast.success("Payment successfully")
+        setIsToastPaid(true);
+      }
+
     } catch (error) {
       console.error('Error executing payment:', error);
       // Xử lý lỗi nếu cần thiết
@@ -586,15 +592,18 @@ const ProjectDetailDesciption = () => {
       console.log(response);
       if (response.data.code === 200) {
         console.log("mo cua so")
-        const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
+        const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=800, height=800, top=100, left=600';
         const popupWindow = window.open(response.data.data, "popupWindow", windowFeatures);
+        let checkPayed = false;
         function checkPopupStatus() {
           if (popupWindow && popupWindow.closed) {
             console.log("Cửa sổ đã đóng");
-            setLoadingPaynow(false)
-            setShowPopup(false)
-            setLoading(false)
             clearInterval(intervalId);
+            setTimeout(() => {
+              setLoadingPaynow(false);
+              setShowPopup(false);
+              setLoading(false);
+            }, 3000);
           } else {
             console.log("Cửa sổ đang mở");
             // Thực hiện hành động nếu cửa sổ vẫn đang mở (nếu cần)
@@ -605,11 +614,14 @@ const ProjectDetailDesciption = () => {
         window.addEventListener('message', (event) => {
           const { PayerID, paymentId } = event.data;
           if (PayerID && paymentId) {
+            setLoadingPaynow(true)
+            setShowPopup(true)
+            setLoading(true)
             event.source.close();
             executePayment(paymentId, PayerID);
           }
         });
-
+        setIsToastPaid(false);
       }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -637,12 +649,15 @@ const ProjectDetailDesciption = () => {
         console.log(response.data.data.payPeriodId)
         const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
         setPayRollDetail(response2.data.data);
+        setLoading(false);
       }
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
       console.log("payperiod loi")
       setPayPeriodDetail(null);
       setPayRollDetail([]);
+      setLoading(false);
     }
   }
 
@@ -711,8 +726,6 @@ const ProjectDetailDesciption = () => {
       const parts = temp.split('.');
       const newDate = `${parts[2]}-${parts[1]}-25`;
       fetchDetailPayPeriod(newDate)
-      console.log("set Calendar")
-
     }
   }, [loadPayPeriod]);
 
@@ -891,6 +904,7 @@ const ProjectDetailDesciption = () => {
         console.log("import")
         console.log(response)
         toast.success("Import successfully")
+        console.log(currentMonthIndex)
         setLoadingImportExel(false);
       }
       setLoadPayPeriod(!loadPayPeriod);
@@ -910,6 +924,8 @@ const ProjectDetailDesciption = () => {
       const formData2 = new FormData();
       formData2.append('file', file);
       importExcel(formData2);
+    } else {
+      setLoadingImportExel(false);
     }
     setKey(Date.now())
     setLoadingImportExel(false);
