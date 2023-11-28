@@ -1,14 +1,10 @@
 import React, { useEffect } from "react";
 import Routes from "./Routes/index";
 
-
 //import Custom Style scss
 import "./assets/scss/themes.scss";
 
 function App() {
-  useEffect(() => {
-    console.log("sssssssssssssssssssssssss")
-  }, []);
   return (
     <React.Fragment>
       <Routes />

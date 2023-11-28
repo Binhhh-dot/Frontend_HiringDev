@@ -219,7 +219,10 @@ const JobDetailsDescription = () => {
         setShowCandidateList(true);
       }
 
-      if (response.data.data.statusString === "Rejected") {
+      if (
+        response.data.data.statusString === "Closed" ||
+        response.data.data.statusString === "Completed"
+      ) {
         setShowCandidateList(false);
         setIsVisibleListDevAfter(true);
       }
@@ -542,10 +545,10 @@ const JobDetailsDescription = () => {
                       ? "badge bg-danger text-light fs-12"
                       : hiringRequestDetail.statusString === "Cancelled"
                       ? "badge bg-danger text-light fs-12"
-                      : hiringRequestDetail.statusString === "Finished"
-                      ? "badge bg-primary text-light fs-12"
-                      : hiringRequestDetail.statusString === "Complete"
-                      ? "badge bg-primary text-light fs-12"
+                      : hiringRequestDetail.statusString === "Closed"
+                      ? "badge bg-secondary text-light fs-12"
+                      : hiringRequestDetail.statusString === "Completed"
+                      ? "badge bg-newGreen text-light fs-12"
                       : hiringRequestDetail.statusString === "Saved"
                       ? "badge bg-info text-light fs-12"
                       : ""
@@ -556,7 +559,8 @@ const JobDetailsDescription = () => {
                 </span>
 
                 {hiringRequestDetail.statusString === "Waiting Approval" ||
-                hiringRequestDetail.statusString === "Rejected" ? (
+                hiringRequestDetail.statusString === "Closed" ||
+                hiringRequestDetail.statusString === "Completed" ? (
                   <FontAwesomeIcon
                     icon={faEllipsisVertical}
                     size="xl"
@@ -601,7 +605,7 @@ const JobDetailsDescription = () => {
                           onClick={openCancelAfterModal}
                         >
                           <span style={{ fontSize: "15px" }}>
-                            Cancel Request
+                            Closed Request
                           </span>
                         </button>
                       </DropdownItem>
@@ -1373,10 +1377,7 @@ const JobDetailsDescription = () => {
                             <span
                               className={
                                 devHasBeenSentNew.selectedDevStatus ===
-                                "Waiting HR Approval"
-                                  ? "badge bg-warning text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
-                                    "Interview Scheduled"
+                                "Interview Scheduled"
                                   ? "badge bg-primary text-light"
                                   : devHasBeenSentNew.selectedDevStatus ===
                                     "Rejected"
@@ -1385,14 +1386,20 @@ const JobDetailsDescription = () => {
                                     "Waiting Interview"
                                   ? "badge bg-warning text-light"
                                   : devHasBeenSentNew.selectedDevStatus ===
-                                    "Waiting Dev Approval"
-                                  ? "badge bg-warning text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
-                                    "Interviewing"
-                                  ? "badge bg-info text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
                                     "Under Consideration"
                                   ? "badge bg-blue text-light"
+                                  : devHasBeenSentNew.selectedDevStatus ===
+                                    "Onboarding"
+                                  ? "badge bg-newGreen text-light"
+                                  : devHasBeenSentNew.selectedDevStatus ===
+                                    "Contract Processing"
+                                  ? "badge bg-warning text-light"
+                                  : devHasBeenSentNew.selectedDevStatus ===
+                                    "Contract Failed"
+                                  ? "badge bg-danger text-light"
+                                  : devHasBeenSentNew.selectedDevStatus ===
+                                    "Request Closed"
+                                  ? "badge bg-danger text-light"
                                   : ""
                               }
                             >
@@ -1426,8 +1433,6 @@ const JobDetailsDescription = () => {
       {/* LIST DEV ACCEPT AFTER REJECT */}
 
       <div>
-        <div>{isVisibleListDevAfter && <h3>List Developer Accepted</h3>}</div>
-
         {isVisibleListDevAfter &&
           devHasBeenSent.map((devHasBeenSentNew, key) => (
             <div
@@ -1570,23 +1575,29 @@ const JobDetailsDescription = () => {
                         <span
                           className={
                             devHasBeenSentNew.selectedDevStatus ===
-                            "Waiting HR Approval"
-                              ? "badge bg-warning text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
-                                "Interview Scheduled"
+                            "Interview Scheduled"
                               ? "badge bg-primary text-light"
                               : devHasBeenSentNew.selectedDevStatus ===
-                                "HR Rejected"
+                                "Rejected"
                               ? "badge bg-danger text-light"
                               : devHasBeenSentNew.selectedDevStatus ===
                                 "Waiting Interview"
                               ? "badge bg-warning text-light"
                               : devHasBeenSentNew.selectedDevStatus ===
-                                "Waiting Dev Approval"
+                                "Under Consideration"
+                              ? "badge bg-blue text-light"
+                              : devHasBeenSentNew.selectedDevStatus ===
+                                "Onboarding"
+                              ? "badge bg-newGreen text-light"
+                              : devHasBeenSentNew.selectedDevStatus ===
+                                "Contract Processing"
                               ? "badge bg-warning text-light"
                               : devHasBeenSentNew.selectedDevStatus ===
-                                "Interviewing"
-                              ? "badge bg-info text-light"
+                                "Contract Failed"
+                              ? "badge bg-danger text-light"
+                              : devHasBeenSentNew.selectedDevStatus ===
+                                "Request Closed"
+                              ? "badge bg-danger text-light"
                               : ""
                           }
                         >
@@ -1742,7 +1753,7 @@ const JobDetailsDescription = () => {
                   Cancel
                 </Button>
                 <Button color="danger" onClick={handleCancelAfterRequest}>
-                  Reject Request
+                  Closed Request
                 </Button>{" "}
               </div>
             </div>
