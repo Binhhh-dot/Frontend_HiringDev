@@ -226,10 +226,9 @@ const NavBar = (props) => {
               </NavItem>
               <NavItem className="dropdown dropdown-hover">
                 <NavLink
-                  to="/#"
                   id="jobsdropdown"
                   role="button"
-                  onClick={() => setCompany(!company)}
+                // onClick={() => setCompany(!company)}
                 >
                   Company <div className="arrow-down"></div>
                 </NavLink>
@@ -275,13 +274,14 @@ const NavBar = (props) => {
                   <li className="nav-item dropdown dropdown-hover">
                     <Link
                       id="pagesdoropdown"
+                      to="/projectlist"
                       className="nav-link dropdown-toggle arrow-none"
-                      onClick={() => setPages(!pages)}
+                    // onClick={() => setPages(!pages)}
                     >
-                      Pages
-                      <div className="arrow-down"></div>
+                      Project List
+                      {/* <div className="arrow-down"></div> */}
                     </Link>
-                    <div
+                    {/* <div
                       className={classname(
                         "dropdown-menu dropdown-menu-lg dropdown-menu-center",
                         { show: pages }
@@ -291,141 +291,11 @@ const NavBar = (props) => {
                       <Row>
                         {role === "HR" && (
                           <>
-                            <Col lg={4}>
-                              <span className="dropdown-header">List</span>
-                              <Link
-                                className="dropdown-item"
-                                to="/hiringrequestlistincompanypartner"
-                              >
-                                List Hiring Request
-                              </Link>
-                              <Link
-                                className="dropdown-item"
-                                to="/hiringRequestListExpiredHR"
-                              >
-                                List Hiring Request Expired
-                              </Link>
-                            </Col>
-                            {/* <Link className="dropdown-item" to="/joblist">
-                              Job List
-                            </Link>
-                            <Link className="dropdown-item" to="/joblist2">
-                              Job List-2
-                            </Link>
-                            <Link className="dropdown-item" to="/jobgrid">
-                              Job Grid
-                            </Link>
-                            <Link className="dropdown-item" to="/jobgrid2">
-                              Job Grid-2
-                            </Link>
-                            <Link className="dropdown-item" to="/jobdetails">
-                              Job Details
-                            </Link>
-
-                            <Link className="dropdown-item" to="/jobscategories">
-                              Jobs Categories
-                            </Link> */}
-                            {/* <Link
-                          className="dropdown-item"
-                          to="/createhiringrequest"
-                        >
-                          Create hiring request
-                        </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/createInterview"
-                        >
-                          Create interview
-                        </Link> */}
-
-                            <Col lg={4}>
-                              {/* <Link
-                                className="dropdown-item"
-                                to="/developerinfo"
-                              > */}
-                              <span className="dropdown-header">Interview</span>
-
-                              <Link
-                                className="dropdown-item"
-                                to="/listInterviewHR"
-                                state={{ jobId: null }}
-                              >
-                                List Interview
-                              </Link>
-
-                              {/* <div>
-                        <Link className="dropdown-item" to="/developerlist">
-                          Developer List
-                        </Link>
-                        <Link className="dropdown-item" to="/developerinfo">
-                          Developer Info
-                        </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/createstaffaccount"
-                        >
-                          Create Staff Account
-                        </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/createdeveloperaccount"
-                        >
-                          Create Developer Account
-                        </Link>
-
-                        <Link
-                          className="dropdown-item"
-                          to="/createcompanyaccount"
-                        >
-                          Create Company Account
-                        </Link>
-
-                        <Link className="dropdown-item" to="/candidatelist">
-                          Candidate List
-                        </Link>
-                        <Link className="dropdown-item" to="/candidategrid">
-                          Candidate Grid
-                        </Link>
-                        <Link className="dropdown-item" to="/candidatedetails">
-                          Candidate Details
-                        </Link>
-                        <Link className="dropdown-item" to="/companylist">
-                          Company List
-                        </Link>
-                        <Link className="dropdown-item" to="/companydetails">
-                          Company Details
-                        </Link>
-
-                        <Link className="dropdown-item" to="/hiringrequestinhr">
-                          HiringRequest Details In HR
-                        </Link>
-
-                        <Link
-                          className="dropdown-item"
-                          to="/developerlistincompanypartner"
-                        >
-                          Developer List In Company
-                        </Link>
-                      </div> */}
-                            </Col>
-                            <Col lg={4}>
+                            <Col lg={12}>
                               <span className="dropdown-header">
                                 Hiring Request
                               </span>
 
-                              <Link
-                                className="dropdown-item"
-                                to="/createhiringrequest"
-                              >
-                                Create Hiring Request
-                              </Link>
-
-                              <Link
-                                className="dropdown-item"
-                                to="/createproject"
-                              >
-                                Create Project
-                              </Link>
 
                               <Link
                                 className="dropdown-item"
@@ -434,29 +304,7 @@ const NavBar = (props) => {
                                 Project List
                               </Link>
 
-                              {/* <div>
-                        <Link className="dropdown-item" to="/signup">
-                          Sign Up
-                        </Link>
-                        <Link className="dropdown-item" to="/signin">
-                          Sign In
-                        </Link>
-                        <Link className="dropdown-item" to="/signout">
-                          Sign Out
-                        </Link>
-                        <Link className="dropdown-item" to="/resetpassword">
-                          Reset Password
-                        </Link>
-                        <Link className="dropdown-item" to="/comingsoon">
-                          Coming Soon
-                        </Link>
-                        <Link className="dropdown-item" to="/error404">
-                          404 Error
-                        </Link>
-                        <Link className="dropdown-item" to="/components">
-                          Components
-                        </Link>
-                      </div> */}
+
                             </Col>
                           </>
                         )}
@@ -525,147 +373,24 @@ const NavBar = (props) => {
                               >
                                 List Interview
                               </Link>
-                              {/* <div>
-                        <Link className="dropdown-item" to="/developerlist">
-                          Developer List
-                        </Link>
-                        <Link className="dropdown-item" to="/developerinfo">
-                          Developer Info
-                        </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/createstaffaccount"
-                        >
-                          Create Staff Account
-                        </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/createdeveloperaccount"
-                        >
-                          Create Developer Account
-                        </Link>
 
-                        <Link
-                          className="dropdown-item"
-                          to="/createcompanyaccount"
-                        >
-                          Create Company Account
-                        </Link>
-
-                        <Link className="dropdown-item" to="/candidatelist">
-                          Candidate List
-                        </Link>
-                        <Link className="dropdown-item" to="/candidategrid">
-                          Candidate Grid
-                        </Link>
-                        <Link className="dropdown-item" to="/candidatedetails">
-                          Candidate Details
-                        </Link>
-                        <Link className="dropdown-item" to="/companylist">
-                          Company List
-                        </Link>
-                        <Link className="dropdown-item" to="/companydetails">
-                          Company Details
-                        </Link>
-
-                        <Link className="dropdown-item" to="/hiringrequestinhr">
-                          HiringRequest Details In HR
-                        </Link>
-
-                        <Link
-                          className="dropdown-item"
-                          to="/developerlistincompanypartner"
-                        >
-                          Developer List In Company
-                        </Link>
-                      </div> */}
                             </Col>
                             <Col lg={4}>
                               <span className="dropdown-header">
                                 Hiring Request
                               </span>
 
-                              {/* <div>
-                        <Link className="dropdown-item" to="/signup">
-                          Sign Up
-                        </Link>
-                        <Link className="dropdown-item" to="/signin">
-                          Sign In
-                        </Link>
-                        <Link className="dropdown-item" to="/signout">
-                          Sign Out
-                        </Link>
-                        <Link className="dropdown-item" to="/resetpassword">
-                          Reset Password
-                        </Link>
-                        <Link className="dropdown-item" to="/comingsoon">
-                          Coming Soon
-                        </Link>
-                        <Link className="dropdown-item" to="/error404">
-                          404 Error
-                        </Link>
-                        <Link className="dropdown-item" to="/components">
-                          Components
-                        </Link>
-                      </div> */}
+
                             </Col>
                           </>
                         )}
                       </Row>
-                    </div>
+                    </div> */}
                   </li>
                 </>
               )}
 
-              {/* <NavItem className="dropdown dropdown-hover">
-                <NavLink
-                  to="/#"
-                  id="productdropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  onClick={() => setBlog(!blog)}
-                >
-                  Blog
-                  <div className="arrow-down"></div>
-                </NavLink>
-                <ul
-                  className={classname("dropdown-menu dropdown-menu-center", {
-                    show: blog,
-                  })}
-                  aria-labelledby="productdropdown"
-                >
-                  <li>
-                    <Link className="dropdown-item" to="/blog">
-                      Blog
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/bloggrid">
-                      Blog Grid
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/blogmodern">
-                      Blog Modern
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/blogmasonary">
-                      Blog Masonry
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/blogdetails">
-                      Blog details
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/blogauther">
-                      Blog Author
-                    </Link>
-                  </li>
-                </ul>
-              </NavItem> */}
+
               <NavItem>
                 <Link className="nav-link" to="/contact">
                   Contact
