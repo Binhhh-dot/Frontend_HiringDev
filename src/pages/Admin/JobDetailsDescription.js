@@ -33,6 +33,8 @@ import hiringrequestService from "../../services/hiringrequest.service";
 // import developer from "../../../services/developer.services";
 import developer from "../../services/developer.services";
 import { Progress, Space } from "antd";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const JobDetailsDescription = () => {
   const { state } = useLocation();
@@ -173,6 +175,16 @@ const JobDetailsDescription = () => {
   const handleCancelRequest = () => {
     if (cancelReason.trim() === "") {
       console.log("Please enter a reason for cancellation.");
+      toast.warning("Please enter a reason for cancellation", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } else {
       fetchCancelHirringRequestStatus();
       //fetchHiringRequestDetailInManager();
@@ -193,9 +205,20 @@ const JobDetailsDescription = () => {
       fetchHiringRequestDetailInManager();
       console.log("li do cancel request:");
       console.log(cancelReason);
+      toast.success("Cancel Successfully!");
       return response;
     } catch (error) {
       console.error("Error fetching cancel hiring request", error);
+      toast.error("Cancel Hiring Request Failed", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
@@ -281,8 +304,19 @@ const JobDetailsDescription = () => {
       );
       setIsSendButtonVisibility(false);
       fetchDeveloperMatchingInManager();
+      toast.success("Send developer successfully!");
     } catch (error) {
       console.error("Error fetching send dev to HR:", error);
+      toast.error("Send developer to HR error", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
@@ -342,10 +376,20 @@ const JobDetailsDescription = () => {
       } else {
         setIsAcceptModalOpen(false);
       }
-
+      toast.success("Approved successfully!");
       return response;
     } catch (error) {
       console.error("Error fetching approved hiring request", error);
+      toast.error("Approved hiring request failed", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
@@ -453,8 +497,19 @@ const JobDetailsDescription = () => {
       );
       fetchHiringRequestDetailInManager();
       console.log(cancelReasonAfter);
+      toast.success("Close hiring request successfully!");
     } catch (error) {
-      console.error("Error fetching cancel hiring request after", error);
+      console.error("Error fetching closed hiring request after", error);
+      toast.error("Close hiring request failed", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
   //---------------------------------------------------------------------------------------
@@ -472,6 +527,16 @@ const JobDetailsDescription = () => {
   const handleCancelAfterRequest = () => {
     if (cancelReasonAfter.trim() === "") {
       console.log("Please enter a reason for cancellation.");
+      toast.warning("Please enter a reason for cancellation", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } else {
       fetchCancelHirringRequestStatusAfter();
       closeCancelAfterModal();

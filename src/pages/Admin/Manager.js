@@ -10,6 +10,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import SiderBarWeb from "./SlideBar/SiderBarWeb";
 import {
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "reactstrap";
+import {
   PieChartOutlined,
   DesktopOutlined,
   UserOutlined,
@@ -34,9 +40,6 @@ import {
   NavbarToggler,
   NavItem,
   NavLink,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
 } from "reactstrap";
 
 import { Link } from "react-router-dom";
@@ -162,88 +165,13 @@ const Manager = () => {
   // };
 
   // console.log(selectedKeys);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* <Sider
-        collapsed={collapsed}
-        width={250}
-        style={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}
-      >
-        <div className="d-flex mt-3 justify-content-between ms-3 me-3">
-          {showWeHire && (
-            <h2 className="mb-0" id="wehire">
-              WeHire
-            </h2>
-          )}
-          {isLeftIcon ? (
-            <div
-              style={{
-                width: "40px",
-                height: "40px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#f8f7fd",
-                borderRadius: "10px",
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faAngleLeft}
-                size="xl"
-                color="#6546D2"
-                onClick={toggleSidebar}
-              />
-            </div>
-          ) : (
-            <div
-              className="ms-2"
-              style={{
-                width: "40px",
-                height: "40px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#f8f7fd",
-                borderRadius: "10px",
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faAngleRight}
-                size="xl"
-                color="#6546D2"
-                onClick={toggleSidebar}
-              />
-            </div>
-          )}
-        </div>
-        <Menu
-          className="mt-4"
-          style={{ border: "0px" }}
-          defaultSelectedKeys={["menu-key/10"]}
-          selectedKeys={selectedKeys}
-          mode="inline"
-          onClick={handleMenuClick}
-        >
-          {items.map((item) =>
-            item.children ? (
-              <Menu.SubMenu
-                key={item.key}
-                icon={item.icon}
-                title={item.label}
-                onClick={() => handleSubMenuClick(item)}
-              >
-                {item.children.map((child) => (
-                  <Menu.Item key={child.key}>{child.label}</Menu.Item>
-                ))}
-              </Menu.SubMenu>
-            ) : (
-              <Menu.Item key={item.key} icon={item.icon}>
-                {item.label}
-              </Menu.Item>
-            )
-          )}
-        </Menu>
-      </Sider> */}
       <SiderBarWeb choose={"menu-key/10"}></SiderBarWeb>
       <Layout>
         <div
@@ -290,26 +218,60 @@ const Manager = () => {
                 borderRadius: "10px",
               }}
             >
-              <Link>
-                <img
-                  src={img0}
-                  className="ms-1"
+              <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                <DropdownToggle
+                  className="p-2 d-flex gap-3 align-items-center"
                   style={{
-                    borderRadius: "10px",
-                    height: "50px",
+                    height: "inherit",
+                    backgroundColor: "#6546D2",
+                    color: "white",
+
+                    cursor: "pointer",
+                    border: "0px",
                   }}
-                />
-              </Link>
-              <div className="me-1 d-flex flex-column align-items-center">
-                <span className="fs-18">Nik jone</span>
-                <span>Available</span>
-              </div>
+                >
+                  <div>
+                    <img
+                      src={img0}
+                      className="ms-1"
+                      style={{
+                        borderRadius: "10px",
+                        height: "50px",
+                      }}
+                    />
+                  </div>
+                  <div className="me-1 d-flex flex-column align-items-center">
+                    <span className="fs-18">Nik jone</span>
+                    <span>Available</span>
+                  </div>
+                </DropdownToggle>
+                <DropdownMenu
+                  style={{
+                    marginLeft: "-25px",
+                  }}
+                >
+                  <DropdownItem style={{ padding: "0px" }}>
+                    <div>
+                      <Link to="#" className="dropdown-item">
+                        Setting
+                      </Link>
+                    </div>
+                  </DropdownItem>
+
+                  <DropdownItem style={{ padding: "0px" }}>
+                    <div>
+                      <Link to="/signout" className="dropdown-item">
+                        Logout
+                      </Link>
+                    </div>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </div>
           </div>
         </div>
 
         <Content>
-          {/* {selectedKeys[0] === "menu-key/10" && ( */}
           <section
             className="section p-3 "
             style={{
@@ -329,7 +291,6 @@ const Manager = () => {
               </Row>
             </Container>
           </section>
-          {/* )} */}
         </Content>
         {/* <Footer>Footer</Footer> */}
       </Layout>

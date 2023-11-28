@@ -23,6 +23,7 @@ export default {
       getAll: "/Type",
       searchName: "",
     },
+
     projectType: {
       getAll: "/ProjectType?Status=${status}",
       getAllProjectType: "/ProjectType",
@@ -98,6 +99,7 @@ export default {
       changeStatusDevUnofficialInTaskDetailForStaff:
         "/AssignTask/ChangeStatusDevTask",
       getListDeveloperOnboardByProjectId: "/Developer/ByProject/${projectId}",
+      updateDeveloperByAdmin: "/Developer/ByAdmin/${developerId}",
     },
     interview: {
       createAnInterview: "/Interview",
@@ -184,7 +186,8 @@ export default {
     jobPosition: {
       createJobPosition: "/JobPosition",
       getJobPositionByProjectId: "/JobPosition/ByProject/${projectId}",
-      getJobPositionsWithHiringRequest: "/JobPosition/JobPositionsWithHiringRequest/${projectId}",
+      getJobPositionsWithHiringRequest:
+        "/JobPosition/JobPositionsWithHiringRequest/${projectId}",
       deleteJobPosition: "/JobPosition/${jobPosition}",
     },
     teamMeeting: {
@@ -207,9 +210,14 @@ export default {
       getWorkLogByPaySlipId: "/WorkLog/ByPaySlip/${paySlipId}",
       updateWorkLog: "/WorkLog",
     },
+
+    gender: {
+      getAllGender: "/Gender",
+    },
     payment: {
       createPayment: "/Payment/Create",
-      executePayment: "/Payment/Execute?paymentId=${paymentId}&payerId=${payerId}",
-    }
+      executePayment:
+        "/Payment/Execute?paymentId=${paymentId}&payerId=${payerId}",
+    },
   },
 };

@@ -60,13 +60,17 @@ import developerServices from "../../services/developer.services";
 import scheduleTypeService from ".//../../services/scheduleType";
 import Select from "react-select";
 import SliderBarWeb from "../Admin/SlideBar/SiderBarWeb";
+import skillService from "../../services/skill.service";
+import genderServices from "../../services/gender.services";
+import typeServices from "../../services/type.service";
+import levelServices from "../../services/level.service";
+import {
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "reactstrap";
 
-const normFile = (e) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
 const layout = {
   labelCol: {
     span: 8,
@@ -212,9 +216,7 @@ const ListAccountDeveloper = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response7 = await axios.get(
-          "https://wehireapi.azurewebsites.net/api/Gender"
-        );
+        const response7 = await genderServices.getAllGender();
         const genderList = response7.data.data;
         const options7 = genderList.map((gender) => ({
           value: gender.genderId, // src là giá trị
@@ -227,9 +229,7 @@ const ListAccountDeveloper = () => {
       }
 
       try {
-        const response = await axios.get(
-          "https://wehireapi.azurewebsites.net/api/Skill"
-        );
+        const response = await skillService.getAllSkill();
         const activeSkills = response.data.data.filter(
           (skill) => skill.statusString === "Active"
         );
@@ -243,9 +243,7 @@ const ListAccountDeveloper = () => {
       }
 
       try {
-        const response2 = await axios.get(
-          "https://wehireapi.azurewebsites.net/api/Type"
-        );
+        const response2 = await typeServices.getAllType();
         const activeTypes = response2.data.data.filter(
           (type) => type.statusString === "Active"
         );
@@ -260,9 +258,7 @@ const ListAccountDeveloper = () => {
       }
 
       try {
-        const response3 = await axios.get(
-          "https://wehireapi.azurewebsites.net/api/Level"
-        );
+        const response3 = await levelServices.getAllLevel();
         const activeLevels = response3.data.data.filter(
           (level) => level.statusString === "Active"
         );
@@ -308,9 +304,17 @@ const ListAccountDeveloper = () => {
   const [phoneNumberError, setPhoneNumberError] = useState(null);
   const [dateOfBirthError, setDateOfBirthError] = useState(null);
 
-  const handleOkUpdate = async () => {
+  const handleOKCreate = async () => {
     try {
       await handleCreateDev();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  const handleOKUpdate = async () => {
+    try {
+      await handleUpdateDev();
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -475,7 +479,194 @@ const ListAccountDeveloper = () => {
     }
   };
 
-  //-----------------------------------------------------------------------------------------------------
+  const handleUpdateDev = async () => {
+    // Kiểm tra xem có userID trong localStorage không
+    let check = true;
+    if (!document.getElementById("first-name").value) {
+      setFirstNameError("Please enter a first-name.");
+      check = false;
+    } else {
+      setFirstNameError(null);
+    }
+
+    if (!document.getElementById("last-name").value) {
+      setLastNameError("Please enter a last-name.");
+      check = false;
+    } else {
+      setLastNameError(null);
+    }
+
+    if (!document.getElementById("email").value) {
+      setEmailError("Please enter an email");
+      check = false;
+    } else {
+      setEmailError(null);
+    }
+
+    if (selectedOptions2.length === 0) {
+      setTypeError("Please select at least one type");
+      check = false;
+    } else {
+      setTypeError(null);
+    }
+
+    if (!selectedOptions3.value) {
+      setLevelError("Please select the level ");
+      check = false;
+    } else {
+      setLevelError(null);
+    }
+
+    if (!selectedOptions6.value) {
+      setEmploymentTypeError("Please select the employment type ");
+      check = false;
+    } else {
+      setEmploymentTypeError(null);
+    }
+
+    if (!selectedOptions7.value) {
+      setGenderError("Please select the gender");
+      check = false;
+    } else {
+      setGenderError(null);
+    }
+
+    // Kiểm tra lỗi cho Skill requirement
+    if (selectedOptions.length === 0) {
+      setSkillError("Please select at least one skill");
+      check = false;
+    } else {
+      setSkillError(null);
+    }
+
+    if (
+      !document.getElementById("avarage-salary").value ||
+      parseInt(document.getElementById("avarage-salary").value, 10) <= 0
+    ) {
+      setAvarageSalaryError("Please enter the avarage salary(greater than 0)");
+      check = false;
+    } else {
+      setAvarageSalaryError(null);
+    }
+
+    if (
+      !document.getElementById("year-of-experience").value ||
+      parseInt(document.getElementById("year-of-experience").value, 10) <= 0
+    ) {
+      setYearOfExperienceError(
+        "Please enter the year of experience(greater than 0)"
+      );
+      check = false;
+    } else {
+      setYearOfExperienceError(null);
+    }
+
+    if (!document.getElementById("phone-number").value) {
+      setPhoneNumberError("Please enter a phone number");
+      check = false;
+    } else {
+      setPhoneNumberError(null);
+    }
+
+    // Kiểm tra lỗi cho Duration
+    if (!document.getElementById("date-of-birth").value) {
+      check = false;
+      setDateOfBirthError("Please enter the date of birth");
+    } else {
+      setDateOfBirthError(null);
+    }
+    if (check) {
+      try {
+        const firstName = document.getElementById("first-name").value;
+        const lastName = document.getElementById("last-name").value;
+        const email = document.getElementById("email").value;
+        const avarageSalary = document.getElementById("avarage-salary").value;
+        const yearOfExperience =
+          document.getElementById("year-of-experience").value;
+        const phoneNumber = document.getElementById("phone-number").value;
+        const dateOfBirth = document.getElementById("date-of-birth").value; // replace with actual value from the type dropdown
+        const levelRequireId = selectedOptions3.value ?? ""; // replace with actual value from the level dropdown
+        const scheduleTypeId = selectedOptions6.value ?? "";
+        const employmentTypeId = selectedOptions6.value ?? "";
+        const genderId = selectedOptions7.value ?? "";
+
+        const skillIds = selectedOptions.map((skill) => skill.value) ?? "";
+        const typeRequireId = selectedOptions2.map((type) => type.value) ?? "";
+
+        const formData = new FormData();
+
+        const response = await developerServices.updateDeveloperByAdmin(
+          firstName,
+          lastName,
+          email,
+          phoneNumber,
+          genderId,
+          dateOfBirth,
+          yearOfExperience,
+          avarageSalary,
+          scheduleTypeId,
+          employmentTypeId,
+          levelRequireId,
+          typeRequireId,
+          skillIds
+        );
+
+        console.log(response);
+        message.success({
+          content: "Account Created Successfully",
+          duration: 2,
+          onClose: () => {
+            console.log("Toast closed");
+          },
+          style: {
+            marginTop: "50px",
+            marginRight: "50px",
+          },
+        });
+
+        fetchDeveloperPaging();
+        setVisibleModal1(false);
+      } catch (error) {
+        console.error("Error create dev:", error);
+        message.error({
+          content: "Error creating account ",
+          duration: 2,
+          style: {
+            marginTop: "50px",
+            marginRight: "50px",
+          },
+        });
+      }
+    } else {
+    }
+  };
+  //--------------------------------------------------------------------------------------------------------------
+  // const handleUpdateDeveloperById = async () => {
+  //   const firstNameDev = document.getElementById("first-name-dev").value;
+  //   const lastNameDev = document.getElementById("last-name-dev").value;
+  //   const emailDev = document.getElementById("email-dev").value;
+  //   const phoneNumberDev = document.getElementById("phone-dev").value;
+  //   const passwordDev = document.getElementById("password-dev").value;
+  //   const dateOfBirthDev = document.getElementById("dateOfBirth-dev").value;
+  //   const yearOfExperienceDev = document.getElementById(
+  //     "yearOfExperience-dev"
+  //   ).value;
+  //   const averageSalaryDev = document.getElementById("averageSalary-dev").value;
+  //   const codeNameDev = document.getElementById("codeName-dev").value;
+  //   const summaryDev = document.getElementById("summary-dev").value;
+  //   const genderIdDev = document.getElementById("genderId-dev").value;
+  //   const levelIdDev = document.getElementById("levelId-dev").value;
+  //   const employmentTypeIdDev = document.getElementById(
+  //     "employmentTypeId-dev"
+  //   ).value;
+  //   const typesDev = document.getElementById("type-dev").value;
+  //   const skillsDev = document.getElementById("skill-dev").value;
+  //   const fileDev = document.getElementById("file-dev").value;
+
+  //   const fileDevByAdmin = fileDev.file[0];
+  // };
+
+  //--------------------------------------------------------------------------------------------------------------
   const [userImage3, setUserImage3] = useState(null);
   const [userDataDetail, setUserDataDetail] = useState({
     userId: "",
@@ -490,8 +681,6 @@ const ListAccountDeveloper = () => {
   const [userImage, setUserImage] = useState(null);
 
   const [avatar, setAvatar] = useState(null);
-
-  const [form] = Form.useForm();
 
   const handleChooseAvatar = () => {
     const inputElement = document.getElementById("profile-img-file-input");
@@ -517,8 +706,8 @@ const ListAccountDeveloper = () => {
     try {
       const response = await userSerrvices.getDeveloperById(userId);
       const {
-        lastName,
         firstName,
+        lastName,
         email,
         phoneNumber,
         password,
@@ -560,6 +749,8 @@ const ListAccountDeveloper = () => {
 
       if (response.data.data.userImage) {
         setUserImage3(response.data.data.userImage);
+      } else {
+        setUserImage3("");
       }
       // else {
       //   setUserImage3(userImage2)
@@ -607,6 +798,7 @@ const ListAccountDeveloper = () => {
     fetchDeveloperById();
   }, [hRInfo]);
 
+  //-----------------------------------------------------------------------------------------------------
   //Delete
   const [userId, setUserId] = useState(null);
 
@@ -652,6 +844,12 @@ const ListAccountDeveloper = () => {
       // Optionally, you can show an error message to the user
     }
   };
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
@@ -662,7 +860,6 @@ const ListAccountDeveloper = () => {
               backgroundColor: "#FFFF",
               height: "70px",
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
               borderRadius: "7px",
               boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
@@ -670,24 +867,14 @@ const ListAccountDeveloper = () => {
               marginRight: "30px",
               marginBottom: "0px",
             }}
-            className="mt-4"
+            className="mt-4 justify-content-end"
           >
-            <div style={{ backgroundColor: "white", width: "30%" }}>
-              <Search
-                className="ms-3"
-                placeholder="Type here to search"
-                onSearch={(value) => {
-                  console.log(value);
-                }}
-              />
-            </div>
-
             <div
               className="d-flex gap-4 align-items-center"
               style={{ height: "inherit" }}
             >
               <Space>
-                <Badge dot className="bell-icon">
+                <Badge dot>
                   <i
                     className="uil uil-bell"
                     style={{ color: "#8F78DF", fontSize: "20px" }}
@@ -695,7 +882,7 @@ const ListAccountDeveloper = () => {
                 </Badge>
               </Space>
               <Space>
-                <Badge dot className="bell-icon">
+                <Badge dot>
                   <i
                     className="uil uil-envelope-open"
                     style={{ color: "#8F78DF", fontSize: "20px" }}
@@ -712,13 +899,59 @@ const ListAccountDeveloper = () => {
                   borderRadius: "10px",
                 }}
               >
-                <div className="me-1 d-flex flex-column align-items-center">
-                  <span className="fs-18">Nik jone</span>
-                  <span>Available</span>
-                </div>
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                  <DropdownToggle
+                    className="p-2 d-flex gap-3 align-items-center"
+                    style={{
+                      height: "inherit",
+                      backgroundColor: "#6546D2",
+                      color: "white",
+
+                      cursor: "pointer",
+                      border: "0px",
+                    }}
+                  >
+                    <div>
+                      <img
+                        src={img0}
+                        className="ms-1"
+                        style={{
+                          borderRadius: "10px",
+                          height: "50px",
+                        }}
+                      />
+                    </div>
+                    <div className="me-1 d-flex flex-column align-items-center">
+                      <span className="fs-18">Nik jone</span>
+                      <span>Available</span>
+                    </div>
+                  </DropdownToggle>
+                  <DropdownMenu
+                    style={{
+                      marginLeft: "-25px",
+                    }}
+                  >
+                    <DropdownItem style={{ padding: "0px" }}>
+                      <div>
+                        <Link to="#" className="dropdown-item">
+                          Setting
+                        </Link>
+                      </div>
+                    </DropdownItem>
+
+                    <DropdownItem style={{ padding: "0px" }}>
+                      <div>
+                        <Link to="/signout" className="dropdown-item">
+                          Logout
+                        </Link>
+                      </div>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
               </div>
             </div>
           </div>
+
           <div
             style={{
               padding: "0px 5px 0px 5px",
@@ -799,7 +1032,12 @@ const ListAccountDeveloper = () => {
                       dataIndex="lastName"
                       key="lastName"
                     />
-                    <Column title="Email" dataIndex="email" key="email" />
+                    <Column
+                      title="Email"
+                      dataIndex="email"
+                      key="email"
+                      width={120}
+                    />
 
                     <Column
                       title="Gender"
@@ -810,7 +1048,7 @@ const ListAccountDeveloper = () => {
                       title="Year Of Experience"
                       dataIndex="yearOfExperience"
                       key="yearOfExperience"
-                      width={150}
+                      width={100}
                     />
                     <Column
                       title="Salary"
@@ -820,6 +1058,7 @@ const ListAccountDeveloper = () => {
                     />
 
                     <Column
+                      width={100}
                       title="Status"
                       dataIndex="devStatusString"
                       key="devStatusString"
@@ -877,6 +1116,7 @@ const ListAccountDeveloper = () => {
                 </div>
 
                 <Modal
+                  centered
                   visible={visibleModal4}
                   onOk={handleOkDelete}
                   onCancel={handleCancel}
@@ -934,15 +1174,24 @@ const ListAccountDeveloper = () => {
                 }}
               >
                 {hRInfo.userImage ? (
-                  <img
-                    src={hRInfo.userImage}
+                  <div
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "50%",
-                      marginBottom: "10px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      // flexDirection: "column",
                     }}
-                  />
+                  >
+                    <img
+                      src={hRInfo.userImage}
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        borderRadius: "50%",
+                        marginBottom: "10px",
+                      }}
+                    />
+                  </div>
                 ) : (
                   <div
                     style={{
@@ -1005,7 +1254,9 @@ const ListAccountDeveloper = () => {
                       hRInfo.devStatusString === "On Working"
                         ? "badge bg-warning text-light"
                         : hRInfo.devStatusString === "Selected On Request"
-                        ? "badge text-bg-light"
+                        ? "badge bg-info text-light"
+                        : hRInfo.devStatusString === "Available"
+                        ? "badge bg-success text-light"
                         : "badge text-bg-danger"
                     }
                   >
@@ -1017,7 +1268,7 @@ const ListAccountDeveloper = () => {
                   <span
                     className={
                       hRInfo.userStatusString === "Active"
-                        ? "badge rounded-pill text-bg-success"
+                        ? "badge  text-bg-success"
                         : hRInfo.userStatusString === "Selected On Request"
                         ? "badge bg-warning text-light"
                         : "badge text-bg-danger"
@@ -1034,7 +1285,7 @@ const ListAccountDeveloper = () => {
           <Modal
             centered
             visible={visibleModal1}
-            onOk={handleOkUpdate}
+            onOk={handleOKCreate}
             onCancel={handleCancel}
             width={1000}
             footer={null}
@@ -1292,7 +1543,7 @@ const ListAccountDeveloper = () => {
                             <button
                               type="button"
                               className="btn btn-primary btn-hover"
-                              onClick={handleOkUpdate}
+                              onClick={handleOKCreate}
                             >
                               Create
                             </button>
@@ -1306,6 +1557,7 @@ const ListAccountDeveloper = () => {
             </React.Fragment>
           </Modal>
 
+          {/* ------------------------------------------------------------------------------------------------- */}
           <Modal
             title="Update Account"
             centered
@@ -1316,6 +1568,31 @@ const ListAccountDeveloper = () => {
             width={1000}
           >
             <Form>
+              <div className="text-center d-flex justify-content-center mb-4">
+                <div className="mb-2" style={{ width: "90px", height: "90px" }}>
+                  <img
+                    src={avatar ? avatar.preview : img0}
+                    className="rounded-circle img-thumbnail profile-img"
+                    id="profile-img"
+                    alt=""
+                  />
+                  <div className="p-0 rounded-circle profile-photo-edit d-flex justify-content-end">
+                    <label className="profile-photo-edit avatar-xs">
+                      <i
+                        className="uil uil-edit"
+                        onClick={handleChooseAvatar}
+                      ></i>
+                    </label>
+                    <input
+                      type="file"
+                      id="profile-img-file-input"
+                      onChange={handlePreviewAvatar}
+                      style={{ display: "none" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="First Name" name="firstName">
@@ -1355,40 +1632,85 @@ const ListAccountDeveloper = () => {
                     <Input id="yearOfExperience-dev" />
                   </Form.Item>
                 </Col>
+
                 <Col span={12}>
                   <Form.Item label="Average Salary" name="average-salary">
                     <Input id="averageSalary-dev" />
                   </Form.Item>
                 </Col>
+
+                <Col span={12}>
+                  <Form.Item label="Code Name" name="codeName-dev">
+                    <Input id="codeName-dev" />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item label="Summary" name="summary-dev">
+                    <Input id="summary-dev" />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item label="Gender" name="gender-dev">
+                    <Select
+                      options={options7}
+                      value={selectedOptions7}
+                      onChange={handleChange7}
+                      className="Select Select--level-highest"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item label="Level" name="level-dev">
+                    <Select
+                      options={options3}
+                      value={selectedOptions3}
+                      onChange={handleChange3}
+                      className="Select Select--level-highest"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item label="Employment Type" name="employmentType-dev">
+                    <Select
+                      options={options6}
+                      value={selectedOptions6}
+                      onChange={handleChange6}
+                      className="Select Select--level-highest"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item label="Type Dev" name="type-dev">
+                    <Select
+                      options={options2}
+                      value={selectedOptions2}
+                      onChange={handleChange2}
+                      className="Select Select--level-highest"
+                      style={{ maxHeight: "2000px", overflowY: "auto" }}
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item label="Skill Dev" name="skill-dev">
+                    <Select
+                      isMulti
+                      options={options}
+                      value={selectedOptions}
+                      onChange={handleChange}
+                      className="Select Select--level-high"
+                    />
+                  </Form.Item>
+                </Col>
               </Row>
 
-              <div className="text-center">
-                <div className="mb-4 profile-user">
-                  <img
-                    src={avatar ? avatar.preview : userImage}
-                    className="rounded-circle img-thumbnail profile-img"
-                    id="profile-img"
-                    alt=""
-                  />
-                  <div className="p-0 rounded-circle profile-photo-edit">
-                    <label className="profile-photo-edit avatar-xs">
-                      <i
-                        className="uil uil-edit"
-                        onClick={handleChooseAvatar}
-                      ></i>
-                    </label>
-                    <input
-                      type="file"
-                      id="profile-img-file-input"
-                      onChange={handlePreviewAvatar}
-                      style={{ display: "none" }}
-                    />
-                  </div>
-                </div>
-              </div>
-
               <div className="text-end">
-                <Button type="primary" onClick={handleOkUpdate}>
+                <Button type="primary" onClick={handleOKUpdate}>
                   Update
                 </Button>
               </div>
