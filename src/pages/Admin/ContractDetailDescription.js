@@ -47,6 +47,7 @@ const ContractDetailDescription = () => {
       response = await contractServices.confirmContract(state.contractId);
       console.log(response.data.data);
       console.log("Confirm OK");
+      fetchContractDetailById();
     } catch (error) {
       console.error("Error fetching confirm contract detail", error);
     }
@@ -55,8 +56,8 @@ const ContractDetailDescription = () => {
 
   const conFirmContract = () => {
     fetchconfirmContract();
-    setConfirmVisible(false);
-    fetchContractDetailById();
+    //setConfirmVisible(false);
+    // fetchContractDetailById();
   };
 
   //---------------------------------------------------------------------------------------

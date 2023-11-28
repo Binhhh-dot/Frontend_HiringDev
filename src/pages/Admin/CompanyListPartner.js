@@ -256,60 +256,60 @@ const CompanyListPartner = () => {
                                   <div
                                     className="mt-2 d-flex justify-content-center p-2 fs-20 "
                                     style={{
-                                      backgroundColor: "#EFF0F2",
-                                      borderRadius: "6px",
                                       fontWeight: "500",
-
-                                      boxShadow:
-                                        "rgba(149, 157, 165, 0.2) 0px 8px 24px",
                                     }}
                                   >
                                     {selectCompanyDetail.companyName}
                                   </div>
                                 </div>
+
                                 <div
                                   className="d-flex justify-content-around mb-2"
                                   style={{ width: "100%" }}
                                 >
-                                  <div
-                                    style={{
-                                      width: "20%",
-                                      borderRadius: "8px",
-                                    }}
-                                    className="p-2 border border-2"
-                                  >
-                                    <span className="text-muted">Email</span>
-                                    <br />
-                                    <span style={{ fontWeight: "500" }}>
-                                      {selectCompanyDetail.companyEmail}
-                                    </span>
-                                  </div>
-                                  <div
-                                    style={{
-                                      width: "20%",
-                                      borderRadius: "8px",
-                                    }}
-                                    className="p-2 border border-2"
-                                  >
-                                    <span className="text-muted">Phone</span>
-                                    <br />
-                                    <span style={{ fontWeight: "500" }}>
-                                      {selectCompanyDetail.phoneNumber}
-                                    </span>
+                                  <div style={{ width: "30%" }}>
+                                    <p className="mb-0 text-muted">Email</p>
+                                    <div
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                      className="d-flex align-items-center p-2 border border-2"
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.companyEmail}
+                                      </span>
+                                    </div>
                                   </div>
 
-                                  <div
-                                    style={{
-                                      width: "20%",
-                                      borderRadius: "8px",
-                                    }}
-                                    className="p-2 border border-2"
-                                  >
-                                    <span className="text-muted">Address</span>
-                                    <br />
-                                    <span style={{ fontWeight: "500" }}>
-                                      {selectCompanyDetail.address}
-                                    </span>
+                                  <div style={{ width: "30%" }}>
+                                    <p className="mb-0 text-muted">Phone</p>
+                                    <div
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                      className="p-2 border border-2"
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.phoneNumber}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <div style={{ width: "30%" }}>
+                                    <p className="mb-0 text-muted">Address</p>
+                                    <div
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                      className="p-2 border border-2"
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.address}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -320,53 +320,71 @@ const CompanyListPartner = () => {
                             <Col lg={12}>
                               <div className="d-flex gap-5">
                                 <div
-                                  className="d-flex flex-column gap-5"
+                                  className="d-flex flex-column gap-4"
                                   style={{ width: "50%" }}
                                 >
-                                  <div
-                                    className="p-2 border border-2"
-                                    style={{ borderRadius: "8px" }}
-                                  >
-                                    <span className="text-muted">Country</span>
-                                    <br />
-                                    <span style={{ fontWeight: "500" }}>
-                                      {selectCompanyDetail.country}
-                                    </span>
+                                  <div>
+                                    <p className="mb-0 text-muted">Country</p>
+                                    <div
+                                      className="p-2 border border-2"
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.country}
+                                      </span>
+                                    </div>
                                   </div>
-                                  <div
-                                    className="p-2 border border-2"
-                                    style={{ borderRadius: "8px" }}
-                                  >
-                                    <span className="text-muted">Rating</span>
-                                    <br />
-                                    <span style={{ fontWeight: "500" }}>
-                                      {selectCompanyDetail.rating}
-                                    </span>
+
+                                  <div>
+                                    <p className="mb-0 text-muted">Rating</p>
+                                    <div
+                                      className="p-2 border border-2"
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.rating}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
                                 <div
                                   style={{ width: "50%" }}
-                                  className="d-flex flex-column gap-5"
+                                  className="d-flex flex-column gap-4"
                                 >
-                                  <div
-                                    className="p-2 border border-2"
-                                    style={{ borderRadius: "8px" }}
-                                  >
-                                    <span className="text-muted">HR Name</span>
-                                    <br />
-                                    <span style={{ fontWeight: "500" }}>
-                                      {selectCompanyDetail.hrFullName}
-                                    </span>
+                                  <div>
+                                    <p className="mb-0 text-muted">HR Name</p>
+                                    <div
+                                      className="p-2 border border-2"
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.hrFullName}
+                                      </span>
+                                    </div>
                                   </div>
-                                  <div
-                                    className="p-2 border border-2"
-                                    style={{ borderRadius: "8px" }}
-                                  >
-                                    <span className="text-muted">Status</span>
-                                    <br />
-                                    <span style={{ fontWeight: "500" }}>
-                                      {selectCompanyDetail.statusString}
-                                    </span>
+
+                                  <div>
+                                    <p className="mb-0 text-muted">Status</p>
+                                    <div
+                                      className="p-2 border border-2"
+                                      style={{
+                                        borderRadius: "8px",
+                                        backgroundColor: "#EFF0F2",
+                                      }}
+                                    >
+                                      <span style={{ fontWeight: "500" }}>
+                                        {selectCompanyDetail.statusString}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>

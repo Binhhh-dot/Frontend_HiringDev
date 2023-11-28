@@ -212,6 +212,13 @@
    */
  
   /* CSS */
+
+.project-description p {
+ margin-bottom: 0px;
+}
+
+
+
 .button-matchingdev-pushable {
     position: relative;
     border: none;

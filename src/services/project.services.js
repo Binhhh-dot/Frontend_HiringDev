@@ -68,8 +68,7 @@ const updateProject = async (
   ProjectName,
   Description,
   StartDate,
-  EndDate,
-  FileImage
+  EndDate
 ) => {
   const serviceUrl = urlConstant.endpoint.project.updateProject.replace(
     "${projectId}",
@@ -82,7 +81,6 @@ const updateProject = async (
     Description,
     StartDate,
     EndDate,
-    FileImage,
   });
 
   return response;

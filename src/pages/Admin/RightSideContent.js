@@ -201,6 +201,18 @@ const RightSideContent = () => {
                   </div>
                 </div>
               </li>
+
+              <li>
+                <div className="d-flex mt-4">
+                  <i className="uil uil-users-alt icon bg-primary-subtle text-primary"></i>
+                  <div className="ms-3">
+                    <h6 className="fs-14 mb-2">No. Developer</h6>
+                    <p className="text-muted mb-0">
+                      {hiringRequestDetailOverview.numberOfDev}
+                    </p>
+                  </div>
+                </div>
+              </li>
             </ul>
             {/* <div className="mt-3">
               <Link
