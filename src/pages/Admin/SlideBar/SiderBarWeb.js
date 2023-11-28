@@ -65,15 +65,15 @@ const SiderBarWeb = ({ choose }) => {
       ],
       className: "option-2",
     },
-    {
-      label: "Team",
-      key: "menu-key/sub-menu-key2",
-      icon: <TeamOutlined />,
-      children: [
-        { label: "Team 1", key: "menu-key/sub-menu-key2/6" },
-        { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
-      ],
-    },
+    // {
+    //   label: "Team",
+    //   key: "menu-key/sub-menu-key2",
+    //   icon: <TeamOutlined />,
+    //   children: [
+    //     { label: "Team 1", key: "menu-key/sub-menu-key2/6" },
+    //     { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
+    //   ],
+    // },
 
     {
       label: "Hiring Request",

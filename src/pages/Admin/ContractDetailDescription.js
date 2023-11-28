@@ -21,6 +21,8 @@ import {
 
 import { Link, Navigate, useLocation } from "react-router-dom";
 import contractServices from "../../services/contract.services";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const ContractDetailDescription = () => {
   const { state } = useLocation();
   const [contractDetail, setContractDetail] = useState({});
@@ -33,8 +35,11 @@ const ContractDetailDescription = () => {
       response = await contractServices.getContractById(state.contractId);
       console.log(response.data.data);
       setContractDetail(response.data.data);
+
       if (response.data.data.statusString == "Pending") {
         setConfirmVisible(true);
+      } else {
+        setConfirmVisible(false);
       }
     } catch (error) {
       console.error("Error fetching contract detail", error);
@@ -48,8 +53,19 @@ const ContractDetailDescription = () => {
       console.log(response.data.data);
       console.log("Confirm OK");
       fetchContractDetailById();
+      toast.success("Confirm contract successfully!");
     } catch (error) {
       console.error("Error fetching confirm contract detail", error);
+      toast.error("Confirm contract failed", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
   //---------------------------------------------------------------------------------------

@@ -194,13 +194,31 @@ const onbardingDeveloper = async (requestId, developerId) => {
 };
 
 const getListDeveloperOnboardByProjectId = async (projectId) => {
-  const serviceUrl = urlConstant.endpoint.developer.getListDeveloperOnboardByProjectId
-    .replace("${projectId}", projectId);
+  const serviceUrl =
+    urlConstant.endpoint.developer.getListDeveloperOnboardByProjectId.replace(
+      "${projectId}",
+      projectId
+    );
   const response = await utils.axiosLocalHost.get(serviceUrl, {
-    projectId
+    projectId,
   });
   return response;
-}
+};
+
+const updateDeveloperByAdmin = async (developerId, formData) => {
+  const serviceUrl =
+    urlConstant.endpoint.developer.updateDeveloperByAdmin.replace(
+      "${developerId}",
+      developerId
+    );
+  const config = {
+    header: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config);
+  return response;
+};
 
 export default {
   GetAllSelectedDevByHR,
@@ -219,5 +237,6 @@ export default {
   removeOutOfWaitingInterview,
   sendDevToHRNew,
   onbardingDeveloper,
-  getListDeveloperOnboardByProjectId
+  getListDeveloperOnboardByProjectId,
+  updateDeveloperByAdmin,
 };
