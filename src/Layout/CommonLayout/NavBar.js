@@ -25,6 +25,7 @@ import jobImage from "../../assets/images/featured-job/img-01.png";
 import profileImage from "../../assets/images/profile.jpg";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import userSerrvices from "../../services/user.serrvices";
 
 const NavBar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,6 +47,8 @@ const NavBar = (props) => {
   //scroll navbar
   const [navClass, setnavClass] = useState(false);
   const [role, setRole] = useState(null);
+  const [name, setName] = useState(null);
+  const [imgUser, setImgUser] = useState(null);
   useEffect(() => {
     window.addEventListener("scroll", scrollNavigation, true);
     const role = localStorage.getItem("role");
@@ -77,6 +80,7 @@ const NavBar = (props) => {
       setnavClass("");
     }
   }
+
   //menu activation
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -95,6 +99,23 @@ const NavBar = (props) => {
       activateParentDropdown(matchingMenuItem);
     }
   }, [props.router.location.pathname]);
+
+  const fetchUserDetail = async () => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      try {
+        const response = await userSerrvices.getUserById(userId);
+        setName(response.data.data.firstName);
+        setImgUser(response.data.data.userImage);
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu người dùng:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetail();
+  }, []);
 
   const removeActivation = (items) => {
     for (var i = 0; i < items.length; ++i) {
@@ -813,14 +834,14 @@ const NavBar = (props) => {
                   aria-expanded="false"
                 >
                   <img
-                    src={profileImage}
+                    src={imgUser || profileImage}
                     alt="mdo"
                     width="35"
                     height="35"
                     className="rounded-circle me-1"
                   />{" "}
                   <span className="d-none d-md-inline-block fw-medium">
-                    Hi, Jennifer
+                    Hi, {name}
                   </span>
                 </DropdownToggle>
                 <DropdownMenu

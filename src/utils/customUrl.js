@@ -1,5 +1,5 @@
-const REDIRECT_URL_CREATEMEETING = "http://localhost:3000/callback";
-const REDIRECT_URL_PAYMENT = "http://localhost:3000";
+const REDIRECT_URL_CREATEMEETING = "https://frontend-hiring-dev.vercel.app/callback";
+const REDIRECT_URL_PAYMENT = "https://frontend-hiring-dev.vercel.app";
 
 export default {
     redirectUrlCreateMeetting: REDIRECT_URL_CREATEMEETING,

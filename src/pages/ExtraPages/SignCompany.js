@@ -93,6 +93,7 @@ const SignCompany = () => {
     const handleSignUp = async (e) => {
         e.preventDefault();
         setLoadingCreate(true);
+        let check = true;
         const formData2 = new FormData();
         const userId = localStorage.getItem('userId');
         formData2.append('companyName', formData.companyName);
@@ -130,25 +131,27 @@ const SignCompany = () => {
         if (!avatar2) {
             toast.error("You forgot to enter the company's image!")
         }
-
-        try {
-            // Make API request
-            const response = await companyServices.createCompany(formData2);
-            // Handle the response (you can show a success message or redirect to another page)
-            console.log('API Response:', response.data);
-            const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
-            const userData = responseUser.data;
-            localStorage.setItem('companyId', userData.data.companyId);
-            toast.success("Create company info sucessfully! Welcome to WeHire")
-            setLoadingCreate(false);
-            navigate("/layout3");
-        } catch (error) {
-            // Handle errors (show an error message or log the error)
-            console.error('Error creating company:', error);
-            console.log(error.response.data);
-            toast.error(error.response.data.message)
-            setLoadingCreate(false);
+        if (check) {
+            try {
+                // Make API request
+                const response = await companyServices.createCompany(formData2);
+                // Handle the response (you can show a success message or redirect to another page)
+                console.log('API Response:', response.data);
+                const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+                const userData = responseUser.data;
+                localStorage.setItem('companyId', userData.data.companyId);
+                toast.success("Create company info sucessfully! Welcome to WeHire")
+                setLoadingCreate(false);
+                navigate("/layout3");
+            } catch (error) {
+                // Handle errors (show an error message or log the error)
+                console.error('Error creating company:', error);
+                console.log(error.response.data);
+                toast.error(error.response.data.message)
+                setLoadingCreate(false);
+            }
         }
+        setLoadingCreate(false);
     };
 
 
