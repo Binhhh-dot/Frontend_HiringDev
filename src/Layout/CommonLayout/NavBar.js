@@ -274,14 +274,14 @@ const NavBar = (props) => {
                   <li className="nav-item dropdown dropdown-hover">
                     <Link
                       id="pagesdoropdown"
-                      to="/projectlist"
+                      // to="/projectlist"
                       className="nav-link dropdown-toggle arrow-none"
                     // onClick={() => setPages(!pages)}
                     >
-                      Project List
-                      {/* <div className="arrow-down"></div> */}
+                      Page
+                      <div className="arrow-down"></div>
                     </Link>
-                    {/* <div
+                    <div
                       className={classname(
                         "dropdown-menu dropdown-menu-lg dropdown-menu-center",
                         { show: pages }
@@ -385,7 +385,7 @@ const NavBar = (props) => {
                           </>
                         )}
                       </Row>
-                    </div> */}
+                    </div>
                   </li>
                 </>
               )}
