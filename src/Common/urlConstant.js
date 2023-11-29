@@ -100,6 +100,7 @@ export default {
         "/AssignTask/ChangeStatusDevTask",
       getListDeveloperOnboardByProjectId: "/Developer/ByProject/${projectId}",
       updateDeveloperByAdmin: "/Developer/ByAdmin/${developerId}",
+      deleteDeveloper: "",
     },
     interview: {
       createAnInterview: "/Interview",

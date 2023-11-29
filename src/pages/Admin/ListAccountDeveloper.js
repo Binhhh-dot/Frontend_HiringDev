@@ -57,7 +57,6 @@ import img0 from "../../assets/images/user/img-00.jpg";
 import axios from "axios";
 import employmentTypeServices from "../../services/employmentType.services";
 import developerServices from "../../services/developer.services";
-import scheduleTypeService from ".//../../services/scheduleType";
 import Select from "react-select";
 import SliderBarWeb from "../Admin/SlideBar/SiderBarWeb";
 import skillService from "../../services/skill.service";
@@ -287,6 +286,7 @@ const ListAccountDeveloper = () => {
         console.error("Error fetching employment typeName:", error);
       }
     };
+
     fetchData();
   }, []);
 
@@ -613,7 +613,7 @@ const ListAccountDeveloper = () => {
 
         console.log(response);
         message.success({
-          content: "Account Created Successfully",
+          content: "Account Update Successfully",
           duration: 2,
           onClose: () => {
             console.log("Toast closed");
@@ -627,9 +627,9 @@ const ListAccountDeveloper = () => {
         fetchDeveloperPaging();
         setVisibleModal1(false);
       } catch (error) {
-        console.error("Error create dev:", error);
+        console.error("Error update dev:", error);
         message.error({
-          content: "Error creating account ",
+          content: "Error update account ",
           duration: 2,
           style: {
             marginTop: "50px",
@@ -641,43 +641,9 @@ const ListAccountDeveloper = () => {
     }
   };
   //--------------------------------------------------------------------------------------------------------------
-  // const handleUpdateDeveloperById = async () => {
-  //   const firstNameDev = document.getElementById("first-name-dev").value;
-  //   const lastNameDev = document.getElementById("last-name-dev").value;
-  //   const emailDev = document.getElementById("email-dev").value;
-  //   const phoneNumberDev = document.getElementById("phone-dev").value;
-  //   const passwordDev = document.getElementById("password-dev").value;
-  //   const dateOfBirthDev = document.getElementById("dateOfBirth-dev").value;
-  //   const yearOfExperienceDev = document.getElementById(
-  //     "yearOfExperience-dev"
-  //   ).value;
-  //   const averageSalaryDev = document.getElementById("averageSalary-dev").value;
-  //   const codeNameDev = document.getElementById("codeName-dev").value;
-  //   const summaryDev = document.getElementById("summary-dev").value;
-  //   const genderIdDev = document.getElementById("genderId-dev").value;
-  //   const levelIdDev = document.getElementById("levelId-dev").value;
-  //   const employmentTypeIdDev = document.getElementById(
-  //     "employmentTypeId-dev"
-  //   ).value;
-  //   const typesDev = document.getElementById("type-dev").value;
-  //   const skillsDev = document.getElementById("skill-dev").value;
-  //   const fileDev = document.getElementById("file-dev").value;
 
-  //   const fileDevByAdmin = fileDev.file[0];
-  // };
-
-  //--------------------------------------------------------------------------------------------------------------
   const [userImage3, setUserImage3] = useState(null);
-  const [userDataDetail, setUserDataDetail] = useState({
-    userId: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    phoneNumber: "",
-    dateOfBirth: "",
-    statusString: "",
-  });
+  const [userDataDetail, setUserDataDetail] = useState({});
   const [userImage, setUserImage] = useState(null);
 
   const [avatar, setAvatar] = useState(null);
@@ -696,32 +662,16 @@ const ListAccountDeveloper = () => {
   };
 
   // Update
-  const handleEditClick = (userId) => {
-    fetchUserDetail(userId);
+  const handleEditClick = (developerId) => {
+    fetchUserDetail(developerId);
     showModal2();
-    setUserId(userId);
+    //setUserId(developerId);
   };
 
-  const fetchUserDetail = async (userId) => {
+  const fetchUserDetail = async (developerId) => {
     try {
-      const response = await userSerrvices.getDeveloperById(userId);
-      const {
-        firstName,
-        lastName,
-        email,
-        phoneNumber,
-        password,
-        dateOfBirth,
-        yearOfExperience,
-        averageSalary,
-        codeName,
-        genderId,
-        levelId,
-        employmentTypeId,
-        typeId,
-        skillId,
-        userImage,
-      } = response.data.data;
+      const response = await userSerrvices.getDeveloperById(developerId);
+
       document.getElementById("first-name-dev").value =
         response.data.data.firstName;
       document.getElementById("last-name-dev").value =
@@ -739,39 +689,23 @@ const ListAccountDeveloper = () => {
         response.data.data.averageSalary;
       document.getElementById("codeName-dev").value =
         response.data.data.codeName;
-      document.getElementById("genderId-dev").value =
-        response.data.data.gender.genderName;
-      document.getElementById("levelId-dev").value = response.data.data.levelId;
-      document.getElementById("employmentId-dev").value =
-        response.data.data.employmentTypeId;
-      document.getElementById("types-dev").value = response.data.data.typeId;
-      document.getElementById("skills-dev").value = response.data.data.skillId;
+      document.getElementById("summary-dev").value = response.data.data.summary;
+      // document.getElementById("genderId-dev").value =
+      //   response.data.data.gender.genderName;
 
-      if (response.data.data.userImage) {
-        setUserImage3(response.data.data.userImage);
-      } else {
-        setUserImage3("");
-      }
-      // else {
-      //   setUserImage3(userImage2)
+      //document.getElementById("levels-dev").value = response.data.data.level;
+
+      // document.getElementById("employmentId-dev").value =
+      //   response.data.data.employmentTypeId;
+      //document.getElementById("types-dev").value = response.data.data.types;
+
+      //document.getElementById("skills-dev").value = response.data.data.skills;
+
+      // if (response.data.data.userImage) {
+      //   setUserImage3(response.data.data.userImage);
+      // } else {
+      //   setUserImage3("");
       // }
-      setUserDataDetail({
-        lastName,
-        firstName,
-        email,
-        phoneNumber,
-        dateOfBirth,
-        password,
-        yearOfExperience,
-        averageSalary,
-        codeName,
-        genderId,
-        levelId,
-        employmentTypeId,
-        typeId,
-        skillId,
-        userImage,
-      });
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu người dùng:", error);
     }
@@ -990,15 +924,11 @@ const ListAccountDeveloper = () => {
                     onRow={(record, rowIndex) => {
                       return {
                         onClick: (event) => {
-                          // Handle row click
                           handleRowClick(record.developerId);
                         },
                       };
                     }}
                     size="middle"
-                    // scroll={{
-                    //   x: 3000,
-                    // }}
                     components={{
                       header: {
                         cell: (props) => (
@@ -1083,7 +1013,7 @@ const ListAccountDeveloper = () => {
                         <Space size="middle">
                           <a
                             onClick={(event) => {
-                              handleEditClick(record.userId);
+                              handleEditClick(record.developerId);
 
                               event.stopPropagation();
                             }}
@@ -1596,7 +1526,7 @@ const ListAccountDeveloper = () => {
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="First Name" name="firstName">
-                    <Input id="first-name-dev" />
+                    <Input id="first-name-dev" value="aaaaa" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -1651,7 +1581,7 @@ const ListAccountDeveloper = () => {
                   </Form.Item>
                 </Col>
 
-                <Col span={12}>
+                {/* <Col span={12}>
                   <Form.Item label="Gender" name="gender-dev">
                     <Select
                       options={options7}
@@ -1660,11 +1590,12 @@ const ListAccountDeveloper = () => {
                       className="Select Select--level-highest"
                     />
                   </Form.Item>
-                </Col>
+                </Col> */}
 
                 <Col span={12}>
                   <Form.Item label="Level" name="level-dev">
                     <Select
+                      id="levels-dev"
                       options={options3}
                       value={selectedOptions3}
                       onChange={handleChange3}
@@ -1673,7 +1604,7 @@ const ListAccountDeveloper = () => {
                   </Form.Item>
                 </Col>
 
-                <Col span={12}>
+                {/* <Col span={12}>
                   <Form.Item label="Employment Type" name="employmentType-dev">
                     <Select
                       options={options6}
@@ -1682,11 +1613,12 @@ const ListAccountDeveloper = () => {
                       className="Select Select--level-highest"
                     />
                   </Form.Item>
-                </Col>
+                </Col> */}
 
                 <Col span={12}>
                   <Form.Item label="Type Dev" name="type-dev">
                     <Select
+                      id="types-dev"
                       options={options2}
                       value={selectedOptions2}
                       onChange={handleChange2}
@@ -1699,6 +1631,7 @@ const ListAccountDeveloper = () => {
                 <Col span={12}>
                   <Form.Item label="Skill Dev" name="skill-dev">
                     <Select
+                      id="skills-dev"
                       isMulti
                       options={options}
                       value={selectedOptions}
