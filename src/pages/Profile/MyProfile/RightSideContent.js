@@ -24,17 +24,30 @@ import axios from "axios";
 import companyServices from "../../../services/company.services";
 import { useUser } from "./UserContext";
 import userSerrvices from "../../../services/user.serrvices";
+import { HashLoader } from "react-spinners";
+import { toast } from "react-toastify";
 
 const RightSideContent = () => {
   const [activeTab, setActiveTab] = useState("1");
   const [companyId, setCompanyId] = useState(null);
   const [userImage, setUserImage] = useState(null);
   const [userImage3, setUserImage3] = useState(null);
+  const [userImageState, setUserState] = useState(null);
+  const [dateState, setDateState] = useState(null);
+  const [firstNameState, setFirstnameState] = useState(null);
+  const [lastNameState, setLastnameState] = useState(null);
+  const [phoneState, setPhonenameState] = useState(null);
   const [companyCreated, setCompanyCreated] = useState(false);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
+  const [loadingUpdateAccount, setLoadingUpdateAccount] = useState(false);
 
   const { userData, updateUserData } = useUser();
   const [editableData, setEditableData] = useState({ ...userData });
+  const [firstNameError, setFirstNameError] = useState(null);
+  const [lastNameError, setLastNameError] = useState(null);
+  const [phoneNumberError, setPhoneNumberError] = useState(null);
+  const [dayOfBirthError, setDayOfBirthError] = useState(null);
+  const [imageError, setImageError] = useState(null);
 
   const tabChange = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -149,7 +162,6 @@ const RightSideContent = () => {
         );
 
         setIsUpdateMode(!isUpdateMode);
-
         // Handle the response (you can show a success message or redirect to another page)
 
         const responseUser = await axios.get(
@@ -193,81 +205,148 @@ const RightSideContent = () => {
   };
 
   const handleUpdateUserData = async () => {
-    // Send an API request to update the user's information
-    // Assuming you have an API call to update user data
-    // Pass editableData to the API request
+    setLoadingUpdateAccount(true);
+    let check = true;
     const firstName = document.getElementById("firstNameTab2").value;
+    if (!firstName) {
+      setFirstNameError("Enter your first name");
+      check = false;
+    }
     const lastName = document.getElementById("lastNameTab2").value;
+    if (!lastName) {
+      setLastNameError("Enter your last name");
+      check = false;
+    }
     const phoneNumber = document.getElementById("phoneNumberTab2").value;
-    const fileInput = document.getElementById("profile-img-file-input-2");
+    if (!phoneNumber) {
+      setPhoneNumberError("Enter your phone number");
+      check = false;
+    }
     const dateOfBirth = document.getElementById("dayOfBirhTab2").value;
+    if (!phoneNumber) {
+      setDayOfBirthError("Enter your date of birth");
+      check = false;
+    }
+    const fileInput = document.getElementById("profile-img-file-input-2");
     const file = fileInput.files[0];
-    // Get userId from localStorage
-    const userId = localStorage.getItem("userId");
-    const formData = new FormData();
-    formData.append("UserId", userId);
-    formData.append("FirstName", firstName);
-    formData.append("LastName", lastName);
-    formData.append("PhoneNumber", phoneNumber);
-    formData.append("DateOfBirth", dateOfBirth);
-    formData.append("file", file || null);
-    try {
-      // Make API request
-      const response = await userSerrvices.updateUser(formData, userId);
-      // Handle the response (you can show a success message or redirect to another page)
-      console.log("thanh cong");
-    } catch (error) {
-      // Handle errors (show an error message or log the error)
-      console.error("Error creating company:", error);
-      console.log(error);
+
+    console.log("file");
+    console.log(file);
+
+    let checkImageChange = false;
+    if (file) {
+      checkImageChange = true;
+    } else {
+      if (userImageState != userImageState) {
+        checkImageChange = true;
+      }
     }
 
-    if (!document.getElementById("profile-img-file-input-2").files[0]) {
-      console.log("deotontai");
-    } else {
-      console.log("tontai");
+    if (
+      firstName == firstNameState &&
+      lastName == lastNameState &&
+      phoneNumber == phoneState &&
+      dateOfBirth == dateState &&
+      !checkImageChange
+    ) {
+      toast.info("Nothing change!");
+      check = false;
     }
 
-    const file3 = document.getElementById("profile-img-file-input-2").files[0];
-    if (file3) {
-      file3.preview = URL.createObjectURL(file3);
+    if (check) {
+      const userId = localStorage.getItem("userId");
+      const formData = new FormData();
+      formData.append("UserId", userId);
+      formData.append("FirstName", firstName);
+      formData.append("LastName", lastName);
+      formData.append("PhoneNumber", phoneNumber);
+      formData.append("DateOfBirth", dateOfBirth);
+      formData.append("file", file || null);
+
+      try {
+        // Make API request
+        const response = await userSerrvices.updateUser(formData, userId);
+        console.log(response);
+        // Handle the response (you can show a success message or redirect to another page)
+        toast.success("Update successfully");
+        setFirstnameState(firstName);
+        setLastnameState(lastName);
+        setPhonenameState(phoneNumber);
+        setDateState(dateOfBirth);
+        setUserState(file);
+        if (response.data.data.userImage) {
+          setUserImage3(response.data.data.userImage);
+        } else {
+          setUserImage3(userImage2);
+        }
+      } catch (error) {
+        setLoadingUpdateAccount(false);
+        toast.success("Update fail");
+      }
+
+      const file3 = document.getElementById("profile-img-file-input-2")
+        .files[0];
+      if (file3) {
+        file3.preview = URL.createObjectURL(file3);
+      }
+
+      // Lấy giá trị ban đầu từ phần tử HTML
+      var inputDate = document.getElementById("dayOfBirhTab2").value;
+
+      // Tạo một đối tượng Date từ chuỗi đầu vào
+      var date = new Date(inputDate);
+
+      // Chuyển đổi tháng từ số sang tên
+      var monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      // Lấy thông tin về ngày, tháng và năm
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+
+      // Chuyển đổi thành định dạng "dd Month yyyy"
+      var formattedDate = day + " " + monthNames[monthIndex] + " " + year;
+
+      if (file3) {
+        const updatedUserData2 = {
+          lastName: document.getElementById("firstNameTab2").value,
+          firstName: document.getElementById("lastNameTab2").value,
+          email: userData.email,
+          phoneNumber: document.getElementById("phoneNumberTab2").value,
+          dateOfBirth: formattedDate,
+          userImage: file3.preview,
+        };
+        updateUserData(updatedUserData2);
+      } else {
+        console.log(userData.userImage);
+        const tempUserImage = userData.userImage;
+        const updatedUserData2 = {
+          lastName: document.getElementById("firstNameTab2").value,
+          firstName: document.getElementById("lastNameTab2").value,
+          email: userData.email,
+          phoneNumber: document.getElementById("phoneNumberTab2").value,
+          dateOfBirth: formattedDate,
+          userImage: tempUserImage,
+        };
+        updateUserData(updatedUserData2);
+      }
+
+      setLoadingUpdateAccount(false);
     } else {
-    }
-
-    // Lấy giá trị ban đầu từ phần tử HTML
-    var inputDate = document.getElementById("dayOfBirhTab2").value;
-
-    // Tách ngày thành các phần tử riêng lẻ
-    var dateParts = inputDate.split("-");
-
-    // Sắp xếp lại các phần tử theo thứ tự "dd-mm-yyyy"
-    var formattedDate = dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0];
-
-    // Gán giá trị đã định dạng lại cho phần tử HTML
-    console.log(formattedDate);
-    console.log(userData.userImage);
-    if (file3) {
-      const updatedUserData2 = {
-        lastName: document.getElementById("firstNameTab2").value,
-        firstName: document.getElementById("lastNameTab2").value,
-        email: userData.email,
-        phoneNumber: document.getElementById("phoneNumberTab2").value,
-        dateOfBirth: formattedDate,
-        userImage: file3.preview,
-      };
-      updateUserData(updatedUserData2);
-    } else {
-      console.log(userData.userImage);
-      const tempUserImage = userData.userImage;
-      const updatedUserData2 = {
-        lastName: document.getElementById("firstNameTab2").value,
-        firstName: document.getElementById("lastNameTab2").value,
-        email: userData.email,
-        phoneNumber: document.getElementById("phoneNumberTab2").value,
-        dateOfBirth: formattedDate,
-        userImage: tempUserImage,
-      };
-      updateUserData(updatedUserData2);
+      setLoadingUpdateAccount(false);
     }
   };
 
@@ -285,7 +364,6 @@ const RightSideContent = () => {
             dateOfBirth,
             userImage,
           } = response.data.data;
-
           updateUserData({
             lastName,
             firstName,
@@ -301,20 +379,18 @@ const RightSideContent = () => {
             response.data.data.lastName;
           document.getElementById("phoneNumberTab2").value =
             response.data.data.phoneNumber;
-
-          var parts = response.data.data.dateOfBirth.split("-");
-          if (parts.length === 3) {
-            var day = parts[1];
-            var month = parts[0];
-            var year = parts[2];
-            // Format the date as "yyyy-dd-mm"
-            var formattedDate = year + "-" + day + "-" + month;
-            // Set the value of the input field
+          let formattedDate;
+          if (response.data.data.dateOfBirth) {
+            const dateOfBirthtemp = response.data.data.dateOfBirth;
+            const parsedDate = new Date(dateOfBirthtemp);
+            parsedDate.setDate(parsedDate.getDate() + 1);
+            formattedDate = parsedDate.toISOString().split("T")[0];
             document.getElementById("dayOfBirhTab2").value = formattedDate;
-            console.log(formattedDate);
-          } else {
-            console.error("Invalid date format");
+            setDateState(formattedDate);
           }
+          setFirstnameState(response.data.data.firstName);
+          setLastnameState(response.data.data.lastName);
+          setPhonenameState(response.data.data.phoneNumber);
 
           if (response.data.data.userImage) {
             setUserImage3(response.data.data.userImage);
@@ -355,6 +431,8 @@ const RightSideContent = () => {
     if (file) {
       file.preview = URL.createObjectURL(file);
       setAvatar(file);
+    } else {
+      setAvatar(null);
     }
   };
 
@@ -363,6 +441,8 @@ const RightSideContent = () => {
     if (file) {
       file.preview = URL.createObjectURL(file);
       setAvatar2(file);
+    } else {
+      setAvatar2(null);
     }
   };
 
@@ -508,7 +588,7 @@ const RightSideContent = () => {
                 </div>
               </TabPane>
               <TabPane tabId="2">
-                <Form action="#">
+                <Form>
                   <div>
                     <h5 className="fs-17 fw-semibold mb-3 mb-0">My Account</h5>
                     <div className="text-center">
@@ -539,6 +619,7 @@ const RightSideContent = () => {
                             type="file"
                             id="profile-img-file-input-2"
                             onChange={handlePreviewAvatar2}
+                            accept=".jpg, .jpeg, .png"
                             style={{ display: "none" }}
                           />
                         </div>
@@ -556,6 +637,9 @@ const RightSideContent = () => {
                             id="firstNameTab2"
                             name="firstName"
                           />
+                          {firstNameError && (
+                            <p className="text-danger mt-2">{firstNameError}</p>
+                          )}
                         </div>
                       </Col>
                       <Col lg={6}>
@@ -568,6 +652,9 @@ const RightSideContent = () => {
                             className="form-control"
                             id="lastNameTab2"
                           />
+                          {lastNameError && (
+                            <p className="text-danger mt-2">{lastNameError}</p>
+                          )}
                         </div>
                       </Col>
 
@@ -584,6 +671,11 @@ const RightSideContent = () => {
                             className="form-control"
                             id="phoneNumberTab2"
                           />
+                          {phoneNumberError && (
+                            <p className="text-danger mt-2">
+                              {phoneNumberError}
+                            </p>
+                          )}
                         </div>
                       </Col>
                       <Col lg={6}>
@@ -596,21 +688,28 @@ const RightSideContent = () => {
                             className="form-control"
                             id="dayOfBirhTab2"
                           />
+                          {dayOfBirthError && (
+                            <p className="text-danger mt-2">
+                              {dayOfBirthError}
+                            </p>
+                          )}
                         </div>
                       </Col>
                     </Row>
                   </div>
-
-                  <div className="mt-4 text-end">
-                    <Link
-                      to="#"
-                      className="btn btn-primary"
-                      onClick={handleUpdateUserData}
-                    >
-                      Update
-                    </Link>
-                  </div>
                 </Form>
+                <button
+                  id="rejectButton"
+                  className="btn btn-soft-primary mt-2 fw-bold"
+                  onClick={() => handleUpdateUserData()}
+                  disabled={loadingUpdateAccount}
+                >
+                  {loadingUpdateAccount ? (
+                    <HashLoader size={20} color={"white"} loading={true} />
+                  ) : (
+                    "Update"
+                  )}
+                </button>
               </TabPane>
               <TabPane tabId="3">
                 <Form action="#">

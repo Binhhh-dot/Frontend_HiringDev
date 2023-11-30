@@ -25,6 +25,7 @@ import jobImage from "../../assets/images/featured-job/img-01.png";
 import profileImage from "../../assets/images/profile.jpg";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import userSerrvices from "../../services/user.serrvices";
 
 const NavBar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,6 +47,8 @@ const NavBar = (props) => {
   //scroll navbar
   const [navClass, setnavClass] = useState(false);
   const [role, setRole] = useState(null);
+  const [name, setName] = useState(null);
+  const [imgUser, setImgUser] = useState(null);
   useEffect(() => {
     window.addEventListener("scroll", scrollNavigation, true);
     const role = localStorage.getItem("role");
@@ -77,6 +80,7 @@ const NavBar = (props) => {
       setnavClass("");
     }
   }
+
   //menu activation
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -95,6 +99,23 @@ const NavBar = (props) => {
       activateParentDropdown(matchingMenuItem);
     }
   }, [props.router.location.pathname]);
+
+  const fetchUserDetail = async () => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      try {
+        const response = await userSerrvices.getUserById(userId);
+        setName(response.data.data.firstName);
+        setImgUser(response.data.data.userImage);
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu người dùng:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetail();
+  }, []);
 
   const removeActivation = (items) => {
     for (var i = 0; i < items.length; ++i) {
@@ -147,7 +168,7 @@ const NavBar = (props) => {
         id="navigation"
       >
         <Container fluid className="custom-container">
-          <Link className="navbar-brand text-dark fw-bold me-auto" to="/layout3">
+          <Link className="navbar-brand text-dark fw-bold me-auto" to="/home">
             <img src={darkLogo} height="22" alt="" className="logo-dark" />
             <img src={lightLogo} height="22" alt="" className="logo-light" />
           </Link>
@@ -199,16 +220,15 @@ const NavBar = (props) => {
                 </ul>
               </NavItem> */}
               <NavItem>
-                <Link className="nav-link" to="/layout3">
+                <Link className="nav-link" to="/home">
                   Home
                 </Link>
               </NavItem>
               <NavItem className="dropdown dropdown-hover">
                 <NavLink
-                  to="/#"
                   id="jobsdropdown"
                   role="button"
-                  onClick={() => setCompany(!company)}
+                // onClick={() => setCompany(!company)}
                 >
                   Company <div className="arrow-down"></div>
                 </NavLink>
@@ -254,10 +274,11 @@ const NavBar = (props) => {
                   <li className="nav-item dropdown dropdown-hover">
                     <Link
                       id="pagesdoropdown"
+                      // to="/projectlist"
                       className="nav-link dropdown-toggle arrow-none"
-                      onClick={() => setPages(!pages)}
+                    // onClick={() => setPages(!pages)}
                     >
-                      Pages
+                      Page
                       <div className="arrow-down"></div>
                     </Link>
                     <div
@@ -270,172 +291,28 @@ const NavBar = (props) => {
                       <Row>
                         {role === "HR" && (
                           <>
-                            <Col lg={4}>
-                              <span className="dropdown-header">List</span>
-                              <Link
-                                className="dropdown-item"
-                                to="/hiringrequestlistincompanypartner"
-                              >
-                                List Hiring Request
-                              </Link>
-                              <Link
-                                className="dropdown-item"
-                                to="/hiringRequestListExpiredHR"
-                              >
-                                List Hiring Request Expired
-                              </Link>
-                            </Col>
-                            {/* <Link className="dropdown-item" to="/joblist">
-                              Job List
-                            </Link>
-                            <Link className="dropdown-item" to="/joblist2">
-                              Job List-2
-                            </Link>
-                            <Link className="dropdown-item" to="/jobgrid">
-                              Job Grid
-                            </Link>
-                            <Link className="dropdown-item" to="/jobgrid2">
-                              Job Grid-2
-                            </Link>
-                            <Link className="dropdown-item" to="/jobdetails">
-                              Job Details
-                            </Link>
-
-                            <Link className="dropdown-item" to="/jobscategories">
-                              Jobs Categories
-                            </Link> */}
-                            {/* <Link
-                          className="dropdown-item"
-                          to="/createhiringrequest"
-                        >
-                          Create hiring request
-                        </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/createInterview"
-                        >
-                          Create interview
-                        </Link> */}
-
-                            <Col lg={4}>
-                              {/* <Link
-                                className="dropdown-item"
-                                to="/developerinfo"
-                              > */}
-                              <span className="dropdown-header">Interview</span>
-
-                              <Link
-                                className="dropdown-item"
-                                to="/listInterviewHR"
-                                state={{ jobId: null }}
-                              >
-                                List Interview
-                              </Link>
-
-                              {/* <div>
-                        <Link className="dropdown-item" to="/developerlist">
-                          Developer List
-                        </Link>
-                        <Link className="dropdown-item" to="/developerinfo">
-                          Developer Info
-                        </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/createstaffaccount"
-                        >
-                          Create Staff Account
-                        </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/createdeveloperaccount"
-                        >
-                          Create Developer Account
-                        </Link>
-
-                        <Link
-                          className="dropdown-item"
-                          to="/createcompanyaccount"
-                        >
-                          Create Company Account
-                        </Link>
-
-                        <Link className="dropdown-item" to="/candidatelist">
-                          Candidate List
-                        </Link>
-                        <Link className="dropdown-item" to="/candidategrid">
-                          Candidate Grid
-                        </Link>
-                        <Link className="dropdown-item" to="/candidatedetails">
-                          Candidate Details
-                        </Link>
-                        <Link className="dropdown-item" to="/companylist">
-                          Company List
-                        </Link>
-                        <Link className="dropdown-item" to="/companydetails">
-                          Company Details
-                        </Link>
-
-                        <Link className="dropdown-item" to="/hiringrequestinhr">
-                          HiringRequest Details In HR
-                        </Link>
-
-                        <Link
-                          className="dropdown-item"
-                          to="/developerlistincompanypartner"
-                        >
-                          Developer List In Company
-                        </Link>
-                      </div> */}
-                            </Col>
-                            <Col lg={4}>
+                            <Col lg={12}>
                               <span className="dropdown-header">
                                 Hiring Request
                               </span>
-
-                              <Link
-                                className="dropdown-item"
-                                to="/createhiringrequest"
-                              >
-                                Create Hiring Request
-                              </Link>
-
-                              <Link
-                                className="dropdown-item"
-                                to="/createproject"
-                              >
-                                Create Project
-                              </Link>
-
                               <Link
                                 className="dropdown-item"
                                 to="/projectlist"
                               >
                                 Project List
                               </Link>
-
-                              {/* <div>
-                        <Link className="dropdown-item" to="/signup">
-                          Sign Up
-                        </Link>
-                        <Link className="dropdown-item" to="/signin">
-                          Sign In
-                        </Link>
-                        <Link className="dropdown-item" to="/signout">
-                          Sign Out
-                        </Link>
-                        <Link className="dropdown-item" to="/resetpassword">
-                          Reset Password
-                        </Link>
-                        <Link className="dropdown-item" to="/comingsoon">
-                          Coming Soon
-                        </Link>
-                        <Link className="dropdown-item" to="/error404">
-                          404 Error
-                        </Link>
-                        <Link className="dropdown-item" to="/components">
-                          Components
-                        </Link>
-                      </div> */}
+                              <Link
+                                className="dropdown-item"
+                                to="/projectlistnew"
+                              >
+                                Project List New
+                              </Link>
+                              <Link
+                                className="dropdown-item"
+                                to="/createproject"
+                              >
+                                Create new project
+                              </Link>
                             </Col>
                           </>
                         )}
@@ -504,89 +381,14 @@ const NavBar = (props) => {
                               >
                                 List Interview
                               </Link>
-                              {/* <div>
-                        <Link className="dropdown-item" to="/developerlist">
-                          Developer List
-                        </Link>
-                        <Link className="dropdown-item" to="/developerinfo">
-                          Developer Info
-                        </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/createstaffaccount"
-                        >
-                          Create Staff Account
-                        </Link>
-                        <Link
-                          className="dropdown-item"
-                          to="/createdeveloperaccount"
-                        >
-                          Create Developer Account
-                        </Link>
 
-                        <Link
-                          className="dropdown-item"
-                          to="/createcompanyaccount"
-                        >
-                          Create Company Account
-                        </Link>
-
-                        <Link className="dropdown-item" to="/candidatelist">
-                          Candidate List
-                        </Link>
-                        <Link className="dropdown-item" to="/candidategrid">
-                          Candidate Grid
-                        </Link>
-                        <Link className="dropdown-item" to="/candidatedetails">
-                          Candidate Details
-                        </Link>
-                        <Link className="dropdown-item" to="/companylist">
-                          Company List
-                        </Link>
-                        <Link className="dropdown-item" to="/companydetails">
-                          Company Details
-                        </Link>
-
-                        <Link className="dropdown-item" to="/hiringrequestinhr">
-                          HiringRequest Details In HR
-                        </Link>
-
-                        <Link
-                          className="dropdown-item"
-                          to="/developerlistincompanypartner"
-                        >
-                          Developer List In Company
-                        </Link>
-                      </div> */}
                             </Col>
                             <Col lg={4}>
                               <span className="dropdown-header">
                                 Hiring Request
                               </span>
 
-                              {/* <div>
-                        <Link className="dropdown-item" to="/signup">
-                          Sign Up
-                        </Link>
-                        <Link className="dropdown-item" to="/signin">
-                          Sign In
-                        </Link>
-                        <Link className="dropdown-item" to="/signout">
-                          Sign Out
-                        </Link>
-                        <Link className="dropdown-item" to="/resetpassword">
-                          Reset Password
-                        </Link>
-                        <Link className="dropdown-item" to="/comingsoon">
-                          Coming Soon
-                        </Link>
-                        <Link className="dropdown-item" to="/error404">
-                          404 Error
-                        </Link>
-                        <Link className="dropdown-item" to="/components">
-                          Components
-                        </Link>
-                      </div> */}
+
                             </Col>
                           </>
                         )}
@@ -596,55 +398,7 @@ const NavBar = (props) => {
                 </>
               )}
 
-              {/* <NavItem className="dropdown dropdown-hover">
-                <NavLink
-                  to="/#"
-                  id="productdropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  onClick={() => setBlog(!blog)}
-                >
-                  Blog
-                  <div className="arrow-down"></div>
-                </NavLink>
-                <ul
-                  className={classname("dropdown-menu dropdown-menu-center", {
-                    show: blog,
-                  })}
-                  aria-labelledby="productdropdown"
-                >
-                  <li>
-                    <Link className="dropdown-item" to="/blog">
-                      Blog
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/bloggrid">
-                      Blog Grid
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/blogmodern">
-                      Blog Modern
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/blogmasonary">
-                      Blog Masonry
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/blogdetails">
-                      Blog details
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/blogauther">
-                      Blog Author
-                    </Link>
-                  </li>
-                </ul>
-              </NavItem> */}
+
               <NavItem>
                 <Link className="nav-link" to="/contact">
                   Contact
@@ -813,14 +567,14 @@ const NavBar = (props) => {
                   aria-expanded="false"
                 >
                   <img
-                    src={profileImage}
+                    src={imgUser || profileImage}
                     alt="mdo"
                     width="35"
                     height="35"
                     className="rounded-circle me-1"
                   />{" "}
                   <span className="d-none d-md-inline-block fw-medium">
-                    Hi, Jennifer
+                    Hi, {name}
                   </span>
                 </DropdownToggle>
                 <DropdownMenu

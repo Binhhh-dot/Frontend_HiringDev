@@ -1,8 +1,32 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import { Col, Row } from "reactstrap";
+import hiringrequestService from "../../../services/hiringrequest.service";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const Section = () => {
+  const [projectId, setProjectId] = useState(null);
+  const location = useLocation();
+  const getIdProject = async () => {
+    let response;
+    // const saveData = localStorage.getItem("myData");
+    try {
+      const queryParams = new URLSearchParams(location.search);
+      const jobId = queryParams.get("Id");
+      response = await hiringrequestService.getHiringRequestDetailInCompany(
+        jobId
+      );
+      setProjectId(response.data.data.projectId);
+
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
+
+  useEffect(() => {
+    getIdProject();
+  }, []);
   return (
     <React.Fragment>
       <section className="page-title-box">
@@ -11,7 +35,7 @@ const Section = () => {
             <Col md={6}>
               <div className="text-center text-white">
                 <h3 className="mb-4">
-                  Hiring Request List In Company Partner Detail
+                  Hiring Request List
                 </h3>
                 <div className="page-next">
                   <nav
@@ -20,10 +44,10 @@ const Section = () => {
                   >
                     <ol className="breadcrumb justify-content-center">
                       <li className="breadcrumb-item">
-                        <Link to="/layout3">Home</Link>
+                        <Link to="/home">Home</Link>
                       </li>
                       <li className="breadcrumb-item">
-                        <Link to="/hiringrequestlistincompanypartner">HIRING REQUEST LIST</Link>
+                        <Link to={`/projectdetailhr?Id='${projectId}'`}>project detail</Link>
                       </li>
                       <li
                         className="breadcrumb-item active"

@@ -41,7 +41,6 @@ import {
   faEnvelope,
   faCalendar
 } from "@fortawesome/free-regular-svg-icons";
-import { PayPalButtons } from '@paypal/react-paypal-js'; // Import PayPal Buttons from PayPal SDK
 import { Modal as AntdModal, Button as AntdButton } from "antd";
 import "./index.css";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
@@ -1066,6 +1065,78 @@ const ProjectDetailDesciption = () => {
                 </CardBody>
               </Card>
             </div>
+            {/* <div class="col-lg-3 d-flex flex-column gap-4"> 
+              <Card className="job-overview ">
+                <CardBody className="p-4">
+                  <h4>Project Overview</h4>
+                  <ul className="list-unstyled mt-4 mb-0">
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">Hiring Request Title</h6>
+                          <p className="text-muted mb-0">
+                             {hiringRequestDetail.jobTitle}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-user-square icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">No. Dev</h6>
+                          <p className="text-muted mb-0">
+                             {hiringRequestDetail.numberOfDev}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-star-half-alt icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">Employment Type</h6>
+                          <p className="text-muted mb-0">{hiringRequestDetail.employmentTypeName}</p> 
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">Offered Salary Per Dev</h6>
+                          <p className="text-muted mb-0">
+                            {hiringRequestDetail.salaryPerDev} VND 
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">Position</h6>
+                         <p className="text-muted mb-0">{hiringRequestDetail.positionName}</p> 
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-history icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">Date Posted</h6>
+                          {hiringRequestDetail.postedTime} 
+                          <p className="text-muted mb-0"></p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </CardBody>
+              </Card>
+            </div>*/}
             <div class="col-lg-11 " style={{ padding: "0px" }}>
               <Card
                 className="profile-content-page mt-4 mt-lg-0"
