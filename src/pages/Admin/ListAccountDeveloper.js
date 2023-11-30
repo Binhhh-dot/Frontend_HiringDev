@@ -261,6 +261,7 @@ const ListAccountDeveloper = () => {
         const activeLevels = response3.data.data.filter(
           (level) => level.statusString === "Active"
         );
+
         const formattedLevels = activeLevels.map((level) => ({
           value: level.levelId.toString(),
           label: level.levelName,
