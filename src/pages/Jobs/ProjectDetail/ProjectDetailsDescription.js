@@ -115,7 +115,6 @@ const ProjectDetailDesciption = () => {
   const [listStartDay, setListStartDay] = useState([]);
   const [listEndDay, setListEndDay] = useState([]);
   const [isInputEditable, setIsInputEditable] = useState([]);
-  const [isToastPaid, setIsToastPaid] = useState(false);
   const [currentMonthIndex, setCurrentMonthIndex] = useState(null);
   const [minDateDuration, setMinDateDuration] = useState();
   const [maxDateDuration, setMaxDateDuration] = useState();
@@ -159,17 +158,12 @@ const ProjectDetailDesciption = () => {
   const executePayment = async (paymentId, payerId) => {
     try {
       const response = await paymentServices.executePayment(paymentId, payerId);
-      console.log("response21312312312312312312312312");
       console.log(response);
+      toast.success("Payment successfully")
       setLoadPayPeriod(!loadPayPeriod);
-      setShowPopup(false)
       setLoadingPaynow(false)
+      setShowPopup(false)
       setLoading(false)
-      if (!isToastPaid) {
-        toast.success("Payment successfully")
-        setIsToastPaid(true);
-      }
-
     } catch (error) {
       console.error('Error executing payment:', error);
       // Xử lý lỗi nếu cần thiết
@@ -592,18 +586,15 @@ const ProjectDetailDesciption = () => {
       console.log(response);
       if (response.data.code === 200) {
         console.log("mo cua so")
-        const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=800, height=800, top=100, left=600';
+        const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
         const popupWindow = window.open(response.data.data, "popupWindow", windowFeatures);
-        let checkPayed = false;
         function checkPopupStatus() {
           if (popupWindow && popupWindow.closed) {
             console.log("Cửa sổ đã đóng");
+            setLoadingPaynow(false)
+            setShowPopup(false)
+            setLoading(false)
             clearInterval(intervalId);
-            setTimeout(() => {
-              setLoadingPaynow(false);
-              setShowPopup(false);
-              setLoading(false);
-            }, 3000);
           } else {
             console.log("Cửa sổ đang mở");
             // Thực hiện hành động nếu cửa sổ vẫn đang mở (nếu cần)
@@ -614,14 +605,11 @@ const ProjectDetailDesciption = () => {
         window.addEventListener('message', (event) => {
           const { PayerID, paymentId } = event.data;
           if (PayerID && paymentId) {
-            setLoadingPaynow(true)
-            setShowPopup(true)
-            setLoading(true)
             event.source.close();
             executePayment(paymentId, PayerID);
           }
         });
-        setIsToastPaid(false);
+
       }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -649,15 +637,12 @@ const ProjectDetailDesciption = () => {
         console.log(response.data.data.payPeriodId)
         const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
         setPayRollDetail(response2.data.data);
-        setLoading(false);
       }
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
       console.log("payperiod loi")
       setPayPeriodDetail(null);
       setPayRollDetail([]);
-      setLoading(false);
     }
   }
 
@@ -726,6 +711,8 @@ const ProjectDetailDesciption = () => {
       const parts = temp.split('.');
       const newDate = `${parts[2]}-${parts[1]}-25`;
       fetchDetailPayPeriod(newDate)
+      console.log("set Calendar")
+
     }
   }, [loadPayPeriod]);
 
@@ -904,7 +891,6 @@ const ProjectDetailDesciption = () => {
         console.log("import")
         console.log(response)
         toast.success("Import successfully")
-        console.log(currentMonthIndex)
         setLoadingImportExel(false);
       }
       setLoadPayPeriod(!loadPayPeriod);
@@ -924,8 +910,6 @@ const ProjectDetailDesciption = () => {
       const formData2 = new FormData();
       formData2.append('file', file);
       importExcel(formData2);
-    } else {
-      setLoadingImportExel(false);
     }
     setKey(Date.now())
     setLoadingImportExel(false);
@@ -1081,6 +1065,78 @@ const ProjectDetailDesciption = () => {
                 </CardBody>
               </Card>
             </div>
+            {/* <div class="col-lg-3 d-flex flex-column gap-4"> 
+              <Card className="job-overview ">
+                <CardBody className="p-4">
+                  <h4>Project Overview</h4>
+                  <ul className="list-unstyled mt-4 mb-0">
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">Hiring Request Title</h6>
+                          <p className="text-muted mb-0">
+                             {hiringRequestDetail.jobTitle}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-user-square icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">No. Dev</h6>
+                          <p className="text-muted mb-0">
+                             {hiringRequestDetail.numberOfDev}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-star-half-alt icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">Employment Type</h6>
+                          <p className="text-muted mb-0">{hiringRequestDetail.employmentTypeName}</p> 
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">Offered Salary Per Dev</h6>
+                          <p className="text-muted mb-0">
+                            {hiringRequestDetail.salaryPerDev} VND 
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">Position</h6>
+                         <p className="text-muted mb-0">{hiringRequestDetail.positionName}</p> 
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="d-flex mt-4">
+                        <i className="uil uil-history icon bg-primary-subtle text-primary"></i>
+                        <div className="ms-3">
+                          <h6 className="fs-14 mb-0">Date Posted</h6>
+                          {hiringRequestDetail.postedTime} 
+                          <p className="text-muted mb-0"></p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </CardBody>
+              </Card>
+            </div>*/}
             <div class="col-lg-11 " style={{ padding: "0px" }}>
               <Card
                 className="profile-content-page mt-4 mt-lg-0"
@@ -1146,12 +1202,7 @@ const ProjectDetailDesciption = () => {
                 <CardBody className="p-4" style={{ backgroundColor: "#fafafa", overflowX: "auto" }} >
                   <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
-                      <p
-                        className=""
-                        dangerouslySetInnerHTML={{
-                          __html: hiringRequestDetail.description,
-                        }}
-                      />
+                      <div>12</div>
                     </TabPane>
                     <TabPane tabId="2">
 
@@ -1513,7 +1564,7 @@ const ProjectDetailDesciption = () => {
                               id="pills-tab"
                               role="tablist"
                             >
-                              <div className="d-flex align-items-center gap-3">
+                              <div className="d-flex align-items-center gap-3" disabled="true">
                                 <FontAwesomeIcon icon={faAngleLeft} style={{ fontSize: '20px' }} onClick={previousMonth} />
                                 <FontAwesomeIcon icon={faAngleRight} style={{ fontSize: '20px' }} onClick={nextMonth} />
                                 <div className="d-flex flex-column">

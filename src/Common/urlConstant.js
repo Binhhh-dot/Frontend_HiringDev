@@ -167,6 +167,8 @@ export default {
       getProjectDetailByProjectId: "/Project/${projectId}",
       getDeveloperByProject: "/Developer/ByProject/${projectId}",
       updateProject: "/Project/${projectId}",
+      getAllProjectByCompanyIdAndPaging: "/Project/ByCompany/${companyId}?PageIndex={PageIndex}&PageSize={PageSize}",
+
     },
     contract: {
       getContract: "/Contract",
@@ -218,6 +220,8 @@ export default {
       createPayment: "/Payment/Create",
       executePayment:
         "/Payment/Execute?paymentId=${paymentId}&payerId=${payerId}",
+    },
+    hiredDev: {
     },
   },
 };
