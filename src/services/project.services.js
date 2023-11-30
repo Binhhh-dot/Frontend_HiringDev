@@ -86,6 +86,14 @@ const updateProject = async (
   return response;
 };
 
+const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.project.getAllProjectByCompanyIdAndPaging.replace(
+      "${companyId}", companyId).replace("{PageIndex}", PageIndex).replace("{PageSize}", PageSize);
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
 export default {
   createProject,
   getAllProjectByCompanyId,
@@ -94,4 +102,5 @@ export default {
   getProjectListPaging,
   getDeveloperByProject,
   updateProject,
+  getAllProjectByCompanyIdAndPaging
 };

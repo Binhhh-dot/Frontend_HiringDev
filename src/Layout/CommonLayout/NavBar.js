@@ -295,16 +295,24 @@ const NavBar = (props) => {
                               <span className="dropdown-header">
                                 Hiring Request
                               </span>
-
-
                               <Link
                                 className="dropdown-item"
                                 to="/projectlist"
                               >
                                 Project List
                               </Link>
-
-
+                              <Link
+                                className="dropdown-item"
+                                to="/projectlistnew"
+                              >
+                                Project List New
+                              </Link>
+                              <Link
+                                className="dropdown-item"
+                                to="/createproject"
+                              >
+                                Create new project
+                              </Link>
                             </Col>
                           </>
                         )}

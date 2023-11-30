@@ -402,7 +402,7 @@ const CreateProject = () => {
     if (document.getElementById("start-date").value) {
       const startDateValue = document.getElementById("start-date").value;
       const startDate = new Date(startDateValue);
-      startDate.setDate(startDate.getDate() + 30); // Thêm 30 ngày vào ngày bắt đầu
+      startDate.setDate(startDate.getDate() + 1); // Thêm 30 ngày vào ngày bắt đầu
 
       const minDay = startDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
 
@@ -417,7 +417,7 @@ const CreateProject = () => {
     if (document.getElementById("end-date").value) {
       const endDateValue = document.getElementById("end-date").value;
       const endDate = new Date(endDateValue);
-      endDate.setDate(endDate.getDate() - 30); // Thêm 30 ngày vào ngày bắt đầu
+      endDate.setDate(endDate.getDate() - 1); // Thêm 30 ngày vào ngày bắt đầu
 
       const minDay = endDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
 
@@ -574,7 +574,7 @@ const CreateProject = () => {
                           {loading ? (
                             <RingLoader color="#fff" loading={true} size={20} />
                           ) : (
-                            "Post a hiring request"
+                            "Create project"
                           )}
                         </button>
                       </div>

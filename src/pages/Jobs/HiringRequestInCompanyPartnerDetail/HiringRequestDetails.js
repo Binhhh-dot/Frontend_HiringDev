@@ -1650,6 +1650,32 @@ const HiringRequestDetails = () => {
                 <ul className="list-unstyled mt-4 mb-0">
                   <li>
                     <div className="d-flex mt-4">
+                      <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                      <div className="ms-3">
+                        <h6 className="fs-14 mb-0">Project </h6>
+                        <p className="text-muted mb-0">Project name</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="d-flex mt-4">
+                      <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                      <div className="ms-3">
+                        <h6 className="fs-14 mb-0">Start date of project </h6>
+                        <p className="text-muted mb-0">Project name</p>
+                      </div>
+                    </div>
+                  </li><li>
+                    <div className="d-flex mt-4">
+                      <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                      <div className="ms-3">
+                        <h6 className="fs-14 mb-0">End date of project </h6>
+                        <p className="text-muted mb-0">Project name</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="d-flex mt-4">
                       <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Hiring Request Title</h6>
@@ -1689,15 +1715,6 @@ const HiringRequestDetails = () => {
                         <p className="text-muted mb-0">
                           {hiringRequestDetail.salaryPerDev} VND
                         </p>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="d-flex mt-4">
-                      <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
-                      <div className="ms-3">
-                        <h6 className="fs-14 mb-0">Position</h6>
-                        <p className="text-muted mb-0">{hiringRequestDetail.positionName}</p>
                       </div>
                     </div>
                   </li>
@@ -1985,33 +2002,32 @@ const HiringRequestDetails = () => {
                                         Create Interview {candidategridDetailsNew.interviewRound > 0 ? `Round ${candidategridDetailsNew.interviewRound + 1}` : ''}
                                       </>
                                     </button>
-                                    {candidategridDetailsNew.interviewRound > 0 && (
-                                      <button
-                                        id="onboardButton"
-                                        className="btn btn-soft-blue w-100 mt-2 fw-bold"
-                                        onClick={() =>
-                                          handleOnboard(candidategridDetailsNew.id)
-                                        }
-                                        disabled={loadingOnboard[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
 
-                                      >
-                                        {loadingOnboard[candidategridDetailsNew.id] ? (
-                                          <HashLoader
-                                            size={20}
-                                            color={"white"}
-                                            loading={true}
-                                          />
-                                        ) : isListLoading2 ? (
-                                          <HashLoader
-                                            size={20}
-                                            color={"white"}
-                                            loading={true}
-                                          />
-                                        ) : (
-                                          "Go to contract"
-                                        )}
-                                      </button>
-                                    )}
+                                    <button
+                                      id="onboardButton"
+                                      className="btn btn-soft-primary w-100 mt-2 fw-bold"
+                                      onClick={() =>
+                                        handleOnboard(candidategridDetailsNew.id)
+                                      }
+                                      disabled={loadingOnboard[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
+
+                                    >
+                                      {loadingOnboard[candidategridDetailsNew.id] ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"white"}
+                                          loading={true}
+                                        />
+                                      ) : isListLoading2 ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"white"}
+                                          loading={true}
+                                        />
+                                      ) : (
+                                        "Hire"
+                                      )}
+                                    </button>
                                     <button
                                       id="rejectButton"
                                       className="btn btn-soft-danger btn-danger w-100 mt-2 fw-bold"
@@ -2041,6 +2057,31 @@ const HiringRequestDetails = () => {
                                   candidategridDetailsNew.selectedDevStatus ===
                                     "Interview Scheduled" ? (
                                     <>
+                                      <button
+                                        id="onboardButton"
+                                        className="btn btn-soft-primary w-100 mt-2 fw-bold"
+                                        onClick={() =>
+                                          handleOnboard(candidategridDetailsNew.id)
+                                        }
+                                        disabled={loadingOnboard[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
+
+                                      >
+                                        {loadingOnboard[candidategridDetailsNew.id] ? (
+                                          <HashLoader
+                                            size={20}
+                                            color={"white"}
+                                            loading={true}
+                                          />
+                                        ) : isListLoading2 ? (
+                                          <HashLoader
+                                            size={20}
+                                            color={"white"}
+                                            loading={true}
+                                          />
+                                        ) : (
+                                          "Hire"
+                                        )}
+                                      </button>
                                       <button
                                         id="rejectButton"
                                         className="btn btn-soft-danger btn-danger w-100 mt-2 fw-bold"
