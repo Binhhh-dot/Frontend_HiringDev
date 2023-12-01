@@ -13,7 +13,7 @@ const createHiringRequest = async (
   levelRequireId,
   skillIds,
   isSaved,
-  employmentTypeId,
+  employmentTypeId
 ) => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.createHiringRequest;
   const response = await utils.axiosLocalHost.post(serviceUrl, {
@@ -45,10 +45,13 @@ const updateHiringRequest = async (
   levelRequireId,
   skillIds,
   isSaved,
-  employmentTypeId,
+  employmentTypeId
 ) => {
   const serviceUrl =
-    urlConstant.endpoint.hiringRequest.updateHiringRequest.replace("${requestId}", requestId);
+    urlConstant.endpoint.hiringRequest.updateHiringRequest.replace(
+      "${requestId}",
+      requestId
+    );
   const response = await utils.axiosLocalHost.put(serviceUrl, {
     requestId,
     projectId,
@@ -167,16 +170,16 @@ const getHiringRequestSaved = async (companyId) => {
   return response;
 };
 
-const getDeveloperMatchingInManager = async (devMatchingId) => {
-  const serviceUrl =
-    urlConstant.endpoint.hiringRequest.getDeveloperMatchingInManager.replace(
-      "${devMatching}",
-      devMatchingId
-    );
+// const getDeveloperMatchingInManager = async (devMatchingId) => {
+//   const serviceUrl =
+//     urlConstant.endpoint.hiringRequest.getDeveloperMatchingInManager.replace(
+//       "${devMatching}",
+//       devMatchingId
+//     );
 
-  const response = await utils.axiosLocalHost.get(serviceUrl);
-  return response;
-};
+//   const response = await utils.axiosLocalHost.get(serviceUrl);
+//   return response;
+// };
 
 const sendHiringRequestToDevMatching = async (requestId, developerIds) => {
   const serviceUrl =
@@ -348,14 +351,12 @@ const getHiringRequestByProjectIdAndPaging = async (
   return response;
 };
 
-const getHiringRequestByProjectId = async (
-  projectId
-) => {
+const getHiringRequestByProjectId = async (projectId) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.getAllHiringRequestByProjectId.replace(
       "${projectId}",
       projectId
-    )
+    );
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };
@@ -379,7 +380,7 @@ export default {
   getAllHiringRequestByJobTitleAndSkill,
   getAllStatusHiringRequest,
   getHiringRequestDetailInManager,
-  getDeveloperMatchingInManager,
+  //getDeveloperMatchingInManager,
   sendHiringRequestToDevMatching,
   getDevMatchingHasBeenSent,
   getDeveloperDetailInManager,

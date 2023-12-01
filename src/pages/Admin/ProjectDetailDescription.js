@@ -44,6 +44,7 @@ import { Empty } from "antd";
 import "react-calendar/dist/Calendar.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { result } from "lodash";
+import hireddevServices from "../../services/hireddev.services";
 dayjs.extend(customParseFormat);
 
 const monthFormat = "YYYY-MM-DD";
@@ -212,10 +213,14 @@ const ProjectDetailDescription = () => {
   };
 
   //----------------------------------------------------------------------------------
+  const [projectDevStatus, setProjectDevStatus] = useState(0);
   const fetchGetDeveloperByProject = async () => {
     let response;
     try {
-      response = await projectServices.getDeveloperByProject(state.projectId);
+      response = await projectServices.getDeveloperByProject(
+        state.projectId,
+        8
+      );
       console.log("danh sach dev tham gia tham gia vào project");
       console.log(response.data.data);
       setDevInProject(response.data.data);
@@ -241,12 +246,16 @@ const ProjectDetailDescription = () => {
   const [optionProjectType, setOptionProjectType] = useState([]);
   const [selectOption, setSelectOption] = useState([]);
   //--------------------------------------------------------------------------------
+  const handleChangeOption = (selected) => {
+    console.log(selected);
+    setSelectOption(selected);
+  };
+  //--------------------------------------------------------------------------------
 
   const fetchProjectType = async () => {
     let response;
     try {
       response = await projectTypeServices.getAllProjectType();
-
       const activeTypes = response.data.data.filter(
         (type) => type.statusString === "Active"
       );
@@ -254,14 +263,14 @@ const ProjectDetailDescription = () => {
       if (projectDetail) {
         const requiredTypeName = projectDetail.projectTypeName;
         const foundType = activeTypes.find(
-          (type) => type.projectTypeName === requiredTypeName
+          (type) => type.projectTypeName == requiredTypeName
         );
         if (foundType) {
           const newType = {
             value: foundType.projectTypeId.toString(),
             label: foundType.projectTypeName,
           };
-          setOptionProjectType(newType);
+          setSelectOption(newType);
         }
       }
       let formattedTypes = activeTypes.map((type) => ({
@@ -275,13 +284,10 @@ const ProjectDetailDescription = () => {
     }
   };
 
-  const handleChangeOption = (selected) => {
-    console.log(selected);
-    setSelectOption(selected);
-  };
   //--------------------------------------------------------------------------------
   const [modalUpdateProject, setModalUpdateProject] = useState(false);
   const openModalUpdateProject = () => {
+    fetchProjectType();
     setModalUpdateProject(!modalUpdateProject);
   };
 
@@ -294,18 +300,20 @@ const ProjectDetailDescription = () => {
       response = await projectServices.updateProject(
         state.projectId,
         state.projectId,
-        currentProjectType,
+        // currentProjectType,
+        selectOption.value,
         currentProjectName,
         currentDescription,
         currentStartDate,
         currentEndDate
       );
-
+      console.log("Update OK");
       console.log(response.data.data);
       setresultUpdate(response.data.data);
       //fetchGetProjectDetailByProjectId();
     } catch (error) {
       console.error("Error fetching update project:", error);
+      console.log(selectOption.value);
     }
   };
   //--------------------------------------------------------------------------------
@@ -405,10 +413,10 @@ const ProjectDetailDescription = () => {
   };
 
   //-------------------------------------------------------------------------------------
-  const fetchGetWorklog = async (abc) => {
+  const fetchGetWorklog = async (paySlipId) => {
     let response;
     try {
-      response = await payServices.getWorklog(abc);
+      response = await payServices.getWorklog(paySlipId);
       console.log(response.data.data);
       console.log("WORK LOG WORK LOG");
       setListWorklog(response.data.data);
@@ -416,8 +424,48 @@ const ProjectDetailDescription = () => {
       console.error("Error fetching worklog", error);
     }
   };
-  //-------------------------------------------------------------------------------------
 
+  //------------------------------------------------------------------------------------------
+  const fetchKickDeveloperInProject = async (midleDeveloperId) => {
+    let response;
+    try {
+      response = await hireddevServices.kickDeveloperInProject(
+        state.projectId,
+        midleDeveloperId
+      );
+      console.log(response.data.data);
+      console.log("Kick OK");
+    } catch (error) {
+      console.error("Error fetching remove developer from project", error);
+    }
+  };
+
+  //------------------------------------------------------------------------------------------
+  const [showDropdown, setShowDropdown] = useState(
+    Array(devInProject.length).fill(false)
+  );
+
+  const toggleDropdown = (index) => {
+    const newShowDropdown = [...showDropdown];
+    newShowDropdown[index] = !newShowDropdown[index];
+    setShowDropdown(newShowDropdown);
+  };
+  //------------------------------------------------------------------------------------------
+  const [modalKickDevInProject, setModalKickDevInProject] = useState(false);
+
+  const [midleDeveloperId, setMidleDeveloperId] = useState([]);
+  const openModalKickDevInProject = (developerId) => {
+    console.log(developerId);
+    setMidleDeveloperId(developerId);
+
+    setModalKickDevInProject(!modalKickDevInProject);
+  };
+
+  //------------------------------------------------------------------------------------------
+  const kickDeveloperFormProject = (midleDeveloperId) => {
+    fetchKickDeveloperInProject(midleDeveloperId);
+    setModalKickDevInProject(false);
+  };
   //------------------------------------------------------------------------------------------
   useEffect(() => {
     fetchGetProjectDetailByProjectId();
@@ -427,9 +475,9 @@ const ProjectDetailDescription = () => {
     fetchGetDeveloperByProject();
   }, []);
 
-  useEffect(() => {
-    fetchProjectType();
-  }, []);
+  // useEffect(() => {
+  //   fetchProjectType();
+  // }, []);
 
   useEffect(() => {
     fetchGetPayPeriod();
@@ -537,7 +585,7 @@ const ProjectDetailDescription = () => {
                             <div className="form-button">
                               <Select
                                 options={optionProjectType}
-                                defaultInputValue={currentProjectType}
+                                value={selectOption}
                                 onChange={handleChangeOption}
                                 className="Select Select--level-highest"
                                 style={{
@@ -889,16 +937,77 @@ const ProjectDetailDescription = () => {
                               className="d-flex justify-content-center"
                             >
                               <div>
-                                <FontAwesomeIcon
-                                  icon={faEllipsisVertical}
-                                  size="xl"
-                                />
+                                <Dropdown
+                                  isOpen={showDropdown[key]}
+                                  toggle={() => toggleDropdown(key)}
+                                >
+                                  <Dropdown.Toggle
+                                    variant="white"
+                                    id="dropdown-devInProject"
+                                    style={{ padding: "0px", color: "#ACB4B6" }}
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faEllipsisVertical}
+                                      size="xl"
+                                    />
+                                  </Dropdown.Toggle>
+
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        openModalKickDevInProject(
+                                          devInProjectDetail.developerId
+                                        )
+                                      }
+                                    >
+                                      Remove Developer
+                                    </Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
                               </div>
                             </Col>
                           </Row>
                         </CardBody>
                       </div>
                     ))}
+                    {/* Modal Kick Develoepr */}
+                    <Modal
+                      isOpen={modalKickDevInProject}
+                      toggle={() =>
+                        setModalKickDevInProject(!modalKickDevInProject)
+                      }
+                      centered
+                    >
+                      <div className="modal-header">
+                        <h4>Remove Developer From Project</h4>
+                      </div>
+                      <ModalBody style={{ minHeight: "100px" }}>
+                        <div>
+                          <p className="mb-0 text-muted">
+                            Are you sure you would like to remove this
+                            developer, This action can not be undone.
+                          </p>
+                        </div>
+                      </ModalBody>
+                      <div className="d-flex justify-content-end gap-2 mt-2 modal-footer">
+                        <button
+                          style={{ width: "100px" }}
+                          className="btn btn-secondary"
+                          onClick={() => setModalKickDevInProject(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          style={{ width: "100px" }}
+                          className="btn btn-danger"
+                          onClick={() =>
+                            kickDeveloperFormProject(midleDeveloperId)
+                          }
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </Modal>
                   </div>
                 </TabPane>
                 <TabPane tabId="3">
@@ -1152,184 +1261,194 @@ const ProjectDetailDescription = () => {
                               <Col md={1}></Col>
                             </Row>
 
-                            <div className="d-flex flex-column gap-2">
-                              {listPaySlip.map((listPaySlipNew, key) => (
-                                <div key={key}>
-                                  <div
-                                    style={{
-                                      boxShadow:
-                                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                    }}
-                                    className={
-                                      "job-box-dev-in-list-hiringRequest-for-dev card"
-                                    }
-                                  >
-                                    <div className="p-3">
-                                      <Row className="align-items-center">
-                                        <Col
-                                          md={2}
-                                          style={{ textAlign: "center" }}
-                                        >
-                                          <div>
-                                            <span className="mb-0">
-                                              {listPaySlipNew.firstName}
-                                            </span>
-                                          </div>
-                                        </Col>
-
-                                        <Col
-                                          md={2}
-                                          className="px-0"
-                                          style={{ textAlign: "center" }}
-                                        >
-                                          <div>
-                                            <p className="mb-0">
-                                              {listPaySlipNew.lastName}
-                                            </p>
-                                          </div>
-                                        </Col>
-
-                                        <Col
-                                          md={2}
-                                          className="px-0"
-                                          style={{ textAlign: "center" }}
-                                        >
-                                          <div>
-                                            <p className="mb-0">
-                                              {listPaySlipNew.email}
-                                            </p>
-                                          </div>
-                                        </Col>
-
-                                        <Col
-                                          md={2}
-                                          className="px-0"
-                                          style={{ textAlign: "center" }}
-                                        >
-                                          <p className="mb-0">
-                                            {
-                                              listPaySlipNew.totalActualWorkedHours
-                                            }
-                                          </p>
-                                        </Col>
-
-                                        <Col
-                                          md={1}
-                                          className=" px-0"
-                                          style={{ textAlign: "center" }}
-                                        >
-                                          {listPaySlipNew.totalOvertimeHours}
-                                        </Col>
-
-                                        <Col
-                                          md={2}
-                                          style={{ textAlign: "center" }}
-                                        >
-                                          <div>
-                                            <span>
-                                              {listPaySlipNew.totalEarnings}
-                                            </span>
-                                          </div>
-                                        </Col>
-
-                                        <Col md={1}>
-                                          <div
-                                            className="d-flex justify-content-center rounded-circle"
-                                            onClick={() =>
-                                              toggleCollapse(
-                                                key,
-                                                listPaySlipNew.paySlipId
-                                              )
-                                            }
-                                            style={{
-                                              backgroundColor: "#ECECED",
-                                            }}
+                            {listPeriod !== null ? (
+                              <div className="d-flex flex-column gap-2">
+                                {listPaySlip.map((listPaySlipNew, key) => (
+                                  <div key={key}>
+                                    <div
+                                      style={{
+                                        boxShadow:
+                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                      }}
+                                      className={
+                                        "job-box-dev-in-list-hiringRequest-for-dev card"
+                                      }
+                                    >
+                                      <div className="p-3">
+                                        <Row className="align-items-center">
+                                          <Col
+                                            md={2}
+                                            style={{ textAlign: "center" }}
                                           >
-                                            <i
-                                              className="uil uil-angle-down"
-                                              style={{ fontSize: "26px" }}
-                                            ></i>
-                                          </div>
-                                        </Col>
-                                      </Row>
-                                    </div>
-                                  </div>
+                                            <div>
+                                              <span className="mb-0">
+                                                {listPaySlipNew.firstName}
+                                              </span>
+                                            </div>
+                                          </Col>
 
-                                  <Collapse isOpen={showCollapse[key]}>
-                                    {listWorklog.map((listWorklogNew, key) => (
-                                      <div
-                                        key={key}
-                                        style={{
-                                          backgroundColor: "#EFF0F2",
-                                          borderRadius: "7px",
-                                        }}
-                                        className="mt-1 p-2"
-                                      >
-                                        <div className="d-flex flex-column gap-2">
-                                          <div
-                                            className="job-box-dev-in-list-hiringRequest-for-dev card  p-2"
-                                            style={{
-                                              backgroundColor: "#FFFFFF",
-                                            }}
+                                          <Col
+                                            md={2}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
                                           >
-                                            <Row>
-                                              <Col
-                                                md={3}
-                                                className="d-flex justify-content-center align-items-center"
-                                              >
-                                                {listWorklogNew.workDateMMM}
-                                              </Col>
-                                              <Col md={3}>
-                                                <div>
-                                                  {" "}
-                                                  <Input
-                                                    type="text"
-                                                    className="form-control"
-                                                    id="time-In"
-                                                    value={
-                                                      listWorklogNew.timeIn
-                                                    }
-                                                    onChange={(e) =>
-                                                      setCurrentProjectName(
-                                                        e.target.value
-                                                      )
-                                                    }
-                                                  />
-                                                </div>
-                                              </Col>
-                                              <Col md={3}>
-                                                <div>
-                                                  {" "}
-                                                  <Input
-                                                    type="text"
-                                                    className="form-control"
-                                                    id="time-Out"
-                                                    value={
-                                                      listWorklogNew.timeOut
-                                                    }
-                                                    onChange={(e) =>
-                                                      setCurrentProjectName(
-                                                        e.target.value
-                                                      )
-                                                    }
-                                                  />
-                                                </div>
-                                              </Col>
-                                              <Col
-                                                md={3}
-                                                className="d-flex justify-content-center align-items-center"
-                                              >
-                                                {listWorklogNew.hourWorkInDay}
-                                              </Col>
-                                            </Row>
-                                          </div>
-                                        </div>
+                                            <div>
+                                              <p className="mb-0">
+                                                {listPaySlipNew.lastName}
+                                              </p>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            <div>
+                                              <p className="mb-0">
+                                                {listPaySlipNew.email}
+                                              </p>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            className="px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            <p className="mb-0">
+                                              {
+                                                listPaySlipNew.totalActualWorkedHours
+                                              }
+                                            </p>
+                                          </Col>
+
+                                          <Col
+                                            md={1}
+                                            className=" px-0"
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            {listPaySlipNew.totalOvertimeHours}
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            <div>
+                                              <span>
+                                                {listPaySlipNew.totalEarnings}
+                                              </span>
+                                            </div>
+                                          </Col>
+
+                                          <Col md={1}>
+                                            <div
+                                              className="d-flex justify-content-center rounded-circle"
+                                              onClick={() =>
+                                                toggleCollapse(
+                                                  key,
+                                                  listPaySlipNew.paySlipId
+                                                )
+                                              }
+                                              style={{
+                                                backgroundColor: "#ECECED",
+                                              }}
+                                            >
+                                              <i
+                                                className="uil uil-angle-down"
+                                                style={{ fontSize: "26px" }}
+                                              ></i>
+                                            </div>
+                                          </Col>
+                                        </Row>
                                       </div>
-                                    ))}
-                                  </Collapse>
-                                </div>
-                              ))}
-                            </div>
+                                    </div>
+
+                                    <Collapse isOpen={showCollapse[key]}>
+                                      {listWorklog.map(
+                                        (listWorklogNew, key) => (
+                                          <div
+                                            key={key}
+                                            style={{
+                                              backgroundColor: "#EFF0F2",
+                                              borderRadius: "7px",
+                                            }}
+                                            className="mt-1 p-2"
+                                          >
+                                            <div className="d-flex flex-column gap-2">
+                                              <div
+                                                className="job-box-dev-in-list-hiringRequest-for-dev card  p-2"
+                                                style={{
+                                                  backgroundColor: "#FFFFFF",
+                                                }}
+                                              >
+                                                <Row>
+                                                  <Col
+                                                    md={3}
+                                                    className="d-flex justify-content-center align-items-center"
+                                                  >
+                                                    {listWorklogNew.workDateMMM}
+                                                  </Col>
+                                                  <Col md={3}>
+                                                    <div>
+                                                      {" "}
+                                                      <Input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="time-In"
+                                                        value={
+                                                          listWorklogNew.timeIn
+                                                        }
+                                                        onChange={(e) =>
+                                                          setCurrentProjectName(
+                                                            e.target.value
+                                                          )
+                                                        }
+                                                      />
+                                                    </div>
+                                                  </Col>
+                                                  <Col md={3}>
+                                                    <div>
+                                                      {" "}
+                                                      <Input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="time-Out"
+                                                        value={
+                                                          listWorklogNew.timeOut
+                                                        }
+                                                        onChange={(e) =>
+                                                          setCurrentProjectName(
+                                                            e.target.value
+                                                          )
+                                                        }
+                                                      />
+                                                    </div>
+                                                  </Col>
+                                                  <Col
+                                                    md={3}
+                                                    className="d-flex justify-content-center align-items-center"
+                                                  >
+                                                    {
+                                                      listWorklogNew.hourWorkInDay
+                                                    }
+                                                  </Col>
+                                                </Row>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </Collapse>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div>
+                                <Empty />
+                              </div>
+                            )}
                           </div>
                         </TabPane>
                       </TabContent>
