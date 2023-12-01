@@ -86,10 +86,17 @@ const updateProject = async (
   return response;
 };
 
-const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize) => {
+const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize, ProjectTypeId, inputSearch, status) => {
   const serviceUrl =
-    urlConstant.endpoint.project.getAllProjectByCompanyIdAndPaging.replace(
-      "${companyId}", companyId).replace("{PageIndex}", PageIndex).replace("{PageSize}", PageSize);
+    urlConstant.endpoint.project.getAllProjectByCompanyIdAndPaging
+      .replace("${companyId}", companyId)
+      .replace("{PageIndex}", PageIndex)
+      .replace("{PageSize}", PageSize)
+      .replace("${ProjectTypeId}", ProjectTypeId)
+      .replace("${searchKeyString}", inputSearch)
+      .replace("${Status}", status)
+    ;
+  console.log(serviceUrl)
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };

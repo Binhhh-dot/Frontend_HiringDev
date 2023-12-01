@@ -59,6 +59,7 @@ export default {
       getAllHiringRequestByProjectId:
         "/HiringRequest/ByProject?projectId=${projectId}",
       updateHiringRequest: "/HiringRequest?requestId=${requestId}",
+      getAllHiringRequestByProjectIdAndPaging: "/HiringRequest/ByProject?projectId=${projectId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
     },
 
     selectingDeveloper: {
@@ -167,7 +168,7 @@ export default {
       getProjectDetailByProjectId: "/Project/${projectId}",
       getDeveloperByProject: "/Developer/ByProject/${projectId}",
       updateProject: "/Project/${projectId}",
-      getAllProjectByCompanyIdAndPaging: "/Project/ByCompany/${companyId}?PageIndex={PageIndex}&PageSize={PageSize}",
+      getAllProjectByCompanyIdAndPaging: "/Project/ByCompany/${companyId}?PageIndex={PageIndex}&PageSize={PageSize}&searchKeyString=${searchKeyString}&ProjectTypeId=${ProjectTypeId}&Status=${Status}",
 
     },
     contract: {
@@ -222,6 +223,7 @@ export default {
         "/Payment/Execute?paymentId=${paymentId}&payerId=${payerId}",
     },
     hiredDev: {
+      getListDeveloperInRequestByRequestId: "/HiredDeveloper/DevelopersInRequest/${requestId}"
     },
   },
 };

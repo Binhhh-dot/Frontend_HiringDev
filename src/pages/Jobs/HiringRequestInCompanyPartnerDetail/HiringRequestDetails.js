@@ -57,6 +57,7 @@ import { useNavigate } from "react-router-dom";
 import { Empty } from 'antd';
 import { fi } from "date-fns/locale";
 import urlConstant from "../../../Common/urlConstant";
+import hireddevServices from "../../../services/hireddev.services";
 
 
 const HiringRequestDetails = () => {
@@ -342,7 +343,7 @@ const HiringRequestDetails = () => {
     try {
       const queryParams = new URLSearchParams(location.search);
       const jobId = queryParams.get("Id");
-      const response = await developerServices.GetAllSelectedDevByHR(jobId);
+      const response = await hireddevServices.getListDeveloperInRequestByRequestId(jobId);
       const data = response.data;
       const candidategridDetails = data.data.map((dev) => {
         return {
@@ -361,7 +362,7 @@ const HiringRequestDetails = () => {
           label: false,
           skills: dev.skillRequireStrings,
           averagedPercentage: dev.averagedPercentage.toFixed(2),
-          selectedDevStatus: dev.selectedDevStatus,
+          selectedDevStatus: dev.hiredDeveloperStatus,
           interviewRound: dev.interviewRound,
         };
       });
@@ -1936,6 +1937,19 @@ const HiringRequestDetails = () => {
                                 {candidategridDetailsNew.selectedDevStatus ===
                                   "Under Consideration" ? (
                                   <>
+                                    <button
+                                      id="interviewButton"
+                                      className="btn btn-soft-blue w-100 mt-2 fw-bold"
+                                      onClick={() =>
+                                        openModalCreateInterview(
+                                          candidategridDetailsNew.id
+                                        )
+                                      }
+                                    >
+                                      <>
+                                        Create Interview {candidategridDetailsNew.interviewRound > 0 ? `Round ${candidategridDetailsNew.interviewRound + 1}` : ''}
+                                      </>
+                                    </button>
                                     <button
                                       id="interviewButton"
                                       className="btn btn-soft-primary btn-hover w-100 mt-2 fw-bold"

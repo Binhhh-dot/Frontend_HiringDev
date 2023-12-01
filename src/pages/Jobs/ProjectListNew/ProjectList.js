@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import Section from "../HiringRequestList/Section";
+import Section from "../ProjectListNew/Section";
 import { useNavigate } from "react-router-dom";
 import ProjectVacancyList from "./ProjectVacancyList";
 

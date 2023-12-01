@@ -3,7 +3,7 @@ import utils from "../utils/customAxios";
 
 const createHiringRequest = async (
   companyId,
-  jobPositionId,
+  projectId,
   jobTitle,
   jobDescription,
   numberOfDev,
@@ -18,7 +18,7 @@ const createHiringRequest = async (
   const serviceUrl = urlConstant.endpoint.hiringRequest.createHiringRequest;
   const response = await utils.axiosLocalHost.post(serviceUrl, {
     companyId,
-    jobPositionId,
+    projectId,
     jobTitle,
     jobDescription,
     numberOfDev,
@@ -35,7 +35,7 @@ const createHiringRequest = async (
 
 const updateHiringRequest = async (
   requestId,
-  jobPositionId,
+  projectId,
   jobTitle,
   jobDescription,
   numberOfDev,
@@ -51,7 +51,7 @@ const updateHiringRequest = async (
     urlConstant.endpoint.hiringRequest.updateHiringRequest.replace("${requestId}", requestId);
   const response = await utils.axiosLocalHost.put(serviceUrl, {
     requestId,
-    jobPositionId,
+    projectId,
     jobTitle,
     jobDescription,
     numberOfDev,
@@ -360,6 +360,18 @@ const getHiringRequestByProjectId = async (
   return response;
 };
 
+const getAllHiringRequestByProjectIdAndPaging = async (
+  projectId, pageIndex, pageSize
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getAllHiringRequestByProjectIdAndPaging
+      .replace("${projectId}", projectId)
+      .replace("${PageIndex}", pageIndex)
+      .replace("${PageSize}", pageSize)
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+}
+
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -380,6 +392,6 @@ export default {
   cancelHirringRequestStatus,
   cancelHirringRequestStatusAfter,
   getHiringRequestByProjectIdAndPaging,
-  getHiringRequestByProjectId
-
+  getHiringRequestByProjectId,
+  getAllHiringRequestByProjectIdAndPaging
 };

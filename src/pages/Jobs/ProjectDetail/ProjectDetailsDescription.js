@@ -17,7 +17,8 @@ import {
   TabPane,
   TabContent,
   Input,
-  Collapse
+  Collapse,
+  Form
 } from "reactstrap";
 import { Await, Link, Navigate, useLocation } from "react-router-dom";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
@@ -83,6 +84,7 @@ import { HashLoader } from "react-spinners";
 import customUrl from "../../../utils/customUrl";
 import paymentServices from "../../../services/payment.services";
 import { Menu } from 'antd';
+import JobType from "../../Home/SubSection/JobType";
 dayjs.extend(customParseFormat);
 
 const ProjectDetailDesciption = () => {
@@ -144,15 +146,62 @@ const ProjectDetailDesciption = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [isHavePayment, setIsHavePaymemt] = useState(false);
   const [showDropdown, setShowDropdown] = useState({});
+  let [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const toggleDropdown = (jobPositionId) => {
-    setShowDropdown(prevState => ({
-      ...prevState,
-      [jobPositionId]: !prevState[jobPositionId] // Toggle the dropdown state for the corresponding jobPositionId
-    }));
+  const [search, setSearch] = useState("");
+  const [skill, setSkill] = useState([]);
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
   };
 
 
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+    if (
+      totalPages > maxPageButtons &&
+      currentPage <= Math.floor(maxPageButtons / 2) + 1
+    ) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${i === currentPage ? "active" : ""}`}
+        >
+          <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
+            {i}
+          </Link>
+        </li>
+      );
+    }
+
+    return pageNumbers;
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const initialSkillsState = jobVacancyList.reduce(
+    (acc, job) => ({ ...acc, [job.id]: false }),
+    {}
+  );
+
+  const [showFullSkills, setShowFullSkills] = useState(initialSkillsState);
 
   // Function to handle payment execution on backend
   const executePayment = async (paymentId, payerId) => {
@@ -222,7 +271,6 @@ const ProjectDetailDesciption = () => {
               onOk() {
                 // Action when the user clicks OK
                 console.log('Confirmed!');
-                deleteJobPosition(positionIdChose);
               },
               onCancel() {
                 // Action when the user cancels
@@ -313,9 +361,8 @@ const ProjectDetailDesciption = () => {
     setIsModalOpen(true);
   };
 
-  const openModalCreateHiringrequest = (hiringRequestId, jobPositionId) => {
+  const openModalCreateHiringrequest = (hiringRequestId) => {
     setSelectedHiringRequestInfo(hiringRequestId);
-    setSelectedJobPositionInfo(jobPositionId);
     setIsModalCreateOpen(true);
   };
 
@@ -328,7 +375,6 @@ const ProjectDetailDesciption = () => {
 
   const closeModalCreateHiringRequest = () => {
     setSelectedHiringRequestInfo(null);
-    setSelectedJobPositionInfo(null);
     setIsModalCreateOpen(false);
     fetchJobVacancies();
   };
@@ -496,25 +542,6 @@ const ProjectDetailDesciption = () => {
     }
   };
 
-  const fetchJobPosition = async () => {
-    let response;
-    // const saveData = localStorage.getItem("myData");
-
-    try {
-      const queryParams = new URLSearchParams(location.search);
-      const projectId = queryParams.get("Id");
-      setProjectId(projectId);
-      response = await jobPositionServices.getJobPostionByProjectId(projectId);
-      console.log(response.data.data.length);
-      setListJobPosition(response.data.data);
-      if (response.data.data.length > 3) {
-        setShowScroll(true)
-      }
-      return response;
-    } catch (error) {
-      console.error("Error fetching job vacancies:", error);
-    }
-  };
 
   const fetchWorklog = async (paySlipId) => {
     let response;
@@ -555,19 +582,7 @@ const ProjectDetailDesciption = () => {
     }
   };
 
-  const deleteJobPosition = async (jobPositionId) => {
-    let response;
-    try {
-      response = await jobPositionServices.deleteJobPosition(jobPositionId);
-      console.log(response.data.data)
-      toast.success("Delete job position successfully")
-      fetchJobPosition();
-      fetchJobVacancies();
-    } catch (error) {
-      toast.error("Delete job position fail")
-      console.error("Error fetching job vacancies:", error);
-    }
-  };
+
 
   const openPayment = async (payPeriodId) => {
     setLoading(true);
@@ -657,7 +672,6 @@ const ProjectDetailDesciption = () => {
 
     setCurrentDateBill(formattedDate);
 
-    fetchJobPosition();
   }, []);
 
   useEffect(() => {
@@ -764,43 +778,41 @@ const ProjectDetailDesciption = () => {
       const queryParams = new URLSearchParams(location.search);
       const projectId2 = queryParams.get("Id");
 
-      response = await jobPositionServices.getJobPositionsWithHiringRequest(
-        projectId2
+      response = await hiringrequestService.getAllHiringRequestByProjectIdAndPaging(
+        projectId2, currentPage, 5
       );
-      // }
-      const data = response.data;
 
-      const hasMoreThanThreeRequests = data.data.some(job => job.totalHiringRequest > 2);
+      const formattedJobVacancies = response.data.data.map((job) => {
+        // Assuming job.typeRequireName and job.levelRequireName are available
+        job.skillRequireStrings.unshift(
+          job.typeRequireName,
+          job.levelRequireName
+        );
+        return {
+          requestId: job.requestId,
+          projectId: job.projectId,
+          companyId: job.companyId,
+          requestCode: job.requestCode,
+          jobTitle: job.jobTitle,
+          jobDescription: job.jobDescription,
+          numberOfDev: job.numberOfDev,
+          targetedDev: job.targetedDev,
+          createdAt: job.createdAt,
+          salaryPerDev: job.salaryPerDev,
+          durationMMM: job.durationMMM,
+          duration: job.duration,
+          employmentTypeName: job.employmentTypeName,
+          typeRequireName: job.typeRequireName,
+          levelRequireName: job.levelRequireName,
+          statusString: job.statusString,
+          skillRequireStrings: job.skillRequireStrings,
+          postedTime: job.postedTime,
+          showFullSkills: false,
+          badges: [],
+          experience: job.skillRequireStrings.join(", "),
+        };
+      });
 
-      // Set checkHeightListHiringRequest based on the condition
-      if (hasMoreThanThreeRequests) {
-        setCheckHeightListHiringRequest(true);
-      }
-
-      const formattedJobVacancies = data.data.map((job) => {
-        return job.requestsInJobPosition.map((request) => ({
-          id: request.requestId,
-          duration: request.durationMMM,
-          numberOfDev: request.numberOfDev,
-          statusString: request.statusString,
-          jobTitle: request.jobTitle,
-          positionName: job.positionName,
-          jobPositionId: job.jobPositionId,
-          timing: request.statusString,
-          targetedDev: request.targetedDev,
-          done: request.statusString.includes("Done"),
-          save: request.statusString.includes("Saved"),
-          waitingApproval: request.statusString.includes("Waiting Approval"),
-          inProgress: request.statusString.includes("In Progress"),
-          rejected: request.statusString.includes("Rejected"),
-          expired: request.statusString.includes("Expired"),
-          cancelled: request.statusString.includes("Cancelled"),
-          finished: request.statusString.includes("Finished"),
-          completed: request.statusString.includes("Completed"),
-        }));
-      }).flat();
-
-      console.log(response.data);
       setJobVacancyList(formattedJobVacancies);
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -816,9 +828,10 @@ const ProjectDetailDesciption = () => {
   };
 
 
-  const openHiringRequestDetail = (requestId, statusString, jobPositionId) => {
+
+  const openHiringRequestDetail = (requestId, statusString) => {
     if (statusString === "Saved") {
-      openModalCreateHiringrequest(requestId, jobPositionId);
+      openModalCreateHiringrequest(requestId);
     } else {
       navigate('/hiringrequestlistincompanypartnerdetail?Id=' + requestId);
     }
@@ -829,19 +842,7 @@ const ProjectDetailDesciption = () => {
     setShowInput(!showInput);
   };
 
-  const createJobPosition = async () => {
-    try {
-      const queryParams = new URLSearchParams(location.search);
-      const projectId = queryParams.get("Id");
-      const positionName = document.getElementById("job-position-input").value;
-      const response = await jobPositionServices.createJobPosition(projectId, positionName);
-      fetchJobPosition();
-      toggleInput();
-      toast.success("Create job position successfully")
-    } catch (error) {
-      console.error("Error create Job Position:", error);
-    }
-  };
+
 
   const cancelUpdateWorkLog = () => {
     setIsEditWorkLog(!isEditWorkLog);
@@ -935,7 +936,10 @@ const ProjectDetailDesciption = () => {
     }
   };
 
-
+  const onSearch = () => {
+    setCurrentPage(1);
+    fetchJobVacancies();
+  };
 
   return (
     <React.Fragment>
@@ -1198,6 +1202,18 @@ const ProjectDetailDesciption = () => {
                       Payment
                     </NavLink>
                   </NavItem>
+                  <NavItem role="presentation">
+                    <NavLink
+                      className={classnames({ active: activeTab === "5" })}
+                      onClick={() => {
+                        tabChange("5");
+                      }}
+                      type="button"
+                    // style={{paddingLeft:"0px"}}
+                    >
+                      Hiring request new
+                    </NavLink>
+                  </NavItem>
                 </Nav>
                 <CardBody className="p-4" style={{ backgroundColor: "#fafafa", overflowX: "auto" }} >
                   <TabContent activeTab={activeTab}>
@@ -1257,7 +1273,7 @@ const ProjectDetailDesciption = () => {
                                     if (jobVacancyListDetails.jobPositionId === jobPosition.jobPositionId) {
                                       return (
                                         <div
-                                          onClick={() => openHiringRequestDetail(jobVacancyListDetails.id, jobVacancyListDetails.timing, jobPosition.jobPositionId)}
+                                          onClick={() => openHiringRequestDetail(jobVacancyListDetails.id, jobVacancyListDetails.timing)}
                                           key={key}
                                           style={{ transform: "none" }}
                                           className={
@@ -1363,7 +1379,6 @@ const ProjectDetailDesciption = () => {
                                 </div>
                                 <div className="d-flex gap-3 mt-2 ms-2 mb-2 align-items-center">
                                   <button className="btn btn-blue"
-                                    onClick={createJobPosition}
                                   >
                                     Add</button>
                                   <FontAwesomeIcon icon={faTimes} onClick={toggleInput} />
@@ -1390,7 +1405,6 @@ const ProjectDetailDesciption = () => {
                           isModalOpen={isModalCreateOpen}
                           closeModal={closeModalCreateHiringRequest}
                           requestId={selectedHiringRequestInfo}
-                          jobPositionId={selectedJobPositionInfo}
                         />
                       </div>
                     </TabPane>
@@ -2063,6 +2077,225 @@ const ProjectDetailDesciption = () => {
                       ) : (
                         <Empty />
                       )}
+                    </TabPane>
+                    <TabPane tabId="5">
+                      <div
+                        onClick={() =>
+                          openModalCreateHiringrequest(null)
+                        }
+                        className="d-flex hover-change " style={{ padding: "8px" }}
+                      >
+                        <span style={{ fontSize: "15px", marginRight: "5px" }}>
+                          <FontAwesomeIcon icon={faPlus} />
+                        </span>
+                        <div style={{ fontWeight: "500" }}>
+                          Add a hiring Request
+                        </div>
+                      </div>
+                      <div className="job-list-header">
+                        <Form action="#">
+                          <Row className="g-2">
+                            <Col lg={4} md={6}>
+                              <div className="filler-job-form">
+                                <i className="uil uil-briefcase-alt"></i>
+                                <Input
+                                  type="search"
+                                  className="form-control filter-input-box"
+                                  id="exampleFormControlInput1"
+                                  placeholder="Jobtitle... "
+                                  style={{ marginTop: "-10px" }}
+                                  value={search}
+                                  onChange={(e) => setSearch(e.target.value)}
+                                />
+                              </div>
+                            </Col>
+
+                            <Col lg={5} md={6}>
+                              <div className="filler-job-form">
+                                <i className="uil uil-clipboard-notes"></i>
+                                <JobType skill={skill} setSkill={setSkill} />
+                              </div>
+                            </Col>
+                            <Col lg={3} md={6}>
+                              <div className="btn btn-primary w-100" onClick={() => onSearch()}>
+                                <i className="uil uil-filter"></i> Fliter
+                              </div>
+                            </Col>
+                          </Row>
+                        </Form>
+                      </div>
+                      <div>
+                        {jobVacancyList.map((jobVacancyListDetails, key) => (
+                          <div
+                            key={key}
+                            className={
+                              "job-box card mt-4"
+                            }
+                            onClick={() => openHiringRequestDetail(jobVacancyListDetails.requestId, jobVacancyListDetails.statusString)}
+                          >
+                            <div className="p-4">
+                              <Row className="align-items-center">
+                                <Col md={2}>
+                                  <div className="text-center mb-4 mb-md-0">
+                                    <div
+                                    >
+                                      <img
+                                        style={{
+                                          width: "80px",
+                                          height: "80px",
+                                        }}
+                                        src={jobVacancyListDetails.companyImg}
+                                        alt=""
+                                        className="img-fluid rounded-3 img-avt-hiring-request"
+                                      />
+                                    </div>
+                                  </div>
+                                </Col>
+
+                                <Col md={3}>
+                                  <div className="mb-2 mb-md-0">
+                                    <h5 className="fs-18 mb-0">
+                                      <div
+                                        className="text-dark"
+                                      >
+                                        {jobVacancyListDetails.jobTitle}
+                                      </div>
+                                    </h5>
+                                    <p className="text-muted fs-14 mb-0">
+                                      {jobVacancyListDetails.requestCode}
+                                    </p>
+                                  </div>
+                                </Col>
+
+                                <Col md={3}>
+                                  <div className="d-flex mb-2">
+                                    <div className="flex-shrink-0">
+                                      <i className="uil uil-user-check text-primary me-1"></i>
+                                    </div>
+                                    <p className="text-muted mb-0">
+                                      {jobVacancyListDetails.targetedDev} Developer
+                                    </p>
+                                  </div>
+                                </Col>
+
+                                <Col md={2}>
+                                  <div className="d-flex mb-0">
+                                    <div className="flex-shrink-0">
+                                      <i className="uil uil-clock-three text-primary me-1"></i>
+                                    </div>
+                                    <p className="text-muted mb-0">
+                                      {" "}
+                                      {jobVacancyListDetails.durationMMM}
+                                    </p>
+                                  </div>
+                                </Col>
+
+                                <Col md={2}>
+                                  <div>
+                                    <span
+                                      className={
+                                        jobVacancyListDetails.statusString === "Rejected"
+                                          ? "badge bg-danger text-light mb-2"
+                                          : jobVacancyListDetails.statusString ===
+                                            "Waiting Approval"
+                                            ? "badge bg-warning text-light mb-2"
+                                            : jobVacancyListDetails.statusString ===
+                                              "In Progress"
+                                              ? "badge bg-blue text-light mb-2"
+                                              : jobVacancyListDetails.statusString ===
+                                                "Expired"
+                                                ? "badge bg-danger text-light mb-2"
+                                                : jobVacancyListDetails.statusString ===
+                                                  "Cancelled"
+                                                  ? "badge bg-danger text-light mb-2"
+                                                  : jobVacancyListDetails.statusString ===
+                                                    "Finished"
+                                                    ? "badge bg-primary text-light mb-2"
+                                                    : jobVacancyListDetails.statusString ===
+                                                      "Complete"
+                                                      ? "badge bg-primary text-light mb-2"
+                                                      : jobVacancyListDetails.statusString === "Saved"
+                                                        ? "badge bg-teal text-light mb-2"
+                                                        : ""
+                                      }
+                                    >
+                                      {jobVacancyListDetails.statusString}
+                                    </span>
+                                  </div>
+                                </Col>
+                              </Row>
+                            </div>
+                            <div className="p-3 bg-light">
+                              <Row className="justify-content-between">
+                                <Col md={12}>
+                                  <div>
+                                    <p className="text-muted mb-0 ">
+                                      {jobVacancyListDetails.experience
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          showFullSkills[jobVacancyListDetails.id]
+                                            ? undefined
+                                            : 6
+                                        )
+                                        .map((skill, index) => (
+                                          <span
+                                            key={index}
+                                            className={`badge ${index === 0
+                                              ? "bg-info text-light"
+                                              : index === 1
+                                                ? "bg-danger-subtle text-danger"
+                                                : "bg-primary-subtle text-primary"
+                                              }  ms-2`}
+                                          >
+                                            {skill.trim()}
+                                          </span>
+                                        ))}
+
+                                      {jobVacancyListDetails.experience.split(",").length >
+                                        4 ? (
+                                        <span className="badge bg-primary-subtle text-primary ms-2">
+                                          ...
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </p>
+                                  </div>
+                                </Col>
+                              </Row>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <Row id="paging">
+                        <Col lg={12} className="mt-4 pt-2">
+                          <nav aria-label="Page navigation example">
+                            <div className="pagination job-pagination mb-0 justify-content-center">
+                              <li
+                                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+                              >
+                                <div
+                                  className="page-link"
+                                  tabIndex="-1"
+                                  onClick={handlePrevPage}
+                                >
+                                  <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                </div>
+                              </li>
+                              {renderPageNumbers()}
+                              <li
+                                className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                  }`}
+                              >
+                                <div className="page-link" to="#" onClick={handleNextPage}>
+                                  <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                </div>
+                              </li>
+                            </div>
+                          </nav>
+                        </Col>
+                      </Row>
                     </TabPane>
                   </TabContent>
                 </CardBody>

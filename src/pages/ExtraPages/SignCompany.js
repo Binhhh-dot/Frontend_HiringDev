@@ -105,50 +105,62 @@ const SignCompany = () => {
         formData2.append('file', avatar2);
         if (formData.companyName.trim() == "") {
             setCompanyNameError("Please enter the company name!")
+            check = false;
         } else {
             setCompanyNameError(null);
         }
         if (formData.companyEmail.trim() == "") {
             setEmailError("Please enter email!")
+            check = false;
+
         } else {
             setEmailError(null);
         }
         if (formData.phoneNumber.trim() == "") {
             setPhoneNumberError("Please enter company phone number!")
+            check = false;
+
         } else {
             setPhoneNumberError(null);
         }
         if (formData.address.trim() == "") {
             setAddressError("Please enter country!")
+            check = false;
+
         } else {
             setAddressError(null);
         }
         if (formData.country == "") {
             setCountryError("Please enter address!")
+            check = false;
+
         } else {
             setCountryError(null);
         }
-        if (!avatar2) {
-            toast.error("You forgot to enter the company's image!")
-        }
+
         if (check) {
-            try {
-                // Make API request
-                const response = await companyServices.createCompany(formData2);
-                // Handle the response (you can show a success message or redirect to another page)
-                console.log('API Response:', response.data);
-                const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
-                const userData = responseUser.data;
-                localStorage.setItem('companyId', userData.data.companyId);
-                toast.success("Create company info sucessfully! Welcome to WeHire")
+            if (!avatar2) {
+                toast.error("You forgot to enter the company's image!")
                 setLoadingCreate(false);
-                navigate("/home");
-            } catch (error) {
-                // Handle errors (show an error message or log the error)
-                console.error('Error creating company:', error);
-                console.log(error.response.data);
-                toast.error(error.response.data.message)
-                setLoadingCreate(false);
+            } else {
+                try {
+                    // Make API request
+                    const response = await companyServices.createCompany(formData2);
+                    // Handle the response (you can show a success message or redirect to another page)
+                    console.log('API Response:', response.data);
+                    const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+                    const userData = responseUser.data;
+                    localStorage.setItem('companyId', userData.data.companyId);
+                    toast.success("Create company info sucessfully! Welcome to WeHire")
+                    setLoadingCreate(false);
+                    navigate("/home");
+                } catch (error) {
+                    // Handle errors (show an error message or log the error)
+                    console.error('Error creating company:', error);
+                    console.log(error.response.data);
+                    toast.error(error.response.data.message)
+                    setLoadingCreate(false);
+                }
             }
         }
         setLoadingCreate(false);
@@ -246,7 +258,7 @@ const SignCompany = () => {
                                                                         type="text"
                                                                         className="form-control"
                                                                         id="firstnameInput"
-                                                                        placeholder="Enter your first name"
+                                                                        placeholder="Enter your company name"
                                                                         value={formData.firstName}
                                                                         onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                                                                     />
@@ -264,11 +276,11 @@ const SignCompany = () => {
                                                                         Email
                                                                     </label>
                                                                     <Input
-                                                                        type="text"
+                                                                        type="email"
                                                                         className="form-control"
 
                                                                         id="lastnameInput"
-                                                                        placeholder="Enter your last name"
+                                                                        placeholder="Enter your company email"
                                                                         value={formData.lastName}
                                                                         onChange={(e) => {
                                                                             setFormData({ ...formData, companyEmail: e.target.value });
@@ -292,7 +304,7 @@ const SignCompany = () => {
                                                                         className="form-control"
 
                                                                         id="phonenumberInput"
-                                                                        placeholder="Enter your phone number"
+                                                                        placeholder="Enter your company phone number"
                                                                         value={formData.phoneNumber}
                                                                         onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                                                                     />
@@ -373,7 +385,7 @@ const SignCompany = () => {
                                                                         type="text"
                                                                         className="form-control"
                                                                         id="passwordInput"
-                                                                        placeholder="Enter your password"
+                                                                        placeholder="Enter your company address"
                                                                         value={formData.password}
 
                                                                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
