@@ -52,11 +52,10 @@ const getProjectDetailByProjectId = async (projectId) => {
   return response;
 };
 
-const getDeveloperByProject = async (projectId) => {
-  const serviceUrl = urlConstant.endpoint.project.getDeveloperByProject.replace(
-    "${projectId}",
-    projectId
-  );
+const getDeveloperByProject = async (projectId, status) => {
+  const serviceUrl = urlConstant.endpoint.project.getDeveloperByProject
+    .replace("${projectId}", projectId)
+    .replace("${status}", status);
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };
@@ -86,10 +85,16 @@ const updateProject = async (
   return response;
 };
 
-const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize) => {
+const getAllProjectByCompanyIdAndPaging = async (
+  companyId,
+  PageIndex,
+  PageSize
+) => {
   const serviceUrl =
-    urlConstant.endpoint.project.getAllProjectByCompanyIdAndPaging.replace(
-      "${companyId}", companyId).replace("{PageIndex}", PageIndex).replace("{PageSize}", PageSize);
+    urlConstant.endpoint.project.getAllProjectByCompanyIdAndPaging
+      .replace("${companyId}", companyId)
+      .replace("{PageIndex}", PageIndex)
+      .replace("{PageSize}", PageSize);
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };
@@ -102,5 +107,5 @@ export default {
   getProjectListPaging,
   getDeveloperByProject,
   updateProject,
-  getAllProjectByCompanyIdAndPaging
+  getAllProjectByCompanyIdAndPaging,
 };

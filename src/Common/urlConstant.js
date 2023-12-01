@@ -45,7 +45,7 @@ export default {
       getHiringRequestDetailInManager: "/HiringRequest/${hiringRequestId}",
       getHiringRequestDetailInCompany: "/HiringRequest/${hiringRequestId}",
       //-----------------------------------------------------------------------
-      getDeveloperMatchingInManager: "/Developer/DevMatching/${devMatching}",
+      // getDeveloperMatchingInManager: "/Developer/DevMatching/${devMatching}",
       sendHiringRequestToDevMatching: "/SelectingDev",
       getDevMatchingHasBeenSent:
         "/SelectingDev/SelectedDevByManager/${requestId}",
@@ -69,12 +69,12 @@ export default {
         "/SelectingDev/RejectDev?requestId=${requestId}&developerId=${developerId}",
       accpectDevToInterview: "/SelectingDev/DevToInterviewing",
       // GetAllSelectedDevByHR: "/SelectingDev/SelectedDevByHR/${hiringRequestId}",
-      getSelectedDevByManager:
-        "/SelectingDev/SelectedDevByManager/${requestId}",
+      // getSelectedDevByManager:
+      //   "/SelectingDev/SelectedDevByManager/${requestId}",
       sendDevToHR: "/SelectingDev/SendDevToHR",
       removeOutOfWaitingInterview:
         "/SelectingDev/RemoveOutOfWaitingInterview?requestId=${requestId}&developerId=${developerId}",
-      sendDevToHRNew: "/SelectingDev/SendDevToHR",
+      // sendDevToHRNew: "/SelectingDev/SendDevToHR",
       onboardDeveloper:
         "/SelectingDev/Onboarding?requestId=${requestId}&developerId=${developerId}",
     },
@@ -100,6 +100,8 @@ export default {
         "/AssignTask/ChangeStatusDevTask",
       getListDeveloperOnboardByProjectId: "/Developer/ByProject/${projectId}",
       updateDeveloperByAdmin: "/Developer/ByAdmin/${developerId}",
+      deleteDeveloper: "",
+      getDeveloperMatchingInManager: "/Developer/DevMatching/${requestId}",
     },
     interview: {
       createAnInterview: "/Interview",
@@ -165,10 +167,11 @@ export default {
       createProject: "/Project",
       getAllProjectByCompanyId: "/Project/ByCompany/${companyId}",
       getProjectDetailByProjectId: "/Project/${projectId}",
-      getDeveloperByProject: "/Developer/ByProject/${projectId}",
+      getDeveloperByProject:
+        "/Developer/ByProject/${projectId}?status=${status}",
       updateProject: "/Project/${projectId}",
-      getAllProjectByCompanyIdAndPaging: "/Project/ByCompany/${companyId}?PageIndex={PageIndex}&PageSize={PageSize}",
-
+      getAllProjectByCompanyIdAndPaging:
+        "/Project/ByCompany/${companyId}?PageIndex={PageIndex}&PageSize={PageSize}",
     },
     contract: {
       getContract: "/Contract",
@@ -222,6 +225,11 @@ export default {
         "/Payment/Execute?paymentId=${paymentId}&payerId=${payerId}",
     },
     hiredDev: {
+      getSelectedDevByManager:
+        "/HiredDeveloper/DevelopersInRequest/${requestId}",
+      sendDevToHRNew: "/HiredDeveloper/SendDevToHR",
+      kickDevInProject:
+        "/HiredDeveloper/TerminateFromProject?projectId=${projectId}&developerId=${developerId}",
     },
   },
 };

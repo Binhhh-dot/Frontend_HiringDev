@@ -67,6 +67,7 @@ const NewListInterviewInfo = () => {
   const [interviewListApproval, setInterviewListApproval] = useState([]);
   const [interviewListComplete, setInterviewListComplete] = useState([]);
   const [interviewListReject, setInterviewListReject] = useState([]);
+  const [interviewCancelled, setInterviewCancelled] = useState([]);
   //---------------------------------------------------------------------------------------
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -189,6 +190,32 @@ const NewListInterviewInfo = () => {
       );
       setInterviewListReject(tmp);
       setTotalPagesReject(Math.ceil(tmp.length / pageSizeReject));
+    } catch (error) {
+      console.error("Error fetching interview Rejected list :", error);
+    }
+  };
+  //-------------------------------------------------------------------------------------
+  let [currentPageCancelled, setCurrentPageCancelled] = useState(1);
+  const [totalPagesCancelled, setTotalPagesCancelled] = useState(1);
+  const pageSizeCancelled = 7;
+  const handlePageClickCancelled = (page) => {
+    setCurrentPageCancelled(page);
+  };
+
+  const fetchInterviewListCancelled = async () => {
+    let response;
+    let tmp;
+    try {
+      response = await interviewServices.getAllInterviewByManagerAndPaging(
+        currentPageCancelled,
+        7
+      );
+      console.log(response.data.data);
+      tmp = response.data.data.filter(
+        (developer) => developer.statusString == "Cancelled"
+      );
+      setInterviewCancelled(tmp);
+      setTotalPagesCancelled(Math.ceil(tmp.length / pageSizeCancelled));
     } catch (error) {
       console.error("Error fetching interview Rejected list :", error);
     }
@@ -377,7 +404,7 @@ const NewListInterviewInfo = () => {
     }
   };
   //-------------------------------------------------------------------------------------
-  // Phan trang Reject
+  // Phan trang Rejected
   const renderPageNumbersReject = () => {
     const pageNumbers = [];
     const maxPageButtons = 4;
@@ -420,6 +447,53 @@ const NewListInterviewInfo = () => {
   const handlePrevPageReject = () => {
     if (currentPageReject > 1) {
       setCurrentPageReject(currentPageReject - 1);
+    }
+  };
+
+  //-------------------------------------------------------------------------------------
+  // Phan trang Cancelled
+  const renderPageNumbersCancelled = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(
+      1,
+      currentPageCancelled - Math.floor(maxPageButtons / 2)
+    );
+    let endPage = Math.min(totalPagesCancelled, startPage + maxPageButtons - 1);
+    if (
+      totalPagesCancelled > maxPageButtons &&
+      currentPageCancelled <= Math.floor(maxPageButtons / 2) + 1
+    ) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${i === currentPageCancelled ? "active" : ""}`}
+        >
+          <Link
+            className="page-link"
+            to="#"
+            onClick={() => handlePageClickCancelled(i)}
+          >
+            {i}
+          </Link>
+        </li>
+      );
+    }
+    return pageNumbers;
+  };
+
+  const handleNextPageCancelled = () => {
+    if (currentPageCancelled < totalPagesCancelled) {
+      setCurrentPageCancelled(currentPageCancelled + 1);
+    }
+  };
+
+  const handlePrevPageCancelled = () => {
+    if (currentPageCancelled > 1) {
+      setCurrentPageCancelled(currentPageCancelled - 1);
     }
   };
 
@@ -469,6 +543,10 @@ const NewListInterviewInfo = () => {
   useEffect(() => {
     fetchInterviewListReject();
   }, [currentPageReject]);
+
+  useEffect(() => {
+    fetchInterviewListCancelled();
+  }, [currentPageCancelled]);
   //-------------------------------------------------------------------------------------
   const [showPopup, setShowPopup] = useState(false);
 
@@ -682,6 +760,20 @@ const NewListInterviewInfo = () => {
                               type="button"
                             >
                               Rejected
+                            </NavLink>
+                          </NavItem>
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTab === "6",
+                              })}
+                              onClick={() => {
+                                tabChange("6");
+                              }}
+                              type="button"
+                            >
+                              Cancelled
                             </NavLink>
                           </NavItem>
                         </Nav>
@@ -1148,6 +1240,9 @@ const NewListInterviewInfo = () => {
                                                 : newInterviewListInManagerDetail.statusString ===
                                                   "Completed"
                                                 ? "badge bg-success text-light fs-12"
+                                                : newInterviewListInManagerDetail.statusString ===
+                                                  "Cancelled"
+                                                ? "badge bg-secondary text-light fs-12"
                                                 : ""
                                             }
                                           >
@@ -1933,6 +2028,191 @@ const NewListInterviewInfo = () => {
                                         className="page-link"
                                         to="#"
                                         onClick={handleNextPageReject}
+                                      >
+                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                      </Link>
+                                    </li>
+                                  </div>
+                                </nav>
+                              </Col>
+                            </Row>
+                          </TabPane>
+                          <TabPane tabId="6">
+                            <div>
+                              <div>
+                                {interviewCancelled.map(
+                                  (newInterviewListInManagerDetail, key) => (
+                                    <div
+                                      style={{
+                                        boxShadow:
+                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                      }}
+                                      key={key}
+                                      className={
+                                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                                      }
+                                    >
+                                      <div className="p-2">
+                                        <Row className="align-items-center">
+                                          <Col md={2}>
+                                            <div>
+                                              <Link to="#">
+                                                <img
+                                                  style={{
+                                                    width: "80px",
+                                                    height: "80px",
+                                                  }}
+                                                  src={
+                                                    newInterviewListInManagerDetail.companyImage
+                                                  }
+                                                  alt=""
+                                                  className="img-fluid rounded-3 img-avt-hiring-request"
+                                                />
+                                              </Link>
+                                            </div>
+                                          </Col>
+
+                                          <Col md={3} className="px-0">
+                                            <div
+                                              onClick={() =>
+                                                midleSelect(
+                                                  newInterviewListInManagerDetail.interviewId
+                                                )
+                                              }
+                                            >
+                                              <h5
+                                                className="fs-18 mb-0"
+                                                style={{ cursor: "pointer" }}
+                                              >
+                                                {
+                                                  newInterviewListInManagerDetail.title
+                                                }
+                                              </h5>
+                                              <p className="text-muted fs-14 mb-0 d-flex align-items-center gap-2">
+                                                {
+                                                  newInterviewListInManagerDetail.interviewCode
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+                                          {/* ------------------ */}
+
+                                          {/* -------------------*/}
+
+                                          <Col md={2} className="d-flex  gap-2">
+                                            <div className="d-flex flex-column gap-2">
+                                              <FontAwesomeIcon
+                                                icon={faCalendarDays}
+                                                size="lg"
+                                                className="text-primary"
+                                              />
+                                              <FontAwesomeIcon
+                                                icon={faClock}
+                                                size="lg"
+                                                className="text-primary"
+                                              />
+                                            </div>
+
+                                            <div>
+                                              <p className="mb-0">
+                                                {
+                                                  newInterviewListInManagerDetail.dateOfInterview
+                                                }
+                                              </p>
+                                              <p className="mb-0 mt-1">
+                                                {
+                                                  newInterviewListInManagerDetail.startTime
+                                                }{" "}
+                                                -{" "}
+                                                {
+                                                  newInterviewListInManagerDetail.endTime
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={2}
+                                            className="d-flex justify-content-center align-items-center"
+                                          >
+                                            <p className="mb-0">
+                                              {
+                                                newInterviewListInManagerDetail.postedTime
+                                              }
+                                            </p>
+                                          </Col>
+
+                                          <Col
+                                            md={3}
+                                            className="d-flex justify-content-center"
+                                          >
+                                            <span
+                                              className={
+                                                newInterviewListInManagerDetail.statusString ===
+                                                "Waiting Approval"
+                                                  ? "badge bg-warning text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Approved"
+                                                  ? "badge bg-newGreen text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Rejected"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Expired"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Completed"
+                                                  ? "badge bg-success text-light fs-12"
+                                                  : ""
+                                              }
+                                            >
+                                              {
+                                                newInterviewListInManagerDetail.statusString
+                                              }
+                                            </span>
+                                          </Col>
+                                        </Row>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                            {/* ----------------------------------------------------------------------------- */}
+                            {/* phan trang */}
+                            <Row>
+                              <Col lg={12} className="mt-4 pt-2">
+                                <nav aria-label="Page navigation example">
+                                  <div className="pagination job-pagination mb-0 justify-content-center">
+                                    <li
+                                      className={`page-item ${
+                                        currentPageCancelled === 1
+                                          ? "disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        tabIndex="-1"
+                                        onClick={handlePrevPageCancelled}
+                                      >
+                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                      </Link>
+                                    </li>
+                                    {renderPageNumbersCancelled()}
+                                    <li
+                                      className={`page-item ${
+                                        currentPageCancelled ===
+                                        totalPagesCancelled
+                                          ? "disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        className="page-link"
+                                        to="#"
+                                        onClick={handleNextPageCancelled}
                                       >
                                         <i className="mdi mdi-chevron-double-right fs-15"></i>
                                       </Link>

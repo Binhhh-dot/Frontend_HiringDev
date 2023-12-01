@@ -11,15 +11,15 @@ const GetAllSelectedDevByHR = async (hiringRequestId) => {
   return response;
 };
 
-const getSelectedDevByManager = async (requestId) => {
-  const serviceUrl =
-    urlConstant.endpoint.selectingDeveloper.getSelectedDevByManager.replace(
-      "${requestId}",
-      requestId
-    );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
-  return response;
-};
+// const getSelectedDevByManager = async (requestId) => {
+//   const serviceUrl =
+//     urlConstant.endpoint.selectingDeveloper.getSelectedDevByManager.replace(
+//       "${requestId}",
+//       requestId
+//     );
+//   const response = await utils.axiosLocalHost.get(serviceUrl);
+//   return response;
+// };
 
 const sendDevToHR = async (requestId, developerIds) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.sendDevToHR;
@@ -112,8 +112,6 @@ const CreateDeveloperAccount = async (
   dateOfBirth,
   yearOfExperience,
   averageSalary,
-  cvid,
-  scheduleTypeId,
   employmentTypeId,
   levelId,
   types,
@@ -129,8 +127,6 @@ const CreateDeveloperAccount = async (
     dateOfBirth,
     yearOfExperience,
     averageSalary,
-    cvid,
-    scheduleTypeId,
     employmentTypeId,
     levelId,
     types,
@@ -172,15 +168,15 @@ const changeStatusDevUnofficialInTaskDetailForStaff = async (
   return response;
 };
 
-const sendDevToHRNew = async (requestId, developerIds) => {
-  const serviceUrl = urlConstant.endpoint.selectingDeveloper.sendDevToHRNew;
-  const response = await utils.axiosLocalHost.post(serviceUrl, {
-    requestId,
-    developerIds,
-  });
+// const sendDevToHRNew = async (requestId, developerIds) => {
+//   const serviceUrl = urlConstant.endpoint.selectingDeveloper.sendDevToHRNew;
+//   const response = await utils.axiosLocalHost.post(serviceUrl, {
+//     requestId,
+//     developerIds,
+//   });
 
-  return response;
-};
+//   return response;
+// };
 
 const onbardingDeveloper = async (requestId, developerId) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.onboardDeveloper
@@ -220,6 +216,17 @@ const updateDeveloperByAdmin = async (developerId, formData) => {
   return response;
 };
 
+const getDeveloperMatchingInManager = async (requestId) => {
+  const serviceUrl =
+    urlConstant.endpoint.developer.getDeveloperMatchingInManager.replace(
+      "${requestId}",
+      requestId
+    );
+
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
 export default {
   GetAllSelectedDevByHR,
   approvalInterviewByHR,
@@ -229,14 +236,15 @@ export default {
   appectDevToInterview,
   CreateDeveloperAccount,
   // GetAllSelectedDevByHR,
-  getSelectedDevByManager,
+  // getSelectedDevByManager,
   sendDevToHR,
   getDeveloperUnofficial,
   getDeveloperUnofficialPaging,
   changeStatusDevUnofficialInTaskDetailForStaff,
   removeOutOfWaitingInterview,
-  sendDevToHRNew,
+  // sendDevToHRNew,
   onbardingDeveloper,
   getListDeveloperOnboardByProjectId,
   updateDeveloperByAdmin,
+  getDeveloperMatchingInManager,
 };
