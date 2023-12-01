@@ -601,7 +601,7 @@ const ProjectDetailDesciption = () => {
       console.log(response);
       if (response.data.code === 200) {
         console.log("mo cua so")
-        const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
+        const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=800, height=800, top=100, left=600';
         const popupWindow = window.open(response.data.data, "popupWindow", windowFeatures);
         function checkPopupStatus() {
           if (popupWindow && popupWindow.closed) {
