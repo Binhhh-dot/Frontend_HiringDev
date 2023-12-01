@@ -115,20 +115,6 @@ const ListAccountManager = () => {
   const [modal, contextHolder] = Modal.useModal();
   let [currentPage, setCurrentPage] = useState(1);
 
-  // const handleFirstNameChange = (value) => {
-  //     setUserData({
-  //         ...userDataDetail,
-  //         firstName: '',
-  //         lastName: '',
-  //         phoneNumber: '',
-  //         email: '',
-  //         password: '',
-  //         dateOfBirth: '',
-  //         statusString: '',
-
-  //     });
-  // };
-
   //API
 
   const [ManagerPaging, setManagerPaging] = useState([]);
@@ -568,7 +554,7 @@ const ListAccountManager = () => {
                       index % 2 === 0 ? "even-row" : "odd-row"
                     }
                   >
-                    <Column
+                    {/* <Column
                       title="Image"
                       dataIndex="userImage"
                       key="userImage"
@@ -582,7 +568,7 @@ const ListAccountManager = () => {
                           }}
                         />
                       )}
-                    />
+                    /> */}
                     <Column
                       title="FirstName"
                       dataIndex="firstName"
@@ -605,7 +591,7 @@ const ListAccountManager = () => {
                       key="phoneNumber"
                     />
                     <Column
-                      title="Birthday"
+                      title="Date Of Birth"
                       dataIndex="dateOfBirth"
                       key="dateOfBirth"
                     />
@@ -776,7 +762,7 @@ const ListAccountManager = () => {
                   <span
                     className={
                       hRInfo.statusString === "Active"
-                        ? "badge bg-warning text-light"
+                        ? "badge bg-success text-light"
                         : "badge text-bg-danger"
                     }
                   >
@@ -871,7 +857,7 @@ const ListAccountManager = () => {
                 <Button
                   type="primary"
                   onClick={handleOkCreate}
-                  style={{ backgroundColor: "purple", borderColor: "purple" }}
+                  style={{ backgroundColor: "#1F86EF", borderColor: "#1F86EF" }}
                 >
                   Save
                 </Button>
@@ -879,7 +865,7 @@ const ListAccountManager = () => {
             </Form>
           </Modal>
           <Modal
-            title="Update User"
+            title="Update Manager"
             visible={visibleModal2}
             onUpdate={handleOkUpdate}
             onCancel={handleCancelUpdate}
@@ -955,8 +941,8 @@ const ListAccountManager = () => {
                   />
                 </p>
               </Form.Item>
-              <Form.Item name="dateOfBirth" label="Birth Day">
-                <DatePicker
+              <Form.Item name="dateOfBirth" label="Date Of Birth">
+                <Input
                   value={userDataDetail.dateOfBirth}
                   style={{ width: "100%" }}
                   format="YYYY-MM-DD"
@@ -980,7 +966,7 @@ const ListAccountManager = () => {
                 <Button
                   type="primary"
                   onClick={handleOkUpdate}
-                  style={{ backgroundColor: "purple", borderColor: "purple" }}
+                  style={{ backgroundColor: "#1F86EF", borderColor: "#1F86EF" }}
                 >
                   Save
                 </Button>
@@ -1090,7 +1076,7 @@ const ListAccountManager = () => {
                     </Col>
                     <Col lg={6}>
                       <div className="mb-3">
-                        Birth Day
+                        Day Of Birth
                         <Input
                           type="text"
                           className="form-control"

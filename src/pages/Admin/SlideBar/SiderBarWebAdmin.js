@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleLeft,
+  faAngleRight,
+  faUserTie,
+  faIdCardClip,
+  faChalkboardUser,
+  faBuildingUser,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   PieChartOutlined,
   DesktopOutlined,
@@ -19,7 +26,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const { Sider } = Layout;
 
-const SiderBarWeb = ({ choose }) => {
+const SiderBarWebAdmin = ({ choose }) => {
   const [collapsed, setCollapsed] = useState(false);
   //"menu-key/10"
   const [selectedKeys, setSelectedKeys] = useState([choose]);
@@ -48,44 +55,44 @@ const SiderBarWeb = ({ choose }) => {
       className: "dashboard",
     },
 
-    {
-      label: "User",
-      key: "menu-key/sub-menu-key",
-      icon: <UserOutlined />,
-      children: [
-        { label: "Manager", key: "menu-key/sub-menu-key/3" },
-        { label: "Staff", key: "menu-key/sub-menu-key/4" },
-        { label: "Human Resource", key: "menu-key/sub-menu-key/5" },
-        { label: "Developer", key: "menu-key/sub-menu-key/6" },
-      ],
-      className: "option-2",
-    },
+    // {
+    //   label: "User",
+    //   key: "menu-key/sub-menu-key",
+    //   icon: <UserOutlined />,
+    //   children: [
+    //     { label: "Manager", key: "menu-key/sub-menu-key/3" },
+    //     { label: "Staff", key: "menu-key/sub-menu-key/4" },
+    //     { label: "Human Resource", key: "menu-key/sub-menu-key/5" },
+    //     { label: "Developer", key: "menu-key/sub-menu-key/6" },
+    //   ],
+    //   className: "option-2",
+    // },
 
     {
       label: "Manager",
       key: "menu-key/2",
-      icon: <SnippetsOutlined />,
+      icon: <FontAwesomeIcon icon={faUserTie} size="xl" />,
       className: "listAccountManager",
       link: "/listAccountManager",
     },
     {
       label: "Staff",
       key: "menu-key/3",
-      icon: <SolutionOutlined />,
+      icon: <FontAwesomeIcon icon={faIdCardClip} size="xl" />,
       className: "listAccountStaff",
       link: "/listAccountStaff", // Add the link property
     },
     {
       label: "Human Resource",
       key: "menu-key/4",
-      icon: <CodeOutlined />,
+      icon: <FontAwesomeIcon icon={faBuildingUser} size="xl" />,
       className: "listAccountHR",
       link: "/listAccountHR", // Add the link property
     },
     {
       label: "Developer",
       key: "menu-key/5",
-      icon: <AuditOutlined />,
+      icon: <FontAwesomeIcon icon={faChalkboardUser} size="xl" />,
       className: "listAccountDeveloper",
       link: "/listAccountDeveloper", // Add the link property
     },
@@ -155,40 +162,39 @@ const SiderBarWeb = ({ choose }) => {
         mode="inline"
         onClick={handleMenuClick}
       >
-        {items.map((item) =>
-          item.children ? (
-            <Menu.SubMenu
-              key={item.key}
-              icon={item.icon}
-              title={item.label}
-              onClick={() => handleSubMenuClick(item)}
-            >
-              {item.children.map((child) => (
-                <Menu.Item key={child.key}>
-                  {child.label === "Manager" && (
-                    <Link to="/listAccountManager">{child.label}</Link>
-                  )}
-                  {child.label === "Staff" && (
-                    <Link to="/listAccountStaff">{child.label}</Link>
-                  )}
-                  {child.label === "Human Resource" && (
-                    <Link to="/listAccountHR">{child.label}</Link>
-                  )}
-                  {child.label === "Developer" && (
-                    <Link to="/listAccountDeveloper">{child.label}</Link>
-                  )}
-                </Menu.Item>
-              ))}
-            </Menu.SubMenu>
-          ) : (
-            <Menu.Item key={item.key} icon={item.icon}>
-              <Link to={item.link}>{item.label}</Link>
-            </Menu.Item>
-          )
-        )}
+        {items.map((item) => (
+          //   item.children ? (
+          //     <Menu.SubMenu
+          //       key={item.key}
+          //       icon={item.icon}
+          //       title={item.label}
+          //       onClick={() => handleSubMenuClick(item)}
+          //     >
+          //       {item.children.map((child) => (
+          //         <Menu.Item key={child.key}>
+          //           {child.label === "Manager" && (
+          //             <Link to="/listAccountManager">{child.label}</Link>
+          //           )}
+          //           {child.label === "Staff" && (
+          //             <Link to="/listAccountStaff">{child.label}</Link>
+          //           )}
+          //           {child.label === "Human Resource" && (
+          //             <Link to="/listAccountHR">{child.label}</Link>
+          //           )}
+          //           {child.label === "Developer" && (
+          //             <Link to="/listAccountDeveloper">{child.label}</Link>
+          //           )}
+          //         </Menu.Item>
+          //       ))}
+          //     </Menu.SubMenu>
+          //   ) :
+          <Menu.Item key={item.key} icon={item.icon}>
+            <Link to={item.link}>{item.label}</Link>
+          </Menu.Item>
+        ))}
       </Menu>
     </Sider>
   );
 };
 
-export default SiderBarWeb;
+export default SiderBarWebAdmin;
