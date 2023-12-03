@@ -59,7 +59,8 @@ export default {
       getAllHiringRequestByProjectId:
         "/HiringRequest/ByProject?projectId=${projectId}",
       updateHiringRequest: "/HiringRequest?requestId=${requestId}",
-      getAllHiringRequestByProjectIdAndPaging: "/HiringRequest/ByProject?projectId=${projectId}&PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getAllHiringRequestByProjectIdAndPaging: "/HiringRequest/ByProject?projectId=${projectId}&PageIndex=${PageIndex}&PageSize=${PageSize}&searchKeyString=${searchKeyString}&TypeRequireId=${TypeRequireId}&LevelRequireId=${LevelRequireId}&Status=${Status}",
+      closeHirringRequestStatus: "/HiringRequestStatus/Closed",
     },
 
     selectingDeveloper: {
@@ -210,6 +211,7 @@ export default {
     },
     paySlip: {
       getPaySlipByPayPeriodId: "PaySlip/ByPayPeriod/${payPeriodId}",
+      updateTotalOTPaySlip: "PaySlip"
     },
     workLog: {
       getWorkLogByPaySlipId: "/WorkLog/ByPaySlip/${paySlipId}",

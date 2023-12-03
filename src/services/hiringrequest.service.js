@@ -362,16 +362,39 @@ const getHiringRequestByProjectId = async (projectId) => {
 };
 
 const getAllHiringRequestByProjectIdAndPaging = async (
-  projectId, pageIndex, pageSize
+  projectId, pageIndex, pageSize, skillSearch, levelSearch, typeSearch, inputSearch, statusSearch
 ) => {
+  const values = skillSearch.map(value => `&SkillIds=${value}`);
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.getAllHiringRequestByProjectIdAndPaging
       .replace("${projectId}", projectId)
       .replace("${PageIndex}", pageIndex)
       .replace("${PageSize}", pageSize)
+      .replace("${searchKeyString}", inputSearch)
+      .replace("${TypeRequireId}", typeSearch)
+      .replace("${LevelRequireId}", levelSearch)
+      .replace("${Status}", statusSearch)
+    + values.join('');
+  console.log(serviceUrl)
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 }
+
+
+const closeHiringRequest = async (
+  requestId,
+  rejectionReason,
+  isCompanyPartner
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.closeHirringRequestStatus;
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    requestId,
+    rejectionReason,
+    isCompanyPartner,
+  });
+  return response;
+};
 
 export default {
   createHiringRequest,
@@ -394,5 +417,6 @@ export default {
   cancelHirringRequestStatusAfter,
   getHiringRequestByProjectIdAndPaging,
   getHiringRequestByProjectId,
-  getAllHiringRequestByProjectIdAndPaging
+  getAllHiringRequestByProjectIdAndPaging,
+  closeHiringRequest
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button, Col, Collapse, Input, Label, Row } from "reactstrap";
 import axios from "axios";
+import Select from "react-select";
 import JobType from "../../Home/SubSection/JobType";
 import { Form } from "react-bootstrap";
 import hiringrequestService from "../../../services/hiringrequest.service";
@@ -15,8 +16,46 @@ const ProjectVacancyList = (a) => {
     const [jobVacancyList, setJobVacancyList] = useState([]);
     const [toggleThird, setToggleThird] = useState(false);
     const [toggleFifth, setToggleFifth] = useState(false);
-    const [toggleSecond, setToggleSecond] = useState(false);
+    const [toggleSecond, setToggleSecond] = useState(true);
     const [statuses, setStatuses] = useState(0);
+
+
+    const [options, setOptions] = useState([]);
+
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const response = await projectTypeServices.getAllType();
+
+                if (response.data && response.data.data) {
+                    const formattedOptions = response.data.data.map((item) => ({
+                        label: item.projectTypeName,
+                        value: item.projectTypeId.toString(),
+                    }));
+
+                    setOptions(formattedOptions);
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchOptions();
+    }, []); // Empty dependency array ensures the effect runs once on component mount
+
+    const colourStyles = {
+        control: (styles) => ({
+            ...styles,
+            border: 0,
+            boxShadow: "none",
+            padding: "12px 0 12px 40px",
+            margin: "-16px -6px 0 -52px",
+            borderRadius: "0",
+        }),
+    };
+
+
 
     const liststatuses = [
         { label: 'All', value: 0 },
@@ -28,7 +67,7 @@ const ProjectVacancyList = (a) => {
     const [totalPages, setTotalPages] = useState(1);
     const [search, setSearch] = useState("");
     const [skill, setSkill] = useState(null);
-    const pageSize = 7;
+    const pageSize = 5;
     const handlePageClick = (page) => {
         setCurrentPage(page);
     };
@@ -95,7 +134,10 @@ const ProjectVacancyList = (a) => {
                 ;
             console.log(response.data);
             setJobVacancyList(response.data.data);
+            console.log(response.data.paging.total)
+            console.log(pageSize)
             setTotalPages(Math.ceil(response.data.paging.total / pageSize));
+            console.log(totalPages)
         } catch (error) {
             console.error("Error fetching job vacancies:", error);
         }
@@ -106,13 +148,25 @@ const ProjectVacancyList = (a) => {
     }, [statuses]);
 
 
-
+    const setSkillValue = (selectedOption) => {
+        if (!selectedOption) {
+            setSkill(null); // Hoặc giá trị thích hợp để biểu thị hủy chọn
+        } else {
+            setSkill(selectedOption);
+        }
+    };
 
     useEffect(() => {
         fetchJobVacancies();
     }, [currentPage]);
 
+    useEffect(() => {
+        fetchJobVacancies();
+    }, [skill]);
+
+
     const onSearch = () => {
+        setCurrentPage(1);
         fetchJobVacancies();
     };
 
@@ -156,7 +210,18 @@ const ProjectVacancyList = (a) => {
                                 <Col lg={5} md={6}>
                                     <div className="filler-job-form">
                                         <i className="uil uil-clipboard-notes"></i>
-                                        <ProjectType skill={skill} setSkill={setSkill} />
+                                        <Select
+                                            options={options}
+                                            styles={colourStyles}
+                                            className="selectForm__inner"
+                                            name="choices-single-categories"
+                                            id="choices-single-categories"
+                                            aria-label="Default select example"
+                                            value={skill}
+                                            onChange={setSkillValue}
+                                            isClearable
+                                            placeholder="Select project type..."
+                                        />
                                     </div>
                                 </Col>
                                 <Col lg={3} md={6}>

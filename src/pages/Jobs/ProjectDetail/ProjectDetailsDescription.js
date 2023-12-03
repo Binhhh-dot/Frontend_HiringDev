@@ -84,7 +84,11 @@ import { HashLoader } from "react-spinners";
 import customUrl from "../../../utils/customUrl";
 import paymentServices from "../../../services/payment.services";
 import { Menu } from 'antd';
+import Select from "react-select";
 import JobType from "../../Home/SubSection/JobType";
+import skillService from "../../../services/skill.service";
+import typeService from "../../../services/type.service";
+import levelService from "../../../services/level.service";
 dayjs.extend(customParseFormat);
 
 const ProjectDetailDesciption = () => {
@@ -121,18 +125,23 @@ const ProjectDetailDesciption = () => {
   const [minDateDuration, setMinDateDuration] = useState();
   const [maxDateDuration, setMaxDateDuration] = useState();
   const [workLogIdOnClick, setWorkLogIdOnClick] = useState(0);
+  const [payslipIdOnClick, setPayslipIdOnClick] = useState(0);
   const [editingPositions, setEditingPositions] = useState({});
   const [editingPositionSelect, setEditingPositionSelect] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const [countSetTime, setCountSetTime] = useState(0);
   const [isEditWorkLog, setIsEditWorkLog] = useState(false);
+  const [isEditPayslip, setIsEditPayslip] = useState(false);
   const [isCancelEditWorkLog, setIsCancelEditWorkLog] = useState(false);
+  const [isCancelEditPayslip, setIsCancelEditPayslip] = useState(false);
   const [startTimeWorkLogSave, setStartTimeWorkLogSave] = useState(false);
   const [endTimeWorkLogSave, setEndTimeWorkLogSave] = useState(false);
+  const [totalOTPayslipSave, setTotalOTPayslipSave] = useState(false);
   const [timeErrorWorkLog, setTimeErrorWorkLog] = useState([]);
   const [currentDateBill, setCurrentDateBill] = useState();
   const [key, setKey] = useState(Date.now());
   const [editableRowId, setEditableRowId] = useState(null);
+  const [ediPaySlipRowId, setEdiPaySlipRowId] = useState(null);
 
   const [dateValue, setDateValue] = useState(new Date());
   const [loadingGenerateExel, setLoadingGenerateExel] = useState(false);
@@ -151,6 +160,17 @@ const ProjectDetailDesciption = () => {
 
   const [search, setSearch] = useState("");
   const [skill, setSkill] = useState([]);
+  const [typeRequire, setTypeRequire] = useState(null);
+  const [levelRequire, setLevelRequire] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [startSalaryPerDev, setStartSalaryPerDev] = useState([]);
+  const [endSalartPerDev, setEndSalartPerDev] = useState([]);
+
+  const [options, setOptions] = useState([]);
+  const [options2, setOptions2] = useState([]);
+  const [options3, setOptions3] = useState([]);
+  const [options4, setOptions4] = useState([]);
+
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -174,9 +194,9 @@ const ProjectDetailDesciption = () => {
           key={i}
           className={`page-item ${i === currentPage ? "active" : ""}`}
         >
-          <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
+          <div className="page-link" onClick={() => handlePageClick(i)}>
             {i}
-          </Link>
+          </div>
         </li>
       );
     }
@@ -227,21 +247,7 @@ const ProjectDetailDesciption = () => {
     // Thực hiện các thao tác khác khi người dùng thay đổi ngày
   };
 
-  const generateItems = () => {
-    return [
-      {
-        label: (
-          <div
-            style={{ width: "100px" }}
-            onClick={() => onUpdateWorkLog()}
-          >
-            Edit
-          </div>
-        ),
-        key: '0',
-      }
-    ];
-  };
+
 
   const profileItems = [
     {
@@ -306,33 +312,24 @@ const ProjectDetailDesciption = () => {
   ]
 
 
+  const profileItems3 = [
+    {
+      key: "1",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => onUpdatePaySlip()}
+        >
+          Edit
+        </div>
+      ),
+    },
+  ]
 
 
 
-  const generateItems2 = () => {
-    return [
-      {
-        label: (
-          <div
-            style={{ width: "100px" }}
-          // onClick={() => onUpdateWorkLog()}
-          >
-            Edit 2
-          </div>
-        ),
-        key: '1',
-      }
-    ];
-  };
 
   const [showCollapse, setShowCollapse] = useState(Array(payRollDetail.length).fill(false));
-
-
-  const items = generateItems();
-
-  const items2 = generateItems();
-
-
 
   const toggleCollapse = (key2, paySlipId) => {
     setKeyPayRoll(key2);
@@ -347,6 +344,9 @@ const ProjectDetailDesciption = () => {
     setKeyWorkLog(key)
   };
 
+  const setPayRollEdit = (payrollId) => {
+    setPayslipIdOnClick(payrollId)
+  };
 
   const [activeTabMini, setActiveTabMini] = useState("5");
   const tabChangeMini = (tabMini) => {
@@ -378,6 +378,130 @@ const ProjectDetailDesciption = () => {
     setIsModalCreateOpen(false);
     fetchJobVacancies();
   };
+
+  const fetchOptions = async () => {
+    try {
+      const response = await skillService.getAllSkill();
+
+      if (response.data && response.data.data) {
+        // Transform API data into the format expected by react-select
+        const formattedOptions = response.data.data.map((item) => ({
+          label: item.skillName,
+          value: item.skillId.toString(),
+        }));
+
+        setOptions(formattedOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchOptions2 = async () => {
+    try {
+      const response = await typeService.getAllType();
+
+      if (response.data && response.data.data) {
+        // Transform API data into the format expected by react-select
+        const formattedOptions = response.data.data.map((item) => ({
+          label: item.typeName,
+          value: item.typeId.toString(),
+        }));
+
+        setOptions2(formattedOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchOptions3 = async () => {
+    try {
+      const response = await levelService.getAllLevel();
+
+      if (response.data && response.data.data) {
+        // Transform API data into the format expected by react-select
+        const formattedOptions = response.data.data.map((item) => ({
+          label: item.levelName,
+          value: item.levelId.toString(),
+        }));
+
+        setOptions3(formattedOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchOptions4 = async () => {
+    try {
+      const response = await hiringrequestService.getAllStatusHiringRequest();
+
+      if (response.data && response.data.data) {
+        // Transform API data into the format expected by react-select
+        const formattedOptions = response.data.data.map((item) => ({
+          label: item.statusName,
+          value: item.statusId.toString(),
+        }));
+
+        setOptions4(formattedOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOptions();
+    fetchOptions2();
+    fetchOptions3();
+    fetchOptions4();
+  }, []); // Empty dependency array ensures the effect runs once on component mount
+
+  const colourStyles = {
+    control: (styles) => ({
+      ...styles,
+      border: 0,
+      boxShadow: "none",
+      padding: "12px 0 12px 40px",
+      margin: "-16px -6px 0 -52px",
+      borderRadius: "0",
+      backgroundColor: "#fafafa"
+    })
+  };
+
+  const setSkillValue = (selectedOption) => {
+    if (!selectedOption) {
+      setSkill(null); // Hoặc giá trị thích hợp để biểu thị hủy chọn
+    } else {
+      setSkill(selectedOption);
+    }
+  }
+
+
+  const setTypeValue = (selectedOption) => {
+    if (!selectedOption) {
+      setTypeRequire(null); // Hoặc giá trị thích hợp để biểu thị hủy chọn
+    } else {
+      setTypeRequire(selectedOption);
+    }
+  }
+
+  const setLevelValue = (selectedOption) => {
+    if (!selectedOption) {
+      setLevelRequire(null); // Hoặc giá trị thích hợp để biểu thị hủy chọn
+    } else {
+      setLevelRequire(selectedOption);
+    }
+  }
+
+  const setStatusValue = (selectedOption) => {
+    if (!selectedOption) {
+      setStatus(null); // Hoặc giá trị thích hợp để biểu thị hủy chọn
+    } else {
+      setStatus(selectedOption);
+    }
+  }
 
 
   const fetchListDeveloperOnboard = async () => {
@@ -582,6 +706,30 @@ const ProjectDetailDesciption = () => {
     }
   };
 
+  const updatedPayslip = async (totalOT) => {
+    let response;
+    try {
+      console.log(payslipIdOnClick)
+      console.log(totalOT)
+      response = await paySlipServices.updateTotalOTPayslip(payslipIdOnClick, totalOT);
+      console.log("payperiod21312312312")
+      console.log(response.data.data)
+
+
+      const temp2 = listEndDay[currentMonthIndex];
+      if (temp2) {
+        const parts = temp2.split('.');
+        const newDate = `${parts[2]}-${parts[1]}-25`;
+        fetchDetailPayPeriod(newDate)
+      }
+      toast.success("Update payslip successfully")
+      setEditableRowId(null);
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      toast.error("Update payslip fail")
+    }
+  };
+
 
 
   const openPayment = async (payPeriodId) => {
@@ -701,6 +849,12 @@ const ProjectDetailDesciption = () => {
     setEditableRowId(workLogIdOnClick);
   };
 
+  const onUpdatePaySlip = () => {
+    const foundLog = payRollDetail.find(log => log.paySlipId === payslipIdOnClick);
+    setTotalOTPayslipSave(foundLog.totalOvertimeHours)
+    setEdiPaySlipRowId(payslipIdOnClick);
+  };
+
   useEffect(() => {
     fetchListDeveloperOnboard();
   }, []);
@@ -772,14 +926,45 @@ const ProjectDetailDesciption = () => {
     }
   }, [isEditWorkLog]);
 
+
+  useEffect(() => {
+    if (!isCancelEditPayslip) {
+      if (workLogIdOnClick) {
+        const temp2 = "totalOT" + payslipIdOnClick;
+        if (formatTime00(document.getElementById(temp2).value) != totalOTPayslipSave) {
+          updatedPayslip(document.getElementById(temp2).value)
+        } else {
+          setEditableRowId(null);
+        }
+
+      }
+
+    } else {
+      try {
+        console.log("false")
+        const temp2 = "totalOT" + payslipIdOnClick;
+        document.getElementById(temp2).value = totalOTPayslipSave;
+
+        setEditableRowId(null);
+      } catch (error) {
+        console.log("Loi khi update worklog", error)
+      }
+    }
+  }, [isEditPayslip]);
+
   const fetchJobVacancies = async () => {
     let response;
     try {
+      const skillSearch = skill.map(skill => skill.value);
+      const levelSearch = typeRequire ? typeRequire.value : "";
+      const typeSearch = levelRequire ? levelRequire.value : "";
+      const statusSearch = status ? status.value : "";
+      const inputSearch = search;
       const queryParams = new URLSearchParams(location.search);
       const projectId2 = queryParams.get("Id");
 
       response = await hiringrequestService.getAllHiringRequestByProjectIdAndPaging(
-        projectId2, currentPage, 5
+        projectId2, currentPage, 5, skillSearch, levelSearch, typeSearch, inputSearch, statusSearch
       );
 
       const formattedJobVacancies = response.data.data.map((job) => {
@@ -814,6 +999,8 @@ const ProjectDetailDesciption = () => {
       });
 
       setJobVacancyList(formattedJobVacancies);
+      setTotalPages(Math.ceil(response.data.paging.total / 5));
+
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -822,6 +1009,15 @@ const ProjectDetailDesciption = () => {
   useEffect(() => {
     fetchJobVacancies();
   }, []);
+
+  useEffect(() => {
+    fetchJobVacancies();
+  }, [currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    fetchJobVacancies();
+  }, [skill, typeRequire, levelRequire, status]);
 
   const tabChange = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -852,6 +1048,16 @@ const ProjectDetailDesciption = () => {
   const saveUpdateWorkLog = () => {
     setIsEditWorkLog(!isEditWorkLog);
     setIsCancelEditWorkLog(false);
+  };
+
+  const cancelUpdatePayslip = () => {
+    setIsEditPayslip(!isEditPayslip);
+    setIsCancelEditPayslip(true);
+  };
+
+  const saveUpdatePayslip = () => {
+    setIsEditPayslip(!isEditPayslip);
+    setIsCancelEditPayslip(false);
   };
 
   const nextMonth = () => {
@@ -939,6 +1145,7 @@ const ProjectDetailDesciption = () => {
   const onSearch = () => {
     setCurrentPage(1);
     fetchJobVacancies();
+
   };
 
   return (
@@ -1069,78 +1276,6 @@ const ProjectDetailDesciption = () => {
                 </CardBody>
               </Card>
             </div>
-            {/* <div class="col-lg-3 d-flex flex-column gap-4"> 
-              <Card className="job-overview ">
-                <CardBody className="p-4">
-                  <h4>Project Overview</h4>
-                  <ul className="list-unstyled mt-4 mb-0">
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">Hiring Request Title</h6>
-                          <p className="text-muted mb-0">
-                             {hiringRequestDetail.jobTitle}
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-user-square icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">No. Dev</h6>
-                          <p className="text-muted mb-0">
-                             {hiringRequestDetail.numberOfDev}
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-star-half-alt icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">Employment Type</h6>
-                          <p className="text-muted mb-0">{hiringRequestDetail.employmentTypeName}</p> 
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">Offered Salary Per Dev</h6>
-                          <p className="text-muted mb-0">
-                            {hiringRequestDetail.salaryPerDev} VND 
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">Position</h6>
-                         <p className="text-muted mb-0">{hiringRequestDetail.positionName}</p> 
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-history icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">Date Posted</h6>
-                          {hiringRequestDetail.postedTime} 
-                          <p className="text-muted mb-0"></p>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </CardBody>
-              </Card>
-            </div>*/}
             <div class="col-lg-11 " style={{ padding: "0px" }}>
               <Card
                 className="profile-content-page mt-4 mt-lg-0"
@@ -1153,7 +1288,6 @@ const ProjectDetailDesciption = () => {
                 >
                   <NavItem role="presentation">
                     <NavLink
-                      to="#"
                       className={classnames({ active: activeTab === "1" })}
                       onClick={() => {
                         tabChange("1");
@@ -1166,7 +1300,6 @@ const ProjectDetailDesciption = () => {
                   </NavItem>
                   <NavItem role="presentation">
                     <NavLink
-                      to="#"
                       className={classnames({ active: activeTab === "2" })}
                       onClick={() => {
                         tabChange("2");
@@ -1179,7 +1312,6 @@ const ProjectDetailDesciption = () => {
                   </NavItem>
                   <NavItem role="presentation">
                     <NavLink
-                      to="#"
                       className={classnames({ active: activeTab === "3" })}
                       onClick={() => {
                         tabChange("3");
@@ -1192,7 +1324,6 @@ const ProjectDetailDesciption = () => {
                   </NavItem>
                   <NavItem role="presentation">
                     <NavLink
-                      to="#"
                       className={classnames({ active: activeTab === "4" })}
                       onClick={() => {
                         tabChange("4");
@@ -1589,7 +1720,6 @@ const ProjectDetailDesciption = () => {
                               <div className="d-flex">
                                 <NavItem role="presentation">
                                   <NavLink
-                                    to="#"
                                     className={classnames({ active: activeTabMini === "5" })}
                                     onClick={() => {
                                       tabChangeMini("5");
@@ -1602,7 +1732,6 @@ const ProjectDetailDesciption = () => {
                                 </NavItem>
                                 <NavItem role="presentation">
                                   <NavLink
-                                    to="#"
                                     className={classnames({ active: activeTabMini === "6" })}
                                     onClick={() => {
                                       tabChangeMini("6");
@@ -1921,21 +2050,24 @@ const ProjectDetailDesciption = () => {
                                                   className=" px-0"
                                                   style={{ textAlign: "center" }}
                                                 >
-                                                  {payRollDetailNew.totalOvertimeHours}
+                                                  <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    id={`totalOT${key2}`}
+                                                    readOnly={ediPaySlipRowId !== payRollDetailNew.paySlipId}
+                                                  />
                                                 </Col>
 
                                                 <Col
                                                   md={2}
                                                   style={{ textAlign: "center" }}
-
-
                                                 >
                                                   <div>
                                                     <span >{payRollDetailNew.totalEarnings}</span>
                                                   </div>
                                                 </Col>
 
-                                                <Col md={1}>
+                                                <Col md={1} className="d-flex gap-2 justify-content-between align-items-center">
                                                   <div
                                                     className="d-flex justify-content-center align-items-center rounded-circle"
                                                     onClick={() => toggleCollapse(key2, payRollDetailNew.paySlipId)}
@@ -1950,11 +2082,59 @@ const ProjectDetailDesciption = () => {
                                                       style={{ fontSize: "30px" }}
                                                     ></i>
                                                   </div>
+                                                  <DropdownAntd trigger={['click']} menu={{ items: profileItems3 }}
+                                                    onClick={() =>
+                                                      setPayRollEdit(payRollDetailNew.paySlipId)
+                                                    }
+                                                    overlayStyle={{ right: '4.312px', bottom: "auto", left: "auto" }} >
+                                                    <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                      <FontAwesomeIcon
+                                                        icon={faGear}
+                                                        size="xl"
+                                                        color="#909191"
+                                                      />
+                                                    </a>
+                                                  </DropdownAntd>
                                                 </Col>
+                                                {ediPaySlipRowId == payRollDetailNew.paySlipId ? (
+                                                  <>
+                                                    <Row>
+                                                      <Col
+                                                        md={2}
+                                                        style={{ textAlign: "end" }}
+                                                        className="d-flex gap-2 justify-content-end"
+                                                      >
+                                                      </Col>
+                                                      <Col
+                                                        md={6}
+                                                        style={{ textAlign: "end" }}
+                                                        className="d-flex gap-2 justify-content-end"
+                                                      >
+                                                      </Col>
+                                                      <Col
+                                                        md={4}
+                                                        style={{ textAlign: "end" }}
+                                                        className="d-flex gap-2 justify-content-end"
+                                                      >
+                                                        <div className="btn btn-soft-danger"
+                                                          onClick={() => cancelUpdatePayslip()}
+                                                        >
+                                                          Cancel
+                                                        </div>
+                                                        <div className="btn btn-soft-blue"
+                                                          onClick={() => saveUpdatePayslip()}
+                                                        >
+                                                          Save
+                                                        </div>
+                                                      </Col>
+                                                    </Row>
+                                                  </>
+                                                ) : (
+                                                  null
+                                                )}
                                               </Row>
                                             </div>
                                           </div>
-
                                           <Collapse isOpen={showCollapse[key2]}>
                                             <div
                                               style={{
@@ -2079,19 +2259,7 @@ const ProjectDetailDesciption = () => {
                       )}
                     </TabPane>
                     <TabPane tabId="5">
-                      <div
-                        onClick={() =>
-                          openModalCreateHiringrequest(null)
-                        }
-                        className="d-flex hover-change " style={{ padding: "8px" }}
-                      >
-                        <span style={{ fontSize: "15px", marginRight: "5px" }}>
-                          <FontAwesomeIcon icon={faPlus} />
-                        </span>
-                        <div style={{ fontWeight: "500" }}>
-                          Add a hiring Request
-                        </div>
-                      </div>
+
                       <div className="job-list-header">
                         <Form action="#">
                           <Row className="g-2">
@@ -2102,23 +2270,95 @@ const ProjectDetailDesciption = () => {
                                   type="search"
                                   className="form-control filter-input-box"
                                   id="exampleFormControlInput1"
-                                  placeholder="Jobtitle... "
-                                  style={{ marginTop: "-10px" }}
+                                  placeholder="Hiringrequest Title / Hiringrequest Code..."
+                                  style={{ marginTop: "-10px", backgroundColor: "#fafafa" }}
                                   value={search}
                                   onChange={(e) => setSearch(e.target.value)}
                                 />
                               </div>
                             </Col>
-
-                            <Col lg={5} md={6}>
-                              <div className="filler-job-form">
-                                <i className="uil uil-clipboard-notes"></i>
-                                <JobType skill={skill} setSkill={setSkill} />
+                            <Col lg={2} md={6}>
+                              <div className="btn btn-primary w-100" onClick={() => onSearch()}>
+                                <i className="uil uil-search"></i> Search
+                              </div>
+                            </Col>
+                            <Col lg={4} md={6}>
+                            </Col>
+                            <Col lg={2} md={6}>
+                              <div className="btn btn-primary w-100"
+                                onClick={() => openModalCreateHiringrequest(null)}
+                              >
+                                <i className="uil uil-plus"></i> Create
                               </div>
                             </Col>
                             <Col lg={3} md={6}>
-                              <div className="btn btn-primary w-100" onClick={() => onSearch()}>
-                                <i className="uil uil-filter"></i> Fliter
+                              <div className="filler-job-form">
+                                <i className="uil uil-clipboard-notes"></i>
+                                <Select
+                                  isMulti
+                                  options={options}
+                                  styles={colourStyles}
+                                  className="selectForm__inner"
+                                  name="choices-single-categories"
+                                  id="choices-single-categories"
+                                  aria-label="Default select example"
+                                  value={skill}
+                                  onChange={setSkillValue}
+                                  menuPosition={'fixed'}
+
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={3} md={6}>
+                              <div className="filler-job-form">
+                                <i className="uil uil-clipboard-notes"></i>
+                                <Select
+                                  options={options2}
+                                  styles={colourStyles}
+                                  className="selectForm__inner"
+                                  name="choices-single-categories"
+                                  id="choices-single-categories"
+                                  aria-label="Default select example"
+                                  value={typeRequire}
+                                  onChange={setTypeValue}
+                                  menuPosition={'fixed'}
+                                  isClearable
+
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={3} md={6}>
+                              <div className="filler-job-form">
+                                <i className="uil uil-clipboard-notes"></i>
+                                <Select
+                                  options={options3}
+                                  styles={colourStyles}
+                                  className="selectForm__inner"
+                                  name="choices-single-categories"
+                                  id="choices-single-categories"
+                                  aria-label="Default select example"
+                                  value={levelRequire}
+                                  onChange={setLevelValue}
+                                  menuPosition={'fixed'}
+                                  isClearable
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={3} md={6}>
+                              <div className="filler-job-form">
+                                <i className="uil uil-clipboard-notes"></i>
+                                <Select
+                                  options={options4}
+                                  styles={colourStyles}
+                                  className="selectForm__inner"
+                                  name="choices-single-categories"
+                                  id="choices-single-categories"
+                                  aria-label="Default select example"
+                                  value={status}
+                                  onChange={setStatusValue}
+                                  menuPosition={'fixed'}
+                                  isClearable
+                                />
                               </div>
                             </Col>
                           </Row>
@@ -2135,23 +2375,6 @@ const ProjectDetailDesciption = () => {
                           >
                             <div className="p-4">
                               <Row className="align-items-center">
-                                <Col md={2}>
-                                  <div className="text-center mb-4 mb-md-0">
-                                    <div
-                                    >
-                                      <img
-                                        style={{
-                                          width: "80px",
-                                          height: "80px",
-                                        }}
-                                        src={jobVacancyListDetails.companyImg}
-                                        alt=""
-                                        className="img-fluid rounded-3 img-avt-hiring-request"
-                                      />
-                                    </div>
-                                  </div>
-                                </Col>
-
                                 <Col md={3}>
                                   <div className="mb-2 mb-md-0">
                                     <h5 className="fs-18 mb-0">
@@ -2173,11 +2396,21 @@ const ProjectDetailDesciption = () => {
                                       <i className="uil uil-user-check text-primary me-1"></i>
                                     </div>
                                     <p className="text-muted mb-0">
-                                      {jobVacancyListDetails.targetedDev} Developer
+                                      {jobVacancyListDetails.targetedDev} / {jobVacancyListDetails.numberOfDev} Developer
                                     </p>
                                   </div>
                                 </Col>
-
+                                <Col md={2}>
+                                  <div className="d-flex mb-0">
+                                    <div className="flex-shrink-0">
+                                      <i className="uil uil-location-pin-alt text-primary me-1"></i>
+                                    </div>
+                                    <p className="text-muted mb-0">
+                                      {" "}
+                                      {jobVacancyListDetails.employmentTypeName}
+                                    </p>
+                                  </div>
+                                </Col>
                                 <Col md={2}>
                                   <div className="d-flex mb-0">
                                     <div className="flex-shrink-0">
@@ -2207,12 +2440,12 @@ const ProjectDetailDesciption = () => {
                                                 ? "badge bg-danger text-light mb-2"
                                                 : jobVacancyListDetails.statusString ===
                                                   "Cancelled"
-                                                  ? "badge bg-danger text-light mb-2"
+                                                  ? "badge bg-blue text-light mb-2"
                                                   : jobVacancyListDetails.statusString ===
-                                                    "Finished"
-                                                    ? "badge bg-primary text-light mb-2"
+                                                    "Closed"
+                                                    ? "badge bg-gray text-light mb-2"
                                                     : jobVacancyListDetails.statusString ===
-                                                      "Complete"
+                                                      "Completed"
                                                       ? "badge bg-primary text-light mb-2"
                                                       : jobVacancyListDetails.statusString === "Saved"
                                                         ? "badge bg-teal text-light mb-2"
@@ -2227,7 +2460,7 @@ const ProjectDetailDesciption = () => {
                             </div>
                             <div className="p-3 bg-light">
                               <Row className="justify-content-between">
-                                <Col md={12}>
+                                <Col md={10}>
                                   <div>
                                     <p className="text-muted mb-0 ">
                                       {jobVacancyListDetails.experience
@@ -2236,7 +2469,7 @@ const ProjectDetailDesciption = () => {
                                           0,
                                           showFullSkills[jobVacancyListDetails.id]
                                             ? undefined
-                                            : 6
+                                            : 8
                                         )
                                         .map((skill, index) => (
                                           <span
@@ -2253,7 +2486,7 @@ const ProjectDetailDesciption = () => {
                                         ))}
 
                                       {jobVacancyListDetails.experience.split(",").length >
-                                        4 ? (
+                                        8 ? (
                                         <span className="badge bg-primary-subtle text-primary ms-2">
                                           ...
                                         </span>
@@ -2263,39 +2496,46 @@ const ProjectDetailDesciption = () => {
                                     </p>
                                   </div>
                                 </Col>
+                                <Col md={2}>
+                                  <div>
+                                    {jobVacancyListDetails.postedTime}
+                                  </div>
+                                </Col>
                               </Row>
                             </div>
                           </div>
                         ))}
                       </div>
-                      <Row id="paging">
-                        <Col lg={12} className="mt-4 pt-2">
-                          <nav aria-label="Page navigation example">
-                            <div className="pagination job-pagination mb-0 justify-content-center">
-                              <li
-                                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-                              >
-                                <div
-                                  className="page-link"
-                                  tabIndex="-1"
-                                  onClick={handlePrevPage}
+                      {totalPages > 1 && (
+                        <Row id="paging">
+                          <Col lg={12} className="mt-4 pt-2">
+                            <nav aria-label="Page navigation example">
+                              <div className="pagination job-pagination mb-0 justify-content-center">
+                                <li
+                                  className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
                                 >
-                                  <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                </div>
-                              </li>
-                              {renderPageNumbers()}
-                              <li
-                                className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                                  }`}
-                              >
-                                <div className="page-link" to="#" onClick={handleNextPage}>
-                                  <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                </div>
-                              </li>
-                            </div>
-                          </nav>
-                        </Col>
-                      </Row>
+                                  <div
+                                    className="page-link"
+                                    tabIndex="-1"
+                                    onClick={handlePrevPage}
+                                  >
+                                    <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                  </div>
+                                </li>
+                                {renderPageNumbers()}
+                                <li
+                                  className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                    }`}
+                                >
+                                  <div className="page-link" onClick={handleNextPage}>
+                                    <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                  </div>
+                                </li>
+                              </div>
+                            </nav>
+                          </Col>
+                        </Row>
+                      )}
                     </TabPane>
                   </TabContent>
                 </CardBody>
