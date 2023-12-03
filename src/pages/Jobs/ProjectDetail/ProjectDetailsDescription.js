@@ -89,9 +89,11 @@ import JobType from "../../Home/SubSection/JobType";
 import skillService from "../../../services/skill.service";
 import typeService from "../../../services/type.service";
 import levelService from "../../../services/level.service";
+import { Input as InputAntd } from 'antd';
 dayjs.extend(customParseFormat);
 
 const ProjectDetailDesciption = () => {
+  const { Search } = InputAntd;
   const formatTimePicker = 'HH:mm';
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -131,11 +133,16 @@ const ProjectDetailDesciption = () => {
   const [inputValue, setInputValue] = useState('');
   const [countSetTime, setCountSetTime] = useState(0);
   const [isEditWorkLog, setIsEditWorkLog] = useState(false);
+  const [isCompleteEditWorkLog, setIsCompleteEditWorkLog] = useState(true);
+  const [loadListWorkLog, setLoadListWorkLog] = useState(false);
+  const [paySlipIdLoad, setPaySlipIdLoad] = useState(null);
   const [isEditPayslip, setIsEditPayslip] = useState(false);
-  const [isCancelEditWorkLog, setIsCancelEditWorkLog] = useState(false);
+  const [isCancelEditWorkLog, setIsCancelEditWorkLog] = useState();
   const [isCancelEditPayslip, setIsCancelEditPayslip] = useState(false);
   const [startTimeWorkLogSave, setStartTimeWorkLogSave] = useState(false);
   const [endTimeWorkLogSave, setEndTimeWorkLogSave] = useState(false);
+  const [statusWorkLogSave, setStatusWorkLogSave] = useState();
+  const [isUpdateWorkLog, setIsUpdateWorkLog] = useState();
   const [totalOTPayslipSave, setTotalOTPayslipSave] = useState(false);
   const [timeErrorWorkLog, setTimeErrorWorkLog] = useState([]);
   const [currentDateBill, setCurrentDateBill] = useState();
@@ -151,6 +158,7 @@ const ProjectDetailDesciption = () => {
   const [keyPayRoll, setKeyPayRoll] = useState(null);
   const [keyWorkLog, setKeyWorkLog] = useState(null);
   const [positionIdChose, setPositionIdChose] = useState(null);
+  const [keyPayslip, setKeyPayslip] = useState(null);
 
   const [showPopup, setShowPopup] = useState(false);
   const [isHavePayment, setIsHavePaymemt] = useState(false);
@@ -170,7 +178,16 @@ const ProjectDetailDesciption = () => {
   const [options2, setOptions2] = useState([]);
   const [options3, setOptions3] = useState([]);
   const [options4, setOptions4] = useState([]);
-
+  const [valuesStatus, setValuesStatus] = useState({});
+  const optionsStatus = [
+    { label: 'Normally', value: 0 },
+    { label: 'Paid leave', value: 1 },
+    { label: 'Unpaid leave', value: 2 },
+  ];
+  const redButtonStyle = {
+    backgroundColor: 'red',
+    borderColor: 'red', // Set border color to match if needed
+  };
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -336,6 +353,7 @@ const ProjectDetailDesciption = () => {
     const newShowCollapse = [...showCollapse];
     newShowCollapse[key2] = !newShowCollapse[key2];
     setShowCollapse(newShowCollapse);
+    setPaySlipIdLoad(paySlipId)
     fetchWorklog(paySlipId);
   };
 
@@ -344,8 +362,10 @@ const ProjectDetailDesciption = () => {
     setKeyWorkLog(key)
   };
 
-  const setPayRollEdit = (payrollId) => {
+  const setPayRollEdit = (payrollId, key) => {
     setPayslipIdOnClick(payrollId)
+    setKeyPayslip(key)
+
   };
 
   const [activeTabMini, setActiveTabMini] = useState("5");
@@ -371,7 +391,14 @@ const ProjectDetailDesciption = () => {
     setIsModalOpen(false);
   };
 
-
+  const handleChangeStatus = (selected) => {
+    console.log(selected)
+    const key = '' + keyPayRoll + keyWorkLog;
+    setValuesStatus(prevState => ({
+      ...prevState,
+      [key]: selected
+    }));
+  };
 
   const closeModalCreateHiringRequest = () => {
     setSelectedHiringRequestInfo(null);
@@ -457,6 +484,14 @@ const ProjectDetailDesciption = () => {
     fetchOptions3();
     fetchOptions4();
   }, []); // Empty dependency array ensures the effect runs once on component mount
+
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      cursor: 'default', // Đặt con trỏ chuột thành mặc định để ngăn việc chọn
+      color: state.isDisabled ? 'red' : 'red', // Màu chữ khi disable và khi enable
+    }),
+  };
 
   const colourStyles = {
     control: (styles) => ({
@@ -679,13 +714,13 @@ const ProjectDetailDesciption = () => {
     }
   };
 
-  const updatedWorkLog = async (timeIn, timeOut) => {
+  const updatedWorkLog = async (timeIn, timeOut, isPaid) => {
     let response;
     try {
       console.log(workLogIdOnClick)
       console.log(timeIn)
       console.log(timeOut)
-      response = await workLogServices.updateWorkLog(workLogIdOnClick, timeIn, timeOut);
+      response = await workLogServices.updateWorkLog(workLogIdOnClick, timeIn, timeOut, isPaid);
       console.log("worklog21312312312")
       console.log(response.data.data)
       const temp = "hourInDay" + response.data.data.workLogId;
@@ -699,8 +734,11 @@ const ProjectDetailDesciption = () => {
         fetchDetailPayPeriod(newDate)
       }
       toast.success("Update worklog successfully")
+      setLoadListWorkLog(!loadListWorkLog);
+      setIsCompleteEditWorkLog(true);
       setEditableRowId(null);
     } catch (error) {
+      setIsCompleteEditWorkLog(false);
       console.error("Error fetching job vacancies:", error);
       toast.error("Update worklog fail")
     }
@@ -712,7 +750,6 @@ const ProjectDetailDesciption = () => {
       console.log(payslipIdOnClick)
       console.log(totalOT)
       response = await paySlipServices.updateTotalOTPayslip(payslipIdOnClick, totalOT);
-      console.log("payperiod21312312312")
       console.log(response.data.data)
 
 
@@ -723,7 +760,7 @@ const ProjectDetailDesciption = () => {
         fetchDetailPayPeriod(newDate)
       }
       toast.success("Update payslip successfully")
-      setEditableRowId(null);
+      setEdiPaySlipRowId(null);
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
       toast.error("Update payslip fail")
@@ -796,10 +833,24 @@ const ProjectDetailDesciption = () => {
       console.log(response)
       setPayPeriodDetail(response.data.data);
       if (response.data.code === 200) {
-        console.log("cho nay ms bi goi lai")
-        console.log(response.data.data.payPeriodId)
+        console.log("cho nay ms bi goi lai");
+        console.log(response.data.data.payPeriodId);
         const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
-        setPayRollDetail(response2.data.data);
+        console.log("response2")
+        console.log(response2)
+        if (response.data.code == 200) {
+          setPayRollDetail(response2.data.data);
+          response2.data.data.forEach((payRollDetailNew, key2) => {
+            const temp = "totalOT" + key2;
+            console.log(temp)
+            const element = document.getElementById(temp);
+            if (element) {
+              console.log("co")
+              console.log(payRollDetailNew.totalOvertimeHours)
+              element.value = payRollDetailNew.totalOvertimeHours;
+            }
+          });
+        }
       }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -836,16 +887,42 @@ const ProjectDetailDesciption = () => {
       document.getElementById(temp2).value = log.timeIn;
       const temp = "endTimeWorkLog2" + keyPayRoll + count;
       document.getElementById(temp).value = log.timeOut;
+      const key = '' + keyPayRoll + count;
+      var status;
+      if (log.isPaidLeave == null) {
+        console.log("null")
+        status = { label: 'Normally', value: 0 };
+      } else {
+        if (log.isPaidLeave == true) {
+          status = { label: 'Paid leave', value: 1 };
+        } else {
+          status = { label: 'Unpaid leave', value: 2 };
+        }
+      }
+      setValuesStatus(prevState => ({
+        ...prevState,
+        [key]: status
+      }));
       count += 1;
-    });
 
+    });
     setCountSetTime(countSetTime + 1)
   }, [workLoglist]);
 
+
+  useEffect(() => {
+    fetchWorklog(paySlipIdLoad);
+  }, [loadListWorkLog]);
+
+
   const onUpdateWorkLog = () => {
+    setIsCompleteEditWorkLog(false);
     const foundLog = workLoglist.find(log => log.workLogId === workLogIdOnClick);
     setStartTimeWorkLogSave(foundLog.timeIn);
     setEndTimeWorkLogSave(foundLog.timeOut);
+    console.log("foundLog.isPaidLeave");
+    console.log(foundLog.isPaidLeave);
+    setStatusWorkLogSave(foundLog.isPaidLeave);
     setEditableRowId(workLogIdOnClick);
   };
 
@@ -899,18 +976,51 @@ const ProjectDetailDesciption = () => {
       if (workLogIdOnClick) {
         const temp2 = "endTimeWorkLog" + keyPayRoll + keyWorkLog;
         const temp = "endTimeWorkLog2" + keyPayRoll + keyWorkLog;
-        if (formatTime00(document.getElementById(temp2).value) >= formatTime00(document.getElementById(temp).value)) {
+        const key = '' + keyPayRoll + keyWorkLog;
+        var statusSave;
+        if (statusWorkLogSave == null) {
+          statusSave = { label: 'Normally', value: 0 };
+        } else {
+          if (statusWorkLogSave == true) {
+            statusSave = { label: 'Paid leave', value: 1 };
+          } else {
+            statusSave = { label: 'Unpaid leave', value: 2 };
+          }
+        }
+        const status = valuesStatus[key]
+        console.log(statusSave)
+        console.log(status)
+        if (statusSave.value == status.value) {
+          console.log("giong nhau")
+        } else {
+          console.log("khac nhau")
+        }
+        if (formatTime00(document.getElementById(temp2).value) >= formatTime00(document.getElementById(temp).value) && status.value == 0) {
           const temp3 = "timeErrorWorkLog" + workLogIdOnClick;
           document.getElementById(temp3).innerHTML = "The start time of work must be less than the end time of work";
+          setIsCompleteEditWorkLog(false);
         } else {
-          if (formatTime00(document.getElementById(temp2).value) != startTimeWorkLogSave || formatTime00(document.getElementById(temp).value) != endTimeWorkLogSave) {
-            updatedWorkLog(formatTime00(document.getElementById(temp2).value), formatTime00(document.getElementById(temp).value))
+          const temp3 = "timeErrorWorkLog" + workLogIdOnClick;
+          document.getElementById(temp3).innerHTML = "";
+          if (formatTime00(document.getElementById(temp2).value) != startTimeWorkLogSave || formatTime00(document.getElementById(temp).value) != endTimeWorkLogSave || statusSave.value != status.value) {
+            console.log("co update")
+            var isPaid;
+            if (status.value == 0) {
+              isPaid = null;
+            }
+            if (status.value == 1) {
+              isPaid = true;
+            }
+            if (status.value == 2) {
+              isPaid = false;
+            }
+            updatedWorkLog(formatTime00(document.getElementById(temp2).value), formatTime00(document.getElementById(temp).value), isPaid)
           } else {
+            setIsCompleteEditWorkLog(true);
             setEditableRowId(null);
           }
         }
       }
-
     } else {
       try {
         console.log("false")
@@ -919,6 +1029,24 @@ const ProjectDetailDesciption = () => {
 
         const temp = "endTimeWorkLog2" + keyPayRoll + keyWorkLog;
         document.getElementById(temp).value = endTimeWorkLogSave;
+
+        const key = '' + keyPayRoll + keyWorkLog;
+        var status;
+        if (statusWorkLogSave == null) {
+          console.log("null")
+          status = { label: 'Normally', value: 0 };
+        } else {
+          if (statusWorkLogSave == true) {
+            status = { label: 'Paid leave', value: 1 };
+          } else {
+            status = { label: 'Unpaid leave', value: 2 };
+          }
+        }
+        setValuesStatus(prevState => ({
+          ...prevState,
+          [key]: status
+        }));
+        setIsCompleteEditWorkLog(true);
         setEditableRowId(null);
       } catch (error) {
         console.log("Loi khi update worklog", error)
@@ -929,23 +1057,28 @@ const ProjectDetailDesciption = () => {
 
   useEffect(() => {
     if (!isCancelEditPayslip) {
-      if (workLogIdOnClick) {
-        const temp2 = "totalOT" + payslipIdOnClick;
-        if (formatTime00(document.getElementById(temp2).value) != totalOTPayslipSave) {
-          updatedPayslip(document.getElementById(temp2).value)
+      if (payslipIdOnClick) {
+        const temp2 = "totalOT" + keyPayslip;
+        if (formatTime00(document.getElementById(temp2).value) < 0) {
+          const temp = "totalOT" + keyPayslip;
+          console.log(temp)
+          document.getElementById(temp).value = totalOTPayslipSave;
+          setEdiPaySlipRowId(null);
         } else {
-          setEditableRowId(null);
+          if (formatTime00(document.getElementById(temp2).value) != totalOTPayslipSave) {
+            updatedPayslip(document.getElementById(temp2).value)
+          } else {
+            setEdiPaySlipRowId(null);
+          }
         }
-
       }
-
     } else {
       try {
         console.log("false")
-        const temp2 = "totalOT" + payslipIdOnClick;
+        const temp2 = "totalOT" + keyPayslip;
+        console.log(temp2)
         document.getElementById(temp2).value = totalOTPayslipSave;
-
-        setEditableRowId(null);
+        setEdiPaySlipRowId(null);
       } catch (error) {
         console.log("Loi khi update worklog", error)
       }
@@ -1040,10 +1173,17 @@ const ProjectDetailDesciption = () => {
 
 
 
+  const ctestUpdateWorkLog = () => {
+    const key = '' + keyPayRoll + keyWorkLog;
+    console.log(valuesStatus[key])
+  };
+
+
   const cancelUpdateWorkLog = () => {
     setIsEditWorkLog(!isEditWorkLog);
     setIsCancelEditWorkLog(true);
   };
+
 
   const saveUpdateWorkLog = () => {
     setIsEditWorkLog(!isEditWorkLog);
@@ -1061,12 +1201,16 @@ const ProjectDetailDesciption = () => {
   };
 
   const nextMonth = () => {
+    const updatedShowCollapse = showCollapse.map(() => false);
+    setShowCollapse(updatedShowCollapse);
     if (currentMonthIndex < listMonth.length - 1) {
       setCurrentMonthIndex(currentMonthIndex + 1);
     }
   };
 
   const previousMonth = () => {
+    const updatedShowCollapse = showCollapse.map(() => false);
+    setShowCollapse(updatedShowCollapse);
     if (currentMonthIndex > 0) {
       setCurrentMonthIndex(currentMonthIndex - 1);
     }
@@ -2082,23 +2226,27 @@ const ProjectDetailDesciption = () => {
                                                       style={{ fontSize: "30px" }}
                                                     ></i>
                                                   </div>
-                                                  <DropdownAntd trigger={['click']} menu={{ items: profileItems3 }}
-                                                    onClick={() =>
-                                                      setPayRollEdit(payRollDetailNew.paySlipId)
-                                                    }
-                                                    overlayStyle={{ right: '4.312px', bottom: "auto", left: "auto" }} >
-                                                    <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
-                                                      <FontAwesomeIcon
-                                                        icon={faGear}
-                                                        size="xl"
-                                                        color="#909191"
-                                                      />
-                                                    </a>
-                                                  </DropdownAntd>
+                                                  {payPeriodDetail.statusString == "Created" && (
+                                                    <>
+                                                      <DropdownAntd trigger={['click']} menu={{ items: profileItems3 }}
+                                                        onClick={() =>
+                                                          setPayRollEdit(payRollDetailNew.paySlipId, key2)
+                                                        }
+                                                        overlayStyle={{ right: '4.312px', bottom: "auto", left: "auto" }} >
+                                                        <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                          <FontAwesomeIcon
+                                                            icon={faGear}
+                                                            size="xl"
+                                                            color="#909191"
+                                                          />
+                                                        </a>
+                                                      </DropdownAntd>
+                                                    </>
+                                                  )}
                                                 </Col>
                                                 {ediPaySlipRowId == payRollDetailNew.paySlipId ? (
                                                   <>
-                                                    <Row>
+                                                    <Row style={{ marginTop: "10px" }}>
                                                       <Col
                                                         md={2}
                                                         style={{ textAlign: "end" }}
@@ -2158,7 +2306,7 @@ const ProjectDetailDesciption = () => {
                                                         {workLogDetail.workDateMMM}
 
                                                       </Col>
-                                                      <Col md={3}>
+                                                      <Col md={2}>
                                                         <div>
                                                           <input
                                                             type="time"
@@ -2168,7 +2316,7 @@ const ProjectDetailDesciption = () => {
                                                           />
                                                         </div>
                                                       </Col>
-                                                      <Col md={3}>
+                                                      <Col md={2}>
                                                         <div>
                                                           <input
                                                             type="time"
@@ -2185,22 +2333,39 @@ const ProjectDetailDesciption = () => {
                                                       >
                                                         Hours in day: {workLogDetail.hourWorkInDay}
                                                       </Col>
+                                                      <Col md={2}>
+                                                        <Select
+                                                          options={optionsStatus}
+                                                          name="choices-single-categories"
+                                                          id={`statusWorkLog${key2}${key}`}
+                                                          value={valuesStatus[`${key2}${key}`]}
+                                                          onChange={handleChangeStatus}
+                                                          aria-label="Default select example"
+                                                          menuPosition={'fixed'}
+                                                          isDisabled={editableRowId !== workLogDetail.workLogId}
+                                                        />
+                                                      </Col>
                                                       <Col
                                                         md={1}
                                                         className="d-flex justify-content-center align-items-center"
                                                       >
-
-                                                        <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
-                                                          setKeyAndIdWorkLog(workLogDetail.workLogId, key)
-                                                        } >
-                                                          <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
-                                                            <FontAwesomeIcon
-                                                              icon={faGear}
-                                                              size="xl"
-                                                              color="#909191"
-                                                            />
-                                                          </a>
-                                                        </DropdownAntd>
+                                                        {payPeriodDetail.statusString == "Created" && (
+                                                          <>
+                                                            {isCompleteEditWorkLog && ( // Kiểm tra nếu isCompleteEditWorkLog === false
+                                                              <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
+                                                                setKeyAndIdWorkLog(workLogDetail.workLogId, key)
+                                                              }>
+                                                                <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                                  <FontAwesomeIcon
+                                                                    icon={faGear}
+                                                                    size="xl"
+                                                                    color="#909191"
+                                                                  />
+                                                                </a>
+                                                              </DropdownAntd>
+                                                            )}
+                                                          </>
+                                                        )}
                                                       </Col>
                                                     </Row>
                                                     {editableRowId == workLogDetail.workLogId ? (
@@ -2224,6 +2389,11 @@ const ProjectDetailDesciption = () => {
                                                             style={{ textAlign: "end" }}
                                                             className="d-flex gap-2 justify-content-end"
                                                           >
+                                                            <div className="btn btn-soft-danger"
+                                                              onClick={() => ctestUpdateWorkLog()}
+                                                            >
+                                                              test
+                                                            </div>
                                                             <div className="btn btn-soft-danger"
                                                               onClick={() => cancelUpdateWorkLog()}
                                                             >
@@ -2264,28 +2434,22 @@ const ProjectDetailDesciption = () => {
                         <Form action="#">
                           <Row className="g-2">
                             <Col lg={4} md={6}>
-                              <div className="filler-job-form">
-                                <i className="uil uil-briefcase-alt"></i>
-                                <Input
-                                  type="search"
-                                  className="form-control filter-input-box"
-                                  id="exampleFormControlInput1"
-                                  placeholder="Hiringrequest Title / Hiringrequest Code..."
-                                  style={{ marginTop: "-10px", backgroundColor: "#fafafa" }}
-                                  value={search}
-                                  onChange={(e) => setSearch(e.target.value)}
-                                />
-                              </div>
+                              <Search
+                                placeholder="input search text"
+                                allowClear
+                                enterButton="Search"
+                                size="large"
+                                onSearch={onSearch}
+                                onChange={(e) => setSearch(e.target.value)}
+                              />
                             </Col>
                             <Col lg={2} md={6}>
-                              <div className="btn btn-primary w-100" onClick={() => onSearch()}>
-                                <i className="uil uil-search"></i> Search
-                              </div>
                             </Col>
                             <Col lg={4} md={6}>
                             </Col>
                             <Col lg={2} md={6}>
                               <div className="btn btn-primary w-100"
+                                style={{ marginBottom: "5px" }}
                                 onClick={() => openModalCreateHiringrequest(null)}
                               >
                                 <i className="uil uil-plus"></i> Create
@@ -2305,7 +2469,6 @@ const ProjectDetailDesciption = () => {
                                   value={skill}
                                   onChange={setSkillValue}
                                   menuPosition={'fixed'}
-
                                 />
                               </div>
                             </Col>

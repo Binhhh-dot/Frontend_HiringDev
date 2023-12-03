@@ -470,9 +470,11 @@ const HiringRequestDetails = () => {
       response = await projectServices.getProjectDetailByProjectId(
         projectId
       );
-      console.log(response)
-
-      setProjectDetail(response.data.data);
+      console.log(response);
+      document.getElementById("projectNameOverview").innerHTML = response.data.data.projectName;
+      document.getElementById("projectTypeOverview").innerHTML = response.data.data.projectTypeName;
+      document.getElementById("startDayOverview").innerHTML = response.data.data.startDateMMM;
+      document.getElementById("endDayOverview").innerHTML = response.data.data.endDateMMM;
       return response;
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -1736,7 +1738,7 @@ const HiringRequestDetails = () => {
                       <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Project </h6>
-                        <p className="text-muted mb-0">{projectDetail.projectName}</p>
+                        <p className="text-muted mb-0" id="projectNameOverview"></p>
                       </div>
                     </div>
                   </li>
@@ -1745,7 +1747,7 @@ const HiringRequestDetails = () => {
                       <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Project type </h6>
-                        <p className="text-muted mb-0">{projectDetail.projectTypeName}</p>
+                        <p className="text-muted mb-0" id="projectTypeOverview"></p>
                       </div>
                     </div>
                   </li>
@@ -1754,7 +1756,7 @@ const HiringRequestDetails = () => {
                       <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Start date of project </h6>
-                        <p className="text-muted mb-0">{projectDetail.startDateMMM}</p>
+                        <p className="text-muted mb-0" id="startDayOverview"></p>
                       </div>
                     </div>
                   </li><li>
@@ -1762,7 +1764,7 @@ const HiringRequestDetails = () => {
                       <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">End date of project </h6>
-                        <p className="text-muted mb-0">{projectDetail.endDateMMM}</p>
+                        <p className="text-muted mb-0" id="endDayOverview"></p>
                       </div>
                     </div>
                   </li>
@@ -2070,6 +2072,31 @@ const HiringRequestDetails = () => {
                                           <i className="mdi mdi-account-check"></i>
                                           Interview
                                         </>
+                                      )}
+                                    </button>
+                                    <button
+                                      id="onboardButton"
+                                      className="btn btn-soft-primary w-100 mt-2 fw-bold"
+                                      onClick={() =>
+                                        handleOnboard(candidategridDetailsNew.id)
+                                      }
+                                      disabled={loadingOnboard[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
+
+                                    >
+                                      {loadingOnboard[candidategridDetailsNew.id] ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"white"}
+                                          loading={true}
+                                        />
+                                      ) : isListLoading2 ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"white"}
+                                          loading={true}
+                                        />
+                                      ) : (
+                                        "Hire"
                                       )}
                                     </button>
                                     <button

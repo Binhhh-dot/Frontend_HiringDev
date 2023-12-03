@@ -262,3 +262,42 @@
   background: linear-gradient(90deg, rgba(255, 255, 255, 0), #fff 50%);
   /* Hiển thị gradient ở phía cuối */
 }
+
+.ant-btn-primary {
+  background-color: #02af74;
+}
+
+.ant-input-search-button {
+  background-color: #02af74;
+  /* Đổi màu nền của nút thành màu đỏ */
+  border-color: #02af74;
+  /* Đổi màu viền của nút thành màu đỏ */
+  color: white;
+  /* Đổi màu chữ của nút thành màu trắng */
+}
+
+.ant-input-search-button:hover {
+  background-color: #02af74;
+  /* Đổi màu nền của nút khi hover thành màu đỏ đậm */
+  border-color: #02af74;
+  /* Đổi màu viền của nút khi hover thành màu đỏ đậm */
+}
+
+:where(.css-dev-only-do-not-override-2i2tap).ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover {
+  background-color: #02af74;
+  color: #fff;
+}
+
+.statusWorklog {
+  color: red;
+  /* Chỉnh màu chữ khi Select được disable */
+}
+
+.react-select-container select[aria-disabled="true"] {
+  color: red;
+  /* Đổi màu chữ thành màu đỏ khi select được vô hiệu hóa */
+}
+
+.css-olqui2-singleValue {
+  color: black !important;
+}
