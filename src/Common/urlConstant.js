@@ -9,9 +9,15 @@ export default {
     },
     skill: {
       getAll: "/Skill",
+      postSkill: "/Skill",
+      editSkill: "/Skill",
+      deleteSkill: "/Skill/skillId?skillId=${skillId}"
     },
     level: {
       getAll: "/Level",
+      postLevel: "/Level",
+      editLevel: "/Level",
+      deleteLevel: "/Level/levelId?skillId={levelId}"
     },
     scheduleType: {
       getAll: "/ScheduleType",
@@ -21,6 +27,10 @@ export default {
     },
     type: {
       getAll: "/Type",
+      postType: "/Type",
+      editType: "/Type",
+      deleteType: "/Type/typeId?typeId=${typeId}",
+
       searchName: "",
     },
 
