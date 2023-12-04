@@ -575,9 +575,9 @@ const JobDetailsDescription = () => {
                 style={{ maxWidth: "266px" }}
               >
                 <div>
-                  <p className="text-muted mb-0 fs-13">Type Of Developer</p>
+                  <p className="text-muted mb-0 fs-13">Employment Type</p>
                   <p className="fw-medium mb-0 badge bg-info-subtle text-info">
-                    {hiringRequestDetail.typeRequireName}
+                    {hiringRequestDetail.employmentTypeName}
                   </p>
                 </div>
               </Col>
@@ -587,19 +587,10 @@ const JobDetailsDescription = () => {
                 style={{ maxWidth: "266px" }}
               >
                 <div id="standard">
-                  <p className="text-muted fs-13 mb-0">Skill Requirement</p>
-                  <p className="fw-medium mb-0 ">
-                    {hiringRequestDetail.skillRequireStrings.map(
-                      (skill, index) => (
-                        <span
-                          key={index}
-                          style={{ marginRight: "3px" }}
-                          className="badge bg-success-subtle text-success"
-                        >
-                          {skill}
-                        </span>
-                      )
-                    )}
+                  <p className="text-muted fs-13 mb-0">Number Of Dev</p>
+
+                  <p className="fw-medium mb-0 badge bg-success-subtle text-success">
+                    {hiringRequestDetail.numberOfDev}
                   </p>
                 </div>
               </Col>
@@ -610,9 +601,12 @@ const JobDetailsDescription = () => {
                 style={{ maxWidth: "266px" }}
               >
                 <div>
-                  <p className="text-muted fs-13 mb-0">Level Requirement</p>
+                  <p className="text-muted fs-13 mb-0">
+                    Average Salary Developer{" "}
+                  </p>
+
                   <p className="fw-medium mb-0 badge bg-purplel text-purple">
-                    {hiringRequestDetail.levelRequireName}
+                    {hiringRequestDetail.salaryPerDev} VND
                   </p>
                 </div>
               </Col>
@@ -655,17 +649,18 @@ const JobDetailsDescription = () => {
                 </li>
 
                 <h5>Skill & Type Require</h5>
+
+                <li>
+                  <i className="uil uil-circle"></i>{" "}
+                  {hiringRequestDetail.typeRequireName}
+                </li>
+
                 {hiringRequestDetail.skillRequireStrings.map((skill, index) => (
                   <li key={index}>
                     <i className="uil uil-circle"></i>
                     {skill}
                   </li>
                 ))}
-
-                <li>
-                  <i className="uil uil-circle"></i>{" "}
-                  {hiringRequestDetail.typeRequireName}
-                </li>
               </ul>
             </div>
           </div>

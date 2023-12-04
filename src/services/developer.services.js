@@ -240,6 +240,15 @@ const getDeveloperMatchingInManager = async (requestId) => {
   return response;
 };
 
+const getDeveloperByDevId = async (devId) => {
+  const serviceUrl = urlConstant.endpoint.developer.getDeveloperByDevId.replace(
+    "${devId}",
+    devId
+  );
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
 export default {
   GetAllSelectedDevByHR,
   approvalInterviewByHR,
@@ -260,5 +269,6 @@ export default {
   getListDeveloperOnboardByProjectId,
   updateDeveloperByAdmin,
   getDeveloperMatchingInManager,
-  getDeveloperDetailByDevId
+  getDeveloperDetailByDevId,
+  getDeveloperByDevId,
 };

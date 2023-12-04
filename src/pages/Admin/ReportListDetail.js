@@ -1,23 +1,4 @@
 import React, { useState } from "react";
-import JobDetailsDescription from "./JobDetailsDescription";
-import RightSideContent from "./RightSideContent";
-import NewListInterviewInfo from "./NewListInterviewInfo";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import {
-  PieChartOutlined,
-  DesktopOutlined,
-  UserOutlined,
-  TeamOutlined,
-  FileOutlined,
-  LeftOutlined,
-  RightOutlined,
-  HomeOutlined,
-  SnippetsOutlined,
-  SolutionOutlined,
-  CodeOutlined,
-} from "@ant-design/icons";
-
 import { Layout, Menu, Input, Button, Badge, Space } from "antd";
 
 import {
@@ -31,8 +12,6 @@ import {
 } from "reactstrap";
 
 import { Link } from "react-router-dom";
-import classname from "classnames";
-
 import img0 from "../../assets/images/user/img-00.jpg";
 import SiderBarWeb from "./SlideBar/SiderBarWeb";
 import {
@@ -42,10 +21,12 @@ import {
   DropdownItem,
 } from "reactstrap";
 
-const { Header, Footer, Sider, Content } = Layout;
-const { Search } = Input;
+import ReportDetailDescription from "./ReportDetailDescription";
+import RightSideReportContent from "./RightSideReportContent";
 
-const NewHiringRequestDetail = () => {
+const { Header, Footer, Sider, Content } = Layout;
+
+const ReportListDetail = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -54,7 +35,7 @@ const NewHiringRequestDetail = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SiderBarWeb choose={"menu-key/10"}></SiderBarWeb>
+        <SiderBarWeb choose={"menu-key/16"}></SiderBarWeb>
 
         <Layout>
           <div
@@ -155,22 +136,21 @@ const NewHiringRequestDetail = () => {
           </div>
 
           <Content>
-            {/* ----------------------------------------------------------------------------- */}
             <section className="section " style={{ paddingTop: "14px" }}>
               <Container
                 className="custom-container-hiring-detail"
                 style={{ paddingLeft: "30px", paddingRight: "30px" }}
               >
-                <Row>
+                <Row className="mt-3">
                   <Col lg={8}>
-                    <JobDetailsDescription />
+                    <ReportDetailDescription />
                   </Col>
                   <Col
                     lg={4}
                     className="mt-lg-0"
                     style={{ paddingLeft: "19px" }}
                   >
-                    <RightSideContent />
+                    <RightSideReportContent />
                   </Col>
                 </Row>
               </Container>
@@ -182,4 +162,4 @@ const NewHiringRequestDetail = () => {
   );
 };
 
-export default NewHiringRequestDetail;
+export default ReportListDetail;

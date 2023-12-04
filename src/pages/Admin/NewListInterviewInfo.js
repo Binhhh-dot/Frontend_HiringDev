@@ -68,6 +68,7 @@ const NewListInterviewInfo = () => {
   const [interviewListComplete, setInterviewListComplete] = useState([]);
   const [interviewListReject, setInterviewListReject] = useState([]);
   const [interviewCancelled, setInterviewCancelled] = useState([]);
+
   //---------------------------------------------------------------------------------------
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -109,6 +110,7 @@ const NewListInterviewInfo = () => {
       tmp = response.data.data.filter(
         (developer) => developer.statusString == "Waiting Approval"
       );
+
       setInterviewListWaitingApproval(tmp);
       setTotalPagesWaitingApproval(
         Math.ceil(tmp.length / pageSizeWaitingApproval)
@@ -567,6 +569,7 @@ const NewListInterviewInfo = () => {
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
+
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
@@ -688,7 +691,7 @@ const NewListInterviewInfo = () => {
 
                       <div className="d-flex justify-content-between">
                         <Nav
-                          className="profile-content-nav nav-pills border-bottom gap-3 mb-3"
+                          className="profile-content-nav nav-pills border-bottom gap-3 mb-3 "
                           id="pills-tab"
                           role="tablist"
                         >

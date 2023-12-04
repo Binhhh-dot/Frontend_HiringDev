@@ -9,9 +9,15 @@ export default {
     },
     skill: {
       getAll: "/Skill",
+      postSkill: "/Skill",
+      editSkill: "/Skill",
+      deleteSkill: "/Skill/${skillId}"
     },
     level: {
       getAll: "/Level",
+      postLevel: "/Level",
+      editLevel: "/Level",
+      deleteLevel: "/Level/${levelId}"
     },
     scheduleType: {
       getAll: "/ScheduleType",
@@ -21,6 +27,10 @@ export default {
     },
     type: {
       getAll: "/Type",
+      postType: "/Type",
+      editType: "/Type",
+      deleteType: "/Type/${typeId}",
+
       searchName: "",
     },
 
@@ -105,6 +115,7 @@ export default {
       deleteDeveloper: "",
       getDeveloperMatchingInManager: "/Developer/DevMatching/${requestId}",
       getDeveloperDetailByDevId: "/Developer/${developerId}"
+      getDeveloperByDevId: "/Developer/${devId}",
     },
     interview: {
       createAnInterview: "/Interview",
@@ -238,6 +249,14 @@ export default {
     report: {
       getReportType: "/ReportType",
       createReport: "/Report",
-    }
+      getReportList: "/Report?PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getReportById: "/Report/${reportId}",
+      handleRelyReport: "/Report/Reply",
+      handleConfirmReport: "/Report/Confirm/${reportId}",
+    },
+    transactionHistory: {
+      getTransactionHistory:
+        "/Transaction?PageIndex=${PageIndex}&PageSize=${PageSize}",
+    },
   },
 };

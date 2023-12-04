@@ -586,14 +586,18 @@ const ListAccountDeveloper = () => {
           document.getElementById("year-of-experience").value;
         const phoneNumber = document.getElementById("phone-number").value;
         const dateOfBirth = document.getElementById("date-of-birth").value; // replace with actual value from the type dropdown
-        const levelRequireId = selectedOptions3.value ?? ""; // replace with actual value from the level dropdown
-        const scheduleTypeId = selectedOptions6.value ?? "";
-        const employmentTypeId = selectedOptions6.value ?? "";
+        const levelRequireId = selectedOptions3.value
+          ? selectedOptions3.value
+          : null;
+        const employmentTypeId = selectedOptions5.value
+          ? selectedOptions5.value
+          : null;
         const genderId = selectedOptions7.value ?? "";
 
-        const skillIds = selectedOptions.map((skill) => skill.value) ?? "";
-        const typeRequireId = selectedOptions2.map((type) => type.value) ?? "";
-
+        const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
+        const typeRequireId = selectedOptions2.value
+          ? selectedOptions2.value
+          : null; //
         const formData = new FormData();
 
         const response = await developerServices.updateDeveloperByAdmin(
@@ -605,11 +609,11 @@ const ListAccountDeveloper = () => {
           dateOfBirth,
           yearOfExperience,
           avarageSalary,
-          scheduleTypeId,
           employmentTypeId,
           levelRequireId,
           typeRequireId,
-          skillIds
+          skillIds,
+
         );
 
         console.log(response);
@@ -641,7 +645,6 @@ const ListAccountDeveloper = () => {
     } else {
     }
   };
-  //--------------------------------------------------------------------------------------------------------------
 
   const [userImage3, setUserImage3] = useState(null);
   const [userDataDetail, setUserDataDetail] = useState({});
@@ -666,8 +669,9 @@ const ListAccountDeveloper = () => {
   const handleEditClick = (developerId) => {
     fetchUserDetail(developerId);
     showModal2();
-    //setUserId(developerId);
+    setUserId(developerId);
   };
+
 
   //const [developerDetail, setdeveloperDetail] = useState({})
   const fetchUserDetail = async (developerId) => {
@@ -692,23 +696,160 @@ const ListAccountDeveloper = () => {
         response.data.data.averageSalary;
       document.getElementById("codeName-dev").value =
         response.data.data.codeName;
+      try {
+        const response = await genderServices.getAllGender();
+        const activeGenders = response.data.data.filter(
+          (gender) => gender.statusString === "Active"
+        );
+
+        if (response.data.data) {
+          const requiredGenderNames = response.data.data.genderName;
+
+          const foundGenders = activeGenders.find((gender) =>
+            gender.genderName === requiredGenderNames
+          );
+          if (foundGenders) {
+            const newEmploymentType = {
+              value: foundGenders.genderId.toString(),
+              label: foundGenders.genderName,
+            };
+            setSelectedOptions7(newEmploymentType);
+          }
+
+          // Assuming setSelectedOptions is designed to handle an array
+        }
+        const formattedEmploymentType = activeGenders.map(
+          (gender) => ({
+            value: gender.genderId.toString(),
+            label: gender.genderName,
+          })
+        );
+        setOptions7(formattedEmploymentType);
+
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      }
+      try {
+        const response = await skillService.getAllSkill();
+        const activeSkills = response.data.data.filter(
+          (skill) => skill.statusString === "Active"
+        );
+
+        if (response.data.data) {
+          const requiredSkillNames = response.data.data.skillIds;
+
+          const foundSkills = activeSkills.filter((skill) =>
+            requiredSkillNames.includes(skill.skillName)
+          );
+
+          // Assuming setSelectedOptions is designed to handle an array
+          setSelectedOptions(
+            foundSkills.map((foundSkill) => ({
+              value: foundSkill.skillId.toString(),
+              label: foundSkill.skillName,
+            }))
+          );
+        }
+
+        const formattedSkills = activeSkills.map((skill) => ({
+          value: skill.skillId.toString(),
+          label: skill.skillName,
+        }));
+        setOptions(formattedSkills);
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      }
+      try {
+        const response3 = await levelServices.getAllLevel();
+        const activeLevels = response3.data.data.filter(
+          (level) => level.statusString === "Active"
+        );
+        if (response.data.data) {
+          const requiredLevelName = response.data.data.level;
+          const foundLevel = activeLevels.find(
+            (level) => level.levelName === requiredLevelName
+          );
+          if (foundLevel) {
+            const newLevel = {
+              value: foundLevel.levelId.toString(),
+              label: foundLevel.levelName,
+            };
+            setSelectedOptions3(newLevel);
+          }
+        }
+        const formattedLevels = activeLevels.map((level) => ({
+          value: level.levelId.toString(),
+          label: level.levelName,
+        }));
+        setOptions3(formattedLevels);
+      } catch (error) {
+        console.error("Error fetching levels:", error);
+      }
+      try {
+        const response5 = await employmentTypeServices.getAllEmploymentType();
+        const activeEmploymentType = response5.data.data.filter(
+          (employmentType) => employmentType.statusString === "Active"
+        );
+        if (response.data.data) {
+          const requirEdemploymentType = response.data.data.employmentTypeName;
+          const foundEmploymentType = activeEmploymentType.find(
+            (employmentType) =>
+              employmentType.employmentTypeName === requirEdemploymentType
+          );
+          if (foundEmploymentType) {
+            const newEmploymentType = {
+              value: foundEmploymentType.employmentTypeId.toString(),
+              label: foundEmploymentType.employmentTypeName,
+            };
+            setSelectedOptions5(newEmploymentType);
+          }
+        }
+        const formattedEmploymentType = activeEmploymentType.map(
+          (employmentType) => ({
+            value: employmentType.employmentTypeId.toString(),
+            label: employmentType.employmentTypeName,
+          })
+        );
+        setOptions5(formattedEmploymentType);
+      } catch (error) {
+        console.error("Error fetching employment typeName:", error);
+      }
+
+
+      try {
+        const response2 = await typeServices.getAllType();
+        const activeTypes = response2.data.data.filter(
+          (type) => type.statusString === "Active"
+        );
+        if (response.data.data) {
+          const requiredTypeName = response.data.data.types;
+          const foundType = activeTypes.find(
+            (type) => type.typeName === requiredTypeName
+          );
+          if (foundType) {
+            const newType = {
+              value: foundType.typeId.toString(),
+              label: foundType.typeName,
+            };
+            setSelectedOptions2(newType);
+          }
+        }
+        let formattedTypes = activeTypes.map((type) => ({
+          value: type.typeId.toString(),
+          label: type.typeName,
+        }));
+        setOptions2(formattedTypes);
+      } catch (error) {
+        console.error("Error fetching types:", error);
+      }
+
+      if (response.data.data.userImage) {
+        setUserImage3(response.data.data.userImage);
+      } else {
+        setUserImage3("");
+
+      }
       document.getElementById("summary-dev").value = response.data.data.summary;
-      // document.getElementById("genderId-dev").value =
-      //   response.data.data.gender.genderName;
-
-      //document.getElementById("levels-dev").value = response.data.data.level;
-
-      // document.getElementById("employmentId-dev").value =
-      //   response.data.data.employmentTypeId;
-      //document.getElementById("types-dev").value = response.data.data.types;
-
-      //document.getElementById("skills-dev").value = response.data.data.skills;
-
-      // if (response.data.data.userImage) {
-      //   setUserImage3(response.data.data.userImage);
-      // } else {
-      //   setUserImage3("");
-      // }
     } catch (error) {
       console.error("Error loading user common data:", error);
     }
@@ -1054,8 +1195,8 @@ const ListAccountDeveloper = () => {
                             text === "Available"
                               ? "badge text-bg-success"
                               : text === "Selected On Request"
-                              ? "badge text-bg-info"
-                              : "badge bg-warning text-light"
+                                ? "badge text-bg-info"
+                                : "badge bg-warning text-light"
                           }
                         >
                           {text}
@@ -1081,7 +1222,7 @@ const ListAccountDeveloper = () => {
                             />
                           </a>
                           {record.devStatusString === "Available" ||
-                          record.devStatusString === "On Working" ? (
+                            record.devStatusString === "On Working" ? (
                             <a
                               onClick={(event) => {
                                 handleDeleteClick(record.userId);
@@ -1146,7 +1287,7 @@ const ListAccountDeveloper = () => {
             onOk={handleOk}
             onCancel={handleCancel}
             footer={null}
-            width={700}
+            // width={700}
             style={{
               alignItems: "center",
               justifyContent: "center",
@@ -1240,10 +1381,10 @@ const ListAccountDeveloper = () => {
                       hRInfo.devStatusString === "On Working"
                         ? "badge bg-warning text-light"
                         : hRInfo.devStatusString === "Selected On Request"
-                        ? "badge bg-info text-light"
-                        : hRInfo.devStatusString === "Available"
-                        ? "badge bg-success text-light"
-                        : "badge text-bg-danger"
+                          ? "badge bg-info text-light"
+                          : hRInfo.devStatusString === "Available"
+                            ? "badge bg-success text-light"
+                            : "badge text-bg-danger"
                     }
                   >
                     {hRInfo.devStatusString}
@@ -1256,8 +1397,8 @@ const ListAccountDeveloper = () => {
                       hRInfo.userStatusString === "Active"
                         ? "badge  text-bg-success"
                         : hRInfo.userStatusString === "Selected On Request"
-                        ? "badge bg-warning text-light"
-                        : "badge text-bg-danger"
+                          ? "badge bg-warning text-light"
+                          : "badge text-bg-danger"
                     }
                   >
                     {hRInfo.userStatusString}
@@ -1653,7 +1794,7 @@ const ListAccountDeveloper = () => {
                     <Select
                       id="levels-dev"
                       options={options3}
-                      value={selectedOptions3}
+                      value={1}
                       onChange={handleChange3}
                       className="Select Select--level-highest"
                     />

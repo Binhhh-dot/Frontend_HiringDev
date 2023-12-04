@@ -447,7 +447,7 @@ const CreateHiringRequestPopup = (
                                 levelRequireId,
                                 skillIds,
                                 isSaved,
-                                employmentTypeId,
+                                levelRequireId,
                             );
                             console.log(response);
                         } else {

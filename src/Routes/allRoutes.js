@@ -94,6 +94,12 @@ import ProjectDetail from "../pages/Admin/ProjectDetail";
 import SideBarManager from "../pages/Admin/SideBarManager";
 import CreateReport from "../pages/Jobs/CreateReport/CreateReport";
 import ReportList from "../pages/Jobs/ReportList/ReportList";
+
+//
+import ManageLevel from "../pages/Admin/Info/ManageLevel";
+import ManageSkill from "../pages/Admin/Info/ManageSkill";
+import ManageType from "../pages/Admin/Info/ManageType";
+
 //Admin Management
 import ListAccountHR from "../pages/Admin/ListAccountHR";
 import ListAccountManager from "../pages/Admin/ListAccountManager";
@@ -105,6 +111,10 @@ import NewListInterviewInfo from "../pages/Admin/NewListInterviewInfo";
 import ProjectListInManager from "../pages/Admin/ProjectListInManager";
 import ContractList from "../pages/Admin/ContractList";
 import CallbackPayment from "../pages/ExtraPages/CallbackPayment";
+import CompanyDetailPartner from "../pages/Admin/CompanyDetailPartner";
+import ReportList from "../pages/Admin/ReportList";
+import ReportListDetail from "../pages/Admin/ReportListDetail";
+import TransactionHistoryList from "../pages/Admin/TransactionHistoryList";
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -251,6 +261,13 @@ const authRoutes = [
   { path: "/newlistinterview", component: <NewListInterviewInfo /> },
   { path: "/projectlistinmanager", component: <ProjectListInManager /> },
   { path: "/listcontract", component: <ContractList /> },
+  { path: "/listcompanyPartnerdetail", component: <CompanyDetailPartner /> },
+  { path: "/listreportinmanager", component: <ReportList /> },
+  { path: "/listreportinmanagerdetail", component: <ReportListDetail /> },
+  { path: "/listtransactionhistory", component: <TransactionHistoryList /> },
+  { path: "/manageLevel", component: <ManageLevel /> },
+  { path: "/manageSkill", component: <ManageSkill /> },
+  { path: "/manageType", component: <ManageType /> },
 ];
 
 export { userRoutes, authRoutes };

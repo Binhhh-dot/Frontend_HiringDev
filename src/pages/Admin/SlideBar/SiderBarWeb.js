@@ -14,6 +14,8 @@ import {
   CodeOutlined,
   AuditOutlined,
   BankOutlined,
+  HighlightOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -21,7 +23,6 @@ const { Sider } = Layout;
 
 const SiderBarWeb = ({ choose }) => {
   const [collapsed, setCollapsed] = useState(false);
-  //"menu-key/10"
   const [selectedKeys, setSelectedKeys] = useState([choose]);
   const [isLeftIcon, setIsLeftIcon] = useState(true);
   const [showWeHire, setShowWeHire] = useState(true);
@@ -46,35 +47,31 @@ const SiderBarWeb = ({ choose }) => {
       key: "menu-key/1",
       icon: <HomeOutlined />,
       className: "option-1",
+      link: "/dashboard",
     },
-    // {
-    //   label: "Option 2",
-    //   key: "menu-key/2",
-    //   icon: <DesktopOutlined />,
-    //   className: "option-2",
-    // },
     {
       label: "User",
       key: "menu-key/sub-menu-key",
       icon: <UserOutlined />,
       children: [
-        { label: "Manager", key: "menu-key/sub-menu-key/3" },
-        { label: "Staff", key: "menu-key/sub-menu-key/4" },
-        { label: "Human Resource", key: "menu-key/sub-menu-key/5" },
-        { label: "Developer", key: "menu-key/sub-menu-key/6" },
+        { label: "Manager", key: "menu-key/sub-menu-key/3", link: "/listAccountManager" },
+        { label: "Staff", key: "menu-key/sub-menu-key/4", link: "/listAccountStaff" },
+        { label: "Human Resource", key: "menu-key/sub-menu-key/5", link: "/listAccountHR" },
+        { label: "Developer", key: "menu-key/sub-menu-key/6", link: "/listAccountDeveloper" },
       ],
       className: "option-2",
     },
-    // {
-    //   label: "Team",
-    //   key: "menu-key/sub-menu-key2",
-    //   icon: <TeamOutlined />,
-    //   children: [
-    //     { label: "Team 1", key: "menu-key/sub-menu-key2/6" },
-    //     { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
-    //   ],
-    // },
-
+    {
+      label: "Manage Information",
+      key: "menu-key1/sub-menu-key1",
+      icon: <SolutionOutlined />,
+      children: [
+        { label: "Level", key: "menu-key1/sub-menu-key1/1", link: "/manageLevel" },
+        { label: "Skill", key: "menu-key1/sub-menu-key1/2", link: "/manageSkill" },
+        { label: "Type", key: "menu-key1/sub-menu-key1/3", link: "/manageType" },
+      ],
+      className: "option-3",
+    },
     {
       label: "Hiring Request",
       key: "menu-key/10",
@@ -87,29 +84,44 @@ const SiderBarWeb = ({ choose }) => {
       key: "menu-key/11",
       icon: <SolutionOutlined />,
       className: "interview",
-      link: "/newlistinterview", // Add the link property
+      link: "/newlistinterview",
     },
     {
       label: "Project",
       key: "menu-key/12",
       icon: <CodeOutlined />,
       className: "project",
-      link: "/projectlistinmanager", // Add the link property
+      link: "/projectlistinmanager",
     },
     {
       label: "Contract",
       key: "menu-key/14",
       icon: <AuditOutlined />,
       className: "contract",
-      link: "/listcontract", // Add the link property
+      link: "/listcontract",
     },
-
     {
       label: "Company",
       key: "menu-key/15",
       icon: <BankOutlined />,
       className: "company",
-      link: "/listcompanyPartner", // Add the link property
+      link: "/listcompanyPartner",
+    },
+
+    {
+      label: "Report",
+      key: "menu-key/16",
+      icon: <HighlightOutlined />,
+      className: "report",
+      link: "/listreportinmanager", // Add the link property
+    },
+
+    {
+      label: "Transaction History",
+      key: "menu-key/17",
+      icon: <TransactionOutlined />,
+      className: "transactionHistory",
+      link: "/listtransactionhistory", // Add the link property
     },
   ];
 
@@ -171,7 +183,6 @@ const SiderBarWeb = ({ choose }) => {
       <Menu
         className="mt-4"
         style={{ border: "0px" }}
-        //"menu-key/10"
         defaultSelectedKeys={[choose]}
         selectedKeys={selectedKeys}
         mode="inline"
@@ -187,18 +198,7 @@ const SiderBarWeb = ({ choose }) => {
             >
               {item.children.map((child) => (
                 <Menu.Item key={child.key}>
-                  {child.label === "Manager" && (
-                    <Link to="/listAccountManager">{child.label}</Link>
-                  )}
-                  {child.label === "Staff" && (
-                    <Link to="/listAccountStaff">{child.label}</Link>
-                  )}
-                  {child.label === "Human Resource" && (
-                    <Link to="/listAccountHR">{child.label}</Link>
-                  )}
-                  {child.label === "Developer" && (
-                    <Link to="/listAccountDeveloper">{child.label}</Link>
-                  )}
+                  <Link to={child.link}>{child.label}</Link>
                 </Menu.Item>
               ))}
             </Menu.SubMenu>
