@@ -209,16 +209,16 @@ const CreateHiringRequest = () => {
             hiringRequestSaved.salaryPerDev;
           console.log(hiringRequestSaved.salaryPerDev);
           localStorage.setItem("requestId", hiringRequestSaved.requestId);
-          var parts = hiringRequestSaved.duration.split('-');
-      if (parts.length === 3) {
-        var day = parts[1];
-        var month = parts[0];
-        var year = parts[2];
-        // Format the date as "yyyy-dd-mm"
-        var formattedDuration = year + '-' + day + '-' + month;
-      } else {
-        console.error("Invalid date format");
-      }
+          var parts = hiringRequestSaved.duration.split("-");
+          if (parts.length === 3) {
+            var day = parts[1];
+            var month = parts[0];
+            var year = parts[2];
+            // Format the date as "yyyy-dd-mm"
+            var formattedDuration = year + "-" + day + "-" + month;
+          } else {
+            console.error("Invalid date format");
+          }
           const editor = window.tinymce.get("description"); // Giả sử 'description' là id của Editor
           if (editor) {
             editor.setContent(hiringRequestSaved.jobDescription);
@@ -266,6 +266,7 @@ const CreateHiringRequest = () => {
         const activeTypes = response2.data.data.filter(
           (type) => type.statusString === "Active"
         );
+
         if (hiringRequestSaved) {
           const requiredTypeName = hiringRequestSaved.typeRequireName;
           const foundType = activeTypes.find(
@@ -394,7 +395,6 @@ const CreateHiringRequest = () => {
           setLevelError(null);
         }
 
-
         if (!selectedOptions5.value) {
           setEmploymentTypeError(
             "Please select the employment type requirement."
@@ -491,7 +491,7 @@ const CreateHiringRequest = () => {
                 levelRequireId,
                 skillIds,
                 isSaved,
-                employmentTypeId,
+                employmentTypeId
               );
               console.log("Job saved posted successfully:", response);
             } else {
@@ -1146,8 +1146,8 @@ const CreateHiringRequest = () => {
             </div>
           </div>
         </div>
-      </section >
-    </React.Fragment >
+      </section>
+    </React.Fragment>
   );
 };
 

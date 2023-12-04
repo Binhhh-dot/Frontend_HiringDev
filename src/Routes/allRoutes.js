@@ -23,6 +23,7 @@ import JobGrid2 from "../pages/Jobs/JobGrid2/JobGrid2";
 import JobDetails from "../pages/Jobs/JobDetails/JobDetails";
 import JobsCategories from "../pages/Jobs/JobsCategories/JobsCategories";
 import ProjectList from "../pages/Jobs/ProjectList/ProjectList";
+import ProjectListNew from "../pages/Jobs/ProjectListNew/ProjectList";
 //Candidate and Company Section
 
 import CreateStaffAccount from "../pages/CandidateAndCompany/CreateStaffAccount/CreateStaffAcount";
@@ -170,6 +171,10 @@ const userRoutes = [
   {
     path: "/projectlist",
     component: <ProjectList />,
+  },
+  {
+    path: "/projectlistnew",
+    component: <ProjectListNew />,
   },
   {
     path: "/projectdetailhr",

@@ -117,7 +117,7 @@ const ProjectListInManager = () => {
       );
       console.log(response.data.data);
       tmp = response.data.data.filter(
-        (developer) => developer.statusString == "Inprogress"
+        (developer) => developer.statusString == "In process"
       );
       setProjectListInprogress(tmp);
       setTotalPagesInprogress(Math.ceil(tmp.length / pageSizeInprogress));
@@ -756,8 +756,8 @@ const ProjectListInManager = () => {
                                                   "cancelled"
                                                 ? "badge bg-danger text-light fs-12"
                                                 : projectListDetail.statusString ===
-                                                  "Inprogress"
-                                                ? "badge bg-primary text-light fs-12"
+                                                  "In process"
+                                                ? "badge bg-blue text-light fs-12"
                                                 : projectListDetail.statusString ===
                                                   "completed"
                                                 ? "badge bg-primary text-light fs-12"
@@ -922,8 +922,8 @@ const ProjectListInManager = () => {
                                                     "cancelled"
                                                   ? "badge bg-danger text-light fs-12"
                                                   : projectListDetail.statusString ===
-                                                    "Inprogress"
-                                                  ? "badge bg-primary text-light fs-12"
+                                                    "In process"
+                                                  ? "badge bg-blue text-light fs-12"
                                                   : projectListDetail.statusString ===
                                                     "completed"
                                                   ? "badge bg-primary text-light fs-12"
@@ -1092,8 +1092,8 @@ const ProjectListInManager = () => {
                                                     "cancelled"
                                                   ? "badge bg-danger text-light fs-12"
                                                   : projectListDetail.statusString ===
-                                                    "Inprogress"
-                                                  ? "badge bg-primary text-light fs-12"
+                                                    "In process"
+                                                  ? "badge bg-blue text-light fs-12"
                                                   : projectListDetail.statusString ===
                                                     "completed"
                                                   ? "badge bg-primary text-light fs-12"
@@ -1262,8 +1262,8 @@ const ProjectListInManager = () => {
                                                     "cancelled"
                                                   ? "badge bg-danger text-light fs-12"
                                                   : projectListDetail.statusString ===
-                                                    "Inprogress"
-                                                  ? "badge bg-primary text-light fs-12"
+                                                    "In process"
+                                                  ? "badge bg-blue text-light fs-12"
                                                   : projectListDetail.statusString ===
                                                     "completed"
                                                   ? "badge bg-primary text-light fs-12"
@@ -1432,8 +1432,8 @@ const ProjectListInManager = () => {
                                                     "cancelled"
                                                   ? "badge bg-danger text-light fs-12"
                                                   : projectListDetail.statusString ===
-                                                    "Inprogress"
-                                                  ? "badge bg-primary text-light fs-12"
+                                                    "In process"
+                                                  ? "badge bg-blue text-light fs-12"
                                                   : projectListDetail.statusString ===
                                                     "completed"
                                                   ? "badge bg-primary text-light fs-12"
