@@ -1273,7 +1273,7 @@ const ListAccountDeveloper = () => {
             onOk={handleOk}
             onCancel={handleCancel}
             footer={null}
-            width={700}
+            // width={700}
             style={{
               alignItems: "center",
               justifyContent: "center",
