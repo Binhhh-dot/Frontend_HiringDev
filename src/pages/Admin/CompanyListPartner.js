@@ -473,17 +473,15 @@ const CompanyListPartner = () => {
                                 <Col md={2}>
                                   <div style={{ cursor: "pointer" }}>
                                     <h5 className="fs-18 mb-0">
-                                      <div
-                                        onClick={() =>
-                                          midleSelect(listCompanyNew.companyId)
-                                        }
+                                      <Link
+                                        to="/listcompanyPartnerdetail"
                                         className="text-dark"
                                         state={{
                                           companyId: listCompanyNew.companyId,
                                         }}
                                       >
                                         {listCompanyNew.companyName}
-                                      </div>
+                                      </Link>
                                     </h5>
                                     <p className="text-muted fs-14 mb-0">
                                       {" "}
