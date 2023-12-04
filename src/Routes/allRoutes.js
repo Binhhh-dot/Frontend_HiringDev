@@ -93,6 +93,11 @@ import NewHiringRequestDetail from "../pages/Admin/NewHiringRequestDetail";
 import ProjectDetail from "../pages/Admin/ProjectDetail";
 import SideBarManager from "../pages/Admin/SideBarManager";
 
+//
+import ManageLevel from "../pages/Admin/Info/ManageLevel";
+import ManageSkill from "../pages/Admin/Info/ManageSkill";
+import ManageType from "../pages/Admin/Info/ManageType";
+
 //Admin Management
 import ListAccountHR from "../pages/Admin/ListAccountHR";
 import ListAccountManager from "../pages/Admin/ListAccountManager";
@@ -242,6 +247,12 @@ const authRoutes = [
   { path: "/newlistinterview", component: <NewListInterviewInfo /> },
   { path: "/projectlistinmanager", component: <ProjectListInManager /> },
   { path: "/listcontract", component: <ContractList /> },
+  { path: "/manageLevel", component: <ManageLevel /> },
+  { path: "/manageSkill", component: <ManageSkill /> },
+  { path: "/manageType", component: <ManageType /> },
+
+
+
 ];
 
 export { userRoutes, authRoutes };
