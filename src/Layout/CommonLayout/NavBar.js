@@ -313,6 +313,18 @@ const NavBar = (props) => {
                               >
                                 Create new project
                               </Link>
+                              <Link
+                                className="dropdown-item"
+                                to="/reportList"
+                              >
+                                Report List
+                              </Link>
+                              <Link
+                                className="dropdown-item"
+                                to="/contractListHr"
+                              >
+                                Contract List
+                              </Link>
                             </Col>
                           </>
                         )}

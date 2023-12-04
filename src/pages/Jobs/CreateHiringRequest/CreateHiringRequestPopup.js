@@ -13,13 +13,12 @@ import hiringRequestService from "../../../services/hiringrequest.service";
 import employmentTypeServices from "../../../services/employmentType.services";
 import { Editor } from "@tinymce/tinymce-react";
 import companyServices from "../../../services/company.services";
-import jobPositionServices from "../../../services/jobPosition.services";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import userSerrvices from "../../../services/user.serrvices";
 
 const CreateHiringRequestPopup = (
-    { isModalOpen, closeModal, requestId, jobPositionId },
+    { isModalOpen, closeModal, requestId },
     ...props
 ) => {
 
@@ -206,33 +205,6 @@ const CreateHiringRequestPopup = (
 
         } catch (error) {
             console.error("Error:", error);
-        }
-        try {
-            const queryParams = new URLSearchParams(location.search);
-            const projectId = queryParams.get("Id");
-            const response6 = await jobPositionServices.getJobPostionByProjectId(projectId);
-            const activeJobposition = response6.data.data.filter(
-                (jobPosition) => jobPosition.statusString === "Active"
-            );
-            if (jobPositionId) {
-                const foundJobPosition = activeJobposition.find(
-                    (jobPosition) => jobPosition.jobPositionId === jobPositionId
-                );
-                if (foundJobPosition) {
-                    const newJobPosition = {
-                        value: foundJobPosition.jobPositionId.toString(),
-                        label: foundJobPosition.positionName,
-                    };
-                    setSelectedOptions6(newJobPosition);
-                }
-            }
-            let formattedJobPosotion = activeJobposition.map((type) => ({
-                value: type.jobPositionId.toString(),
-                label: type.positionName,
-            }));
-            setOptions6(formattedJobPosotion);
-        } catch (error) {
-            console.error("Error fetching levels:", error);
         }
         try {
             const response = await skillService.getAllSkill();
@@ -458,17 +430,14 @@ const CreateHiringRequestPopup = (
                         const typeRequireId = selectedOptions2.value; // replace with actual value from the type dropdown
                         const levelRequireId = selectedOptions3.value; // replace with actual value from the level dropdown
                         const employmentTypeId = selectedOptions5.value;
-                        const jobPositionSelectedId = selectedOptions6.value;
                         const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
                         const isSaved = false;
-                        const requestIdState = null;
-                        const projectIdState = null;
-                        const jobPositionIdState = null;
-
+                        const queryParams = new URLSearchParams(location.search);
+                        const projectId = queryParams.get("Id");
                         if (requestId) {
                             const response = await hiringRequestService.updateHiringRequest(
                                 requestId,
-                                jobPositionSelectedId,
+                                projectId,
                                 jobTitle,
                                 jobDescription,
                                 numberOfDev,
@@ -484,7 +453,7 @@ const CreateHiringRequestPopup = (
                         } else {
                             const response = await hiringRequestService.createHiringRequest(
                                 companyIdErr,
-                                jobPositionSelectedId,
+                                projectId,
                                 jobTitle,
                                 jobDescription,
                                 numberOfDev,
@@ -521,7 +490,6 @@ const CreateHiringRequestPopup = (
     const handleSavePostJob = async () => {
         // Kiểm tra xem có userID trong localStorage không
         const userId = localStorage.getItem("userId");
-        const jobPositionIdState = location.state?.jobPositionId || null;
         const companyIdErr = localStorage.getItem("companyId");
         const checkVali = true;
         if (!userId) {
@@ -569,17 +537,16 @@ const CreateHiringRequestPopup = (
                     const employmentTypeId = selectedOptions5.value
                         ? selectedOptions5.value
                         : null;
-                    const jobPositionSelectedId = selectedOptions6.value
-                        ? selectedOptions6.value
-                        : null;
                     const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
                     const isSaved = true;
                     // const requestIdState = location.state?.requestId || null;
+                    const queryParams = new URLSearchParams(location.search);
+                    const projectId = queryParams.get("Id");
 
                     if (requestId) {
                         const response = await hiringRequestService.updateHiringRequest(
                             requestId,
-                            jobPositionSelectedId,
+                            projectId,
                             jobTitle,
                             jobDescription,
                             numberOfDev,
@@ -591,11 +558,12 @@ const CreateHiringRequestPopup = (
                             isSaved,
                             employmentTypeId
                         );
-                        console.log("Save posted successfully:", response);
+                        toast.success('Save hiring request successfully!');
+                        console.log("Save hiring request successfully:", response);
                     } else {
                         const response = await hiringRequestService.createHiringRequest(
                             companyIdErr,
-                            jobPositionSelectedId,
+                            projectId,
                             jobTitle,
                             jobDescription,
                             numberOfDev,
@@ -627,7 +595,7 @@ const CreateHiringRequestPopup = (
     useEffect(() => {
         console.log(minDateDuration)
         fetchData();
-    }, [isModalOpen, requestId, jobPositionId]);
+    }, [isModalOpen, requestId]);
 
 
     return (
@@ -699,22 +667,6 @@ const CreateHiringRequestPopup = (
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">
-                                                            Job Position
-                                                        </label>
-                                                        <div className="form-button">
-                                                            <Select
-                                                                options={options6}
-                                                                value={selectedOptions6}
-                                                                onChange={handleChange6}
-                                                                className="Select Select--level-highest2"
-                                                            />
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group app-label mt-2">
                                                         <label class="text-muted">Salary per dev (VND)</label>
                                                         <input
                                                             id="budget"
@@ -728,7 +680,7 @@ const CreateHiringRequestPopup = (
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-3">
+                                                <div class="col-md-6">
                                                     <div class="form-group app-label mt-2">
                                                         <label class="text-muted">Duration</label>
                                                         <input

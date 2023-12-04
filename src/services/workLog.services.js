@@ -7,9 +7,9 @@ const getWorkLogByPaySlipId = async (paySlipId) => {
     return response
 }
 
-const updateWorkLog = async (workLogId, timeIn, timeOut) => {
+const updateWorkLog = async (workLogId, timeIn, timeOut, isPaidLeave) => {
     const serviceUrl = urlConstant.endpoint.workLog.updateWorkLog;
-    const response = await utils.axiosLocalHost.put(serviceUrl, { workLogId, timeIn, timeOut })
+    const response = await utils.axiosLocalHost.put(serviceUrl, { workLogId, timeIn, timeOut, isPaidLeave })
     return response
 }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Button, Col, Collapse, Input, Label, Row } from "reactstrap";
+import { Button, Col, Collapse, Input, Label, Row, FormGroup, Card, CardBody } from "reactstrap";
 import axios from "axios";
 import Select from "react-select";
 import JobType from "../../Home/SubSection/JobType";
@@ -10,16 +10,23 @@ import projectServices from "../../../services/project.services";
 import projectTypeServices from "../../../services/projectType.services";
 import ProjectType from "../../Home/SubSection/ProjectType";
 import { Empty } from 'antd';
+import reportServices from "../../../services/report.services";
+import { Modal as AntdModal } from "antd";
+import img0 from "../../../assets/images/user/img-00.jpg";
+import contractServices from "../../../services/contract.services";
+import { useNavigate } from "react-router-dom";
 
-const ProjectVacancyList = (a) => {
+const ContractVacncyList = (a) => {
     //Apply Now Model
     const [jobVacancyList, setJobVacancyList] = useState([]);
-    const [toggleThird, setToggleThird] = useState(false);
-    const [toggleFifth, setToggleFifth] = useState(false);
     const [toggleSecond, setToggleSecond] = useState(true);
     const [statuses, setStatuses] = useState(0);
+    const [showPopup, setShowPopup] = useState(false);
+    const [selectReportDetail, setSelectReportDetail] = useState({});
+    const [projectDetail, setProjectDetail] = useState({});
+    const [devInterviewDetail, setDevInterviewDetail] = useState([]);
 
-
+    const navigate = useNavigate();
     const [options, setOptions] = useState([]);
 
 
@@ -59,9 +66,9 @@ const ProjectVacancyList = (a) => {
 
     const liststatuses = [
         { label: 'All', value: 0 },
-        { label: 'Preparing', value: 1 },
-        { label: 'InProcess', value: 2 },
-        { label: 'Closed', value: 3 },
+        { label: 'Pending', value: 1 },
+        { label: 'Signed', value: 2 },
+        { label: 'Failed', value: 3 },
     ];
     let [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -89,9 +96,9 @@ const ProjectVacancyList = (a) => {
                     key={i}
                     className={`page-item ${i === currentPage ? "active" : ""}`}
                 >
-                    <Link className="page-link" to="#" onClick={() => handlePageClick(i)}>
+                    <div className="page-link" onClick={() => handlePageClick(i)}>
                         {i}
-                    </Link>
+                    </div>
                 </li>
             );
         }
@@ -121,21 +128,16 @@ const ProjectVacancyList = (a) => {
         let response;
         const companyId = localStorage.getItem("companyId");
         try {
-            const projectType = skill ? skill.value : "";
-            const inputSearch = search;
             let status = "";
-            console.log(statuses)
             if (statuses != 0) {
                 status = statuses;
             }
-            console.log(status)
-
-            response = await projectServices.getAllProjectByCompanyIdAndPaging(companyId, currentPage, pageSize, projectType, inputSearch, status)
+            const inputSearch = search;
+            response = await contractServices.getListContractByCompanyIdAndPaging(companyId, currentPage, pageSize, inputSearch, status)
                 ;
-            console.log(response.data);
+
             setJobVacancyList(response.data.data);
-            console.log(response.data.paging.total)
-            console.log(pageSize)
+
             setTotalPages(Math.ceil(response.data.paging.total / pageSize));
             console.log(totalPages)
         } catch (error) {
@@ -143,10 +145,28 @@ const ProjectVacancyList = (a) => {
         }
     };
 
-    useEffect(() => {
-        fetchJobVacancies();
-    }, [statuses]);
 
+    const fetchDetailReport = async (reportId) => {
+        let response;
+        try {
+            response = await reportServices.getReportById(reportId);
+            console.log(response.data);
+            setSelectReportDetail(response.data.data);
+        } catch (error) {
+            console.error("Error fetching job vacancies:", error);
+        }
+    };
+
+    const fetchDetailProject = async (projectId) => {
+        let response;
+        try {
+            response = await projectServices.getProjectDetailByProjectId(projectId);
+            console.log(response.data);
+            setProjectDetail(response.data.data);
+        } catch (error) {
+            console.error("Error fetching job vacancies:", error);
+        }
+    };
 
     const setSkillValue = (selectedOption) => {
         if (!selectedOption) {
@@ -162,12 +182,19 @@ const ProjectVacancyList = (a) => {
 
     useEffect(() => {
         fetchJobVacancies();
-    }, [skill]);
+    }, [statuses]);
 
 
     const onSearch = () => {
         setCurrentPage(1);
         fetchJobVacancies();
+    };
+
+    const openDetailContract = (contractId) => {
+        const state = {
+            contractId: contractId,
+        };
+        navigate("/contractDetailHr", { state });
     };
 
     //Set initial state  for showFulSkill using object id
@@ -185,10 +212,16 @@ const ProjectVacancyList = (a) => {
         }));
     };
 
+    const midleSelect = (developerId, projectId, hiredDeveloperId) => {
+        fetchDetailReport(developerId);
+        fetchDetailProject(projectId);
+        setShowPopup(true);
+    };
+
     return (
         <React.Fragment>
             <Row>
-                <Col lg={9}>
+                <Col lg={10}>
                     <div className="job-list-header">
                         <Form action="#">
                             <Row className="g-2">
@@ -199,28 +232,10 @@ const ProjectVacancyList = (a) => {
                                             type="search"
                                             className="form-control filter-input-box"
                                             id="exampleFormControlInput1"
-                                            placeholder="Project name/ Project code... "
+                                            placeholder="Contract code... "
                                             style={{ marginTop: "-10px" }}
                                             value={search}
                                             onChange={(e) => setSearch(e.target.value)}
-                                        />
-                                    </div>
-                                </Col>
-
-                                <Col lg={5} md={6}>
-                                    <div className="filler-job-form">
-                                        <i className="uil uil-clipboard-notes"></i>
-                                        <Select
-                                            options={options}
-                                            styles={colourStyles}
-                                            className="selectForm__inner"
-                                            name="choices-single-categories"
-                                            id="choices-single-categories"
-                                            aria-label="Default select example"
-                                            value={skill}
-                                            onChange={setSkillValue}
-                                            isClearable
-                                            placeholder="Select project type..."
                                         />
                                     </div>
                                 </Col>
@@ -236,89 +251,134 @@ const ProjectVacancyList = (a) => {
                         {jobVacancyList.length > 0 ? (
                             <>
                                 {jobVacancyList.map((jobVacancyListDetails, key) => (
-                                    <Link
+                                    <div
                                         key={key}
                                         className={
-                                            "job-box card mt-4"
+                                            " card mt-4"
                                         }
-                                        to={`/projectdetailhr?Id=${jobVacancyListDetails.projectId}`}
+                                        onClick={() => openDetailContract(jobVacancyListDetails.contractId)}
 
                                     >
-                                        <div className="p-4">
+                                        <div className="p-4" style={{ color: "black" }}>
                                             <Row className="align-items-center">
-                                                <Col md={2}>
-                                                    <div>
-                                                        <div >
-                                                            <img
-                                                                style={{
-                                                                    width: "80px",
-                                                                    height: "80px",
-                                                                }}
-                                                                src={jobVacancyListDetails.companyImage}
-                                                                alt=""
-                                                                className="img-fluid rounded-3 img-avt-hiring-request"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </Col>
-
-                                                <Col md={3} className="px-0">
-                                                    <div>
-                                                        <h5 className="fs-18 mb-0">
-                                                            <Link
-                                                                to={`/projectdetailhr?Id=${jobVacancyListDetails.projectId}`}
-                                                                className="text-dark"
-                                                            >
-                                                                {jobVacancyListDetails.projectName}
-                                                            </Link>
-                                                        </h5>
-                                                        <p className="text-muted fs-14 mb-0">
-                                                            {jobVacancyListDetails.projectCode}
-                                                        </p>
+                                                <Col md={1}>
+                                                    <div className="d-flex justify-content-center">
+                                                        <i
+                                                            className="uil uil-file-plus-alt"
+                                                            style={{ fontSize: "50px" }}
+                                                        ></i>
                                                     </div>
                                                 </Col>
 
                                                 <Col md={3}>
-                                                    <div className="d-flex mb-2">
-                                                        <div className="flex-shrink-0">
-                                                            <i className="uil uil-user-check text-primary me-1"></i>
-                                                        </div>
-                                                        <p className="text-muted mb-0">
-                                                            {jobVacancyListDetails.numberOfDev}
-                                                        </p>
-                                                    </div>
-                                                </Col>
-
-                                                <Col md={2}>
-                                                    <div className="d-flex mb-0">
-                                                        <div className="flex-shrink-0">
-                                                            <i className="uil uil-clock-three text-primary me-1"></i>
-                                                        </div>
-                                                        <p className="text-muted mb-0">
-                                                            {" "}
-                                                            {jobVacancyListDetails.postedTime}
-                                                        </p>
-                                                    </div>
-                                                </Col>
-
-                                                <Col md={2}>
                                                     <div>
+                                                        <h5 className="fs-18 mb-0">
+                                                            <div
+                                                            >
+                                                                {
+                                                                    jobVacancyListDetails.contractCode
+                                                                }
+                                                            </div>
+                                                        </h5>
+                                                        <p className="text-muted fs-14 mb-0">
+                                                            {
+                                                                jobVacancyListDetails.companyPartnerName
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                </Col>
+
+                                                <Col md={2}>
+                                                    <div className="d-flex flex-column gap-1 justify-content-center">
+                                                        <div>
+                                                            <p className="text-muted mb-0 fs-13">
+                                                                Create at
+                                                            </p>
+                                                            <p
+                                                                className="mb-0 fs-17"
+                                                                style={{ fontWeight: "600" }}
+                                                            >
+                                                                {jobVacancyListDetails.createdAt}
+                                                            </p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-muted mb-0 fs-13">
+                                                                Human resource
+                                                            </p>
+                                                            <p
+                                                                className="mb-0 fs-17"
+                                                                style={{ fontWeight: "600" }}
+                                                            >
+                                                                {
+                                                                    jobVacancyListDetails.humanResourceName
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+
+                                                <Col md={2}>
+                                                    <div className="d-flex mb-0 align-items-center">
+                                                        <div className="flex-shrink-0">
+                                                            <i
+                                                                className="uil uil-user-check text-primary me-1"
+                                                                style={{ fontSize: "19px" }}
+                                                            ></i>
+                                                        </div>
+                                                        <p className="text-muted mb-0">
+                                                            {
+                                                                jobVacancyListDetails.developerName
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                </Col>
+
+                                                <Col
+                                                    md={2}
+                                                    className="d-flex justify-content-center"
+                                                >
+                                                    <div>
+                                                        <p className="text-muted mb-0 fs-13">
+                                                            Date signed
+                                                        </p>
+                                                        <p
+                                                            className="mb-0 fs-17"
+                                                            style={{ fontWeight: "600" }}
+                                                        >
+                                                            {jobVacancyListDetails.dateSigned}
+                                                        </p>
+                                                    </div>
+                                                </Col>
+
+                                                <Col
+                                                    md={2}
+                                                    className="d-flex justify-content-center"
+                                                >
+                                                    <div className="d-flex align-items-center">
                                                         <span
                                                             className={
-                                                                jobVacancyListDetails.statusString === "Preparing"
+                                                                jobVacancyListDetails.statusString ===
+                                                                    "Pending"
                                                                     ? "badge bg-warning text-light fs-12"
-                                                                    : jobVacancyListDetails.statusString === "In process"
-                                                                        ? "badge bg-blue text-light fs-12"
-                                                                        : ""
+                                                                    : jobVacancyListDetails.statusString ===
+                                                                        "Signed"
+                                                                        ? "badge bg-success text-light fs-12"
+                                                                        : jobVacancyListDetails.statusString ===
+                                                                            "Failed"
+                                                                            ? "badge bg-danger text-light fs-12"
+                                                                            : ""
                                                             }
                                                         >
-                                                            {jobVacancyListDetails.statusString}
+                                                            {
+                                                                jobVacancyListDetails.statusString
+                                                            }
                                                         </span>
                                                     </div>
                                                 </Col>
                                             </Row>
                                         </div>
-                                    </Link>
+
+                                    </div>
                                 ))}
                             </>
                         ) : (
@@ -335,23 +395,22 @@ const ProjectVacancyList = (a) => {
                                             <li
                                                 className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
                                             >
-                                                <Link
+                                                <div
                                                     className="page-link"
-                                                    to="#"
                                                     tabIndex="-1"
                                                     onClick={handlePrevPage}
                                                 >
                                                     <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                                </Link>
+                                                </div>
                                             </li>
                                             {renderPageNumbers()}
                                             <li
                                                 className={`page-item ${currentPage === totalPages ? "disabled" : ""
                                                     }`}
                                             >
-                                                <Link className="page-link" to="#" onClick={handleNextPage}>
+                                                <div className="page-link" onClick={handleNextPage}>
                                                     <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                                </Link>
+                                                </div>
                                             </li>
                                         </div>
                                     </nav>
@@ -361,7 +420,7 @@ const ProjectVacancyList = (a) => {
                     )}
 
                 </Col>
-                <Col lg={3}>
+                <Col lg={2}>
                     <div className="side-bar mt-5 mt-lg-0">
                         <div className="accordion" id="accordionExample">
                             <div className="accordion-item ">
@@ -375,7 +434,7 @@ const ProjectVacancyList = (a) => {
                                         role="button"
                                         id="collapseExample"
                                     >
-                                        Status project
+                                        Status contract
                                     </Button>
                                 </h2>
                                 <Collapse isOpen={toggleSecond}>
@@ -402,25 +461,6 @@ const ProjectVacancyList = (a) => {
                                     </div>
                                 </Collapse>
                             </div>
-                            {/* <div className="accordion-item mt-3">
-                                <h2 className="accordion-header" id="tagCloud">
-                                    <Button
-                                        className="accordion-button"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            setToggleFifth(!toggleFifth);
-                                        }}
-                                        role="button"
-                                        id="collapseExample"
-                                    >
-                                        Duration
-                                    </Button>
-                                </h2>
-                            </div>
-                            <div className="mt-3 date-hiring-request">
-                                <input type="date" id="datepicker" />
-                                <p id="selectedDate"></p>
-                            </div> */}
                         </div>
                     </div>
                 </Col>
@@ -431,4 +471,4 @@ const ProjectVacancyList = (a) => {
     );
 };
 
-export default ProjectVacancyList;
+export default ContractVacncyList;

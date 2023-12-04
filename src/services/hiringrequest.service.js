@@ -3,7 +3,7 @@ import utils from "../utils/customAxios";
 
 const createHiringRequest = async (
   companyId,
-  jobPositionId,
+  projectId,
   jobTitle,
   jobDescription,
   numberOfDev,
@@ -18,7 +18,7 @@ const createHiringRequest = async (
   const serviceUrl = urlConstant.endpoint.hiringRequest.createHiringRequest;
   const response = await utils.axiosLocalHost.post(serviceUrl, {
     companyId,
-    jobPositionId,
+    projectId,
     jobTitle,
     jobDescription,
     numberOfDev,
@@ -35,7 +35,7 @@ const createHiringRequest = async (
 
 const updateHiringRequest = async (
   requestId,
-  jobPositionId,
+  projectId,
   jobTitle,
   jobDescription,
   numberOfDev,
@@ -54,7 +54,7 @@ const updateHiringRequest = async (
     );
   const response = await utils.axiosLocalHost.put(serviceUrl, {
     requestId,
-    jobPositionId,
+    projectId,
     jobTitle,
     jobDescription,
     numberOfDev,
@@ -361,6 +361,41 @@ const getHiringRequestByProjectId = async (projectId) => {
   return response;
 };
 
+const getAllHiringRequestByProjectIdAndPaging = async (
+  projectId, pageIndex, pageSize, skillSearch, levelSearch, typeSearch, inputSearch, statusSearch
+) => {
+  const values = skillSearch.map(value => `&SkillIds=${value}`);
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getAllHiringRequestByProjectIdAndPaging
+      .replace("${projectId}", projectId)
+      .replace("${PageIndex}", pageIndex)
+      .replace("${PageSize}", pageSize)
+      .replace("${searchKeyString}", inputSearch)
+      .replace("${TypeRequireId}", typeSearch)
+      .replace("${LevelRequireId}", levelSearch)
+      .replace("${Status}", statusSearch)
+    + values.join('');
+  console.log(serviceUrl)
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+}
+
+
+const closeHiringRequest = async (
+  requestId,
+  rejectionReason,
+  isCompanyPartner
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.closeHirringRequestStatus;
+  const response = await utils.axiosLocalHost.put(serviceUrl, {
+    requestId,
+    rejectionReason,
+    isCompanyPartner,
+  });
+  return response;
+};
+
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -382,4 +417,6 @@ export default {
   cancelHirringRequestStatusAfter,
   getHiringRequestByProjectIdAndPaging,
   getHiringRequestByProjectId,
+  getAllHiringRequestByProjectIdAndPaging,
+  closeHiringRequest
 };

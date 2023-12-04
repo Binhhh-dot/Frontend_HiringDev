@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import Section from "../ProjectListNew/Section";
+import Section from "../ReportList/Section";
 import { useNavigate } from "react-router-dom";
-import ProjectVacancyList from "./ProjectVacancyList";
+import ReportVacancyList from "./ReportVacancyList";
 
-const ProjectList = () => {
+const ReportList = () => {
     document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
     const navigate = useNavigate();
     return (
@@ -15,8 +15,8 @@ const ProjectList = () => {
                     <Row>
                         <Col lg={12}>
                             <div className="me-lg-6">
-                                <h3>Project List</h3>
-                                <ProjectVacancyList></ProjectVacancyList>
+                                <h3>Report List</h3>
+                                <ReportVacancyList></ReportVacancyList>
                             </div>
                         </Col>
                     </Row>
@@ -26,4 +26,4 @@ const ProjectList = () => {
     );
 };
 
-export default ProjectList;
+export default ReportList;

@@ -69,6 +69,8 @@ export default {
       getAllHiringRequestByProjectId:
         "/HiringRequest/ByProject?projectId=${projectId}",
       updateHiringRequest: "/HiringRequest?requestId=${requestId}",
+      getAllHiringRequestByProjectIdAndPaging: "/HiringRequest/ByProject?projectId=${projectId}&PageIndex=${PageIndex}&PageSize=${PageSize}&searchKeyString=${searchKeyString}&TypeRequireId=${TypeRequireId}&LevelRequireId=${LevelRequireId}&Status=${Status}",
+      closeHirringRequestStatus: "/HiringRequestStatus/Closed",
     },
 
     selectingDeveloper: {
@@ -108,10 +110,11 @@ export default {
         "PageIndex=${currentPage}&PageSize=${pageSize}",
       changeStatusDevUnofficialInTaskDetailForStaff:
         "/AssignTask/ChangeStatusDevTask",
-      getListDeveloperOnboardByProjectId: "/Developer/ByProject/${projectId}",
+      getListDeveloperOnboardByProjectId: "/Developer/ByProject?ProjectId=${projectId}",
       updateDeveloperByAdmin: "/Developer/ByAdmin/${developerId}",
       deleteDeveloper: "",
       getDeveloperMatchingInManager: "/Developer/DevMatching/${requestId}",
+      getDeveloperDetailByDevId: "/Developer/${developerId}",
       getDeveloperByDevId: "/Developer/${devId}",
     },
     interview: {
@@ -181,8 +184,7 @@ export default {
       getDeveloperByProject:
         "/Developer/ByProject/${projectId}?status=${status}",
       updateProject: "/Project/${projectId}",
-      getAllProjectByCompanyIdAndPaging:
-        "/Project/ByCompany/${companyId}?PageIndex={PageIndex}&PageSize={PageSize}",
+      getAllProjectByCompanyIdAndPaging: "/Project/ByCompany/${companyId}?PageIndex={PageIndex}&PageSize={PageSize}&searchKeyString=${searchKeyString}&ProjectTypeId=${ProjectTypeId}&Status=${Status}",
     },
     contract: {
       getContract: "/Contract",
@@ -192,6 +194,7 @@ export default {
       postContract: "/Contract",
       getContractById: "/Contract/${contractId}",
       confirmContract: "/Contract/ConfirmSigned?contractId=${contractId}",
+      getListContractByCompanyIdAndPaging: "/Contract/ByCompany?companyId=${companyId}&PageIndex=${PageIndex}&PageSize=${PageSize}&ContractCode=${ContractCode}&Status=${Status}",
     },
     pay: {
       getPayPeriod: "/PayPeriod/${projectId}?inputDate=${inputDate}",
@@ -221,6 +224,7 @@ export default {
     },
     paySlip: {
       getPaySlipByPayPeriodId: "PaySlip/ByPayPeriod/${payPeriodId}",
+      updateTotalOTPaySlip: "PaySlip"
     },
     workLog: {
       getWorkLogByPaySlipId: "/WorkLog/ByPaySlip/${paySlipId}",
@@ -236,18 +240,21 @@ export default {
         "/Payment/Execute?paymentId=${paymentId}&payerId=${payerId}",
     },
     hiredDev: {
+      getListDeveloperInRequestByRequestId: "/HiredDeveloper/DevelopersInRequest/${requestId}",
       getSelectedDevByManager:
         "/HiredDeveloper/DevelopersInRequest/${requestId}",
       sendDevToHRNew: "/HiredDeveloper/SendDevToHR",
       kickDevInProject:
         "/HiredDeveloper/TerminateFromProject?projectId=${projectId}&developerId=${developerId}",
     },
-
     report: {
+      getReportType: "/ReportType",
+      createReport: "/Report",
       getReportList: "/Report?PageIndex=${PageIndex}&PageSize=${PageSize}",
       getReportById: "/Report/${reportId}",
       handleRelyReport: "/Report/Reply",
       handleConfirmReport: "/Report/Confirm/${reportId}",
+      getReportListByCompanyIdAndPaging: "/Report/ByCompany/${companyId}?PageIndex=${PageIndex}&PageSize=${PageSize}&ReportTitle=${searchKeyString}&Status=${Status}",
     },
     transactionHistory: {
       getTransactionHistory:
