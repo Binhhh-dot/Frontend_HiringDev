@@ -672,19 +672,6 @@ const ListAccountDeveloper = () => {
     setUserId(developerId);
   };
 
-  const fetchUserDetail = async (developerId) => {
-    try {
-      let response;
-      try {
-        response = await userSerrvices.getDeveloperById(developerId);
-        setHrInfo(response.data.data);
-        console.log(response.data.data);
-      } catch (error) {
-        console.error("Error fetching developer by id:", error);
-      } console.log(response)
-=======
-    //setUserId(developerId);
-  };
 
   //const [developerDetail, setdeveloperDetail] = useState({})
   const fetchUserDetail = async (developerId) => {
