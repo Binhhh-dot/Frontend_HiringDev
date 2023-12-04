@@ -205,6 +205,7 @@ const ManageLevel = () => {
         try {
             await handleDeleteConfirm(levelId);
             setVisibleModal2(false);
+            await fetchManageLevel();
         } catch (error) {
             // Handle any errors that might occur during the deletion process
             console.error("Error deleting user:", error);
