@@ -92,7 +92,8 @@ import Developer from "../pages/Jobs/Developer/Developer";
 import NewHiringRequestDetail from "../pages/Admin/NewHiringRequestDetail";
 import ProjectDetail from "../pages/Admin/ProjectDetail";
 import SideBarManager from "../pages/Admin/SideBarManager";
-
+import CreateReport from "../pages/Jobs/CreateReport/CreateReport";
+import ReportList from "../pages/Jobs/ReportList/ReportList";
 //Admin Management
 import ListAccountHR from "../pages/Admin/ListAccountHR";
 import ListAccountManager from "../pages/Admin/ListAccountManager";
@@ -186,6 +187,14 @@ const userRoutes = [
   {
     path: "/createInterview",
     component: <CreateInterview />,
+  },
+  {
+    path: "/createReport",
+    component: <CreateReport />,
+  },
+  {
+    path: "/reportList",
+    component: <ReportList />,
   },
   {
     path: "/detailInterview",

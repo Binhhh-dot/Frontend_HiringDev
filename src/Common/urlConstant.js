@@ -100,10 +100,11 @@ export default {
         "PageIndex=${currentPage}&PageSize=${pageSize}",
       changeStatusDevUnofficialInTaskDetailForStaff:
         "/AssignTask/ChangeStatusDevTask",
-      getListDeveloperOnboardByProjectId: "/Developer/ByProject/${projectId}",
+      getListDeveloperOnboardByProjectId: "/Developer/ByProject?ProjectId=${projectId}",
       updateDeveloperByAdmin: "/Developer/ByAdmin/${developerId}",
       deleteDeveloper: "",
       getDeveloperMatchingInManager: "/Developer/DevMatching/${requestId}",
+      getDeveloperDetailByDevId: "/Developer/${developerId}"
     },
     interview: {
       createAnInterview: "/Interview",
@@ -234,5 +235,9 @@ export default {
       kickDevInProject:
         "/HiredDeveloper/TerminateFromProject?projectId=${projectId}&developerId=${developerId}",
     },
+    report: {
+      getReportType: "/ReportType",
+      createReport: "/Report",
+    }
   },
 };

@@ -33,14 +33,16 @@ import {
   faAngleRight,
   faAngleLeft,
   faGear,
-  faCircle
+  faCircle,
+  faMobileScreen
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
   faCircleXmark,
   faImage,
   faEnvelope,
-  faCalendar
+  faCalendar,
+
 } from "@fortawesome/free-regular-svg-icons";
 import { Modal as AntdModal, Button as AntdButton } from "antd";
 import "./index.css";
@@ -149,7 +151,7 @@ const ProjectDetailDesciption = () => {
   const [key, setKey] = useState(Date.now());
   const [editableRowId, setEditableRowId] = useState(null);
   const [ediPaySlipRowId, setEdiPaySlipRowId] = useState(null);
-
+  const [idDeveloperReport, setIdDeveloperReport] = useState(null);
   const [dateValue, setDateValue] = useState(new Date());
   const [loadingGenerateExel, setLoadingGenerateExel] = useState(false);
   const [loadingImportExel, setLoadingImportExel] = useState(false);
@@ -344,7 +346,53 @@ const ProjectDetailDesciption = () => {
   ]
 
 
-
+  const profileItems4 = [
+    {
+      key: "1",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => reportDeveloper()}
+        >
+          Report
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          // onClick={() => onUpdateWorkLog()}
+          onClick={() => {
+            AntdModal.confirm({
+              title: 'Confirm delete job position',
+              content: (<div>
+                <p>Are you sure to delete this job position?</p>
+                <p>All activities in the hiring request of this job position will stop</p>
+              </div>),
+              onOk() {
+                // Action when the user clicks OK
+                console.log('Confirmed!');
+              },
+              onCancel() {
+                // Action when the user cancels
+                console.log('Cancelled!');
+              },
+              footer: (_, { OkBtn, CancelBtn }) => (
+                <>
+                  <CancelBtn />
+                  <OkBtn />
+                </>
+              ),
+            });
+          }}
+        >
+          Delete
+        </div>
+      ),
+    },
+  ]
 
   const [showCollapse, setShowCollapse] = useState(Array(payRollDetail.length).fill(false));
 
@@ -379,6 +427,16 @@ const ProjectDetailDesciption = () => {
   const openModal = (candidateInfo) => {
     setSelectedCandidateInfo(candidateInfo);
     setIsModalOpen(true);
+  };
+
+  const reportDeveloper = () => {
+    const queryParams = new URLSearchParams(location.search);
+    const projectId = queryParams.get("Id");
+    const state = {
+      projectId: projectId,
+      developer: idDeveloperReport
+    };
+    navigate("/createReport", { state });
   };
 
   const openModalCreateHiringrequest = (hiringRequestId) => {
@@ -543,7 +601,8 @@ const ProjectDetailDesciption = () => {
     try {
       const queryParams = new URLSearchParams(location.search);
       const projectId = queryParams.get("Id");
-      const response = await developerServices.getListDeveloperOnboardByProjectId(projectId);
+      const status = [8, 9];
+      const response = await developerServices.getListDeveloperOnboardByProjectId(projectId, status);
       console.log("list developer onboard:")
       console.log(response)
       const data = response.data;
@@ -572,11 +631,13 @@ const ProjectDetailDesciption = () => {
           addclassNameBookmark: false,
           label: false,
           skills: dev.skillRequireStrings,
-          selectedDevStatus: dev.selectedDevStatus,
+          hiredDevStatusString: dev.hiredDevStatusString,
           interviewRound: dev.interviewRound,
           userImage: dev.userImage,
           lastWord: lastWord,
           email: dev.email,
+          phoneNumber: dev.phoneNumber,
+
         };
       });
       setDeveloperOnboardList(listDeveloperOnboard);
@@ -1688,7 +1749,7 @@ const ProjectDetailDesciption = () => {
                         {developerOnboardList.map((candidategridDetailsNew, key) => (
                           <Col lg={3} md={6} key={key}>
                             <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
-                              <CardBody className="p-4 dev-accepted mt-4" style={{ borderRadius: "15px" }}>
+                              <CardBody className="p-4 dev-accepted  d-flex flex-column gap-1" style={{ borderRadius: "15px" }}>
                                 <div className="d-flex mb-2 justify-content-between">
                                   <div className="d-flex">
                                     <div
@@ -1724,53 +1785,67 @@ const ProjectDetailDesciption = () => {
                                       </div>
                                       <span
                                         className={
-                                          candidategridDetailsNew.selectedDevStatus ===
+                                          candidategridDetailsNew.hiredDevStatusString ===
                                             "Rejected"
                                             ? "badge bg-danger text-light mb-2"
-                                            : candidategridDetailsNew.selectedDevStatus ===
+                                            : candidategridDetailsNew.hiredDevStatusString ===
                                               "Under Consideration"
                                               ? "badge bg-warning text-light mb-2"
-                                              : candidategridDetailsNew.selectedDevStatus ===
-                                                "Interview Scheduled"
+                                              : candidategridDetailsNew.hiredDevStatusString ===
+                                                "Working"
                                                 ? "badge bg-blue text-light mb-2"
-                                                : candidategridDetailsNew.selectedDevStatus ===
+                                                : candidategridDetailsNew.hiredDevStatusString ===
                                                   "Expired"
                                                   ? "badge bg-danger text-light mb-2"
-                                                  : candidategridDetailsNew.selectedDevStatus ===
+                                                  : candidategridDetailsNew.hiredDevStatusString ===
                                                     "Cancelled"
                                                     ? "badge bg-danger text-light mb-2"
-                                                    : candidategridDetailsNew.selectedDevStatus ===
+                                                    : candidategridDetailsNew.hiredDevStatusString ===
                                                       "Waiting Interview"
                                                       ? "badge bg-warning text-light mb-2"
-                                                      : candidategridDetailsNew.selectedDevStatus ===
+                                                      : candidategridDetailsNew.hiredDevStatusString ===
                                                         "Onboarding"
                                                         ? "badge bg-primary text-light mb-2"
-                                                        : candidategridDetailsNew.selectedDevStatus ===
+                                                        : candidategridDetailsNew.hiredDevStatusString ===
                                                           "Saved"
                                                           ? "badge bg-info text-light mb-2"
                                                           : ""
                                         }
                                       >
-                                        {candidategridDetailsNew.selectedDevStatus} dsad
+                                        {candidategridDetailsNew.hiredDevStatusString}
                                       </span>{" "}
                                     </div>
                                   </div>
-
-                                  <div
-                                    className="list-inline-item"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="top"
-                                    onClick={() => openModal(candidategridDetailsNew)}
-                                    title="View More"
-                                  >
-                                    <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
-                                      <i className="mdi mdi-eye"></i>
+                                  <div className="d-flex gap-1">
+                                    <div
+                                      className="list-inline-item"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"
+                                      onClick={() => openModal(candidategridDetailsNew)}
+                                      title="View More"
+                                    >
+                                      <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
+                                        <i className="mdi mdi-eye"></i>
+                                      </div>
                                     </div>
+                                    <DropdownAntd trigger={['click']}
+                                      onClick={() =>
+                                        setIdDeveloperReport(candidategridDetailsNew)
+                                      }
+                                      menu={{ items: profileItems4 }}>
+                                      <FontAwesomeIcon icon={faEllipsisVertical}
+                                        style={{ fontSize: "24px", color: 'gray', cursor: "pointer" }}
+                                      />
+                                    </DropdownAntd>
                                   </div>
                                 </div>
                                 <div className="d-flex gap-2 align-items-center">
                                   <FontAwesomeIcon icon={faEnvelope} />
                                   {candidategridDetailsNew.email}
+                                </div>
+                                <div className="d-flex gap-2 align-items-center">
+                                  <FontAwesomeIcon icon={faMobileScreen} />
+                                  {candidategridDetailsNew.phoneNumber}
                                 </div>
                               </CardBody>
                             </div>

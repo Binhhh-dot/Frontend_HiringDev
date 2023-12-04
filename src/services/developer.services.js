@@ -103,6 +103,17 @@ const removeOutOfWaitingInterview = async (requestId, devIds) => {
   return response;
 };
 
+
+const getDeveloperDetailByDevId = async (devIds) => {
+  const serviceUrl =
+    urlConstant.endpoint.developer.getDeveloperDetailByDevId
+      .replace("${developerId}", devIds);
+  const response = await utils.axiosLocalHost.get(serviceUrl, {
+    devIds,
+  });
+  return response;
+};
+
 const CreateDeveloperAccount = async (
   firstName,
   lastName,
@@ -189,12 +200,14 @@ const onbardingDeveloper = async (requestId, developerId) => {
   return response;
 };
 
-const getListDeveloperOnboardByProjectId = async (projectId) => {
+const getListDeveloperOnboardByProjectId = async (projectId, status) => {
+  const values = status.map(value => `&Status=${value}`);
   const serviceUrl =
     urlConstant.endpoint.developer.getListDeveloperOnboardByProjectId.replace(
       "${projectId}",
       projectId
-    );
+    ) + values.join('');;
+
   const response = await utils.axiosLocalHost.get(serviceUrl, {
     projectId,
   });
@@ -247,4 +260,5 @@ export default {
   getListDeveloperOnboardByProjectId,
   updateDeveloperByAdmin,
   getDeveloperMatchingInManager,
+  getDeveloperDetailByDevId
 };
