@@ -646,8 +646,8 @@ const ListAccountHR = () => {
                             text === "Active"
                               ? "badge text-bg-success"
                               : text === "OnTasking"
-                              ? "badge bg-warning text-light"
-                              : "badge text-bg-danger"
+                                ? "badge bg-warning text-light"
+                                : "badge text-bg-danger"
                           }
                         >
                           {text}
@@ -673,7 +673,7 @@ const ListAccountHR = () => {
                             />
                           </a>
                           {record.statusString === "Active" ||
-                          record.statusString === "OnTasking" ? (
+                            record.statusString === "OnTasking" ? (
                             <a
                               onClick={(event) => {
                                 handleDeleteClick(record.userId);
