@@ -114,7 +114,7 @@ export default {
       updateDeveloperByAdmin: "/Developer/ByAdmin/${developerId}",
       deleteDeveloper: "",
       getDeveloperMatchingInManager: "/Developer/DevMatching/${requestId}",
-      getDeveloperDetailByDevId: "/Developer/${developerId}"
+      getDeveloperDetailByDevId: "/Developer/${developerId}",
       getDeveloperByDevId: "/Developer/${devId}",
     },
     interview: {
@@ -194,6 +194,7 @@ export default {
       postContract: "/Contract",
       getContractById: "/Contract/${contractId}",
       confirmContract: "/Contract/ConfirmSigned?contractId=${contractId}",
+      getListContractByCompanyIdAndPaging: "/Contract/ByCompany?companyId=${companyId}&PageIndex=${PageIndex}&PageSize=${PageSize}&ContractCode=${ContractCode}&Status=${Status}",
     },
     pay: {
       getPayPeriod: "/PayPeriod/${projectId}?inputDate=${inputDate}",
@@ -253,6 +254,7 @@ export default {
       getReportById: "/Report/${reportId}",
       handleRelyReport: "/Report/Reply",
       handleConfirmReport: "/Report/Confirm/${reportId}",
+      getReportListByCompanyIdAndPaging: "/Report/ByCompany/${companyId}?PageIndex=${PageIndex}&PageSize=${PageSize}&ReportTitle=${searchKeyString}&Status=${Status}",
     },
     transactionHistory: {
       getTransactionHistory:

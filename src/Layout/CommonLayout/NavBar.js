@@ -319,6 +319,12 @@ const NavBar = (props) => {
                               >
                                 Report List
                               </Link>
+                              <Link
+                                className="dropdown-item"
+                                to="/contractListHr"
+                              >
+                                Contract List
+                              </Link>
                             </Col>
                           </>
                         )}

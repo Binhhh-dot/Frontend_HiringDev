@@ -32,18 +32,18 @@ const ContractList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoad, setIdLoad] = useState(false);
-  useEffect(() => {
-    const localStorageRole = localStorage.getItem("role");
-    if (!localStorageRole) {
-      navigate("/signin");
-    } else {
-      if (!userAuthorization(localStorageRole, location.pathname)) {
-        navigate("/error404");
-      } else {
-        setIdLoad(true);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const localStorageRole = localStorage.getItem("role");
+  //   if (!localStorageRole) {
+  //     navigate("/signin");
+  //   } else {
+  //     if (!userAuthorization(localStorageRole, location.pathname)) {
+  //       navigate("/error404");
+  //     } else {
+  //       setIdLoad(true);
+  //     }
+  //   }
+  // }, []);
 
   const [activeTab, setActiveTab] = useState("1");
   const tabChange = (tab) => {
@@ -677,15 +677,15 @@ const ContractList = () => {
                                               <span
                                                 className={
                                                   contractListAllNew.statusString ===
-                                                  "Pending"
+                                                    "Pending"
                                                     ? "badge bg-warning text-light fs-12"
                                                     : contractListAllNew.statusString ===
                                                       "Signed"
-                                                    ? "badge bg-success text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Failed"
-                                                    ? "badge bg-danger text-light fs-12"
-                                                    : ""
+                                                      ? "badge bg-success text-light fs-12"
+                                                      : contractListAllNew.statusString ===
+                                                        "Failed"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : ""
                                                 }
                                               >
                                                 {
@@ -706,9 +706,8 @@ const ContractList = () => {
                                     <nav aria-label="Page navigation example">
                                       <div className="pagination job-pagination mb-0 justify-content-center">
                                         <li
-                                          className={`page-item ${
-                                            currentPage === 1 ? "disabled" : ""
-                                          }`}
+                                          className={`page-item ${currentPage === 1 ? "disabled" : ""
+                                            }`}
                                         >
                                           <Link
                                             className="page-link"
@@ -721,11 +720,10 @@ const ContractList = () => {
                                         </li>
                                         {renderPageNumbers()}
                                         <li
-                                          className={`page-item ${
-                                            currentPage === totalPages
+                                          className={`page-item ${currentPage === totalPages
                                               ? "disabled"
                                               : ""
-                                          }`}
+                                            }`}
                                         >
                                           <Link
                                             className="page-link"
@@ -856,15 +854,15 @@ const ContractList = () => {
                                               <span
                                                 className={
                                                   contractListAllNew.statusString ===
-                                                  "Pending"
+                                                    "Pending"
                                                     ? "badge bg-warning text-light fs-12"
                                                     : contractListAllNew.statusString ===
                                                       "Signed"
-                                                    ? "badge bg-success text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Failed"
-                                                    ? "badge bg-danger text-light fs-12"
-                                                    : ""
+                                                      ? "badge bg-success text-light fs-12"
+                                                      : contractListAllNew.statusString ===
+                                                        "Failed"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : ""
                                                 }
                                               >
                                                 {
@@ -885,11 +883,10 @@ const ContractList = () => {
                                     <nav aria-label="Page navigation example">
                                       <div className="pagination job-pagination mb-0 justify-content-center">
                                         <li
-                                          className={`page-item ${
-                                            currentPagePending === 1
+                                          className={`page-item ${currentPagePending === 1
                                               ? "disabled"
                                               : ""
-                                          }`}
+                                            }`}
                                         >
                                           <Link
                                             className="page-link"
@@ -902,12 +899,11 @@ const ContractList = () => {
                                         </li>
                                         {renderPageNumbersPending()}
                                         <li
-                                          className={`page-item ${
-                                            currentPagePending ===
-                                            totalPagesPending
+                                          className={`page-item ${currentPagePending ===
+                                              totalPagesPending
                                               ? "disabled"
                                               : ""
-                                          }`}
+                                            }`}
                                         >
                                           <Link
                                             className="page-link"
@@ -1040,15 +1036,15 @@ const ContractList = () => {
                                               <span
                                                 className={
                                                   contractListAllNew.statusString ===
-                                                  "Pending"
+                                                    "Pending"
                                                     ? "badge bg-warning text-light fs-12"
                                                     : contractListAllNew.statusString ===
                                                       "Signed"
-                                                    ? "badge bg-success text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Failed"
-                                                    ? "badge bg-danger text-light fs-12"
-                                                    : ""
+                                                      ? "badge bg-success text-light fs-12"
+                                                      : contractListAllNew.statusString ===
+                                                        "Failed"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : ""
                                                 }
                                               >
                                                 {
@@ -1069,11 +1065,10 @@ const ContractList = () => {
                                     <nav aria-label="Page navigation example">
                                       <div className="pagination job-pagination mb-0 justify-content-center">
                                         <li
-                                          className={`page-item ${
-                                            currentPageSigned === 1
+                                          className={`page-item ${currentPageSigned === 1
                                               ? "disabled"
                                               : ""
-                                          }`}
+                                            }`}
                                         >
                                           <Link
                                             className="page-link"
@@ -1086,12 +1081,11 @@ const ContractList = () => {
                                         </li>
                                         {renderPageNumbersSigned()}
                                         <li
-                                          className={`page-item ${
-                                            currentPageSigned ===
-                                            totalPagesSigned
+                                          className={`page-item ${currentPageSigned ===
+                                              totalPagesSigned
                                               ? "disabled"
                                               : ""
-                                          }`}
+                                            }`}
                                         >
                                           <Link
                                             className="page-link"
@@ -1222,15 +1216,15 @@ const ContractList = () => {
                                               <span
                                                 className={
                                                   contractListAllNew.statusString ===
-                                                  "Pending"
+                                                    "Pending"
                                                     ? "badge bg-warning text-light fs-12"
                                                     : contractListAllNew.statusString ===
                                                       "Signed"
-                                                    ? "badge bg-success text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Failed"
-                                                    ? "badge bg-danger text-light fs-12"
-                                                    : ""
+                                                      ? "badge bg-success text-light fs-12"
+                                                      : contractListAllNew.statusString ===
+                                                        "Failed"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : ""
                                                 }
                                               >
                                                 {
@@ -1251,11 +1245,10 @@ const ContractList = () => {
                                     <nav aria-label="Page navigation example">
                                       <div className="pagination job-pagination mb-0 justify-content-center">
                                         <li
-                                          className={`page-item ${
-                                            currentPageFailed === 1
+                                          className={`page-item ${currentPageFailed === 1
                                               ? "disabled"
                                               : ""
-                                          }`}
+                                            }`}
                                         >
                                           <Link
                                             className="page-link"
@@ -1268,12 +1261,11 @@ const ContractList = () => {
                                         </li>
                                         {renderPageNumbersFailed()}
                                         <li
-                                          className={`page-item ${
-                                            currentPageFailed ===
-                                            totalPagesFailed
+                                          className={`page-item ${currentPageFailed ===
+                                              totalPagesFailed
                                               ? "disabled"
                                               : ""
-                                          }`}
+                                            }`}
                                         >
                                           <Link
                                             className="page-link"

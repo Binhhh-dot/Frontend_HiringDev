@@ -106,7 +106,6 @@ const ReportList = () => {
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWeb choose={"menu-key/16"}></SiderBarWeb>
-
         <Layout>
           <div
             style={{
@@ -343,11 +342,11 @@ const ReportList = () => {
                                           ? "badge bg-warning text-light fs-12"
                                           : reportListNew.statusString ===
                                             "Processing"
-                                          ? "badge bg-blue text-light fs-12"
-                                          : reportListNew.statusString ===
-                                            "Done"
-                                          ? "badge bg-newGreen text-light fs-12"
-                                          : ""
+                                            ? "badge bg-blue text-light fs-12"
+                                            : reportListNew.statusString ===
+                                              "Done"
+                                              ? "badge bg-newGreen text-light fs-12"
+                                              : ""
                                       }
                                     >
                                       {reportListNew.statusString}
@@ -367,9 +366,8 @@ const ReportList = () => {
                           <nav aria-label="Page navigation example">
                             <div className="pagination job-pagination mb-0 justify-content-center">
                               <li
-                                className={`page-item ${
-                                  currentPage === 1 ? "disabled" : ""
-                                }`}
+                                className={`page-item ${currentPage === 1 ? "disabled" : ""
+                                  }`}
                               >
                                 <Link
                                   className="page-link"
@@ -382,9 +380,8 @@ const ReportList = () => {
                               </li>
                               {renderPageNumbers()}
                               <li
-                                className={`page-item ${
-                                  currentPage === totalPages ? "disabled" : ""
-                                }`}
+                                className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                  }`}
                               >
                                 <Link
                                   className="page-link"

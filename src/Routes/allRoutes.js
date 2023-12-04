@@ -41,7 +41,7 @@ import BlogModern from "../pages/Blog/BlogModern/BlogModern";
 import BlogMasonary from "../pages/Blog/BlogMasonary/BlogMasonary";
 import BlogDetails from "../pages/Blog/BlogDetails/BlogDetails";
 import BlogAuther from "../pages/Blog/BlogAuther/BlogAuther";
-
+import ContractListHR from "../pages/Jobs/ContractList/ContractList";
 //Contacts
 import Contact from "../pages/Contact/Contact";
 
@@ -93,8 +93,8 @@ import NewHiringRequestDetail from "../pages/Admin/NewHiringRequestDetail";
 import ProjectDetail from "../pages/Admin/ProjectDetail";
 import SideBarManager from "../pages/Admin/SideBarManager";
 import CreateReport from "../pages/Jobs/CreateReport/CreateReport";
-import ReportList from "../pages/Jobs/ReportList/ReportList";
-
+import ReportListHR from "../pages/Jobs/ReportList/ReportList";
+import ContractDetailHr from "../pages/Jobs/ContractDetail/ContractDetail";
 //
 import ManageLevel from "../pages/Admin/Info/ManageLevel";
 import ManageSkill from "../pages/Admin/Info/ManageSkill";
@@ -204,7 +204,11 @@ const userRoutes = [
   },
   {
     path: "/reportList",
-    component: <ReportList />,
+    component: <ReportListHR />,
+  },
+  {
+    path: "/contractListHr",
+    component: <ContractListHR />,
   },
   {
     path: "/detailInterview",
@@ -213,6 +217,10 @@ const userRoutes = [
   {
     path: "/detailInterviewManager",
     component: <DetailInterviewManager />,
+  },
+  {
+    path: "/contractDetailHr",
+    component: <ContractDetailHr />,
   },
 
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },

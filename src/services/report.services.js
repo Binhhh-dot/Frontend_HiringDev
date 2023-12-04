@@ -49,11 +49,24 @@ const handleConfirmReport = async (reportId) => {
   return response;
 };
 
+const getReportListByCompanyIdAndPaging = async (companyId, PageIndex, PageSize, searchKeyString, status) => {
+  const serviceUrl = urlConstant.endpoint.report.getReportListByCompanyIdAndPaging
+    .replace("${companyId}", companyId)
+    .replace("${PageIndex}", PageIndex)
+    .replace("${PageSize}", PageSize)
+    .replace("${Status}", status)
+    .replace("${searchKeyString}", searchKeyString);
+  console.log(serviceUrl)
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
 export default {
   getReportList,
   getReportById,
   handleRelyReport,
   handleConfirmReport,
   getReportType,
-  createReport
+  createReport,
+  getReportListByCompanyIdAndPaging
 };
