@@ -1,51 +1,30 @@
-import React, { useState } from "react";
-import JobDetailsDescription from "./JobDetailsDescription";
-import RightSideContent from "./RightSideContent";
-import NewListInterviewInfo from "./NewListInterviewInfo";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useEffect } from "react";
 import {
-  PieChartOutlined,
-  DesktopOutlined,
-  UserOutlined,
-  TeamOutlined,
-  FileOutlined,
-  LeftOutlined,
-  RightOutlined,
-  HomeOutlined,
-  SnippetsOutlined,
-  SolutionOutlined,
-  CodeOutlined,
-} from "@ant-design/icons";
-
-import { Layout, Menu, Input, Button, Badge, Space } from "antd";
-
-import {
+  Card,
+  CardBody,
   Col,
   Row,
-  Container,
-  Collapse,
-  NavbarToggler,
   NavItem,
   NavLink,
+  Nav,
+  TabPane,
+  TabContent,
+  Container,
 } from "reactstrap";
-
 import { Link } from "react-router-dom";
-import classname from "classnames";
-
-import img0 from "../../assets/images/user/img-00.jpg";
+import { Input, Space, Layout, Badge } from "antd";
 import SiderBarWeb from "./SlideBar/SiderBarWeb";
+import { useNavigate, useLocation } from "react-router-dom";
+import img0 from "../../assets/images/user/img-00.jpg";
 import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+const { Header, Footer, Content } = Layout;
 
-const { Header, Footer, Sider, Content } = Layout;
-const { Search } = Input;
-
-const NewHiringRequestDetail = () => {
+const TransactionHistoryList = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -54,8 +33,7 @@ const NewHiringRequestDetail = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SiderBarWeb choose={"menu-key/10"}></SiderBarWeb>
-
+        <SiderBarWeb choose={"menu-key/17"}></SiderBarWeb>
         <Layout>
           <div
             style={{
@@ -153,28 +131,8 @@ const NewHiringRequestDetail = () => {
               </div>
             </div>
           </div>
-
           <Content>
-            {/* ----------------------------------------------------------------------------- */}
-            <section className="section " style={{ paddingTop: "14px" }}>
-              <Container
-                className="custom-container-hiring-detail"
-                style={{ paddingLeft: "30px", paddingRight: "30px" }}
-              >
-                <Row>
-                  <Col lg={8}>
-                    <JobDetailsDescription />
-                  </Col>
-                  <Col
-                    lg={4}
-                    className="mt-lg-0"
-                    style={{ paddingLeft: "19px" }}
-                  >
-                    <RightSideContent />
-                  </Col>
-                </Row>
-              </Container>
-            </section>
+            <div>AAAAAAAAAA</div>
           </Content>
         </Layout>
       </Layout>
@@ -182,4 +140,4 @@ const NewHiringRequestDetail = () => {
   );
 };
 
-export default NewHiringRequestDetail;
+export default TransactionHistoryList;

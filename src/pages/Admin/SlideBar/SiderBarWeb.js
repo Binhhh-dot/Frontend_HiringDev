@@ -14,6 +14,8 @@ import {
   CodeOutlined,
   AuditOutlined,
   BankOutlined,
+  HighlightOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -110,6 +112,22 @@ const SiderBarWeb = ({ choose }) => {
       icon: <BankOutlined />,
       className: "company",
       link: "/listcompanyPartner", // Add the link property
+    },
+
+    {
+      label: "Report",
+      key: "menu-key/16",
+      icon: <HighlightOutlined />,
+      className: "report",
+      link: "/listreportinmanager", // Add the link property
+    },
+
+    {
+      label: "Transaction History",
+      key: "menu-key/17",
+      icon: <TransactionOutlined />,
+      className: "transactionHistory",
+      link: "/listtransactionhistory", // Add the link property
     },
   ];
 

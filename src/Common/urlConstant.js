@@ -102,6 +102,7 @@ export default {
       updateDeveloperByAdmin: "/Developer/ByAdmin/${developerId}",
       deleteDeveloper: "",
       getDeveloperMatchingInManager: "/Developer/DevMatching/${requestId}",
+      getDeveloperByDevId: "/Developer/${devId}",
     },
     interview: {
       createAnInterview: "/Interview",
@@ -230,6 +231,17 @@ export default {
       sendDevToHRNew: "/HiredDeveloper/SendDevToHR",
       kickDevInProject:
         "/HiredDeveloper/TerminateFromProject?projectId=${projectId}&developerId=${developerId}",
+    },
+
+    report: {
+      getReportList: "/Report?PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getReportById: "/Report/${reportId}",
+      handleRelyReport: "/Report/Reply",
+      handleConfirmReport: "/Report/Confirm/${reportId}",
+    },
+    transactionHistory: {
+      getTransactionHistory:
+        "/Transaction?PageIndex=${PageIndex}&PageSize=${PageSize}",
     },
   },
 };

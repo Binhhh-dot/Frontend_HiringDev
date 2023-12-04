@@ -104,6 +104,10 @@ import NewListInterviewInfo from "../pages/Admin/NewListInterviewInfo";
 import ProjectListInManager from "../pages/Admin/ProjectListInManager";
 import ContractList from "../pages/Admin/ContractList";
 import CallbackPayment from "../pages/ExtraPages/CallbackPayment";
+import CompanyDetailPartner from "../pages/Admin/CompanyDetailPartner";
+import ReportList from "../pages/Admin/ReportList";
+import ReportListDetail from "../pages/Admin/ReportListDetail";
+import TransactionHistoryList from "../pages/Admin/TransactionHistoryList";
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -242,6 +246,10 @@ const authRoutes = [
   { path: "/newlistinterview", component: <NewListInterviewInfo /> },
   { path: "/projectlistinmanager", component: <ProjectListInManager /> },
   { path: "/listcontract", component: <ContractList /> },
+  { path: "/listcompanyPartnerdetail", component: <CompanyDetailPartner /> },
+  { path: "/listreportinmanager", component: <ReportList /> },
+  { path: "/listreportinmanagerdetail", component: <ReportListDetail /> },
+  { path: "/listtransactionhistory", component: <TransactionHistoryList /> },
 ];
 
 export { userRoutes, authRoutes };
