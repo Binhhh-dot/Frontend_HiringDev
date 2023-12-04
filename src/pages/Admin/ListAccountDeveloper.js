@@ -57,7 +57,6 @@ import img0 from "../../assets/images/user/img-00.jpg";
 import axios from "axios";
 import employmentTypeServices from "../../services/employmentType.services";
 import developerServices from "../../services/developer.services";
-import scheduleTypeService from ".//../../services/scheduleType";
 import Select from "react-select";
 import SliderBarWeb from "../Admin/SlideBar/SiderBarWeb";
 import skillService from "../../services/skill.service";
@@ -70,6 +69,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import SiderBarWebAdmin from "./SlideBar/SiderBarWebAdmin";
 
 const layout = {
   labelCol: {
@@ -96,6 +96,8 @@ const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
 
 const ListAccountDeveloper = () => {
+  let developerDetail;
+
   const [componentDisabled, setComponentDisabled] = useState(true);
 
   const [visibleModal1, setVisibleModal1] = useState(false);
@@ -197,6 +199,7 @@ const ListAccountDeveloper = () => {
   };
   const handleChange7 = (selected) => {
     setSelectedOptions7(selected);
+    console.log(selected);
   };
   const handleChange3 = (selected) => {
     setSelectedOptions3(selected);
@@ -262,6 +265,7 @@ const ListAccountDeveloper = () => {
         const activeLevels = response3.data.data.filter(
           (level) => level.statusString === "Active"
         );
+
         const formattedLevels = activeLevels.map((level) => ({
           value: level.levelId.toString(),
           label: level.levelName,
@@ -287,6 +291,7 @@ const ListAccountDeveloper = () => {
         console.error("Error fetching employment typeName:", error);
       }
     };
+
     fetchData();
   }, []);
 
@@ -427,10 +432,8 @@ const ListAccountDeveloper = () => {
         const phoneNumber = document.getElementById("phone-number").value;
         const dateOfBirth = document.getElementById("date-of-birth").value; // replace with actual value from the type dropdown
         const levelRequireId = selectedOptions3.value; // replace with actual value from the level dropdown
-        const scheduleTypeId = selectedOptions6.value;
         const employmentTypeId = selectedOptions6.value;
         const genderId = selectedOptions7.value;
-        const cvId = selectedOptions4.id;
         const skillIds = selectedOptions.map((skill) => skill.value);
         const typeRequireId = selectedOptions2.map((type) => type.value);
         const response = await developerServices.CreateDeveloperAccount(
@@ -442,8 +445,6 @@ const ListAccountDeveloper = () => {
           dateOfBirth,
           yearOfExperience,
           avarageSalary,
-          cvId,
-          scheduleTypeId,
           employmentTypeId,
           levelRequireId,
           typeRequireId,
@@ -617,7 +618,7 @@ const ListAccountDeveloper = () => {
 
         console.log(response);
         message.success({
-          content: "Account Created Successfully",
+          content: "Account Update Successfully",
           duration: 2,
           onClose: () => {
             console.log("Toast closed");
@@ -631,9 +632,9 @@ const ListAccountDeveloper = () => {
         fetchDeveloperPaging();
         setVisibleModal1(false);
       } catch (error) {
-        console.error("Error create dev:", error);
+        console.error("Error update dev:", error);
         message.error({
-          content: "Error creating account ",
+          content: "Error update account ",
           duration: 2,
           style: {
             marginTop: "50px",
@@ -644,43 +645,9 @@ const ListAccountDeveloper = () => {
     } else {
     }
   };
-  //--------------------------------------------------------------------------------------------------------------
-  // const handleUpdateDeveloperById = async () => {
-  //   const firstNameDev = document.getElementById("first-name-dev").value;
-  //   const lastNameDev = document.getElementById("last-name-dev").value;
-  //   const emailDev = document.getElementById("email-dev").value;
-  //   const phoneNumberDev = document.getElementById("phone-dev").value;
-  //   const passwordDev = document.getElementById("password-dev").value;
-  //   const dateOfBirthDev = document.getElementById("dateOfBirth-dev").value;
-  //   const yearOfExperienceDev = document.getElementById(
-  //     "yearOfExperience-dev"
-  //   ).value;
-  //   const averageSalaryDev = document.getElementById("averageSalary-dev").value;
-  //   const codeNameDev = document.getElementById("codeName-dev").value;
-  //   const summaryDev = document.getElementById("summary-dev").value;
-  //   const genderIdDev = document.getElementById("genderId-dev").value;
-  //   const levelIdDev = document.getElementById("levelId-dev").value;
-  //   const employmentTypeIdDev = document.getElementById(
-  //     "employmentTypeId-dev"
-  //   ).value;
-  //   const typesDev = document.getElementById("type-dev").value;
-  //   const skillsDev = document.getElementById("skill-dev").value;
-  //   const fileDev = document.getElementById("file-dev").value;
 
-  //   const fileDevByAdmin = fileDev.file[0];
-  // };
-  //--------------------------------------------------------------------------------------------------------------
   const [userImage3, setUserImage3] = useState(null);
-  const [userDataDetail, setUserDataDetail] = useState({
-    userId: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    phoneNumber: "",
-    dateOfBirth: "",
-    statusString: "",
-  });
+  const [userDataDetail, setUserDataDetail] = useState({});
   const [userImage, setUserImage] = useState(null);
 
   const [avatar, setAvatar] = useState(null);
@@ -715,6 +682,16 @@ const ListAccountDeveloper = () => {
       } catch (error) {
         console.error("Error fetching developer by id:", error);
       } console.log(response)
+=======
+    //setUserId(developerId);
+  };
+
+  //const [developerDetail, setdeveloperDetail] = useState({})
+  const fetchUserDetail = async (developerId) => {
+    try {
+      const response = await userSerrvices.getDeveloperById(developerId);
+      developerDetail = response.data.data;
+
       document.getElementById("first-name-dev").value =
         response.data.data.firstName;
       document.getElementById("last-name-dev").value =
@@ -885,8 +862,61 @@ const ListAccountDeveloper = () => {
         setUserImage3("");
 
       }
+      document.getElementById("summary-dev").value = response.data.data.summary;
     } catch (error) {
-      console.error("Lỗi khi tải dữ liệu người dùng:", error);
+      console.error("Error loading user common data:", error);
+    }
+
+    fetchGender();
+    // try {
+    //   let result = await genderServices.getAllGender();
+    //   if (developerDetail) {
+    //     const requireGender = developerDetail.genderName;
+    //     const foundGender = result.data.data.find(
+    //       (gender) => gender.genderName == requireGender
+    //     );
+    //     if (foundGender) {
+    //       const newGender = {
+    //         value: foundGender.genderId.toString(),
+    //         label: foundGender.genderName,
+    //       };
+    //       setSelectedOptions7(newGender);
+    //     }
+    //   }
+    //   let formatGender = result.data.data.map((gender) => ({
+    //     value: gender.genderId.toString(),
+    //     label: gender.genderName,
+    //   }));
+    //   setOptions7(formatGender);
+    // } catch (error) {
+    //   console.error("Error loading data gender:", error);
+    // }
+  };
+  //-----------------------------------------------------------------------------------------------------
+
+  const fetchGender = async () => {
+    try {
+      let result = await genderServices.getAllGender();
+      if (developerDetail) {
+        const requireGender = developerDetail.genderName;
+        const foundGender = result.data.data.find(
+          (gender) => gender.genderName == requireGender
+        );
+        if (foundGender) {
+          const newGender = {
+            value: foundGender.genderId.toString(),
+            label: foundGender.genderName,
+          };
+          setSelectedOptions7(newGender);
+        }
+      }
+      let formatGender = result.data.data.map((gender) => ({
+        value: gender.genderId.toString(),
+        label: gender.genderName,
+      }));
+      setOptions7(formatGender);
+    } catch (error) {
+      console.error("Error loading data gender:", error);
     }
   };
 
@@ -967,6 +997,7 @@ const ListAccountDeveloper = () => {
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
         <SliderBarWeb choose={"menu-key/sub-menu-key/6"}></SliderBarWeb>
+        {/* <SiderBarWebAdmin choose={"menu-key/5"}></SiderBarWebAdmin> */}
         <Layout>
           <div
             style={{
@@ -1103,15 +1134,11 @@ const ListAccountDeveloper = () => {
                     onRow={(record, rowIndex) => {
                       return {
                         onClick: (event) => {
-                          // Handle row click
                           handleRowClick(record.developerId);
                         },
                       };
                     }}
                     size="middle"
-                    // scroll={{
-                    //   x: 3000,
-                    // }}
                     components={{
                       header: {
                         cell: (props) => (
@@ -1407,7 +1434,7 @@ const ListAccountDeveloper = () => {
               <section className="section py-0">
                 <div className=" ">
                   <div className="row justify-content-center  ">
-                    <div className="rounded shadow bg-white">
+                    <div className="rounded  bg-white">
                       <div className="custom-form">
                         <div id="message3"></div>
                         <form
@@ -1655,7 +1682,7 @@ const ListAccountDeveloper = () => {
                           <div class="col-lg-12 mt-2 d-flex justify-content-end">
                             <button
                               type="button"
-                              className="btn btn-primary btn-hover"
+                              className="btn btn-primary"
                               onClick={handleOKCreate}
                             >
                               Create
@@ -1709,7 +1736,7 @@ const ListAccountDeveloper = () => {
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="First Name" name="firstName">
-                    <Input id="first-name-dev" />
+                    <Input id="first-name-dev" value="aaaaa" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -1778,6 +1805,7 @@ const ListAccountDeveloper = () => {
                 <Col span={12}>
                   <Form.Item label="Level" name="level-dev">
                     <Select
+                      id="levels-dev"
                       options={options3}
                       value={1}
                       onChange={handleChange3}
@@ -1800,6 +1828,7 @@ const ListAccountDeveloper = () => {
                 <Col span={12}>
                   <Form.Item label="Type Dev" name="type-dev">
                     <Select
+                      id="types-dev"
                       options={options2}
                       value={selectedOptions2}
                       onChange={handleChange2}
@@ -1812,6 +1841,7 @@ const ListAccountDeveloper = () => {
                 <Col span={12}>
                   <Form.Item label="Skill Dev" name="skill-dev">
                     <Select
+                      id="skills-dev"
                       isMulti
                       options={options}
                       value={selectedOptions}

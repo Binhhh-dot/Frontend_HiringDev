@@ -72,87 +72,7 @@ const { Column, ColumnGroup } = Table;
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
 
-// const items = [
-//   {
-//     label: "Dashboard",
-//     key: "menu-key/1",
-//     icon: <HomeOutlined />,
-//     className: "option-1",
-//   },
-//   {
-//     label: "Option 2",
-//     key: "menu-key/2",
-//     icon: <DesktopOutlined />,
-//     className: "option-2",
-//   },
-//   {
-//     label: "User",
-//     key: "menu-key/sub-menu-key",
-//     icon: <UserOutlined />,
-//     children: [
-//       { label: "Tom", key: "menu-key/sub-menu-key/3" },
-//       { label: "Bill", key: "menu-key/sub-menu-key/4" },
-//       { label: "Alex", key: "menu-key/sub-menu-key/5" },
-//     ],
-//     className: "option-2",
-//   },
-//   {
-//     label: "Team",
-//     key: "menu-key/sub-menu-key2",
-//     icon: <TeamOutlined />,
-//     children: [
-//       { label: "Team 1", key: "menu-key/sub-menu-key2/6" },
-//       { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
-//     ],
-//   },
-//   {
-//     label: "Files",
-//     key: "menu-key/9",
-//     icon: <FileOutlined />,
-//     className: "files",
-//   },
-//   {
-//     label: "Hiring Request",
-//     key: "menu-key/10",
-//     icon: <SnippetsOutlined />,
-//     className: "hiringRequest",
-//   },
-//   {
-//     label: "Interview",
-//     key: "menu-key/11",
-//     icon: <SolutionOutlined />,
-//     className: "interview",
-//   },
-
-//   {
-//     label: "Project",
-//     key: "menu-key/12",
-//     icon: <CodeOutlined />,
-//     className: "project",
-//   },
-// ];
-
 const ListAccountManager = () => {
-  // const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]); // Định nghĩa selectedKeys
-  // const [isLeftIcon, setIsLeftIcon] = useState(true);
-  // const [showWeHire, setShowWeHire] = useState(true);
-
-  // const toggleSidebar = () => {
-  //   setCollapsed(!collapsed);
-  //   setIsLeftIcon(!isLeftIcon); // Cập nhật biến trạng thái khi toggleSidebar
-  //   setShowWeHire(!showWeHire);
-  // };
-
-  // const handleMenuClick = (item) => {
-  //   setSelectedKeys([item.key]);
-  // };
-
-  // const handleSubMenuClick = (item) => {
-  //   setSelectedKeys([item.key]);
-  // };
-
-  // const [collapsed, setCollapsed] = useState(false);
-
   //--------------------------------------------------------------------------------------------------------
 
   const [visibleModal1, setVisibleModal1] = useState(false);
@@ -194,20 +114,6 @@ const ListAccountManager = () => {
 
   const [modal, contextHolder] = Modal.useModal();
   let [currentPage, setCurrentPage] = useState(1);
-
-  // const handleFirstNameChange = (value) => {
-  //     setUserData({
-  //         ...userDataDetail,
-  //         firstName: '',
-  //         lastName: '',
-  //         phoneNumber: '',
-  //         email: '',
-  //         password: '',
-  //         dateOfBirth: '',
-  //         statusString: '',
-
-  //     });
-  // };
 
   //API
 
@@ -648,7 +554,7 @@ const ListAccountManager = () => {
                       index % 2 === 0 ? "even-row" : "odd-row"
                     }
                   >
-                    <Column
+                    {/* <Column
                       title="Image"
                       dataIndex="userImage"
                       key="userImage"
@@ -662,7 +568,7 @@ const ListAccountManager = () => {
                           }}
                         />
                       )}
-                    />
+                    /> */}
                     <Column
                       title="FirstName"
                       dataIndex="firstName"
@@ -685,7 +591,7 @@ const ListAccountManager = () => {
                       key="phoneNumber"
                     />
                     <Column
-                      title="Birthday"
+                      title="Date Of Birth"
                       dataIndex="dateOfBirth"
                       key="dateOfBirth"
                     />
@@ -856,7 +762,7 @@ const ListAccountManager = () => {
                   <span
                     className={
                       hRInfo.statusString === "Active"
-                        ? "badge bg-warning text-light"
+                        ? "badge bg-success text-light"
                         : "badge text-bg-danger"
                     }
                   >
@@ -951,7 +857,7 @@ const ListAccountManager = () => {
                 <Button
                   type="primary"
                   onClick={handleOkCreate}
-                  style={{ backgroundColor: "purple", borderColor: "purple" }}
+                  style={{ backgroundColor: "#1F86EF", borderColor: "#1F86EF" }}
                 >
                   Save
                 </Button>
@@ -959,7 +865,7 @@ const ListAccountManager = () => {
             </Form>
           </Modal>
           <Modal
-            title="Update User"
+            title="Update Manager"
             visible={visibleModal2}
             onUpdate={handleOkUpdate}
             onCancel={handleCancelUpdate}
@@ -1035,8 +941,8 @@ const ListAccountManager = () => {
                   />
                 </p>
               </Form.Item>
-              <Form.Item name="dateOfBirth" label="Birth Day">
-                <DatePicker
+              <Form.Item name="dateOfBirth" label="Date Of Birth">
+                <Input
                   value={userDataDetail.dateOfBirth}
                   style={{ width: "100%" }}
                   format="YYYY-MM-DD"
@@ -1060,7 +966,7 @@ const ListAccountManager = () => {
                 <Button
                   type="primary"
                   onClick={handleOkUpdate}
-                  style={{ backgroundColor: "purple", borderColor: "purple" }}
+                  style={{ backgroundColor: "#1F86EF", borderColor: "#1F86EF" }}
                 >
                   Save
                 </Button>
@@ -1170,7 +1076,7 @@ const ListAccountManager = () => {
                     </Col>
                     <Col lg={6}>
                       <div className="mb-3">
-                        Birth Day
+                        Day Of Birth
                         <Input
                           type="text"
                           className="form-control"

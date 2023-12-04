@@ -18,7 +18,7 @@ import {
   TabContent,
 } from "reactstrap";
 import { Link, Navigate, useLocation } from "react-router-dom";
-// import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
+
 import DeveloperDetailInManagerPopup from "../Home/SubSection/DeveloperDetailInManager";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -28,29 +28,32 @@ import {
 
 //import { Link } from "react-router-dom";
 import "./index.css";
-// import hiringrequestService from "../../../services/hiringrequest.service";
+
 import hiringrequestService from "../../services/hiringrequest.service";
-// import developer from "../../../services/developer.services";
+
 import developer from "../../services/developer.services";
 import { Progress, Space } from "antd";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import hireddevServices from "../../services/hireddev.services";
 
 const JobDetailsDescription = () => {
   const { state } = useLocation();
 
   const [hiringRequestDetail, setHiringRequestDetail] = useState(null);
   const [devMatching, setDevMatching] = useState([]);
-  ////////////////////////////////////////////////////////////////////////////////////////
+
   const [devHasBeenSent, setDevHasBeenSent] = useState([]);
-  /////////////////////////////////////////////////////////////////////////////////////////
+
   const [currentListDev, setCurrentListDev] = useState("matching");
-  //////////////////////////////////////////////////////////////////////////////////////////
+
   const [disableIconCancel, setDisableIconCancel] = useState(false);
-  /////////////////////////////////////////////////////////////////////////////////////////
+
   const [isVisibleListDevAfter, setIsVisibleListDevAfter] = useState(false);
   //const [listDevAfterReject, setListDevAfterReject] = useState([]);
-  ////////////////////////////////////////////////////////////////////////////////////////
+
+  const [targetDevManager, setTargetDevManager] = useState(0);
+  const [numberOfDevManager, setNumberOfDevManager] = useState(0);
 
   const handleTabChange = (tab) => {
     setCurrentListDev(tab);
@@ -74,92 +77,36 @@ const JobDetailsDescription = () => {
     setIsModalOpen(false);
   };
 
-  ////////////////////////////////////////////////////////////////////////////////////////
-  const [selectAllDevMatching, setSelectAllDevAllMatching] = useState(false);
+  //------------------------------------------------------------------------------------
+
   const [selectedDev, setSelectedDev] = useState([]);
   const [isSendButtonVisible, setIsSendButtonVisibility] = useState(false);
-
-  const toggleSelectDevAll = () => {
-    setSelectAllDevAllMatching(!selectAllDevMatching);
-    setSelectedDev((prevSelectedDev) => {
-      if (!selectAllDevMatching) {
-        return candidateDetails.map((candidate) => candidate.developerId);
-      } else {
-        return [];
-      }
-    });
-
-    setIsSendButtonVisibility(!selectAllDevMatching);
-  };
 
   const toggleDevMatchingSelection = (candidateId) => {
     setSelectedDev((prevSelectedDev) => {
       const isSelected = prevSelectedDev.includes(candidateId);
+      if (isSelected) {
+        setTargetDevManager(targetDevManager - 1);
+      } else {
+        if (targetDevManager >= numberOfDevManager) {
+          toast.warn("The number of requests for developers has been exceeded");
+        }
+        setTargetDevManager(targetDevManager + 1);
+      }
       const updatedSelectedDev = isSelected
         ? prevSelectedDev.filter((id) => id !== candidateId)
         : [...prevSelectedDev, candidateId];
 
-      setIsSendButtonVisibility(
-        updatedSelectedDev.length > 0 || selectAllDevMatching
-      );
+      setIsSendButtonVisibility(updatedSelectedDev.length > 0);
 
       return updatedSelectedDev;
     });
   };
   console.log("------------------------------------------------------");
-  console.log("cac dev matching duoc chon de gui di cho dev chap nhan");
+  console.log("cac dev matching DUOC CHON de gui di cho dev chap nhan");
   console.log(selectedDev);
   console.log("------------------------------------------------------");
-
-  //////////////////////////////////////////////////////////////////////////////////////////
-  // chon dev o phan dev accepted
-  //const [selectedAllDevAccept, setSelectedAllDevAccept] = useState(false);
-  //const [selectedDevAccept, setSelectedDevAccept] = useState([]);
-  // const [isSendButtonAcceptVisible, setIsSendButtonAcceptVisible] =
-  //   useState(false);
-
-  // const toggleSelectedAllDevAccept = () => {
-  //   setSelectedAllDevAccept(!selectedAllDevAccept);
-
-  //   if (!selectedAllDevAccept) {
-  //     const waitingDevAccept = devHasBeenSent
-  //       .filter((candidate) => candidate.selectedDevStatus === "Dev Accepted")
-  //       .map((candidate) => candidate.developerId);
-  //     setSelectedDevAccept(waitingDevAccept);
-  //   } else {
-  //     setSelectedDevAccept([]);
-  //   }
-
-  //   setIsSendButtonAcceptVisible(
-  //     !selectedAllDevAccept && selectedDevAccept.length === 0
-  //   );
-  //   console.log(!selectedAllDevAccept, selectedDevAccept.length);
-  // };
-
-  // const toggleDevAcceptSelection = (candidateId) => {
-  //   const candidate = devHasBeenSent.find(
-  //     (candidate) => candidate.developerId === candidateId
-  //   );
-  //   //kiem tra xem checkbox co hien thi hay khong
-  //   if (candidate && candidate.selectedDevStatus === "Dev Accepted") {
-  //     setSelectedDevAccept((prevSelectedDevAccept) => {
-  //       const selectedDevAccept = prevSelectedDevAccept.includes(candidateId)
-  //         ? prevSelectedDevAccept.filter((id) => id !== candidateId)
-  //         : [...prevSelectedDevAccept, candidateId];
-  //       setIsSendButtonAcceptVisible(
-  //         !selectedAllDevAccept && selectedDevAccept.length > 0
-  //       );
-  //       return selectedDevAccept;
-  //     });
-  //   }
-
-  //   console.log("---------------------------------------------------");
-  //   console.log("cac dev accepted duoc chon de gui di cho HR chap nhan");
-  //   console.log(selectedDevAccept);
-  //   console.log("---------------------------------------------------");
-  // };
-
-  /////////////////////////////////////////////////////////////////////////////////////////
+  //--------------------------------------------------------------------------------
 
   const [cancelReason, setCancelReason] = useState("");
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
@@ -187,7 +134,6 @@ const JobDetailsDescription = () => {
       });
     } else {
       fetchCancelHirringRequestStatus();
-      //fetchHiringRequestDetailInManager();
       console.log("Cancel Request Reason:", cancelReason);
       closeCancelModal();
     }
@@ -250,6 +196,8 @@ const JobDetailsDescription = () => {
         setIsVisibleListDevAfter(true);
       }
 
+      setTargetDevManager(response.data.data.targetedDev);
+      setNumberOfDevManager(response.data.data.numberOfDev);
       return response;
     } catch (error) {
       console.error("Error fetching hiring request:", error);
@@ -260,7 +208,7 @@ const JobDetailsDescription = () => {
     let response;
 
     try {
-      response = await hiringrequestService.getDeveloperMatchingInManager(
+      response = await developer.getDeveloperMatchingInManager(
         state.hiringRequestId
       );
 
@@ -274,31 +222,10 @@ const JobDetailsDescription = () => {
     }
   };
 
-  // const fetchsendHiringRequestToDevMatching = async () => {
-  //   let response;
-
-  //   try {
-  //     response = await hiringrequestService.sendHiringRequestToDevMatching(
-  //       state.hiringRequestId,
-  //       selectedDev
-  //     );
-
-  //     setIsSendButtonVisibility(false);
-  //     fetchDeveloperMatchingInManager();
-  //     return response;
-  //   } catch (error) {
-  //     console.error(
-  //       "Error fetching send hiring request to dev matching:",
-  //       error
-  //     );
-  //   }
-  // };
-  // gio gui 1 phat cho ca HR va dev luon [hien dev matching -> gui phat -> hiện nhung thang dc gui từ manager]
-
   const fetchSendDevToHRNew = async () => {
     let response;
     try {
-      response = await developer.sendDevToHRNew(
+      response = await hireddevServices.sendDevToHRNew(
         state.hiringRequestId,
         selectedDev
       );
@@ -323,7 +250,9 @@ const JobDetailsDescription = () => {
   const fetchGetSelectedDevByManager = async () => {
     let response;
     try {
-      response = await developer.getSelectedDevByManager(state.hiringRequestId);
+      response = await hireddevServices.getSelectedDevByManager(
+        state.hiringRequestId
+      );
       setDevHasBeenSent(response.data.data);
       console.log(" dev vua duoc gui la");
       console.log(response.data.data);
@@ -334,21 +263,6 @@ const JobDetailsDescription = () => {
       console.error("Error fetching dev matching has been sent:", error);
     }
   };
-
-  // const fetchsendevToHR = async () => {
-  //   let response;
-  //   try {
-  //     response = await developer.sendDevToHR(
-  //       state.hiringRequestId,
-  //       selectedDevAccept
-  //     );
-  //     fetchGetSelectedDevByManager();
-  //     setSelectedAllDevAccept(false);
-  //     return response;
-  //   } catch (error) {
-  //     console.error("Error fetching send dev to HR", error);
-  //   }
-  // };
 
   //--------------------------------------------------------------------------------
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
@@ -395,29 +309,6 @@ const JobDetailsDescription = () => {
 
   //--------------------------------------------------------------------------------
 
-  // const fetchCancelHirringRequestStatus = async () => {
-  //   let response;
-  //   try {
-  //     response = await hiringrequestService.cancelHirringRequestStatus(
-  //       state.jobId,
-  //       cancelReason,
-  //       false
-  //     );
-  //     console.log(cancelReason);
-  //     return response;
-  //   } catch (error) {
-  //     console.error("Error fetching cancel hiring request", error);
-  //   }
-  // };
-
-  /////////////////////////////////////////////////////////////////////////////////
-  // ham xu li approved hiring request
-  // const handleAcceptedHirringRequest = () => {
-  //   setShowCandidateList(true);
-  //   fetchapprovedHirringRequestStatus();
-  // };
-  ////////////////////////////////////////////////////////////////////////////////
-
   //trang handle nut send
   const [isPopConfirmOpen, setIsPopupConfirmOpen] = useState(false);
 
@@ -435,27 +326,6 @@ const JobDetailsDescription = () => {
   const handleConfirmCancel = () => {
     setIsPopupConfirmOpen(false);
   };
-  // fetchsendHiringRequestToDevMatching();
-  ///////////////////////////////////////////////////////////////////////////////
-  //trang handle nut send cancel
-  // const [isPopConfirmOpenHR, setIsPopupConfirmOpenHR] = useState(false);
-
-  // const handleSendToHR = () => {
-  //   setIsPopupConfirmOpenHR(true);
-  // };
-
-  // const handleConfirmHR = () => {
-  //   //thuc hien chuc nang cua nut send o day
-
-  //   setIsSendButtonAcceptVisible(false);
-  //   fetchsendevToHR();
-  //   setIsPopupConfirmOpenHR(false);
-  //   setSelectedDevAccept([]);
-  // };
-
-  // const handleConfirmCancelHR = () => {
-  //   setIsPopupConfirmOpenHR(false);
-  // };
 
   //////////////////////////////////////////////////////////////////////////////
   const getDevNameMatching = (id) => {
@@ -463,12 +333,12 @@ const JobDetailsDescription = () => {
     return fullNameMathcing?.firstName + " " + fullNameMathcing?.lastName;
   };
 
-  const getDevNameAccepted = (id) => {
-    const fullNameAccepted = devHasBeenSent.find(
-      (dev) => dev.developerId === id
-    );
-    return fullNameAccepted?.firstName + " " + fullNameAccepted?.lastName;
-  };
+  // const getDevNameAccepted = (id) => {
+  //   const fullNameAccepted = devHasBeenSent.find(
+  //     (dev) => dev.developerId === id
+  //   );
+  //   return fullNameAccepted?.firstName + " " + fullNameAccepted?.lastName;
+  // };
   /////////////////////////////////////////////////////////////////////////////
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -756,7 +626,7 @@ const JobDetailsDescription = () => {
                   <p className="text-muted fs-13 mb-0">Deadline</p>
                   <p className="fw-medium mb-0 ">
                     <span className="badge bg-orangeRed2l text-orangeRed2">
-                      {hiringRequestDetail.duration}
+                      {hiringRequestDetail.durationMMM}
                     </span>
                   </p>
                 </div>
@@ -887,7 +757,7 @@ const JobDetailsDescription = () => {
                     style={{ fontWeight: "600", cursor: "pointer" }}
                     className="text-primary pb-1"
                   >
-                    Accepted
+                    Send
                   </span>
                 </div>
               ) : (
@@ -901,7 +771,7 @@ const JobDetailsDescription = () => {
                     style={{ fontWeight: "600", cursor: "pointer" }}
                     className="pb-1"
                   >
-                    Accepted
+                    Send
                   </span>
                 </div>
               )}
@@ -971,67 +841,7 @@ const JobDetailsDescription = () => {
                   )}
                 </div>
               ) : (
-                <div>
-                  {/* {isSendButtonAcceptVisible && (
-                    <div>
-                      <button
-                        class="btn btn-primary"
-                        role="button"
-                        onClick={handleSendToHR}
-                      >
-                        <span>Send To HR</span>
-                      </button>{" "}
-                      {
-                        <Modal
-                          style={{ padding: "10px" }}
-                          isOpen={isPopConfirmOpenHR}
-                          contentLabel="Confirm Modal"
-                          centered
-                          tabIndex="-1"
-                        >
-                          <div className="modal-header">
-                            <h3 style={{ textAlign: "center" }}>
-                              Confirm sending
-                            </h3>
-                          </div>
-                          <ModalBody className="p-3">
-                            <div>
-                              <h6 style={{ color: "#969BA5" }}>
-                                Are you sure you would like to send this
-                                developer{" "}
-                                <span>
-                                  {selectedDevAccept.map((developer, key) => (
-                                    <span key={key}>
-                                      {getDevNameAccepted(developer)} to company
-                                      partner?. This action can not be undone.
-                                    </span>
-                                  ))}
-                                </span>
-                              </h6>
-                            </div>
-                          </ModalBody>
-
-                          <div className="d-flex justify-content-center gap-5 mt-4 modal-footer">
-                            <button
-                              style={{ width: "100px" }}
-                              className="btn btn-danger"
-                              onClick={handleConfirmCancelHR}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              style={{ width: "100px" }}
-                              className="btn btn-primary"
-                              onClick={handleConfirmHR}
-                            >
-                              Send
-                            </button>
-                          </div>
-                        </Modal>
-                      }
-                    </div>
-                  )} */}
-                </div>
+                <div></div>
               )}
             </div>
             {/* ------------------------------------------------------------------------------------------------------------ */}
@@ -1039,40 +849,23 @@ const JobDetailsDescription = () => {
 
           <div className="d-flex mt-4">
             {currentListDev === "matching" && devMatching.length > 0 ? (
-              <div className="d-flex">
-                <div className="checkbox-all-wrapper-hiring-detail-manager">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={selectAllDevMatching}
-                      onChange={toggleSelectDevAll}
-                    />
-                    <span className="checkbox"></span>
-                  </label>
-                </div>
-
-                <div className="d-flex align-items-center ms-2">
-                  <h4 style={{ display: "contents" }}>
-                    All Developer Matching
+              <div className="d-flex" style={{ width: "100%" }}>
+                <div
+                  className="d-flex align-items-center justify-content-between"
+                  style={{ width: "100%" }}
+                >
+                  <h4 className="mb-0">List Developer Matching</h4>
+                  <h4 className="mb-0 text-muted">
+                    Developer Sent {targetDevManager}/
+                    <span>{hiringRequestDetail.numberOfDev}</span>
                   </h4>
                 </div>
               </div>
             ) : currentListDev === "sent" && devHasBeenSent.length > 0 ? (
               <div className="d-flex">
-                {/* <div className="checkbox-all-wrapper-hiring-detail-manager">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={selectedAllDevAccept}
-                      onChange={toggleSelectedAllDevAccept}
-                    />
-                    <span className="checkbox"></span>
-                  </label>
-                </div> */}
-
                 <div className="d-flex align-items-center ms-2">
                   <h4 style={{ display: "contents" }}>
-                    All Developer Accepted
+                    List Developer Has Been Sent
                   </h4>
                 </div>
               </div>
@@ -1204,9 +997,9 @@ const JobDetailsDescription = () => {
                               <Space size={30} wrap>
                                 <Progress
                                   steps={5}
-                                  percent={candidateDetailsNew.salaryPerDevPercentage.toFixed(
-                                    1
-                                  )}
+                                  percent={
+                                    candidateDetailsNew.salaryPerDevPercentage
+                                  }
                                   strokeColor={getBarColor(
                                     candidateDetailsNew.salaryPerDevPercentage
                                   )}
@@ -1221,9 +1014,7 @@ const JobDetailsDescription = () => {
                               <Space size={30} wrap>
                                 <Progress
                                   steps={5}
-                                  percent={candidateDetailsNew.skillPercentage.toFixed(
-                                    1
-                                  )}
+                                  percent={candidateDetailsNew.skillPercentage}
                                   strokeColor={getBarColor(
                                     candidateDetailsNew.skillPercentage
                                   )}
@@ -1243,26 +1034,10 @@ const JobDetailsDescription = () => {
                       <Col lg={3} className="border-start border-3">
                         <div style={{ height: "100%" }}>
                           <div className="left-side-matching">
-                            {/* <div className="d-flex w-100 justify-content-center mb-3">
-                              <div className="d-flex align-items-center">
-                                <p
-                                  style={{
-                                    display: "contents",
-                                    fontFamily: "Tahoma",
-                                    fontSize: "15px",
-                                  }}
-                                >
-                                  Matching request total
-                                </p>
-                              </div>
-                            </div> */}
-
                             <Space size={10}>
                               <Progress
                                 type="circle"
-                                percent={candidateDetailsNew.averagedPercentage.toFixed(
-                                  2
-                                )}
+                                percent={candidateDetailsNew.averagedPercentage}
                                 size={97}
                                 strokeWidth={9}
                                 strokeColor={getBarColor(
@@ -1288,30 +1063,6 @@ const JobDetailsDescription = () => {
                 >
                   <CardBody className="p-4">
                     <Row className="align-items-center">
-                      {/* <Col lg={1}>
-                        {devHasBeenSentNew.selectedDevStatus ===
-                        "Dev Accepted" ? (
-                          <div className="checkbox-wrapper-hiring-detail-manager d-flex justify-content-center">
-                            <label>
-                              <input
-                                type="checkbox"
-                                checked={selectedDevAccept.includes(
-                                  devHasBeenSentNew.developerId
-                                )}
-                                onChange={() =>
-                                  toggleDevAcceptSelection(
-                                    devHasBeenSentNew.developerId
-                                  )
-                                }
-                              />
-                              <span className="checkbox"></span>
-                            </label>
-                          </div>
-                        ) : (
-                          <div></div>
-                        )}
-                      </Col> */}
-
                       <Col lg={6}>
                         <div className="candidate-list-content mt-3 mt-lg-0">
                           <h5 className="fs-19 mb-0 d-flex">
@@ -1400,9 +1151,9 @@ const JobDetailsDescription = () => {
                               <Space size={30} wrap>
                                 <Progress
                                   steps={5}
-                                  percent={devHasBeenSentNew.salaryPerDevPercentage.toFixed(
-                                    1
-                                  )}
+                                  percent={
+                                    devHasBeenSentNew.salaryPerDevPercentage
+                                  }
                                   strokeColor={getBarColor(
                                     devHasBeenSentNew.salaryPerDevPercentage
                                   )}
@@ -1417,9 +1168,7 @@ const JobDetailsDescription = () => {
                               <Space size={30} wrap>
                                 <Progress
                                   steps={5}
-                                  percent={devHasBeenSentNew.skillPercentage.toFixed(
-                                    1
-                                  )}
+                                  percent={devHasBeenSentNew.skillPercentage}
                                   strokeColor={getBarColor(
                                     devHasBeenSentNew.skillPercentage
                                   )}
@@ -1441,43 +1190,41 @@ const JobDetailsDescription = () => {
                           <div className="d-flex justify-content-end mb-3">
                             <span
                               className={
-                                devHasBeenSentNew.selectedDevStatus ===
+                                devHasBeenSentNew.hiredDeveloperStatus ===
                                 "Interview Scheduled"
                                   ? "badge bg-primary text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
+                                  : devHasBeenSentNew.hiredDeveloperStatus ===
                                     "Rejected"
                                   ? "badge bg-danger text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
+                                  : devHasBeenSentNew.hiredDeveloperStatus ===
                                     "Waiting Interview"
                                   ? "badge bg-warning text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
+                                  : devHasBeenSentNew.hiredDeveloperStatus ===
                                     "Under Consideration"
                                   ? "badge bg-blue text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
+                                  : devHasBeenSentNew.hiredDeveloperStatus ===
                                     "Onboarding"
                                   ? "badge bg-newGreen text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
+                                  : devHasBeenSentNew.hiredDeveloperStatus ===
                                     "Contract Processing"
                                   ? "badge bg-warning text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
+                                  : devHasBeenSentNew.hiredDeveloperStatus ===
                                     "Contract Failed"
                                   ? "badge bg-danger text-light"
-                                  : devHasBeenSentNew.selectedDevStatus ===
+                                  : devHasBeenSentNew.hiredDeveloperStatus ===
                                     "Request Closed"
                                   ? "badge bg-danger text-light"
                                   : ""
                               }
                             >
-                              {devHasBeenSentNew.selectedDevStatus}
+                              {devHasBeenSentNew.hiredDeveloperStatus}
                             </span>
                           </div>
                           <div className="right-side-percen-matching-devaccepted">
                             <Space size={10}>
                               <Progress
                                 type="circle"
-                                percent={devHasBeenSentNew.averagedPercentage.toFixed(
-                                  2
-                                )}
+                                percent={devHasBeenSentNew.averagedPercentage}
                                 size={97}
                                 strokeWidth={9}
                                 strokeColor={getBarColor(
