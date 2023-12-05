@@ -345,7 +345,6 @@ const ReportList = () => {
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWeb choose={"menu-key/16"}></SiderBarWeb>
-
         <Layout>
           <div
             style={{

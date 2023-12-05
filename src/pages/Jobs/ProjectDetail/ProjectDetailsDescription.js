@@ -17,7 +17,8 @@ import {
   TabPane,
   TabContent,
   Input,
-  Collapse
+  Collapse,
+  Form
 } from "reactstrap";
 import { Await, Link, Navigate, useLocation } from "react-router-dom";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
@@ -32,14 +33,16 @@ import {
   faAngleRight,
   faAngleLeft,
   faGear,
-  faCircle
+  faCircle,
+  faMobileScreen
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
   faCircleXmark,
   faImage,
   faEnvelope,
-  faCalendar
+  faCalendar,
+
 } from "@fortawesome/free-regular-svg-icons";
 import { Modal as AntdModal, Button as AntdButton } from "antd";
 import "./index.css";
@@ -83,9 +86,16 @@ import { HashLoader } from "react-spinners";
 import customUrl from "../../../utils/customUrl";
 import paymentServices from "../../../services/payment.services";
 import { Menu } from 'antd';
+import Select from "react-select";
+import JobType from "../../Home/SubSection/JobType";
+import skillService from "../../../services/skill.service";
+import typeService from "../../../services/type.service";
+import levelService from "../../../services/level.service";
+import { Input as InputAntd } from 'antd';
 dayjs.extend(customParseFormat);
 
 const ProjectDetailDesciption = () => {
+  const { Search } = InputAntd;
   const formatTimePicker = 'HH:mm';
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -119,19 +129,29 @@ const ProjectDetailDesciption = () => {
   const [minDateDuration, setMinDateDuration] = useState();
   const [maxDateDuration, setMaxDateDuration] = useState();
   const [workLogIdOnClick, setWorkLogIdOnClick] = useState(0);
+  const [payslipIdOnClick, setPayslipIdOnClick] = useState(0);
   const [editingPositions, setEditingPositions] = useState({});
   const [editingPositionSelect, setEditingPositionSelect] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const [countSetTime, setCountSetTime] = useState(0);
   const [isEditWorkLog, setIsEditWorkLog] = useState(false);
-  const [isCancelEditWorkLog, setIsCancelEditWorkLog] = useState(false);
+  const [isCompleteEditWorkLog, setIsCompleteEditWorkLog] = useState(true);
+  const [loadListWorkLog, setLoadListWorkLog] = useState(false);
+  const [paySlipIdLoad, setPaySlipIdLoad] = useState(null);
+  const [isEditPayslip, setIsEditPayslip] = useState(false);
+  const [isCancelEditWorkLog, setIsCancelEditWorkLog] = useState();
+  const [isCancelEditPayslip, setIsCancelEditPayslip] = useState(false);
   const [startTimeWorkLogSave, setStartTimeWorkLogSave] = useState(false);
   const [endTimeWorkLogSave, setEndTimeWorkLogSave] = useState(false);
+  const [statusWorkLogSave, setStatusWorkLogSave] = useState();
+  const [isUpdateWorkLog, setIsUpdateWorkLog] = useState();
+  const [totalOTPayslipSave, setTotalOTPayslipSave] = useState(false);
   const [timeErrorWorkLog, setTimeErrorWorkLog] = useState([]);
   const [currentDateBill, setCurrentDateBill] = useState();
   const [key, setKey] = useState(Date.now());
   const [editableRowId, setEditableRowId] = useState(null);
-
+  const [ediPaySlipRowId, setEdiPaySlipRowId] = useState(null);
+  const [idDeveloperReport, setIdDeveloperReport] = useState(null);
   const [dateValue, setDateValue] = useState(new Date());
   const [loadingGenerateExel, setLoadingGenerateExel] = useState(false);
   const [loadingImportExel, setLoadingImportExel] = useState(false);
@@ -140,19 +160,87 @@ const ProjectDetailDesciption = () => {
   const [keyPayRoll, setKeyPayRoll] = useState(null);
   const [keyWorkLog, setKeyWorkLog] = useState(null);
   const [positionIdChose, setPositionIdChose] = useState(null);
+  const [keyPayslip, setKeyPayslip] = useState(null);
 
   const [showPopup, setShowPopup] = useState(false);
   const [isHavePayment, setIsHavePaymemt] = useState(false);
   const [showDropdown, setShowDropdown] = useState({});
+  let [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const toggleDropdown = (jobPositionId) => {
-    setShowDropdown(prevState => ({
-      ...prevState,
-      [jobPositionId]: !prevState[jobPositionId] // Toggle the dropdown state for the corresponding jobPositionId
-    }));
+  const [search, setSearch] = useState("");
+  const [skill, setSkill] = useState([]);
+  const [typeRequire, setTypeRequire] = useState(null);
+  const [levelRequire, setLevelRequire] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [startSalaryPerDev, setStartSalaryPerDev] = useState([]);
+  const [endSalartPerDev, setEndSalartPerDev] = useState([]);
+
+  const [options, setOptions] = useState([]);
+  const [options2, setOptions2] = useState([]);
+  const [options3, setOptions3] = useState([]);
+  const [options4, setOptions4] = useState([]);
+  const [valuesStatus, setValuesStatus] = useState({});
+  const optionsStatus = [
+    { label: 'Normally', value: 0 },
+    { label: 'Paid leave', value: 1 },
+    { label: 'Unpaid leave', value: 2 },
+  ];
+  const redButtonStyle = {
+    backgroundColor: 'red',
+    borderColor: 'red', // Set border color to match if needed
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
   };
 
 
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+    if (
+      totalPages > maxPageButtons &&
+      currentPage <= Math.floor(maxPageButtons / 2) + 1
+    ) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${i === currentPage ? "active" : ""}`}
+        >
+          <div className="page-link" onClick={() => handlePageClick(i)}>
+            {i}
+          </div>
+        </li>
+      );
+    }
+
+    return pageNumbers;
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const initialSkillsState = jobVacancyList.reduce(
+    (acc, job) => ({ ...acc, [job.id]: false }),
+    {}
+  );
+
+  const [showFullSkills, setShowFullSkills] = useState(initialSkillsState);
 
   // Function to handle payment execution on backend
   const executePayment = async (paymentId, payerId) => {
@@ -178,21 +266,7 @@ const ProjectDetailDesciption = () => {
     // Thực hiện các thao tác khác khi người dùng thay đổi ngày
   };
 
-  const generateItems = () => {
-    return [
-      {
-        label: (
-          <div
-            style={{ width: "100px" }}
-            onClick={() => onUpdateWorkLog()}
-          >
-            Edit
-          </div>
-        ),
-        key: '0',
-      }
-    ];
-  };
+
 
   const profileItems = [
     {
@@ -222,7 +296,6 @@ const ProjectDetailDesciption = () => {
               onOk() {
                 // Action when the user clicks OK
                 console.log('Confirmed!');
-                deleteJobPosition(positionIdChose);
               },
               onCancel() {
                 // Action when the user cancels
@@ -258,39 +331,77 @@ const ProjectDetailDesciption = () => {
   ]
 
 
+  const profileItems3 = [
+    {
+      key: "1",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => onUpdatePaySlip()}
+        >
+          Edit
+        </div>
+      ),
+    },
+  ]
 
 
-
-  const generateItems2 = () => {
-    return [
-      {
-        label: (
-          <div
-            style={{ width: "100px" }}
+  const profileItems4 = [
+    {
+      key: "1",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => reportDeveloper()}
+        >
+          Report
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <div
+          style={{ width: "100px" }}
           // onClick={() => onUpdateWorkLog()}
-          >
-            Edit 2
-          </div>
-        ),
-        key: '1',
-      }
-    ];
-  };
+          onClick={() => {
+            AntdModal.confirm({
+              title: 'Confirm delete job position',
+              content: (<div>
+                <p>Are you sure to delete this job position?</p>
+                <p>All activities in the hiring request of this job position will stop</p>
+              </div>),
+              onOk() {
+                // Action when the user clicks OK
+                console.log('Confirmed!');
+              },
+              onCancel() {
+                // Action when the user cancels
+                console.log('Cancelled!');
+              },
+              footer: (_, { OkBtn, CancelBtn }) => (
+                <>
+                  <CancelBtn />
+                  <OkBtn />
+                </>
+              ),
+            });
+          }}
+        >
+          Delete
+        </div>
+      ),
+    },
+  ]
 
   const [showCollapse, setShowCollapse] = useState(Array(payRollDetail.length).fill(false));
-
-
-  const items = generateItems();
-
-  const items2 = generateItems();
-
-
 
   const toggleCollapse = (key2, paySlipId) => {
     setKeyPayRoll(key2);
     const newShowCollapse = [...showCollapse];
     newShowCollapse[key2] = !newShowCollapse[key2];
     setShowCollapse(newShowCollapse);
+    setPaySlipIdLoad(paySlipId)
     fetchWorklog(paySlipId);
   };
 
@@ -299,6 +410,11 @@ const ProjectDetailDesciption = () => {
     setKeyWorkLog(key)
   };
 
+  const setPayRollEdit = (payrollId, key) => {
+    setPayslipIdOnClick(payrollId)
+    setKeyPayslip(key)
+
+  };
 
   const [activeTabMini, setActiveTabMini] = useState("5");
   const tabChangeMini = (tabMini) => {
@@ -313,9 +429,18 @@ const ProjectDetailDesciption = () => {
     setIsModalOpen(true);
   };
 
-  const openModalCreateHiringrequest = (hiringRequestId, jobPositionId) => {
+  const reportDeveloper = () => {
+    const queryParams = new URLSearchParams(location.search);
+    const projectId = queryParams.get("Id");
+    const state = {
+      projectId: projectId,
+      developer: idDeveloperReport
+    };
+    navigate("/createReport", { state });
+  };
+
+  const openModalCreateHiringrequest = (hiringRequestId) => {
     setSelectedHiringRequestInfo(hiringRequestId);
-    setSelectedJobPositionInfo(jobPositionId);
     setIsModalCreateOpen(true);
   };
 
@@ -324,21 +449,160 @@ const ProjectDetailDesciption = () => {
     setIsModalOpen(false);
   };
 
-
+  const handleChangeStatus = (selected) => {
+    console.log(selected)
+    const key = '' + keyPayRoll + keyWorkLog;
+    setValuesStatus(prevState => ({
+      ...prevState,
+      [key]: selected
+    }));
+  };
 
   const closeModalCreateHiringRequest = () => {
     setSelectedHiringRequestInfo(null);
-    setSelectedJobPositionInfo(null);
     setIsModalCreateOpen(false);
     fetchJobVacancies();
   };
+
+  const fetchOptions = async () => {
+    try {
+      const response = await skillService.getAllSkill();
+
+      if (response.data && response.data.data) {
+        // Transform API data into the format expected by react-select
+        const formattedOptions = response.data.data.map((item) => ({
+          label: item.skillName,
+          value: item.skillId.toString(),
+        }));
+
+        setOptions(formattedOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchOptions2 = async () => {
+    try {
+      const response = await typeService.getAllType();
+
+      if (response.data && response.data.data) {
+        // Transform API data into the format expected by react-select
+        const formattedOptions = response.data.data.map((item) => ({
+          label: item.typeName,
+          value: item.typeId.toString(),
+        }));
+
+        setOptions2(formattedOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchOptions3 = async () => {
+    try {
+      const response = await levelService.getAllLevel();
+
+      if (response.data && response.data.data) {
+        // Transform API data into the format expected by react-select
+        const formattedOptions = response.data.data.map((item) => ({
+          label: item.levelName,
+          value: item.levelId.toString(),
+        }));
+
+        setOptions3(formattedOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchOptions4 = async () => {
+    try {
+      const response = await hiringrequestService.getAllStatusHiringRequest();
+
+      if (response.data && response.data.data) {
+        // Transform API data into the format expected by react-select
+        const formattedOptions = response.data.data.map((item) => ({
+          label: item.statusName,
+          value: item.statusId.toString(),
+        }));
+
+        setOptions4(formattedOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOptions();
+    fetchOptions2();
+    fetchOptions3();
+    fetchOptions4();
+  }, []); // Empty dependency array ensures the effect runs once on component mount
+
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      cursor: 'default', // Đặt con trỏ chuột thành mặc định để ngăn việc chọn
+      color: state.isDisabled ? 'red' : 'red', // Màu chữ khi disable và khi enable
+    }),
+  };
+
+  const colourStyles = {
+    control: (styles) => ({
+      ...styles,
+      border: 0,
+      boxShadow: "none",
+      padding: "12px 0 12px 40px",
+      margin: "-16px -6px 0 -52px",
+      borderRadius: "0",
+      backgroundColor: "#fafafa"
+    })
+  };
+
+  const setSkillValue = (selectedOption) => {
+    if (!selectedOption) {
+      setSkill(null); // Hoặc giá trị thích hợp để biểu thị hủy chọn
+    } else {
+      setSkill(selectedOption);
+    }
+  }
+
+
+  const setTypeValue = (selectedOption) => {
+    if (!selectedOption) {
+      setTypeRequire(null); // Hoặc giá trị thích hợp để biểu thị hủy chọn
+    } else {
+      setTypeRequire(selectedOption);
+    }
+  }
+
+  const setLevelValue = (selectedOption) => {
+    if (!selectedOption) {
+      setLevelRequire(null); // Hoặc giá trị thích hợp để biểu thị hủy chọn
+    } else {
+      setLevelRequire(selectedOption);
+    }
+  }
+
+  const setStatusValue = (selectedOption) => {
+    if (!selectedOption) {
+      setStatus(null); // Hoặc giá trị thích hợp để biểu thị hủy chọn
+    } else {
+      setStatus(selectedOption);
+    }
+  }
 
 
   const fetchListDeveloperOnboard = async () => {
     try {
       const queryParams = new URLSearchParams(location.search);
       const projectId = queryParams.get("Id");
-      const response = await developerServices.getListDeveloperOnboardByProjectId(projectId);
+      const status = [8, 9];
+      const response = await developerServices.getListDeveloperOnboardByProjectId(projectId, status);
       console.log("list developer onboard:")
       console.log(response)
       const data = response.data;
@@ -367,11 +631,13 @@ const ProjectDetailDesciption = () => {
           addclassNameBookmark: false,
           label: false,
           skills: dev.skillRequireStrings,
-          selectedDevStatus: dev.selectedDevStatus,
+          hiredDevStatusString: dev.hiredDevStatusString,
           interviewRound: dev.interviewRound,
           userImage: dev.userImage,
           lastWord: lastWord,
           email: dev.email,
+          phoneNumber: dev.phoneNumber,
+
         };
       });
       setDeveloperOnboardList(listDeveloperOnboard);
@@ -496,25 +762,6 @@ const ProjectDetailDesciption = () => {
     }
   };
 
-  const fetchJobPosition = async () => {
-    let response;
-    // const saveData = localStorage.getItem("myData");
-
-    try {
-      const queryParams = new URLSearchParams(location.search);
-      const projectId = queryParams.get("Id");
-      setProjectId(projectId);
-      response = await jobPositionServices.getJobPostionByProjectId(projectId);
-      console.log(response.data.data.length);
-      setListJobPosition(response.data.data);
-      if (response.data.data.length > 3) {
-        setShowScroll(true)
-      }
-      return response;
-    } catch (error) {
-      console.error("Error fetching job vacancies:", error);
-    }
-  };
 
   const fetchWorklog = async (paySlipId) => {
     let response;
@@ -528,13 +775,13 @@ const ProjectDetailDesciption = () => {
     }
   };
 
-  const updatedWorkLog = async (timeIn, timeOut) => {
+  const updatedWorkLog = async (timeIn, timeOut, isPaid) => {
     let response;
     try {
       console.log(workLogIdOnClick)
       console.log(timeIn)
       console.log(timeOut)
-      response = await workLogServices.updateWorkLog(workLogIdOnClick, timeIn, timeOut);
+      response = await workLogServices.updateWorkLog(workLogIdOnClick, timeIn, timeOut, isPaid);
       console.log("worklog21312312312")
       console.log(response.data.data)
       const temp = "hourInDay" + response.data.data.workLogId;
@@ -548,26 +795,40 @@ const ProjectDetailDesciption = () => {
         fetchDetailPayPeriod(newDate)
       }
       toast.success("Update worklog successfully")
+      setLoadListWorkLog(!loadListWorkLog);
+      setIsCompleteEditWorkLog(true);
       setEditableRowId(null);
     } catch (error) {
+      setIsCompleteEditWorkLog(false);
       console.error("Error fetching job vacancies:", error);
       toast.error("Update worklog fail")
     }
   };
 
-  const deleteJobPosition = async (jobPositionId) => {
+  const updatedPayslip = async (totalOT) => {
     let response;
     try {
-      response = await jobPositionServices.deleteJobPosition(jobPositionId);
+      console.log(payslipIdOnClick)
+      console.log(totalOT)
+      response = await paySlipServices.updateTotalOTPayslip(payslipIdOnClick, totalOT);
       console.log(response.data.data)
-      toast.success("Delete job position successfully")
-      fetchJobPosition();
-      fetchJobVacancies();
+
+
+      const temp2 = listEndDay[currentMonthIndex];
+      if (temp2) {
+        const parts = temp2.split('.');
+        const newDate = `${parts[2]}-${parts[1]}-25`;
+        fetchDetailPayPeriod(newDate)
+      }
+      toast.success("Update payslip successfully")
+      setEdiPaySlipRowId(null);
     } catch (error) {
-      toast.error("Delete job position fail")
       console.error("Error fetching job vacancies:", error);
+      toast.error("Update payslip fail")
     }
   };
+
+
 
   const openPayment = async (payPeriodId) => {
     setLoading(true);
@@ -586,7 +847,7 @@ const ProjectDetailDesciption = () => {
       console.log(response);
       if (response.data.code === 200) {
         console.log("mo cua so")
-        const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=600, height=400, top=100, left=100';
+        const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=800, height=800, top=100, left=600';
         const popupWindow = window.open(response.data.data, "popupWindow", windowFeatures);
         function checkPopupStatus() {
           if (popupWindow && popupWindow.closed) {
@@ -633,10 +894,24 @@ const ProjectDetailDesciption = () => {
       console.log(response)
       setPayPeriodDetail(response.data.data);
       if (response.data.code === 200) {
-        console.log("cho nay ms bi goi lai")
-        console.log(response.data.data.payPeriodId)
+        console.log("cho nay ms bi goi lai");
+        console.log(response.data.data.payPeriodId);
         const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
-        setPayRollDetail(response2.data.data);
+        console.log("response2")
+        console.log(response2)
+        if (response.data.code == 200) {
+          setPayRollDetail(response2.data.data);
+          response2.data.data.forEach((payRollDetailNew, key2) => {
+            const temp = "totalOT" + key2;
+            console.log(temp)
+            const element = document.getElementById(temp);
+            if (element) {
+              console.log("co")
+              console.log(payRollDetailNew.totalOvertimeHours)
+              element.value = payRollDetailNew.totalOvertimeHours;
+            }
+          });
+        }
       }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -657,7 +932,6 @@ const ProjectDetailDesciption = () => {
 
     setCurrentDateBill(formattedDate);
 
-    fetchJobPosition();
   }, []);
 
   useEffect(() => {
@@ -674,17 +948,49 @@ const ProjectDetailDesciption = () => {
       document.getElementById(temp2).value = log.timeIn;
       const temp = "endTimeWorkLog2" + keyPayRoll + count;
       document.getElementById(temp).value = log.timeOut;
+      const key = '' + keyPayRoll + count;
+      var status;
+      if (log.isPaidLeave == null) {
+        console.log("null")
+        status = { label: 'Normally', value: 0 };
+      } else {
+        if (log.isPaidLeave == true) {
+          status = { label: 'Paid leave', value: 1 };
+        } else {
+          status = { label: 'Unpaid leave', value: 2 };
+        }
+      }
+      setValuesStatus(prevState => ({
+        ...prevState,
+        [key]: status
+      }));
       count += 1;
-    });
 
+    });
     setCountSetTime(countSetTime + 1)
   }, [workLoglist]);
 
+
+  useEffect(() => {
+    fetchWorklog(paySlipIdLoad);
+  }, [loadListWorkLog]);
+
+
   const onUpdateWorkLog = () => {
+    setIsCompleteEditWorkLog(false);
     const foundLog = workLoglist.find(log => log.workLogId === workLogIdOnClick);
     setStartTimeWorkLogSave(foundLog.timeIn);
     setEndTimeWorkLogSave(foundLog.timeOut);
+    console.log("foundLog.isPaidLeave");
+    console.log(foundLog.isPaidLeave);
+    setStatusWorkLogSave(foundLog.isPaidLeave);
     setEditableRowId(workLogIdOnClick);
+  };
+
+  const onUpdatePaySlip = () => {
+    const foundLog = payRollDetail.find(log => log.paySlipId === payslipIdOnClick);
+    setTotalOTPayslipSave(foundLog.totalOvertimeHours)
+    setEdiPaySlipRowId(payslipIdOnClick);
   };
 
   useEffect(() => {
@@ -731,18 +1037,51 @@ const ProjectDetailDesciption = () => {
       if (workLogIdOnClick) {
         const temp2 = "endTimeWorkLog" + keyPayRoll + keyWorkLog;
         const temp = "endTimeWorkLog2" + keyPayRoll + keyWorkLog;
-        if (formatTime00(document.getElementById(temp2).value) >= formatTime00(document.getElementById(temp).value)) {
+        const key = '' + keyPayRoll + keyWorkLog;
+        var statusSave;
+        if (statusWorkLogSave == null) {
+          statusSave = { label: 'Normally', value: 0 };
+        } else {
+          if (statusWorkLogSave == true) {
+            statusSave = { label: 'Paid leave', value: 1 };
+          } else {
+            statusSave = { label: 'Unpaid leave', value: 2 };
+          }
+        }
+        const status = valuesStatus[key]
+        console.log(statusSave)
+        console.log(status)
+        if (statusSave.value == status.value) {
+          console.log("giong nhau")
+        } else {
+          console.log("khac nhau")
+        }
+        if (formatTime00(document.getElementById(temp2).value) >= formatTime00(document.getElementById(temp).value) && status.value == 0) {
           const temp3 = "timeErrorWorkLog" + workLogIdOnClick;
           document.getElementById(temp3).innerHTML = "The start time of work must be less than the end time of work";
+          setIsCompleteEditWorkLog(false);
         } else {
-          if (formatTime00(document.getElementById(temp2).value) != startTimeWorkLogSave || formatTime00(document.getElementById(temp).value) != endTimeWorkLogSave) {
-            updatedWorkLog(formatTime00(document.getElementById(temp2).value), formatTime00(document.getElementById(temp).value))
+          const temp3 = "timeErrorWorkLog" + workLogIdOnClick;
+          document.getElementById(temp3).innerHTML = "";
+          if (formatTime00(document.getElementById(temp2).value) != startTimeWorkLogSave || formatTime00(document.getElementById(temp).value) != endTimeWorkLogSave || statusSave.value != status.value) {
+            console.log("co update")
+            var isPaid;
+            if (status.value == 0) {
+              isPaid = null;
+            }
+            if (status.value == 1) {
+              isPaid = true;
+            }
+            if (status.value == 2) {
+              isPaid = false;
+            }
+            updatedWorkLog(formatTime00(document.getElementById(temp2).value), formatTime00(document.getElementById(temp).value), isPaid)
           } else {
+            setIsCompleteEditWorkLog(true);
             setEditableRowId(null);
           }
         }
       }
-
     } else {
       try {
         console.log("false")
@@ -751,6 +1090,24 @@ const ProjectDetailDesciption = () => {
 
         const temp = "endTimeWorkLog2" + keyPayRoll + keyWorkLog;
         document.getElementById(temp).value = endTimeWorkLogSave;
+
+        const key = '' + keyPayRoll + keyWorkLog;
+        var status;
+        if (statusWorkLogSave == null) {
+          console.log("null")
+          status = { label: 'Normally', value: 0 };
+        } else {
+          if (statusWorkLogSave == true) {
+            status = { label: 'Paid leave', value: 1 };
+          } else {
+            status = { label: 'Unpaid leave', value: 2 };
+          }
+        }
+        setValuesStatus(prevState => ({
+          ...prevState,
+          [key]: status
+        }));
+        setIsCompleteEditWorkLog(true);
         setEditableRowId(null);
       } catch (error) {
         console.log("Loi khi update worklog", error)
@@ -758,50 +1115,86 @@ const ProjectDetailDesciption = () => {
     }
   }, [isEditWorkLog]);
 
+
+  useEffect(() => {
+    if (!isCancelEditPayslip) {
+      if (payslipIdOnClick) {
+        const temp2 = "totalOT" + keyPayslip;
+        if (formatTime00(document.getElementById(temp2).value) < 0) {
+          const temp = "totalOT" + keyPayslip;
+          console.log(temp)
+          document.getElementById(temp).value = totalOTPayslipSave;
+          setEdiPaySlipRowId(null);
+        } else {
+          if (formatTime00(document.getElementById(temp2).value) != totalOTPayslipSave) {
+            updatedPayslip(document.getElementById(temp2).value)
+          } else {
+            setEdiPaySlipRowId(null);
+          }
+        }
+      }
+    } else {
+      try {
+        console.log("false")
+        const temp2 = "totalOT" + keyPayslip;
+        console.log(temp2)
+        document.getElementById(temp2).value = totalOTPayslipSave;
+        setEdiPaySlipRowId(null);
+      } catch (error) {
+        console.log("Loi khi update worklog", error)
+      }
+    }
+  }, [isEditPayslip]);
+
   const fetchJobVacancies = async () => {
     let response;
     try {
+      const skillSearch = skill.map(skill => skill.value);
+      const levelSearch = typeRequire ? typeRequire.value : "";
+      const typeSearch = levelRequire ? levelRequire.value : "";
+      const statusSearch = status ? status.value : "";
+      const inputSearch = search;
       const queryParams = new URLSearchParams(location.search);
       const projectId2 = queryParams.get("Id");
 
-      response = await jobPositionServices.getJobPositionsWithHiringRequest(
-        projectId2
+      response = await hiringrequestService.getAllHiringRequestByProjectIdAndPaging(
+        projectId2, currentPage, 5, skillSearch, levelSearch, typeSearch, inputSearch, statusSearch
       );
-      // }
-      const data = response.data;
 
-      const hasMoreThanThreeRequests = data.data.some(job => job.totalHiringRequest > 2);
+      const formattedJobVacancies = response.data.data.map((job) => {
+        // Assuming job.typeRequireName and job.levelRequireName are available
+        job.skillRequireStrings.unshift(
+          job.typeRequireName,
+          job.levelRequireName
+        );
+        return {
+          requestId: job.requestId,
+          projectId: job.projectId,
+          companyId: job.companyId,
+          requestCode: job.requestCode,
+          jobTitle: job.jobTitle,
+          jobDescription: job.jobDescription,
+          numberOfDev: job.numberOfDev,
+          targetedDev: job.targetedDev,
+          createdAt: job.createdAt,
+          salaryPerDev: job.salaryPerDev,
+          durationMMM: job.durationMMM,
+          duration: job.duration,
+          employmentTypeName: job.employmentTypeName,
+          typeRequireName: job.typeRequireName,
+          levelRequireName: job.levelRequireName,
+          statusString: job.statusString,
+          skillRequireStrings: job.skillRequireStrings,
+          postedTime: job.postedTime,
+          showFullSkills: false,
+          badges: [],
+          experience: job.skillRequireStrings.join(", "),
+        };
+      });
 
-      // Set checkHeightListHiringRequest based on the condition
-      if (hasMoreThanThreeRequests) {
-        setCheckHeightListHiringRequest(true);
-      }
-
-      const formattedJobVacancies = data.data.map((job) => {
-        return job.requestsInJobPosition.map((request) => ({
-          id: request.requestId,
-          duration: request.durationMMM,
-          numberOfDev: request.numberOfDev,
-          statusString: request.statusString,
-          jobTitle: request.jobTitle,
-          positionName: job.positionName,
-          jobPositionId: job.jobPositionId,
-          timing: request.statusString,
-          targetedDev: request.targetedDev,
-          done: request.statusString.includes("Done"),
-          save: request.statusString.includes("Saved"),
-          waitingApproval: request.statusString.includes("Waiting Approval"),
-          inProgress: request.statusString.includes("In Progress"),
-          rejected: request.statusString.includes("Rejected"),
-          expired: request.statusString.includes("Expired"),
-          cancelled: request.statusString.includes("Cancelled"),
-          finished: request.statusString.includes("Finished"),
-          completed: request.statusString.includes("Completed"),
-        }));
-      }).flat();
-
-      console.log(response.data);
       setJobVacancyList(formattedJobVacancies);
+      setTotalPages(Math.ceil(response.data.paging.total / 5));
+
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -811,14 +1204,24 @@ const ProjectDetailDesciption = () => {
     fetchJobVacancies();
   }, []);
 
+  useEffect(() => {
+    fetchJobVacancies();
+  }, [currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    fetchJobVacancies();
+  }, [skill, typeRequire, levelRequire, status]);
+
   const tabChange = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
 
-  const openHiringRequestDetail = (requestId, statusString, jobPositionId) => {
+
+  const openHiringRequestDetail = (requestId, statusString) => {
     if (statusString === "Saved") {
-      openModalCreateHiringrequest(requestId, jobPositionId);
+      openModalCreateHiringrequest(requestId);
     } else {
       navigate('/hiringrequestlistincompanypartnerdetail?Id=' + requestId);
     }
@@ -829,37 +1232,46 @@ const ProjectDetailDesciption = () => {
     setShowInput(!showInput);
   };
 
-  const createJobPosition = async () => {
-    try {
-      const queryParams = new URLSearchParams(location.search);
-      const projectId = queryParams.get("Id");
-      const positionName = document.getElementById("job-position-input").value;
-      const response = await jobPositionServices.createJobPosition(projectId, positionName);
-      fetchJobPosition();
-      toggleInput();
-      toast.success("Create job position successfully")
-    } catch (error) {
-      console.error("Error create Job Position:", error);
-    }
+
+
+  const ctestUpdateWorkLog = () => {
+    const key = '' + keyPayRoll + keyWorkLog;
+    console.log(valuesStatus[key])
   };
+
 
   const cancelUpdateWorkLog = () => {
     setIsEditWorkLog(!isEditWorkLog);
     setIsCancelEditWorkLog(true);
   };
 
+
   const saveUpdateWorkLog = () => {
     setIsEditWorkLog(!isEditWorkLog);
     setIsCancelEditWorkLog(false);
   };
 
+  const cancelUpdatePayslip = () => {
+    setIsEditPayslip(!isEditPayslip);
+    setIsCancelEditPayslip(true);
+  };
+
+  const saveUpdatePayslip = () => {
+    setIsEditPayslip(!isEditPayslip);
+    setIsCancelEditPayslip(false);
+  };
+
   const nextMonth = () => {
+    const updatedShowCollapse = showCollapse.map(() => false);
+    setShowCollapse(updatedShowCollapse);
     if (currentMonthIndex < listMonth.length - 1) {
       setCurrentMonthIndex(currentMonthIndex + 1);
     }
   };
 
   const previousMonth = () => {
+    const updatedShowCollapse = showCollapse.map(() => false);
+    setShowCollapse(updatedShowCollapse);
     if (currentMonthIndex > 0) {
       setCurrentMonthIndex(currentMonthIndex - 1);
     }
@@ -935,7 +1347,11 @@ const ProjectDetailDesciption = () => {
     }
   };
 
+  const onSearch = () => {
+    setCurrentPage(1);
+    fetchJobVacancies();
 
+  };
 
   return (
     <React.Fragment>
@@ -1065,78 +1481,6 @@ const ProjectDetailDesciption = () => {
                 </CardBody>
               </Card>
             </div>
-            {/* <div class="col-lg-3 d-flex flex-column gap-4"> 
-              <Card className="job-overview ">
-                <CardBody className="p-4">
-                  <h4>Project Overview</h4>
-                  <ul className="list-unstyled mt-4 mb-0">
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">Hiring Request Title</h6>
-                          <p className="text-muted mb-0">
-                             {hiringRequestDetail.jobTitle}
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-user-square icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">No. Dev</h6>
-                          <p className="text-muted mb-0">
-                             {hiringRequestDetail.numberOfDev}
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-star-half-alt icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">Employment Type</h6>
-                          <p className="text-muted mb-0">{hiringRequestDetail.employmentTypeName}</p> 
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">Offered Salary Per Dev</h6>
-                          <p className="text-muted mb-0">
-                            {hiringRequestDetail.salaryPerDev} VND 
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">Position</h6>
-                         <p className="text-muted mb-0">{hiringRequestDetail.positionName}</p> 
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="d-flex mt-4">
-                        <i className="uil uil-history icon bg-primary-subtle text-primary"></i>
-                        <div className="ms-3">
-                          <h6 className="fs-14 mb-0">Date Posted</h6>
-                          {hiringRequestDetail.postedTime} 
-                          <p className="text-muted mb-0"></p>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </CardBody>
-              </Card>
-            </div>*/}
             <div class="col-lg-11 " style={{ padding: "0px" }}>
               <Card
                 className="profile-content-page mt-4 mt-lg-0"
@@ -1149,7 +1493,6 @@ const ProjectDetailDesciption = () => {
                 >
                   <NavItem role="presentation">
                     <NavLink
-                      to="#"
                       className={classnames({ active: activeTab === "1" })}
                       onClick={() => {
                         tabChange("1");
@@ -1162,7 +1505,6 @@ const ProjectDetailDesciption = () => {
                   </NavItem>
                   <NavItem role="presentation">
                     <NavLink
-                      to="#"
                       className={classnames({ active: activeTab === "2" })}
                       onClick={() => {
                         tabChange("2");
@@ -1175,7 +1517,6 @@ const ProjectDetailDesciption = () => {
                   </NavItem>
                   <NavItem role="presentation">
                     <NavLink
-                      to="#"
                       className={classnames({ active: activeTab === "3" })}
                       onClick={() => {
                         tabChange("3");
@@ -1188,7 +1529,6 @@ const ProjectDetailDesciption = () => {
                   </NavItem>
                   <NavItem role="presentation">
                     <NavLink
-                      to="#"
                       className={classnames({ active: activeTab === "4" })}
                       onClick={() => {
                         tabChange("4");
@@ -1196,6 +1536,18 @@ const ProjectDetailDesciption = () => {
                       type="button"
                     >
                       Payment
+                    </NavLink>
+                  </NavItem>
+                  <NavItem role="presentation">
+                    <NavLink
+                      className={classnames({ active: activeTab === "5" })}
+                      onClick={() => {
+                        tabChange("5");
+                      }}
+                      type="button"
+                    // style={{paddingLeft:"0px"}}
+                    >
+                      Hiring request new
                     </NavLink>
                   </NavItem>
                 </Nav>
@@ -1257,7 +1609,7 @@ const ProjectDetailDesciption = () => {
                                     if (jobVacancyListDetails.jobPositionId === jobPosition.jobPositionId) {
                                       return (
                                         <div
-                                          onClick={() => openHiringRequestDetail(jobVacancyListDetails.id, jobVacancyListDetails.timing, jobPosition.jobPositionId)}
+                                          onClick={() => openHiringRequestDetail(jobVacancyListDetails.id, jobVacancyListDetails.timing)}
                                           key={key}
                                           style={{ transform: "none" }}
                                           className={
@@ -1363,7 +1715,6 @@ const ProjectDetailDesciption = () => {
                                 </div>
                                 <div className="d-flex gap-3 mt-2 ms-2 mb-2 align-items-center">
                                   <button className="btn btn-blue"
-                                    onClick={createJobPosition}
                                   >
                                     Add</button>
                                   <FontAwesomeIcon icon={faTimes} onClick={toggleInput} />
@@ -1390,7 +1741,6 @@ const ProjectDetailDesciption = () => {
                           isModalOpen={isModalCreateOpen}
                           closeModal={closeModalCreateHiringRequest}
                           requestId={selectedHiringRequestInfo}
-                          jobPositionId={selectedJobPositionInfo}
                         />
                       </div>
                     </TabPane>
@@ -1399,7 +1749,7 @@ const ProjectDetailDesciption = () => {
                         {developerOnboardList.map((candidategridDetailsNew, key) => (
                           <Col lg={3} md={6} key={key}>
                             <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
-                              <CardBody className="p-4 dev-accepted mt-4" style={{ borderRadius: "15px" }}>
+                              <CardBody className="p-4 dev-accepted  d-flex flex-column gap-1" style={{ borderRadius: "15px" }}>
                                 <div className="d-flex mb-2 justify-content-between">
                                   <div className="d-flex">
                                     <div
@@ -1435,53 +1785,67 @@ const ProjectDetailDesciption = () => {
                                       </div>
                                       <span
                                         className={
-                                          candidategridDetailsNew.selectedDevStatus ===
+                                          candidategridDetailsNew.hiredDevStatusString ===
                                             "Rejected"
                                             ? "badge bg-danger text-light mb-2"
-                                            : candidategridDetailsNew.selectedDevStatus ===
+                                            : candidategridDetailsNew.hiredDevStatusString ===
                                               "Under Consideration"
                                               ? "badge bg-warning text-light mb-2"
-                                              : candidategridDetailsNew.selectedDevStatus ===
-                                                "Interview Scheduled"
+                                              : candidategridDetailsNew.hiredDevStatusString ===
+                                                "Working"
                                                 ? "badge bg-blue text-light mb-2"
-                                                : candidategridDetailsNew.selectedDevStatus ===
+                                                : candidategridDetailsNew.hiredDevStatusString ===
                                                   "Expired"
                                                   ? "badge bg-danger text-light mb-2"
-                                                  : candidategridDetailsNew.selectedDevStatus ===
+                                                  : candidategridDetailsNew.hiredDevStatusString ===
                                                     "Cancelled"
                                                     ? "badge bg-danger text-light mb-2"
-                                                    : candidategridDetailsNew.selectedDevStatus ===
+                                                    : candidategridDetailsNew.hiredDevStatusString ===
                                                       "Waiting Interview"
                                                       ? "badge bg-warning text-light mb-2"
-                                                      : candidategridDetailsNew.selectedDevStatus ===
+                                                      : candidategridDetailsNew.hiredDevStatusString ===
                                                         "Onboarding"
                                                         ? "badge bg-primary text-light mb-2"
-                                                        : candidategridDetailsNew.selectedDevStatus ===
+                                                        : candidategridDetailsNew.hiredDevStatusString ===
                                                           "Saved"
                                                           ? "badge bg-info text-light mb-2"
                                                           : ""
                                         }
                                       >
-                                        {candidategridDetailsNew.selectedDevStatus} dsad
+                                        {candidategridDetailsNew.hiredDevStatusString}
                                       </span>{" "}
                                     </div>
                                   </div>
-
-                                  <div
-                                    className="list-inline-item"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="top"
-                                    onClick={() => openModal(candidategridDetailsNew)}
-                                    title="View More"
-                                  >
-                                    <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
-                                      <i className="mdi mdi-eye"></i>
+                                  <div className="d-flex gap-1">
+                                    <div
+                                      className="list-inline-item"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"
+                                      onClick={() => openModal(candidategridDetailsNew)}
+                                      title="View More"
+                                    >
+                                      <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
+                                        <i className="mdi mdi-eye"></i>
+                                      </div>
                                     </div>
+                                    <DropdownAntd trigger={['click']}
+                                      onClick={() =>
+                                        setIdDeveloperReport(candidategridDetailsNew)
+                                      }
+                                      menu={{ items: profileItems4 }}>
+                                      <FontAwesomeIcon icon={faEllipsisVertical}
+                                        style={{ fontSize: "24px", color: 'gray', cursor: "pointer" }}
+                                      />
+                                    </DropdownAntd>
                                   </div>
                                 </div>
                                 <div className="d-flex gap-2 align-items-center">
                                   <FontAwesomeIcon icon={faEnvelope} />
                                   {candidategridDetailsNew.email}
+                                </div>
+                                <div className="d-flex gap-2 align-items-center">
+                                  <FontAwesomeIcon icon={faMobileScreen} />
+                                  {candidategridDetailsNew.phoneNumber}
                                 </div>
                               </CardBody>
                             </div>
@@ -1575,7 +1939,6 @@ const ProjectDetailDesciption = () => {
                               <div className="d-flex">
                                 <NavItem role="presentation">
                                   <NavLink
-                                    to="#"
                                     className={classnames({ active: activeTabMini === "5" })}
                                     onClick={() => {
                                       tabChangeMini("5");
@@ -1588,7 +1951,6 @@ const ProjectDetailDesciption = () => {
                                 </NavItem>
                                 <NavItem role="presentation">
                                   <NavLink
-                                    to="#"
                                     className={classnames({ active: activeTabMini === "6" })}
                                     onClick={() => {
                                       tabChangeMini("6");
@@ -1907,21 +2269,24 @@ const ProjectDetailDesciption = () => {
                                                   className=" px-0"
                                                   style={{ textAlign: "center" }}
                                                 >
-                                                  {payRollDetailNew.totalOvertimeHours}
+                                                  <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    id={`totalOT${key2}`}
+                                                    readOnly={ediPaySlipRowId !== payRollDetailNew.paySlipId}
+                                                  />
                                                 </Col>
 
                                                 <Col
                                                   md={2}
                                                   style={{ textAlign: "center" }}
-
-
                                                 >
                                                   <div>
                                                     <span >{payRollDetailNew.totalEarnings}</span>
                                                   </div>
                                                 </Col>
 
-                                                <Col md={1}>
+                                                <Col md={1} className="d-flex gap-2 justify-content-between align-items-center">
                                                   <div
                                                     className="d-flex justify-content-center align-items-center rounded-circle"
                                                     onClick={() => toggleCollapse(key2, payRollDetailNew.paySlipId)}
@@ -1936,11 +2301,63 @@ const ProjectDetailDesciption = () => {
                                                       style={{ fontSize: "30px" }}
                                                     ></i>
                                                   </div>
+                                                  {payPeriodDetail.statusString == "Created" && (
+                                                    <>
+                                                      <DropdownAntd trigger={['click']} menu={{ items: profileItems3 }}
+                                                        onClick={() =>
+                                                          setPayRollEdit(payRollDetailNew.paySlipId, key2)
+                                                        }
+                                                        overlayStyle={{ right: '4.312px', bottom: "auto", left: "auto" }} >
+                                                        <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                          <FontAwesomeIcon
+                                                            icon={faGear}
+                                                            size="xl"
+                                                            color="#909191"
+                                                          />
+                                                        </a>
+                                                      </DropdownAntd>
+                                                    </>
+                                                  )}
                                                 </Col>
+                                                {ediPaySlipRowId == payRollDetailNew.paySlipId ? (
+                                                  <>
+                                                    <Row style={{ marginTop: "10px" }}>
+                                                      <Col
+                                                        md={2}
+                                                        style={{ textAlign: "end" }}
+                                                        className="d-flex gap-2 justify-content-end"
+                                                      >
+                                                      </Col>
+                                                      <Col
+                                                        md={6}
+                                                        style={{ textAlign: "end" }}
+                                                        className="d-flex gap-2 justify-content-end"
+                                                      >
+                                                      </Col>
+                                                      <Col
+                                                        md={4}
+                                                        style={{ textAlign: "end" }}
+                                                        className="d-flex gap-2 justify-content-end"
+                                                      >
+                                                        <div className="btn btn-soft-danger"
+                                                          onClick={() => cancelUpdatePayslip()}
+                                                        >
+                                                          Cancel
+                                                        </div>
+                                                        <div className="btn btn-soft-blue"
+                                                          onClick={() => saveUpdatePayslip()}
+                                                        >
+                                                          Save
+                                                        </div>
+                                                      </Col>
+                                                    </Row>
+                                                  </>
+                                                ) : (
+                                                  null
+                                                )}
                                               </Row>
                                             </div>
                                           </div>
-
                                           <Collapse isOpen={showCollapse[key2]}>
                                             <div
                                               style={{
@@ -1964,7 +2381,7 @@ const ProjectDetailDesciption = () => {
                                                         {workLogDetail.workDateMMM}
 
                                                       </Col>
-                                                      <Col md={3}>
+                                                      <Col md={2}>
                                                         <div>
                                                           <input
                                                             type="time"
@@ -1974,7 +2391,7 @@ const ProjectDetailDesciption = () => {
                                                           />
                                                         </div>
                                                       </Col>
-                                                      <Col md={3}>
+                                                      <Col md={2}>
                                                         <div>
                                                           <input
                                                             type="time"
@@ -1991,22 +2408,39 @@ const ProjectDetailDesciption = () => {
                                                       >
                                                         Hours in day: {workLogDetail.hourWorkInDay}
                                                       </Col>
+                                                      <Col md={2}>
+                                                        <Select
+                                                          options={optionsStatus}
+                                                          name="choices-single-categories"
+                                                          id={`statusWorkLog${key2}${key}`}
+                                                          value={valuesStatus[`${key2}${key}`]}
+                                                          onChange={handleChangeStatus}
+                                                          aria-label="Default select example"
+                                                          menuPosition={'fixed'}
+                                                          isDisabled={editableRowId !== workLogDetail.workLogId}
+                                                        />
+                                                      </Col>
                                                       <Col
                                                         md={1}
                                                         className="d-flex justify-content-center align-items-center"
                                                       >
-
-                                                        <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
-                                                          setKeyAndIdWorkLog(workLogDetail.workLogId, key)
-                                                        } >
-                                                          <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
-                                                            <FontAwesomeIcon
-                                                              icon={faGear}
-                                                              size="xl"
-                                                              color="#909191"
-                                                            />
-                                                          </a>
-                                                        </DropdownAntd>
+                                                        {payPeriodDetail.statusString == "Created" && (
+                                                          <>
+                                                            {isCompleteEditWorkLog && ( // Kiểm tra nếu isCompleteEditWorkLog === false
+                                                              <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
+                                                                setKeyAndIdWorkLog(workLogDetail.workLogId, key)
+                                                              }>
+                                                                <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                                  <FontAwesomeIcon
+                                                                    icon={faGear}
+                                                                    size="xl"
+                                                                    color="#909191"
+                                                                  />
+                                                                </a>
+                                                              </DropdownAntd>
+                                                            )}
+                                                          </>
+                                                        )}
                                                       </Col>
                                                     </Row>
                                                     {editableRowId == workLogDetail.workLogId ? (
@@ -2030,6 +2464,11 @@ const ProjectDetailDesciption = () => {
                                                             style={{ textAlign: "end" }}
                                                             className="d-flex gap-2 justify-content-end"
                                                           >
+                                                            <div className="btn btn-soft-danger"
+                                                              onClick={() => ctestUpdateWorkLog()}
+                                                            >
+                                                              test
+                                                            </div>
                                                             <div className="btn btn-soft-danger"
                                                               onClick={() => cancelUpdateWorkLog()}
                                                             >
@@ -2062,6 +2501,278 @@ const ProjectDetailDesciption = () => {
                         </>
                       ) : (
                         <Empty />
+                      )}
+                    </TabPane>
+                    <TabPane tabId="5">
+
+                      <div className="job-list-header">
+                        <Form action="#">
+                          <Row className="g-2">
+                            <Col lg={4} md={6}>
+                              <Search
+                                placeholder="input search text"
+                                allowClear
+                                enterButton="Search"
+                                size="large"
+                                onSearch={onSearch}
+                                onChange={(e) => setSearch(e.target.value)}
+                              />
+                            </Col>
+                            <Col lg={2} md={6}>
+                            </Col>
+                            <Col lg={4} md={6}>
+                            </Col>
+                            <Col lg={2} md={6}>
+                              <div className="btn btn-primary w-100"
+                                style={{ marginBottom: "5px" }}
+                                onClick={() => openModalCreateHiringrequest(null)}
+                              >
+                                <i className="uil uil-plus"></i> Create
+                              </div>
+                            </Col>
+                            <Col lg={3} md={6}>
+                              <div className="filler-job-form">
+                                <i className="uil uil-clipboard-notes"></i>
+                                <Select
+                                  isMulti
+                                  options={options}
+                                  styles={colourStyles}
+                                  className="selectForm__inner"
+                                  name="choices-single-categories"
+                                  id="choices-single-categories"
+                                  aria-label="Default select example"
+                                  value={skill}
+                                  onChange={setSkillValue}
+                                  menuPosition={'fixed'}
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={3} md={6}>
+                              <div className="filler-job-form">
+                                <i className="uil uil-clipboard-notes"></i>
+                                <Select
+                                  options={options2}
+                                  styles={colourStyles}
+                                  className="selectForm__inner"
+                                  name="choices-single-categories"
+                                  id="choices-single-categories"
+                                  aria-label="Default select example"
+                                  value={typeRequire}
+                                  onChange={setTypeValue}
+                                  menuPosition={'fixed'}
+                                  isClearable
+
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={3} md={6}>
+                              <div className="filler-job-form">
+                                <i className="uil uil-clipboard-notes"></i>
+                                <Select
+                                  options={options3}
+                                  styles={colourStyles}
+                                  className="selectForm__inner"
+                                  name="choices-single-categories"
+                                  id="choices-single-categories"
+                                  aria-label="Default select example"
+                                  value={levelRequire}
+                                  onChange={setLevelValue}
+                                  menuPosition={'fixed'}
+                                  isClearable
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={3} md={6}>
+                              <div className="filler-job-form">
+                                <i className="uil uil-clipboard-notes"></i>
+                                <Select
+                                  options={options4}
+                                  styles={colourStyles}
+                                  className="selectForm__inner"
+                                  name="choices-single-categories"
+                                  id="choices-single-categories"
+                                  aria-label="Default select example"
+                                  value={status}
+                                  onChange={setStatusValue}
+                                  menuPosition={'fixed'}
+                                  isClearable
+                                />
+                              </div>
+                            </Col>
+                          </Row>
+                        </Form>
+                      </div>
+                      <div>
+                        {jobVacancyList.map((jobVacancyListDetails, key) => (
+                          <div
+                            key={key}
+                            className={
+                              "job-box card mt-4"
+                            }
+                            onClick={() => openHiringRequestDetail(jobVacancyListDetails.requestId, jobVacancyListDetails.statusString)}
+                          >
+                            <div className="p-4">
+                              <Row className="align-items-center">
+                                <Col md={3}>
+                                  <div className="mb-2 mb-md-0">
+                                    <h5 className="fs-18 mb-0">
+                                      <div
+                                        className="text-dark"
+                                      >
+                                        {jobVacancyListDetails.jobTitle}
+                                      </div>
+                                    </h5>
+                                    <p className="text-muted fs-14 mb-0">
+                                      {jobVacancyListDetails.requestCode}
+                                    </p>
+                                  </div>
+                                </Col>
+
+                                <Col md={3}>
+                                  <div className="d-flex mb-2">
+                                    <div className="flex-shrink-0">
+                                      <i className="uil uil-user-check text-primary me-1"></i>
+                                    </div>
+                                    <p className="text-muted mb-0">
+                                      {jobVacancyListDetails.targetedDev} / {jobVacancyListDetails.numberOfDev} Developer
+                                    </p>
+                                  </div>
+                                </Col>
+                                <Col md={2}>
+                                  <div className="d-flex mb-0">
+                                    <div className="flex-shrink-0">
+                                      <i className="uil uil-location-pin-alt text-primary me-1"></i>
+                                    </div>
+                                    <p className="text-muted mb-0">
+                                      {" "}
+                                      {jobVacancyListDetails.employmentTypeName}
+                                    </p>
+                                  </div>
+                                </Col>
+                                <Col md={2}>
+                                  <div className="d-flex mb-0">
+                                    <div className="flex-shrink-0">
+                                      <i className="uil uil-clock-three text-primary me-1"></i>
+                                    </div>
+                                    <p className="text-muted mb-0">
+                                      {" "}
+                                      {jobVacancyListDetails.durationMMM}
+                                    </p>
+                                  </div>
+                                </Col>
+
+                                <Col md={2}>
+                                  <div>
+                                    <span
+                                      className={
+                                        jobVacancyListDetails.statusString === "Rejected"
+                                          ? "badge bg-danger text-light mb-2"
+                                          : jobVacancyListDetails.statusString ===
+                                            "Waiting Approval"
+                                            ? "badge bg-warning text-light mb-2"
+                                            : jobVacancyListDetails.statusString ===
+                                              "In Progress"
+                                              ? "badge bg-blue text-light mb-2"
+                                              : jobVacancyListDetails.statusString ===
+                                                "Expired"
+                                                ? "badge bg-danger text-light mb-2"
+                                                : jobVacancyListDetails.statusString ===
+                                                  "Cancelled"
+                                                  ? "badge bg-blue text-light mb-2"
+                                                  : jobVacancyListDetails.statusString ===
+                                                    "Closed"
+                                                    ? "badge bg-gray text-light mb-2"
+                                                    : jobVacancyListDetails.statusString ===
+                                                      "Completed"
+                                                      ? "badge bg-primary text-light mb-2"
+                                                      : jobVacancyListDetails.statusString === "Saved"
+                                                        ? "badge bg-teal text-light mb-2"
+                                                        : ""
+                                      }
+                                    >
+                                      {jobVacancyListDetails.statusString}
+                                    </span>
+                                  </div>
+                                </Col>
+                              </Row>
+                            </div>
+                            <div className="p-3 bg-light">
+                              <Row className="justify-content-between">
+                                <Col md={10}>
+                                  <div>
+                                    <p className="text-muted mb-0 ">
+                                      {jobVacancyListDetails.experience
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          showFullSkills[jobVacancyListDetails.id]
+                                            ? undefined
+                                            : 8
+                                        )
+                                        .map((skill, index) => (
+                                          <span
+                                            key={index}
+                                            className={`badge ${index === 0
+                                              ? "bg-info text-light"
+                                              : index === 1
+                                                ? "bg-danger-subtle text-danger"
+                                                : "bg-primary-subtle text-primary"
+                                              }  ms-2`}
+                                          >
+                                            {skill.trim()}
+                                          </span>
+                                        ))}
+
+                                      {jobVacancyListDetails.experience.split(",").length >
+                                        8 ? (
+                                        <span className="badge bg-primary-subtle text-primary ms-2">
+                                          ...
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </p>
+                                  </div>
+                                </Col>
+                                <Col md={2}>
+                                  <div>
+                                    {jobVacancyListDetails.postedTime}
+                                  </div>
+                                </Col>
+                              </Row>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {totalPages > 1 && (
+                        <Row id="paging">
+                          <Col lg={12} className="mt-4 pt-2">
+                            <nav aria-label="Page navigation example">
+                              <div className="pagination job-pagination mb-0 justify-content-center">
+                                <li
+                                  className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+                                >
+                                  <div
+                                    className="page-link"
+                                    tabIndex="-1"
+                                    onClick={handlePrevPage}
+                                  >
+                                    <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                  </div>
+                                </li>
+                                {renderPageNumbers()}
+                                <li
+                                  className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                    }`}
+                                >
+                                  <div className="page-link" onClick={handleNextPage}>
+                                    <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                  </div>
+                                </li>
+                              </div>
+                            </nav>
+                          </Col>
+                        </Row>
                       )}
                     </TabPane>
                   </TabContent>
