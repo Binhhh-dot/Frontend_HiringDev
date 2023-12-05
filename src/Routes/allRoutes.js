@@ -241,7 +241,7 @@ const authRoutes = [
   { path: "/manager", component: <Manager /> },
   { path: "/newhiringrequestdetail", component: <NewHiringRequestDetail /> },
   { path: "/projectdetail", component: <ProjectDetail /> },
-  { path: "/sidebarmanager", component: <SideBarManager /> },
+  // { path: "/sidebarmanager", component: <SideBarManager /> },
   { path: "/listAccountHR", component: <ListAccountHR /> },
   { path: "/listAccountManager", component: <ListAccountManager /> },
   { path: "/listAccountStaff", component: <ListAccountStaff /> },
