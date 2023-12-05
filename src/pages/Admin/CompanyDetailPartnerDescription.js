@@ -66,10 +66,6 @@ const CompanyDetailPartnerDescription = () => {
                 <p className="fw-medium mb-0 badge bg-blue text-light">
                   {companyDetail.statusString}
                 </p>
-                <p className="mb-0 mt-1 text-muted">
-                  {companyDetail.rating}{" "}
-                  <i className="mdi mdi-star align-middle text-warning"></i>
-                </p>
               </Col>
             </Row>
           </div>

@@ -45,6 +45,8 @@ import {
 import { Link } from "react-router-dom";
 import classname from "classnames";
 import userAuthorization from "../../utils/userAuthorization";
+import { arSA } from "date-fns/locale";
+import userSerrvices from "../../services/user.serrvices";
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
@@ -170,6 +172,33 @@ const Manager = () => {
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
+  //-------------------------------------------------------------------------------------
+  const [name, setName] = useState("");
+  const [imgUser, setImgUser] = useState("");
+  const [status, setStatus] = useState("");
+
+  const fetchGetUserDetail = async () => {
+    const userId = localStorage.getItem("userId");
+    let response;
+    let fullName;
+    if (userId) {
+      try {
+        response = await userSerrvices.getUserById(userId);
+        fullName =
+          response.data.data.firstName + " " + response.data.data.lastName;
+        setName(fullName);
+        setImgUser(response.data.data.userImage);
+        setStatus(response.data.data.statusString);
+      } catch (error) {
+        console.error("Error fetching user detail", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchGetUserDetail();
+  }, []);
+  //-------------------------------------------------------------------------------------
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <SiderBarWeb choose={"menu-key/10"}></SiderBarWeb>
@@ -200,29 +229,29 @@ const Manager = () => {
                 ></i>
               </Badge>
             </Space>
-            <Space>
+            {/* <Space>
               <Badge dot>
                 <i
                   className="uil uil-envelope-open"
                   style={{ color: "#8F78DF", fontSize: "20px" }}
                 ></i>
               </Badge>
-            </Space>
+            </Space> */}
 
             <div
-              className="p-2  d-flex gap-3 align-items-center"
+              className="p-1  d-flex gap-3 align-items-center me-2"
               style={{
-                height: "inherit",
+                height: "60px",
                 backgroundColor: "#6546D2",
                 color: "white",
-                borderRadius: "10px",
+                borderRadius: "7px",
               }}
             >
               <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
                 <DropdownToggle
-                  className="p-2 d-flex gap-3 align-items-center"
+                  className="p-1 d-flex gap-3 align-items-center"
                   style={{
-                    height: "inherit",
+                    height: "60px",
                     backgroundColor: "#6546D2",
                     color: "white",
 
@@ -232,17 +261,18 @@ const Manager = () => {
                 >
                   <div>
                     <img
-                      src={img0}
-                      className="ms-1"
+                      src={imgUser || img0}
+                      className="ms-1 px-0"
                       style={{
-                        borderRadius: "10px",
+                        borderRadius: "7px",
                         height: "50px",
+                        objectFit: "cover",
                       }}
                     />
                   </div>
                   <div className="me-1 d-flex flex-column align-items-center">
-                    <span className="fs-18">Nik jone</span>
-                    <span>Available</span>
+                    <span className="fs-18">{name}</span>
+                    <span>{status}</span>
                   </div>
                 </DropdownToggle>
                 <DropdownMenu
@@ -292,7 +322,6 @@ const Manager = () => {
             </Container>
           </section>
         </Content>
-        {/* <Footer>Footer</Footer> */}
       </Layout>
     </Layout>
   );
