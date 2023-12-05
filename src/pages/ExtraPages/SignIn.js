@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardBody, Col, Container, Input, Row } from "reactstrap";
 
 //Import Image
@@ -13,6 +13,8 @@ import loginService from "../../services/login.service";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { HashLoader } from "react-spinners";
+import { requestPermission } from "../../utils/firebase";
+import notificationServices from "../../services/notification.services";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -21,6 +23,20 @@ const SignIn = () => {
   const navigate = useNavigate();
   document.title = "Sign In | Jobcy - Job Listing Template | Themesdesign";
   const [loadingSignIn, setLoadingSignIn] = useState(false);
+  const [devicetoken, setDevicetoken] = useState();
+
+  const sendDeviceToken = async (token) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = await notificationServices.postUserDevice(userId, token);
+      localStorage.setItem("deviceToken", token);
+      console.log(response);
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -68,6 +84,10 @@ const SignIn = () => {
         setLoadingSignIn(false);
         toast.success('Login successfully!');
         navigate("/home")
+        requestPermission((token) => {
+          console.log(token)
+          sendDeviceToken(token);
+        });
       } else {
         navigate("/signcompany")
         setLoadingSignIn(false);

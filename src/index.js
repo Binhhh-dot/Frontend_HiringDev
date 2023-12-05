@@ -4,6 +4,7 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import { ToastContainer } from 'react-toastify';
+import Notification from "./pages/ExtraPages/noti";
 import 'react-toastify/dist/ReactToastify.css';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -13,6 +14,7 @@ root.render(
       <App />
     </BrowserRouter>
     <ToastContainer />
+    <Notification />
   </React.Fragment>
 );
 

@@ -260,5 +260,10 @@ export default {
       getTransactionHistory:
         "/Transaction?PageIndex=${PageIndex}&PageSize=${PageSize}",
     },
+    notification: {
+      postUserDevice: "/UserDevice",
+      getListNotificationByUserId: "/Notification/ByUser/${userId}",
+      getCountNotificationByUserId: "/Notification/Count/${userId}",
+    }
   },
 };

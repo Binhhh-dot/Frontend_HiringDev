@@ -26,6 +26,8 @@ import profileImage from "../../assets/images/profile.jpg";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import userSerrvices from "../../services/user.serrvices";
+import { onMessageListener } from "../../utils/firebase";
+import notificationServices from "../../services/notification.services";
 
 const NavBar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,7 +41,9 @@ const NavBar = (props) => {
   //Notification Dropdown
   const [notification, setNotification] = useState(false);
   const dropDownnotification = () => setNotification((prevState) => !prevState);
-
+  const [notificationFb, setNotificationFb] = useState(false)
+  const [listNotification, setListNotification] = useState([])
+  const [countNotification, setCountNotification] = useState(false)
   //user Profile Dropdown
   const [userProfile, setUserProfile] = useState(false);
   const dropDownuserprofile = () => setUserProfile((prevState) => !prevState);
@@ -49,6 +53,7 @@ const NavBar = (props) => {
   const [role, setRole] = useState(null);
   const [name, setName] = useState(null);
   const [imgUser, setImgUser] = useState(null);
+
   useEffect(() => {
     window.addEventListener("scroll", scrollNavigation, true);
     const role = localStorage.getItem("role");
@@ -113,6 +118,32 @@ const NavBar = (props) => {
     }
   };
 
+  const handleNoti = (jobVacancyListDetails) => {
+    const page = jobVacancyListDetails.notificationTypeName;
+    const routeId = jobVacancyListDetails.routeId;
+    var url;
+    if (page == "Hiring Request") {
+      url = "/hiringrequestlistincompanypartnerdetail?Id=" + routeId;
+      console.log(url)
+    }
+    if (page == "Interview") {
+      url = "/hiringrequestlistincompanypartnerdetail?Id=" + routeId;
+      console.log(url)
+    }
+    if (page == "Contract") {
+      url = "/contractListHr";
+      console.log(url)
+    }
+    if (page == "Project") {
+      url = "/projectdetailhr?Id=" + routeId;
+      console.log(url)
+    }
+    if (page == "Payment") {
+      url = "/payment?Id=" + routeId;
+      console.log(url)
+    }
+  };
+
   useEffect(() => {
     fetchUserDetail();
   }, []);
@@ -159,6 +190,51 @@ const NavBar = (props) => {
     }
     return false;
   }
+
+  const fetchListNotification = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const respone = await notificationServices.getListNotificationByUserId(userId);
+      console.log(respone)
+      setListNotification(respone.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchCountNotification = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const respone = await notificationServices.getCountNotificationByUserId(userId);
+      console.log(respone)
+      setCountNotification(respone.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchListNotification();
+    fetchCountNotification();
+  }, [])
+
+
+  useEffect(() => {
+    console.log("navbar")
+    fetchListNotification();
+    fetchCountNotification();
+  }, [notificationFb])
+
+
+
+
+  onMessageListener().then((payload) => {
+    // Xử lý thông báo ở đây
+    console.log('Received message from Firebase:', payload);
+    setNotificationFb(!notificationFb)
+  }).catch((error) => {
+    console.error('Error listening to messages:', error);
+  });
 
   return (
     <React.Fragment>
@@ -434,7 +510,7 @@ const NavBar = (props) => {
                   tag="div"
                 >
                   <i className="mdi mdi-bell fs-22"></i>
-                  <div className="count position-absolute">3</div>
+                  <div className="count position-absolute">{countNotification}</div>
                 </DropdownToggle>
                 <DropdownMenu
                   className="dropdown-menu-sm dropdown-menu-end p-0"
@@ -444,117 +520,33 @@ const NavBar = (props) => {
                   <div className="notification-header border-bottom bg-light">
                     <h6 className="mb-1"> Notification </h6>
                     <p className="text-muted fs-13 mb-0">
-                      You have 4 unread Notification
+                      You have {countNotification} unread Notification
                     </p>
                   </div>
                   <div className="notification-wrapper dropdown-scroll">
-                    <Link
-                      to="#"
-                      className="text-dark notification-item d-block active"
-                    >
-                      <div className="d-flex align-items-center">
-                        <div className="flex-shrink-0 me-3">
-                          <div className="avatar-xs bg-primary text-white rounded-circle text-center">
-                            <i className="uil uil-user-check"></i>
+                    {listNotification.map((jobVacancyListDetails, key) => (
+                      <div
+                        className="text-dark notification-item d-block active"
+                        onClick={() => handleNoti(jobVacancyListDetails)}
+                      >
+                        <div className="d-flex align-items-center">
+                          <div className="flex-shrink-0 me-3">
+                            <div className="avatar-xs bg-primary text-white rounded-circle text-center">
+                              <i className="uil uil-user-check"></i>
+                            </div>
+                          </div>
+                          <div className="flex-grow-1">
+                            <h6 className="mt-0 mb-1 fs-14">
+                              {jobVacancyListDetails.content}
+                            </h6>
+                            <p className="mb-0 fs-12 text-muted">
+                              <i className="mdi mdi-clock-outline"></i>{" "}
+                              <span> {jobVacancyListDetails.createdTime}</span>
+                            </p>
                           </div>
                         </div>
-                        <div className="flex-grow-1">
-                          <h6 className="mt-0 mb-1 fs-14">
-                            22 verified registrations
-                          </h6>
-                          <p className="mb-0 fs-12 text-muted">
-                            <i className="mdi mdi-clock-outline"></i>{" "}
-                            <span>3 min ago</span>
-                          </p>
-                        </div>
                       </div>
-                    </Link>
-                    <Link
-                      to="#"
-                      className="text-dark notification-item d-block"
-                    >
-                      <div className="d-flex align-items-center">
-                        <div className="flex-shrink-0 me-3">
-                          <img
-                            src={userImage2}
-                            className="rounded-circle avatar-xs"
-                            alt="user-pic"
-                          />
-                        </div>
-                        <div className="flex-grow-1">
-                          <h6 className="mt-0 mb-1 fs-14">James Lemire</h6>
-                          <p className="text-muted fs-12 mb-0">
-                            <i className="mdi mdi-clock-outline"></i>{" "}
-                            <span>15 min ago</span>
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                    <Link
-                      to="#"
-                      className="text-dark notification-item d-block"
-                    >
-                      <div className="d-flex align-items-center">
-                        <div className="flex-shrink-0 me-3">
-                          <img
-                            src={jobImage4}
-                            className="rounded-circle avatar-xs"
-                            alt="user-pic"
-                          />
-                        </div>
-                        <div className="flex-grow-1">
-                          <h6 className="mt-0 mb-1 fs-14">
-                            Applications has been approved
-                          </h6>
-                          <p className="text-muted mb-0 fs-12">
-                            <i className="mdi mdi-clock-outline"></i>{" "}
-                            <span>45 min ago</span>
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                    <Link
-                      to="#"
-                      className="text-dark notification-item d-block"
-                    >
-                      <div className="d-flex align-items-center">
-                        <div className="flex-shrink-0 me-3">
-                          <img
-                            src={userImage1}
-                            className="rounded-circle avatar-xs"
-                            alt="user-pic"
-                          />
-                        </div>
-                        <div className="flex-grow-1">
-                          <h6 className="mt-0 mb-1 fs-14">Kevin Stewart</h6>
-                          <p className="text-muted mb-0 fs-12">
-                            <i className="mdi mdi-clock-outline"></i>{" "}
-                            <span>1 hour ago</span>
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                    <Link
-                      to="#"
-                      className="text-dark notification-item d-block"
-                    >
-                      <div className="d-flex align-items-center">
-                        <div className="flex-shrink-0 me-3">
-                          <img
-                            src={jobImage}
-                            className="rounded-circle avatar-xs"
-                            alt="user-pic"
-                          />
-                        </div>
-                        <div className="flex-grow-1">
-                          <h6 className="mt-0 mb-1 fs-15">Creative Agency</h6>
-                          <p className="text-muted mb-0 fs-12">
-                            <i className="mdi mdi-clock-outline"></i>{" "}
-                            <span>2 hour ago</span>
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
+                    ))}
                   </div>
                   <div className="notification-footer border-top text-center">
                     <Link className="primary-link fs-13" to="#">
