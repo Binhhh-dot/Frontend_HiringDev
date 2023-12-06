@@ -16,7 +16,7 @@ const section = () => {
                 <h6 className="sub-title">We have 150,000+ live jobs</h6>
                 <h1 className="display-5 fw-semibold mb-3">
                   Find your dream jobs with{" "}
-                  <span className="text-primary fw-bold">Jobcy</span>
+                  <span className="text-primary fw-bold">WeHire</span>
                 </h1>
                 <p className="lead text-muted mb-0">
                   Find jobs, create trackable resumes and enrich your

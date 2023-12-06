@@ -48,7 +48,7 @@ const Fulltime = () => {
       id: 3,
       companyImg: jobImage3,
       jobDescription: "Digital Marketing Manager",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "Phoenix, Arizona",
       salary: "1500-2400/m",
       fullTime: true,
@@ -146,10 +146,10 @@ const Fulltime = () => {
                       fullTimeJobdetails.fullTime === true
                         ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
                         : fullTimeJobdetails.partTime === true
-                        ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                        : fullTimeJobdetails.freelancer === true
-                        ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                        : ""
+                          ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                          : fullTimeJobdetails.freelancer === true
+                            ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                            : ""
                     }
                   >
                     {fullTimeJobdetails.timing}
@@ -178,7 +178,7 @@ const Fulltime = () => {
               </Col>
 
               <Col lg={6} md={5}>
-                {}
+                { }
                 <div>
                   <p className="text-muted mb-0">
                     <span className="text-dark">

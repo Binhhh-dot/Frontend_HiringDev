@@ -8,7 +8,7 @@ import userAuthorization from "../../../utils/userAuthorization";
 import { useState } from "react";
 
 const ProjectDetail = () => {
-  document.title = "Job Details | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Job Details | WeHire - Job Listing Template | Themesdesign";
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoad, setIdLoad] = useState(false);

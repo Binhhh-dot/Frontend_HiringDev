@@ -23,7 +23,7 @@ const JobVacancyPost2 = () => {
       companyImg: jobImage1,
       jobDescription: "HTML Developer",
       experience: "0-2 Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       fullTime: true,
@@ -66,7 +66,7 @@ const JobVacancyPost2 = () => {
       companyImg: jobImage3,
       jobDescription: "HTML Developer",
       experience: "2-4 Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       freeLance: true,
@@ -85,7 +85,7 @@ const JobVacancyPost2 = () => {
       companyImg: jobImage4,
       jobDescription: "Product Sales Specialist",
       experience: "5+ Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       fullTime: true,
@@ -117,7 +117,7 @@ const JobVacancyPost2 = () => {
       companyImg: jobImage6,
       jobDescription: "Project Manager",
       experience: "0-2 Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       fullTime: true,
@@ -141,7 +141,7 @@ const JobVacancyPost2 = () => {
       companyImg: jobImage7,
       jobDescription: "HTML Developer",
       experience: "0-2 Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       freeLance: true,
@@ -165,7 +165,7 @@ const JobVacancyPost2 = () => {
       companyImg: jobImage8,
       jobDescription: "Business Associate",
       experience: "0-2 Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       partTime: true,
@@ -237,12 +237,12 @@ const JobVacancyPost2 = () => {
                         jobVacancyList2Details.fullTime === true
                           ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
                           : jobVacancyList2Details.partTime === true
-                          ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                          : jobVacancyList2Details.freeLance === true
-                          ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                          : jobVacancyList2Details.internship === true
-                          ? "badge bg-blue-subtle text-blue fs-13 mt-1"
-                          : ""
+                            ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                            : jobVacancyList2Details.freeLance === true
+                              ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                              : jobVacancyList2Details.internship === true
+                                ? "badge bg-blue-subtle text-blue fs-13 mt-1"
+                                : ""
                       }
                     >
                       {jobVacancyList2Details.timing}

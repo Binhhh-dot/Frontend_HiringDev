@@ -580,18 +580,17 @@ const HiringRequestDetails = () => {
     try {
       const interviewId = interviewIdCancel;
       console.log(interviewId);
-      const response = await interviewServices.cancelInterview(interviewId);
-      console.log("cancel thanh cong")
-
-      if (response.data.code == 200) {
+      console.log("nhay do")
+      const redirectUrl = customUrl.redirectUrlCreateMeetting;
+      console.log(interviewId);
+      console.log(redirectUrl);
+      console.log(authenCodeCancel);
+      const responseCancelMeeting = await teamMeetingServices.deleteTeamMeeting(interviewId, redirectUrl, authenCodeCancel)
+      console.log(responseCancelMeeting)
+      if (responseCancelMeeting.data.code == 200) {
         try {
-          console.log("nhay do")
-          const redirectUrl = customUrl.redirectUrlCreateMeetting;
-          console.log(interviewId);
-          console.log(redirectUrl);
-          console.log(authenCodeCancel);
-          const responseCancelMeeting = await teamMeetingServices.deleteTeamMeeting(interviewId, redirectUrl, authenCodeCancel)
-          console.log(responseCancelMeeting)
+          const response = await interviewServices.cancelInterview(interviewId);
+          console.log(response)
         } catch (error) {
           console.log("error:", error)
         }
@@ -611,29 +610,29 @@ const HiringRequestDetails = () => {
     setLoading(true);
     try {
       const interviewId = interviewIdUpdate;
-      let response;
+      let responseCancelMeeting;
       try {
-        const title = document.getElementById("interview-title-popup").value;
-        const description = document.getElementById("description-title-popup").value;
-        const dateOfInterview = document.getElementById("date-of-interview-popup").value;
-        const startDate = document.getElementById("start-time-popup").value + ":00";
-        const endDate = document.getElementById("end-time-popup").value + ":00";
-        response = await interviewServices.updateInterview(interviewId, title, description, dateOfInterview, startDate, endDate);
-        console.log("api update :")
-        console.log(response);
+        const redirectUrl = customUrl.redirectUrlCreateMeetting;
+        console.log(interviewId);
+        console.log(redirectUrl);
+        console.log(authenCodeUpdate);
+        const responseCancelMeeting = await teamMeetingServices.editTeamMeeting(interviewId, redirectUrl, authenCodeUpdate)
+        console.log(responseCancelMeeting)
       } catch (error) {
-        console.error("Error completedInterview:", error);
+        console.log("error:", error)
       }
-      if (response.data.code == 200) {
+      if (responseCancelMeeting.data.code == 200) {
         try {
-          const redirectUrl = customUrl.redirectUrlCreateMeetting;
-          console.log(interviewId);
-          console.log(redirectUrl);
-          console.log(authenCodeUpdate);
-          const responseCancelMeeting = await teamMeetingServices.editTeamMeeting(interviewId, redirectUrl, authenCodeUpdate)
-          console.log(responseCancelMeeting)
+          const title = document.getElementById("interview-title-popup").value;
+          const description = document.getElementById("description-title-popup").value;
+          const dateOfInterview = document.getElementById("date-of-interview-popup").value;
+          const startDate = document.getElementById("start-time-popup").value + ":00";
+          const endDate = document.getElementById("end-time-popup").value + ":00";
+          const response = await interviewServices.updateInterview(interviewId, title, description, dateOfInterview, startDate, endDate);
+          console.log("api update :")
+          console.log(response);
         } catch (error) {
-          console.log("error:", error)
+          console.error("Error completedInterview:", error);
         }
       }
       setIsUpdateInterview(!isUpdateInterview);
@@ -1187,7 +1186,7 @@ const HiringRequestDetails = () => {
                 </div>
 
                 <div className="mt-4">
-                  <h5 className="mb-3">Job Description</h5>
+                  <h5 className="mb-3">Hiring request description</h5>
                   <div className="">
                     <p
                       className=""

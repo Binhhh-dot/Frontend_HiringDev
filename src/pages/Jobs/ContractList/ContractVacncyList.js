@@ -221,7 +221,7 @@ const ContractVacncyList = (a) => {
     return (
         <React.Fragment>
             <Row>
-                <Col lg={10}>
+                <Col lg={9}>
                     <div className="job-list-header">
                         <Form action="#">
                             <Row className="g-2">
@@ -420,7 +420,7 @@ const ContractVacncyList = (a) => {
                     )}
 
                 </Col>
-                <Col lg={2}>
+                <Col lg={3}>
                     <div className="side-bar mt-5 mt-lg-0">
                         <div className="accordion" id="accordionExample">
                             <div className="accordion-item ">

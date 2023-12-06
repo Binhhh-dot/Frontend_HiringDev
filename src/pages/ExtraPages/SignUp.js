@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Card, Col, Input, Row, CardBody } from "reactstrap";
 
-import lightLogo from "../../assets/images/logo-light.png";
+import lightLogo from "../../assets/images/we-hire-green.png";
 import darkLogo from "../../assets/images/logo-dark.png";
 
 import signUpImage from "../../assets/images/auth/sign-up.png";
@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
-  document.title = "Sign Up | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Sign Up | WeHire - Job Listing Template | Themesdesign";
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
@@ -88,7 +88,7 @@ const SignUp = () => {
                                 className="logo-light"
                               />
                               <img
-                                src={darkLogo}
+                                src={lightLogo}
                                 alt=""
                                 className="logo-dark"
                               />
@@ -109,7 +109,7 @@ const SignUp = () => {
                                 <h5>Let's Get Started</h5>
                                 <p className="text-white-70">
                                   Sign Up and get access to all the features of
-                                  Jobcy
+                                  WeHire
                                 </p>
                               </div>
                               <Form action="/" className="auth-form" onSubmit={handleSignUp} lang="en">

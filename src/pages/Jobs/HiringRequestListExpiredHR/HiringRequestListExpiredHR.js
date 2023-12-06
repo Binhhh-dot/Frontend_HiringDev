@@ -7,7 +7,7 @@ import Sidebar from "./Sidebar";
 
 
 const HiringRequestListExpiredHR = () => {
-  document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
   const navigate = useNavigate();
   useEffect(() => {
     const role = localStorage.getItem('role');

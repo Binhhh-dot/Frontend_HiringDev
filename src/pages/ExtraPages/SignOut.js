@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import lightLogo from "../../assets/images/logo-light.png";
+import lightLogo from "../../assets/images/we-hire-green.png";
 import darkLogo from "../../assets/images/logo-dark.png";
 
 import signInImage from "../../assets/images/auth/sign-in.png";
@@ -8,14 +8,33 @@ import { Card, CardBody, Col, Container, Row } from "reactstrap";
 import { Link } from "react-router-dom";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import loginService from "../../services/login.service";
 
 const SignOut = () => {
-  document.title = "Sign Out | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Sign Out | WeHire - Job Listing Template | Themesdesign";
   console.log(process.env.SERVICE_URL);
+  const clearData = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = loginService.revokeAccount(userId);
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = loginService.revokeAccount(userId);
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+  };
   useEffect(() => {
-    document.title = "Sign Out | Jobcy - Job Listing Template | Themesdesign";
+    document.title = "Sign Out | WeHire - Job Listing Template | Themesdesign";
     // Clear all data in local storage
     localStorage.clear();
+    clearData();
     sendMessageToParent();
   }, []);
 
@@ -26,6 +45,7 @@ const SignOut = () => {
       console.error("No parent window found.");
     }
   };
+
 
 
   return (
@@ -48,7 +68,7 @@ const SignOut = () => {
                                 className="logo-light"
                               />
                               <img
-                                src={darkLogo}
+                                src={lightLogo}
                                 alt=""
                                 className="logo-dark"
                               />
@@ -68,7 +88,7 @@ const SignOut = () => {
                               <div className="text-center mb-4">
                                 <h5>You are Logged Out</h5>
                                 <p className="text-white-70">
-                                  Thank you for using Jobcy
+                                  Thank you for using WeHire
                                 </p>
                               </div>
                               <Link

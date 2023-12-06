@@ -21,7 +21,7 @@ import backgroundImage from "../../../assets/images/logo/Frame 1.png";
 import projectServices from "../../../services/project.services";
 
 const CreateProject = () => {
-  document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
   const notify = () => {
     toast.info(" Wow so easy!", {
       position: "top-right",

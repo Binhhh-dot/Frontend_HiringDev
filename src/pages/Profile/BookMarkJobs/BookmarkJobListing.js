@@ -23,7 +23,7 @@ const BookmarkJobListing = () => {
       companyImg: jobImage1,
       jobDescription: "Business Associate",
       experience: "",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       partTime: true,
@@ -59,7 +59,7 @@ const BookmarkJobListing = () => {
       companyImg: jobImage3,
       jobDescription: "HTML Developer",
       experience: "2-4 Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       freeLance: true,
@@ -77,7 +77,7 @@ const BookmarkJobListing = () => {
       companyImg: jobImage4,
       jobDescription: "Product Sales Specialist",
       experience: "5+ Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       fullTime: true,
@@ -107,7 +107,7 @@ const BookmarkJobListing = () => {
       companyImg: jobImage6,
       jobDescription: "Project Manager",
       experience: "0-2 Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       fullTime: true,
@@ -176,12 +176,12 @@ const BookmarkJobListing = () => {
                             jobListingDetails.fullTime === true
                               ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
                               : jobListingDetails.partTime === true
-                              ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                              : jobListingDetails.freeLance === true
-                              ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                              : jobListingDetails.internship === true
-                              ? "badge bg-blue-subtle text-blue fs-13 mt-1"
-                              : ""
+                                ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                                : jobListingDetails.freeLance === true
+                                  ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                                  : jobListingDetails.internship === true
+                                    ? "badge bg-blue-subtle text-blue fs-13 mt-1"
+                                    : ""
                           }
                         >
                           {jobListingDetails.timing}
