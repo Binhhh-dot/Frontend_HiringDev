@@ -52,8 +52,8 @@ const DeveloperDetailInProjectPopup = (
     devId && developerInfo?.userImage
       ? developerInfo?.userImage
       : developerInfo?.genderName === "Male"
-      ? imgMale
-      : imgfeMale;
+        ? imgMale
+        : imgfeMale;
 
   useEffect(() => {
     fetchGetDeveloperDetailInManager();
@@ -343,7 +343,7 @@ const DeveloperDetailInProjectPopup = (
                                     Project Manager
                                   </h6>
                                   <p className="mb-2 text-muted">
-                                    Jobcy Technology Pvt.Ltd - (Pressent)
+                                    WeHire Technology Pvt.Ltd - (Pressent)
                                   </p>
                                   <p className="text-muted mb-0">
                                     There are many variations of passages of

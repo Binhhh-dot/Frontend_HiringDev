@@ -37,7 +37,7 @@ import {
 import { toast } from "react-toastify";
 
 const CreateReport = () => {
-  document.title = "Job Details | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Job Details | WeHire - Job Listing Template | Themesdesign";
   const [listDevId, setListDevid] = useState([]);
   const location = useLocation();
   const [loading, setLoading] = useState(false);

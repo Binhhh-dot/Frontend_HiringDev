@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardBody, Col, Container, Input, Row } from "reactstrap";
 
 //Import Image
-import lightLogo from "../../assets/images/logo-light.png";
+import lightLogo from "../../assets/images/we-hire-green.png";
 import darkLogo from "../../assets/images/logo-dark.png";
 
 import signInImage from "../../assets/images/auth/sign-in.png";
@@ -13,20 +13,39 @@ import loginService from "../../services/login.service";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { HashLoader } from "react-spinners";
+import { requestPermission } from "../../utils/firebase";
+import notificationServices from "../../services/notification.services";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  document.title = "Sign In | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Sign In | WeHire - Job Listing Template | Themesdesign";
   const [loadingSignIn, setLoadingSignIn] = useState(false);
+  const [devicetoken, setDevicetoken] = useState();
+
+  const sendDeviceToken = async (token) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = await notificationServices.postUserDevice(userId, token);
+      localStorage.setItem("deviceToken", token);
+      console.log(response);
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+
 
   const handleSignIn = async (e) => {
     e.preventDefault();
     setLoadingSignIn(true);
     let userId;
     let role;
+    let expiration;
+    let accessToken;
+    let refreshToken;
     try {
       const response = await loginService.login(email, password);
       // Check if the API call was successful
@@ -35,10 +54,16 @@ const SignIn = () => {
         // Extract user ID from the decoded token
         userId = response.data.data.userId;
         role = response.data.data.role;
+        expiration = response.data.data.expiration;
+        accessToken = response.data.data.accessToken;
+        refreshToken = response.data.data.refreshToken;
         if (userId) {
           // Save user ID to local storage
           localStorage.setItem("userId", userId);
           localStorage.setItem("role", role)
+          localStorage.setItem("expiration", expiration)
+          localStorage.setItem("accessToken", accessToken)
+          localStorage.setItem("refreshToken", refreshToken)
           // Navigate to "/layout3"
         }
       }
@@ -68,6 +93,10 @@ const SignIn = () => {
         setLoadingSignIn(false);
         toast.success('Login successfully!');
         navigate("/home")
+        requestPermission((token) => {
+          console.log(token)
+          sendDeviceToken(token);
+        });
       } else {
         navigate("/signcompany")
         setLoadingSignIn(false);
@@ -106,7 +135,7 @@ const SignIn = () => {
                                 className="logo-light"
                               />
                               <img
-                                src={darkLogo}
+                                src={lightLogo}
                                 alt=""
                                 className="logo-dark"
                               />
@@ -126,7 +155,7 @@ const SignIn = () => {
                               <div className="text-center mb-4">
                                 <h5>Welcome Back !</h5>
                                 <p className="text-white-70">
-                                  Sign in to continue to Jobcy.
+                                  Sign in to continue to WeHire.
                                 </p>
                               </div>
                               <Form

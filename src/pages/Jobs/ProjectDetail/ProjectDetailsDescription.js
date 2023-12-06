@@ -143,6 +143,7 @@ const ProjectDetailDesciption = () => {
   const [isCancelEditPayslip, setIsCancelEditPayslip] = useState(false);
   const [startTimeWorkLogSave, setStartTimeWorkLogSave] = useState(false);
   const [endTimeWorkLogSave, setEndTimeWorkLogSave] = useState(false);
+  const [isUpdateImage, setIsUpdateImage] = useState(false);
   const [statusWorkLogSave, setStatusWorkLogSave] = useState();
   const [isUpdateWorkLog, setIsUpdateWorkLog] = useState();
   const [totalOTPayslipSave, setTotalOTPayslipSave] = useState(false);
@@ -181,6 +182,9 @@ const ProjectDetailDesciption = () => {
   const [options3, setOptions3] = useState([]);
   const [options4, setOptions4] = useState([]);
   const [valuesStatus, setValuesStatus] = useState({});
+
+  const [avatar, setAvatar] = useState();
+
   const optionsStatus = [
     { label: 'Normally', value: 0 },
     { label: 'Paid leave', value: 1 },
@@ -1003,6 +1007,10 @@ const ProjectDetailDesciption = () => {
   }, []);
 
   useEffect(() => {
+    fetchProjectDetails();
+  }, [isUpdateImage]);
+
+  useEffect(() => {
     const temp = listEndDay[currentMonthIndex];
     if (temp) {
       const parts = temp.split('.');
@@ -1264,6 +1272,10 @@ const ProjectDetailDesciption = () => {
   const nextMonth = () => {
     const updatedShowCollapse = showCollapse.map(() => false);
     setShowCollapse(updatedShowCollapse);
+    setIsEditWorkLog(!isEditWorkLog);
+    setIsEditPayslip(!isEditPayslip);
+    setIsCancelEditPayslip(true);
+    setIsCancelEditWorkLog(true);
     if (currentMonthIndex < listMonth.length - 1) {
       setCurrentMonthIndex(currentMonthIndex + 1);
     }
@@ -1272,6 +1284,10 @@ const ProjectDetailDesciption = () => {
   const previousMonth = () => {
     const updatedShowCollapse = showCollapse.map(() => false);
     setShowCollapse(updatedShowCollapse);
+    setIsEditWorkLog(!isEditWorkLog);
+    setIsEditPayslip(!isEditPayslip);
+    setIsCancelEditPayslip(true);
+    setIsCancelEditWorkLog(true);
     if (currentMonthIndex > 0) {
       setCurrentMonthIndex(currentMonthIndex - 1);
     }
@@ -1353,6 +1369,40 @@ const ProjectDetailDesciption = () => {
 
   };
 
+  const handleChooseAvatar = () => {
+    const inputElement = document.getElementById("profile-img-file-input");
+    inputElement.click();
+  };
+
+  const handlePreviewAvatar = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      file.preview = URL.createObjectURL(file);
+      changeBackgroundProject();
+    } else {
+      setAvatar(null);
+    }
+  };
+
+  const changeBackgroundProject = async (file) => {
+    try {
+      const queryParams = new URLSearchParams(location.search);
+      const projectId = queryParams.get("Id");
+      const formData = new FormData();
+      const fileInput = document.getElementById("profile-img-file-input");
+      const file = fileInput.files[0];
+      console.log("file")
+      console.log(file)
+      formData.append("File", file);
+      const response = await projectServices.updateImage(formData, projectId);
+      setIsUpdateImage(!isUpdateImage)
+      toast.success("Update image successfully")
+    } catch (error) {
+      console.log(error)
+      toast.error("Update image fail")
+    }
+  };
+
   return (
     <React.Fragment>
       {loading && (
@@ -1367,14 +1417,32 @@ const ProjectDetailDesciption = () => {
               <Card className="job-detail overflow-hidden">
                 <div>
                   <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
-                    <img
-                      src="https://firebasestorage.googleapis.com/v0/b/fuprojectteammanagement.appspot.com/o/vivid-blurred-colorful-background.jpg?alt=media&token=dd0ed801-1438-4d7a-af45-98906b7bf882"
-                      alt=""
-                      className="img-fluid"
-                      style={{ width: "100%", height: "200px", objectFit: "cover" }}
-                    />
+
+                    {hiringRequestDetail.backgroundImage ? (
+                      <img
+                        src={hiringRequestDetail.backgroundImage}
+                        alt=""
+                        className="img-fluid"
+                        style={{ width: "100%", height: "200px", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <img
+                        src="https://firebasestorage.googleapis.com/v0/b/fuprojectteammanagement.appspot.com/o/vivid-blurred-colorful-background.jpg?alt=media&token=dd0ed801-1438-4d7a-af45-98906b7bf882"
+                        alt=""
+                        className="img-fluid"
+                        style={{ width: "100%", height: "200px", objectFit: "cover" }}
+                      />
+                    )}
+
                     <FontAwesomeIcon icon={faImage}
                       style={{ position: "absolute", top: "40", right: "40", transform: "translate(50%, -50%)", zIndex: "1", fontSize: "25px", color: "grey", cursor: "pointer" }}
+                      onClick={handleChooseAvatar}
+                    />
+                    <input
+                      type="file"
+                      id="profile-img-file-input"
+                      onChange={handlePreviewAvatar}
+                      style={{ display: "none" }}
                     />
                   </div>
                   <div className="job-details-compnay-profile">
@@ -1512,7 +1580,7 @@ const ProjectDetailDesciption = () => {
                       type="button"
                     // style={{paddingLeft:"0px"}}
                     >
-                      Hiring Request
+                      Hiring request
                     </NavLink>
                   </NavItem>
                   <NavItem role="presentation">
@@ -1538,319 +1606,133 @@ const ProjectDetailDesciption = () => {
                       Payment
                     </NavLink>
                   </NavItem>
-                  <NavItem role="presentation">
-                    <NavLink
-                      className={classnames({ active: activeTab === "5" })}
-                      onClick={() => {
-                        tabChange("5");
-                      }}
-                      type="button"
-                    // style={{paddingLeft:"0px"}}
-                    >
-                      Hiring request new
-                    </NavLink>
-                  </NavItem>
+
                 </Nav>
                 <CardBody className="p-4" style={{ backgroundColor: "#fafafa", overflowX: "auto" }} >
                   <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
-                      <div>12</div>
-                    </TabPane>
-                    <TabPane tabId="2">
-
-                      <div className={`${showScroll ? ' show-scroll' : ''}`} ref={rowRef} style={{
-                        minHeight: checkHeightListHiringRequest ? "100%" : "auto",
-                        height: checkHeightListHiringRequest ? "auto" : "650px",
-                      }}>
-                        <Row className="flex-nowrap gap-3" style={{ marginLeft: "1px", marginBottom: "10px" }}>
-                          {listJobPosition.map((jobPosition, key) => (
-                            <Col lg={3} md={6} key={key} className="card " style={{ paddingLeft: "0px", paddingRight: "0px", borderRadius: "15px", height: "fit-content", backgroundColor: "#f6f6f6" }}>
-                              <div className="d-flex flex-column ms-2 mt-2 mb-2 me-2 gap-3" style={{ height: "100%" }} >
-                                <div className="d-flex justify-content-between align-items-center">
-                                  {/* {editingPositions[jobPosition.jobPositionId] ? (
-                                    <div className="form-group app-label">
-                                      <input
-                                        ref={inputRef}
-                                        placeholder="Please enter job position"
-                                        style={{ width: "94%", margin: "10px 10px 0px 10px" }}
-                                        type="text"
-                                        className="form-control resume"
-                                        id="job-position-input"
-                                        value={inputValue}
-                                        onChange={handleInputChange}
-                                        onKeyDown={(e) => handleKeyPress(e, jobPosition.jobPositionId)}
-                                      />
-                                    </div>
-                                  ) : ( */}
-                                  <div
-                                    style={{
-                                      paddingLeft: "15px",
-                                      fontWeight: "bold",
-                                      fontSize: "18px",
-                                      marginTop: "15px",
-                                      marginBottom: "8px",
-                                      cursor: "pointer"
-                                    }}
-                                  // onClick={() => onUpdateJobPosition(jobPosition.jobPositionId)}
-                                  >
-                                    {jobPosition.positionName}
-                                  </div>
-                                  {/* )} */}
-                                  <DropdownAntd menu={{ items: profileItems }}>
-                                    <FontAwesomeIcon icon={faEllipsis}
-                                      style={{ fontSize: "24px", paddingRight: "15px", color: 'black', cursor: "pointer" }}
-                                      onClick={() => setPositionIdChose(jobPosition.jobPositionId)}
-                                    />
-                                  </DropdownAntd>
-                                </div>
-                                <div className="d-flex flex-column gap-3" style={{ height: "100%" }}>
-                                  {jobVacancyList.map((jobVacancyListDetails, key) => {
-                                    // Check if the positionName is 'job position 2'
-                                    if (jobVacancyListDetails.jobPositionId === jobPosition.jobPositionId) {
-                                      return (
-                                        <div
-                                          onClick={() => openHiringRequestDetail(jobVacancyListDetails.id, jobVacancyListDetails.timing)}
-                                          key={key}
-                                          style={{ transform: "none" }}
-                                          className={
-                                            "job-box card "
-                                          }
-                                        // className="job-box card mt-4"
-                                        >
-                                          <div className="p-3">
-                                            {/* <Row className="align-items-center"> */}
-                                            {/* <Col md={3}> */}
-                                            <div className="mb-2 mb-md-0 d-flex">
-                                              <div
-                                                className="text-dark "
-                                                style={{ fontWeight: "bold" }}
-                                              >
-                                                {jobVacancyListDetails.jobTitle}
-                                              </div>
-                                              {/* <p className="text-muted fs-14 mb-0">
-                                                {jobVacancyListDetails.companyName}
-                                              </p> */}
-                                            </div>
-                                            <div>
-                                              <span
-                                                className={
-                                                  jobVacancyListDetails.waitingApproval === true
-                                                    ? "badge bg-warning text-light fs-12 mt-3"
-                                                    : jobVacancyListDetails.inProgress === true
-                                                      ? "badge bg-blue text-light fs-12 mt-3"
-                                                      : jobVacancyListDetails.rejected === true
-                                                        ? "badge bg-danger text-light fs-12 mt-3"
-                                                        : jobVacancyListDetails.expired === true
-                                                          ? "badge bg-danger text-light fs-12 mt-3"
-                                                          : jobVacancyListDetails.cancelled === true
-                                                            ? "badge bg-secondary text-light fs-12 mt-3"
-                                                            : jobVacancyListDetails.finished === true
-                                                              ? "badge bg-primary text-light fs-12 mt-3"
-                                                              : jobVacancyListDetails.completed === true
-                                                                ? "badge bg-success text-light fs-12 mt-3"
-                                                                : jobVacancyListDetails.save === true
-                                                                  ? "badge bg-teal text-light fs-12 mt-3"
-                                                                  : ""
-                                                }
-                                              >
-                                                {jobVacancyListDetails.timing}
-                                              </span>
-                                            </div>
-                                          </div>
-                                          <div className="p-3 bg-light">
-                                            <Row className="justify-content-between">
-                                              <Col md={12}>
-                                                <div className="d-flex justify-content-between">
-                                                  <div className="d-flex justify-content-center align-items-center">
-                                                    <FontAwesomeIcon icon={faCalendar} style={{ marginRight: "8px", fontSize: "18px" }} />
-                                                    <div className="mb-0 " style={{ fontWeight: "bold" }}>
-                                                      {jobVacancyListDetails.duration}
-                                                    </div>
-                                                  </div>
-                                                  <div className="d-flex justify-content-center align-items-center">
-                                                    <UserOutlined style={{ fontSize: "18px" }} />
-                                                    <div style={{ marginLeft: "4px" }}>
-                                                      {jobVacancyListDetails.numberOfDev}
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </Col>
-                                            </Row>
-                                          </div>
-                                        </div>
-                                      );
-                                    } else {
-                                      return null; // If it's not 'job position 2', render nothing or handle differently
-                                    }
-                                  })}
-                                  <div
-                                    onClick={() =>
-                                      openModalCreateHiringrequest(null, jobPosition.jobPositionId)
-                                    }
-                                    className="d-flex hover-change " style={{ padding: "8px" }}
-                                  >
-                                    <span style={{ fontSize: "15px", marginRight: "5px" }}>
-                                      <FontAwesomeIcon icon={faPlus} />
-                                    </span>
-                                    <div style={{ fontWeight: "500" }}>
-                                      Add a hiring Request
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </Col>
-                          ))}
-                          {/* {[...Array(projectCount)].map((_, index) => ( // Tạo số lượng cục <Col> tương ứng với projectCount */}
-                          <Col lg={3} md={6} style={{ height: "45px", paddingLeft: "0px", paddingRight: "0px", height: "fit-content" }} >
-                            {showInput ? (
-                              <div className="card">
-                                <div className="form-group app-label">
-                                  <input
-                                    placeholder="Please enter job position"
-                                    style={{ width: "94%", margin: "10px 10px 0px 10px" }}
-                                    type="text"
-                                    className="form-control resume"
-                                    id="job-position-input"
-                                  />
-                                </div>
-                                <div className="d-flex gap-3 mt-2 ms-2 mb-2 align-items-center">
-                                  <button className="btn btn-blue"
-                                  >
-                                    Add</button>
-                                  <FontAwesomeIcon icon={faTimes} onClick={toggleInput} />
-                                </div>
-                              </div>
-                            ) : (
-                              <div className=" card" onClick={toggleInput} style={{ height: "50px" }}>
-                                <div style={{ height: "50px", flex: "1" }}>
-                                  <div className="d-flex align-items-center justify-content-center" style={{ height: "100%" }}>
-                                    <span style={{ fontSize: "15px", marginRight: "5px" }}>
-                                      <FontAwesomeIcon icon={faPlus} />
-                                    </span>
-                                    <div>Add job position</div>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </Col>
-                          {/* ))} */}
-                        </Row>
-                      </div>
-                      <div>
-                        <CreateHiringRequestPopup
-                          isModalOpen={isModalCreateOpen}
-                          closeModal={closeModalCreateHiringRequest}
-                          requestId={selectedHiringRequestInfo}
+                      <div className="">
+                        <p
+                          className=""
+                          dangerouslySetInnerHTML={{
+                            __html: hiringRequestDetail.description,
+                          }}
                         />
                       </div>
                     </TabPane>
                     <TabPane tabId="3">
                       <Row>
-                        {developerOnboardList.map((candidategridDetailsNew, key) => (
-                          <Col lg={3} md={6} key={key}>
-                            <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
-                              <CardBody className="p-4 dev-accepted  d-flex flex-column gap-1" style={{ borderRadius: "15px" }}>
-                                <div className="d-flex mb-2 justify-content-between">
-                                  <div className="d-flex">
-                                    <div
-                                      className="flex-shrink-0 position-relative"
-                                      onClick={() =>
-                                        openModal(candidategridDetailsNew)
-                                      }
-                                    >
-                                      <img
-                                        src={
-                                          candidategridDetailsNew.userImg ||
-                                          userImage0
-                                        }
-                                        alt=""
-                                        className="avatar-md rounded"
-                                      />
-                                      <span
-                                        className={
-                                          candidategridDetailsNew.candidateStatusClassName
-                                        }
-                                      ></span>
-                                    </div>
-                                    <div className="ms-3">
-                                      <div className="primary-link">
-                                        <h5
-                                          className="fs-17"
+                        {developerOnboardList.length > 0 ? (
+                          <>
+                            {developerOnboardList.map((candidategridDetailsNew, key) => (
+                              <Col lg={3} md={6} key={key}>
+                                <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
+                                  <CardBody className="p-4 dev-accepted  d-flex flex-column gap-1" style={{ borderRadius: "15px" }}>
+                                    <div className="d-flex mb-2 justify-content-between">
+                                      <div className="d-flex">
+                                        <div
+                                          className="flex-shrink-0 position-relative"
                                           onClick={() =>
                                             openModal(candidategridDetailsNew)
                                           }
                                         >
-                                          {candidategridDetailsNew.firstName} {candidategridDetailsNew.lastName}
-                                        </h5>
-                                      </div>
-                                      <span
-                                        className={
-                                          candidategridDetailsNew.hiredDevStatusString ===
-                                            "Rejected"
-                                            ? "badge bg-danger text-light mb-2"
-                                            : candidategridDetailsNew.hiredDevStatusString ===
-                                              "Under Consideration"
-                                              ? "badge bg-warning text-light mb-2"
-                                              : candidategridDetailsNew.hiredDevStatusString ===
-                                                "Working"
-                                                ? "badge bg-blue text-light mb-2"
+                                          <img
+                                            src={
+                                              candidategridDetailsNew.userImg ||
+                                              userImage0
+                                            }
+                                            alt=""
+                                            className="avatar-md rounded"
+                                          />
+                                          <span
+                                            className={
+                                              candidategridDetailsNew.candidateStatusClassName
+                                            }
+                                          ></span>
+                                        </div>
+                                        <div className="ms-3">
+                                          <div className="primary-link">
+                                            <h5
+                                              className="fs-17"
+                                              onClick={() =>
+                                                openModal(candidategridDetailsNew)
+                                              }
+                                            >
+                                              {candidategridDetailsNew.firstName} {candidategridDetailsNew.lastName}
+                                            </h5>
+                                          </div>
+                                          <span
+                                            className={
+                                              candidategridDetailsNew.hiredDevStatusString ===
+                                                "Rejected"
+                                                ? "badge bg-danger text-light mb-2"
                                                 : candidategridDetailsNew.hiredDevStatusString ===
-                                                  "Expired"
-                                                  ? "badge bg-danger text-light mb-2"
+                                                  "Under Consideration"
+                                                  ? "badge bg-warning text-light mb-2"
                                                   : candidategridDetailsNew.hiredDevStatusString ===
-                                                    "Cancelled"
-                                                    ? "badge bg-danger text-light mb-2"
+                                                    "Working"
+                                                    ? "badge bg-blue text-light mb-2"
                                                     : candidategridDetailsNew.hiredDevStatusString ===
-                                                      "Waiting Interview"
-                                                      ? "badge bg-warning text-light mb-2"
+                                                      "Expired"
+                                                      ? "badge bg-danger text-light mb-2"
                                                       : candidategridDetailsNew.hiredDevStatusString ===
-                                                        "Onboarding"
-                                                        ? "badge bg-primary text-light mb-2"
+                                                        "Cancelled"
+                                                        ? "badge bg-danger text-light mb-2"
                                                         : candidategridDetailsNew.hiredDevStatusString ===
-                                                          "Saved"
-                                                          ? "badge bg-info text-light mb-2"
-                                                          : ""
-                                        }
-                                      >
-                                        {candidategridDetailsNew.hiredDevStatusString}
-                                      </span>{" "}
-                                    </div>
-                                  </div>
-                                  <div className="d-flex gap-1">
-                                    <div
-                                      className="list-inline-item"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"
-                                      onClick={() => openModal(candidategridDetailsNew)}
-                                      title="View More"
-                                    >
-                                      <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
-                                        <i className="mdi mdi-eye"></i>
+                                                          "Waiting Interview"
+                                                          ? "badge bg-warning text-light mb-2"
+                                                          : candidategridDetailsNew.hiredDevStatusString ===
+                                                            "Onboarding"
+                                                            ? "badge bg-primary text-light mb-2"
+                                                            : candidategridDetailsNew.hiredDevStatusString ===
+                                                              "Saved"
+                                                              ? "badge bg-info text-light mb-2"
+                                                              : ""
+                                            }
+                                          >
+                                            {candidategridDetailsNew.hiredDevStatusString}
+                                          </span>{" "}
+                                        </div>
+                                      </div>
+                                      <div className="d-flex gap-1">
+                                        <div
+                                          className="list-inline-item"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-placement="top"
+                                          onClick={() => openModal(candidategridDetailsNew)}
+                                          title="View More"
+                                        >
+                                          <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
+                                            <i className="mdi mdi-eye"></i>
+                                          </div>
+                                        </div>
+                                        <DropdownAntd trigger={['click']}
+                                          onClick={() =>
+                                            setIdDeveloperReport(candidategridDetailsNew)
+                                          }
+                                          menu={{ items: profileItems4 }}>
+                                          <FontAwesomeIcon icon={faEllipsisVertical}
+                                            style={{ fontSize: "24px", color: 'gray', cursor: "pointer" }}
+                                          />
+                                        </DropdownAntd>
                                       </div>
                                     </div>
-                                    <DropdownAntd trigger={['click']}
-                                      onClick={() =>
-                                        setIdDeveloperReport(candidategridDetailsNew)
-                                      }
-                                      menu={{ items: profileItems4 }}>
-                                      <FontAwesomeIcon icon={faEllipsisVertical}
-                                        style={{ fontSize: "24px", color: 'gray', cursor: "pointer" }}
-                                      />
-                                    </DropdownAntd>
-                                  </div>
+                                    <div className="d-flex gap-2 align-items-center">
+                                      <FontAwesomeIcon icon={faEnvelope} />
+                                      {candidategridDetailsNew.email}
+                                    </div>
+                                    <div className="d-flex gap-2 align-items-center">
+                                      <FontAwesomeIcon icon={faMobileScreen} />
+                                      {candidategridDetailsNew.phoneNumber}
+                                    </div>
+                                  </CardBody>
                                 </div>
-                                <div className="d-flex gap-2 align-items-center">
-                                  <FontAwesomeIcon icon={faEnvelope} />
-                                  {candidategridDetailsNew.email}
-                                </div>
-                                <div className="d-flex gap-2 align-items-center">
-                                  <FontAwesomeIcon icon={faMobileScreen} />
-                                  {candidategridDetailsNew.phoneNumber}
-                                </div>
-                              </CardBody>
-                            </div>
-                          </Col>
-                        ))}
+                              </Col>
+                            ))}
+                          </>
+                        ) : (
+                          <Empty />
+                        )}
                       </Row>
                       <div>
                         <DeveloperDetailInCompanyPopup
@@ -2465,11 +2347,6 @@ const ProjectDetailDesciption = () => {
                                                             className="d-flex gap-2 justify-content-end"
                                                           >
                                                             <div className="btn btn-soft-danger"
-                                                              onClick={() => ctestUpdateWorkLog()}
-                                                            >
-                                                              test
-                                                            </div>
-                                                            <div className="btn btn-soft-danger"
                                                               onClick={() => cancelUpdateWorkLog()}
                                                             >
                                                               Cancel
@@ -2503,8 +2380,7 @@ const ProjectDetailDesciption = () => {
                         <Empty />
                       )}
                     </TabPane>
-                    <TabPane tabId="5">
-
+                    <TabPane tabId="2">
                       <div className="job-list-header">
                         <Form action="#">
                           <Row className="g-2">
@@ -2603,146 +2479,152 @@ const ProjectDetailDesciption = () => {
                         </Form>
                       </div>
                       <div>
-                        {jobVacancyList.map((jobVacancyListDetails, key) => (
-                          <div
-                            key={key}
-                            className={
-                              "job-box card mt-4"
-                            }
-                            onClick={() => openHiringRequestDetail(jobVacancyListDetails.requestId, jobVacancyListDetails.statusString)}
-                          >
-                            <div className="p-4">
-                              <Row className="align-items-center">
-                                <Col md={3}>
-                                  <div className="mb-2 mb-md-0">
-                                    <h5 className="fs-18 mb-0">
-                                      <div
-                                        className="text-dark"
-                                      >
-                                        {jobVacancyListDetails.jobTitle}
+                        {jobVacancyList.length > 0 ? (
+                          <>
+                            {jobVacancyList.map((jobVacancyListDetails, key) => (
+                              <div
+                                key={key}
+                                className={
+                                  "job-box card mt-4"
+                                }
+                                onClick={() => openHiringRequestDetail(jobVacancyListDetails.requestId, jobVacancyListDetails.statusString)}
+                              >
+                                <div className="p-4">
+                                  <Row className="align-items-center">
+                                    <Col md={3}>
+                                      <div className="mb-2 mb-md-0">
+                                        <h5 className="fs-18 mb-0">
+                                          <div
+                                            className="text-dark"
+                                          >
+                                            {jobVacancyListDetails.jobTitle}
+                                          </div>
+                                        </h5>
+                                        <p className="text-muted fs-14 mb-0">
+                                          {jobVacancyListDetails.requestCode}
+                                        </p>
                                       </div>
-                                    </h5>
-                                    <p className="text-muted fs-14 mb-0">
-                                      {jobVacancyListDetails.requestCode}
-                                    </p>
-                                  </div>
-                                </Col>
+                                    </Col>
 
-                                <Col md={3}>
-                                  <div className="d-flex mb-2">
-                                    <div className="flex-shrink-0">
-                                      <i className="uil uil-user-check text-primary me-1"></i>
-                                    </div>
-                                    <p className="text-muted mb-0">
-                                      {jobVacancyListDetails.targetedDev} / {jobVacancyListDetails.numberOfDev} Developer
-                                    </p>
-                                  </div>
-                                </Col>
-                                <Col md={2}>
-                                  <div className="d-flex mb-0">
-                                    <div className="flex-shrink-0">
-                                      <i className="uil uil-location-pin-alt text-primary me-1"></i>
-                                    </div>
-                                    <p className="text-muted mb-0">
-                                      {" "}
-                                      {jobVacancyListDetails.employmentTypeName}
-                                    </p>
-                                  </div>
-                                </Col>
-                                <Col md={2}>
-                                  <div className="d-flex mb-0">
-                                    <div className="flex-shrink-0">
-                                      <i className="uil uil-clock-three text-primary me-1"></i>
-                                    </div>
-                                    <p className="text-muted mb-0">
-                                      {" "}
-                                      {jobVacancyListDetails.durationMMM}
-                                    </p>
-                                  </div>
-                                </Col>
+                                    <Col md={3}>
+                                      <div className="d-flex mb-2">
+                                        <div className="flex-shrink-0">
+                                          <i className="uil uil-user-check text-primary me-1"></i>
+                                        </div>
+                                        <p className="text-muted mb-0">
+                                          {jobVacancyListDetails.targetedDev} / {jobVacancyListDetails.numberOfDev} Developer
+                                        </p>
+                                      </div>
+                                    </Col>
+                                    <Col md={2}>
+                                      <div className="d-flex mb-0">
+                                        <div className="flex-shrink-0">
+                                          <i className="uil uil-location-pin-alt text-primary me-1"></i>
+                                        </div>
+                                        <p className="text-muted mb-0">
+                                          {" "}
+                                          {jobVacancyListDetails.employmentTypeName}
+                                        </p>
+                                      </div>
+                                    </Col>
+                                    <Col md={2}>
+                                      <div className="d-flex mb-0">
+                                        <div className="flex-shrink-0">
+                                          <i className="uil uil-clock-three text-primary me-1"></i>
+                                        </div>
+                                        <p className="text-muted mb-0">
+                                          {" "}
+                                          {jobVacancyListDetails.durationMMM}
+                                        </p>
+                                      </div>
+                                    </Col>
 
-                                <Col md={2}>
-                                  <div>
-                                    <span
-                                      className={
-                                        jobVacancyListDetails.statusString === "Rejected"
-                                          ? "badge bg-danger text-light mb-2"
-                                          : jobVacancyListDetails.statusString ===
-                                            "Waiting Approval"
-                                            ? "badge bg-warning text-light mb-2"
-                                            : jobVacancyListDetails.statusString ===
-                                              "In Progress"
-                                              ? "badge bg-blue text-light mb-2"
+                                    <Col md={2}>
+                                      <div>
+                                        <span
+                                          className={
+                                            jobVacancyListDetails.statusString === "Rejected"
+                                              ? "badge bg-danger text-light mb-2"
                                               : jobVacancyListDetails.statusString ===
-                                                "Expired"
-                                                ? "badge bg-danger text-light mb-2"
+                                                "Waiting Approval"
+                                                ? "badge bg-warning text-light mb-2"
                                                 : jobVacancyListDetails.statusString ===
-                                                  "Cancelled"
+                                                  "In Progress"
                                                   ? "badge bg-blue text-light mb-2"
                                                   : jobVacancyListDetails.statusString ===
-                                                    "Closed"
-                                                    ? "badge bg-gray text-light mb-2"
+                                                    "Expired"
+                                                    ? "badge bg-danger text-light mb-2"
                                                     : jobVacancyListDetails.statusString ===
-                                                      "Completed"
-                                                      ? "badge bg-primary text-light mb-2"
-                                                      : jobVacancyListDetails.statusString === "Saved"
-                                                        ? "badge bg-teal text-light mb-2"
-                                                        : ""
-                                      }
-                                    >
-                                      {jobVacancyListDetails.statusString}
-                                    </span>
-                                  </div>
-                                </Col>
-                              </Row>
-                            </div>
-                            <div className="p-3 bg-light">
-                              <Row className="justify-content-between">
-                                <Col md={10}>
-                                  <div>
-                                    <p className="text-muted mb-0 ">
-                                      {jobVacancyListDetails.experience
-                                        .split(",")
-                                        .slice(
-                                          0,
-                                          showFullSkills[jobVacancyListDetails.id]
-                                            ? undefined
-                                            : 8
-                                        )
-                                        .map((skill, index) => (
-                                          <span
-                                            key={index}
-                                            className={`badge ${index === 0
-                                              ? "bg-info text-light"
-                                              : index === 1
-                                                ? "bg-danger-subtle text-danger"
-                                                : "bg-primary-subtle text-primary"
-                                              }  ms-2`}
-                                          >
-                                            {skill.trim()}
-                                          </span>
-                                        ))}
-
-                                      {jobVacancyListDetails.experience.split(",").length >
-                                        8 ? (
-                                        <span className="badge bg-primary-subtle text-primary ms-2">
-                                          ...
+                                                      "Cancelled"
+                                                      ? "badge bg-blue text-light mb-2"
+                                                      : jobVacancyListDetails.statusString ===
+                                                        "Closed"
+                                                        ? "badge bg-gray text-light mb-2"
+                                                        : jobVacancyListDetails.statusString ===
+                                                          "Completed"
+                                                          ? "badge bg-primary text-light mb-2"
+                                                          : jobVacancyListDetails.statusString === "Saved"
+                                                            ? "badge bg-teal text-light mb-2"
+                                                            : ""
+                                          }
+                                        >
+                                          {jobVacancyListDetails.statusString}
                                         </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </p>
-                                  </div>
-                                </Col>
-                                <Col md={2}>
-                                  <div>
-                                    {jobVacancyListDetails.postedTime}
-                                  </div>
-                                </Col>
-                              </Row>
-                            </div>
-                          </div>
-                        ))}
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                </div>
+                                <div className="p-3 bg-light">
+                                  <Row className="justify-content-between">
+                                    <Col md={10}>
+                                      <div>
+                                        <p className="text-muted mb-0 ">
+                                          {jobVacancyListDetails.experience
+                                            .split(",")
+                                            .slice(
+                                              0,
+                                              showFullSkills[jobVacancyListDetails.id]
+                                                ? undefined
+                                                : 8
+                                            )
+                                            .map((skill, index) => (
+                                              <span
+                                                key={index}
+                                                className={`badge ${index === 0
+                                                  ? "bg-info text-light"
+                                                  : index === 1
+                                                    ? "bg-danger-subtle text-danger"
+                                                    : "bg-primary-subtle text-primary"
+                                                  }  ms-2`}
+                                              >
+                                                {skill.trim()}
+                                              </span>
+                                            ))}
+
+                                          {jobVacancyListDetails.experience.split(",").length >
+                                            8 ? (
+                                            <span className="badge bg-primary-subtle text-primary ms-2">
+                                              ...
+                                            </span>
+                                          ) : (
+                                            ""
+                                          )}
+                                        </p>
+                                      </div>
+                                    </Col>
+                                    <Col md={2}>
+                                      <div>
+                                        {jobVacancyListDetails.postedTime}
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              </div>
+                            ))}
+                          </>
+                        ) : (
+                          <Empty className="mt-4" />
+                        )}
                       </div>
                       {totalPages > 1 && (
                         <Row id="paging">

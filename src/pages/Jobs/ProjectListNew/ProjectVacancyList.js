@@ -362,6 +362,11 @@ const ProjectVacancyList = (a) => {
 
                 </Col>
                 <Col lg={3}>
+
+                    <Link className="btn btn-primary w-100 mb-4" to="/createproject" >
+                        <i className="uil  uil-plus"></i> Create project
+                    </Link>
+
                     <div className="side-bar mt-5 mt-lg-0">
                         <div className="accordion" id="accordionExample">
                             <div className="accordion-item ">

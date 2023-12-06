@@ -23,7 +23,7 @@ import "./index.css";
 //import { useNavigate } from "react-router-dom";
 
 const Developer = () => {
-  document.title = "Developer | Jobcy - Developer Template | Themesdesign";
+  document.title = "Developer | WeHire - Developer Template | Themesdesign";
 
   const [selectedOption, setSelectedOption] = useState("Hiring Request");
 
