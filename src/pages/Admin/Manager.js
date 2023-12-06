@@ -30,7 +30,7 @@ import {
   AuditOutlined,
   BankOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Input, Button } from "antd";
+import { Layout, Menu, Input, Button, Modal } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Col,
@@ -173,6 +173,10 @@ const Manager = () => {
     setDropdownOpen(!dropdownOpen);
   };
   //-------------------------------------------------------------------------------------
+  const [showPopupProfileUser, setShowPopupProfileUser] = useState(false);
+  const handleProfileUser = () => {};
+  const handleOkProfileUser = () => {};
+  //-------------------------------------------------------------------------------------
   const [name, setName] = useState("");
   const [imgUser, setImgUser] = useState("");
   const [status, setStatus] = useState("");
@@ -281,9 +285,15 @@ const Manager = () => {
                   }}
                 >
                   <DropdownItem style={{ padding: "0px" }}>
+                    <div onClick={() => setShowPopupProfileUser(true)}>
+                      <div className="dropdown-item">Profile</div>
+                    </div>
+                  </DropdownItem>
+
+                  <DropdownItem style={{ padding: "0px" }}>
                     <div>
                       <Link to="#" className="dropdown-item">
-                        Setting
+                        Change Password
                       </Link>
                     </div>
                   </DropdownItem>
@@ -300,6 +310,28 @@ const Manager = () => {
             </div>
           </div>
         </div>
+
+        {/* ------------------------------------------------------------------------------------- */}
+        <Modal
+          centered
+          open={showPopupProfileUser}
+          onOk={() => handleOkProfileUser()}
+          onCancel={() => setShowPopupProfileUser(false)}
+          width={800}
+          okType="default" // Chuyển từ "blue" sang "default" để tránh ảnh hưởng khi sử dụng okButtonProps
+          okButtonProps={{
+            style: {
+              background: "#6546D2",
+              borderColor: "#6546D2",
+              color: "white",
+            },
+          }}
+        >
+          <div>
+            <h5>Profile Manager</h5>
+          </div>
+        </Modal>
+        {/* ------------------------------------------------------------------------------------- */}
 
         <Content>
           <section

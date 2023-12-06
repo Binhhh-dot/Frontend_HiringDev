@@ -52,10 +52,11 @@ const getProjectDetailByProjectId = async (projectId) => {
   return response;
 };
 
-const getDeveloperByProject = async (projectId, status) => {
-  const serviceUrl = urlConstant.endpoint.project.getDeveloperByProject
-    .replace("${projectId}", projectId)
-    .replace("${status}", status);
+const getDeveloperByProject = async (ProjectId) => {
+  const serviceUrl = urlConstant.endpoint.project.getDeveloperByProject.replace(
+    "${ProjectId}",
+    ProjectId
+  );
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };
@@ -85,7 +86,14 @@ const updateProject = async (
   return response;
 };
 
-const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize, ProjectTypeId, inputSearch, status) => {
+const getAllProjectByCompanyIdAndPaging = async (
+  companyId,
+  PageIndex,
+  PageSize,
+  ProjectTypeId,
+  inputSearch,
+  status
+) => {
   const serviceUrl =
     urlConstant.endpoint.project.getAllProjectByCompanyIdAndPaging
       .replace("${companyId}", companyId)
@@ -93,9 +101,8 @@ const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize,
       .replace("{PageSize}", PageSize)
       .replace("${ProjectTypeId}", ProjectTypeId)
       .replace("${searchKeyString}", inputSearch)
-      .replace("${Status}", status)
-    ;
-  console.log(serviceUrl)
+      .replace("${Status}", status);
+  console.log(serviceUrl);
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };

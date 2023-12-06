@@ -91,7 +91,7 @@ import Developer from "../pages/Jobs/Developer/Developer";
 //import NewListInterview from "../pages/NewAdmin/NewListInterview";
 import NewHiringRequestDetail from "../pages/Admin/NewHiringRequestDetail";
 import ProjectDetail from "../pages/Admin/ProjectDetail";
-import SideBarManager from "../pages/Admin/SideBarManager";
+//import SideBarManager from "../pages/Admin/SideBarManager";
 import CreateReport from "../pages/Jobs/CreateReport/CreateReport";
 import ReportListHR from "../pages/Jobs/ReportList/ReportList";
 import ContractDetailHr from "../pages/Jobs/ContractDetail/ContractDetail";
@@ -259,7 +259,6 @@ const authRoutes = [
   { path: "/manager", component: <Manager /> },
   { path: "/newhiringrequestdetail", component: <NewHiringRequestDetail /> },
   { path: "/projectdetail", component: <ProjectDetail /> },
-  // { path: "/sidebarmanager", component: <SideBarManager /> },
   { path: "/listAccountHR", component: <ListAccountHR /> },
   { path: "/listAccountManager", component: <ListAccountManager /> },
   { path: "/listAccountStaff", component: <ListAccountStaff /> },

@@ -18,13 +18,17 @@ import {
   TabContent,
   Collapse,
 } from "reactstrap";
+
 import projectServices from "../../services/project.services";
 import { useLocation } from "react-router";
 import img0 from "../../assets/images/user/img-00.jpg";
 import DeveloperDetailInProjectPopup from "../Home/SubSection/DeveloperDetailInProject";
 //import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEllipsisVertical,
+  faUserMinus,
+} from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown } from "react-bootstrap";
@@ -45,12 +49,15 @@ import "react-calendar/dist/Calendar.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { result } from "lodash";
 import hireddevServices from "../../services/hireddev.services";
+import { Editor } from "@tinymce/tinymce-react";
+
 dayjs.extend(customParseFormat);
 
 const monthFormat = "YYYY-MM-DD";
 
 const ProjectDetailDescription = () => {
   const { state } = useLocation();
+  const [value, setValue] = useState("");
   const [allowedMonthsList, setAllowedMonthsList] = useState([]);
   //--------------------------------------------------------------------------------
   const [projectDetail, setProjectDetail] = useState([]);
@@ -109,6 +116,7 @@ const ProjectDetailDescription = () => {
 
   const fetchGetProjectDetailByProjectId = async () => {
     let response;
+
     try {
       response = await projectServices.getProjectDetailByProjectId(
         state.projectId
@@ -213,14 +221,11 @@ const ProjectDetailDescription = () => {
   };
 
   //----------------------------------------------------------------------------------
-  const [projectDevStatus, setProjectDevStatus] = useState(0);
+  // const [projectDevStatus, setProjectDevStatus] = useState(0);
   const fetchGetDeveloperByProject = async () => {
     let response;
     try {
-      response = await projectServices.getDeveloperByProject(
-        state.projectId,
-        8
-      );
+      response = await projectServices.getDeveloperByProject(state.projectId);
       console.log("danh sach dev tham gia tham gia vào project");
       console.log(response.data.data);
       setDevInProject(response.data.data);
@@ -287,8 +292,13 @@ const ProjectDetailDescription = () => {
   //--------------------------------------------------------------------------------
   const [modalUpdateProject, setModalUpdateProject] = useState(false);
   const openModalUpdateProject = () => {
-    fetchProjectType();
     setModalUpdateProject(!modalUpdateProject);
+
+    // const editor = window.tinymce.get("projectdes"); // Giả sử 'description' là id của Editor
+    // if (editor) {
+    //   editor.setContent(currentDescription);
+    // }
+    fetchProjectType();
   };
 
   //--------------------------------------------------------------------------------
@@ -528,7 +538,6 @@ const ProjectDetailDescription = () => {
                         <Dropdown.Item onClick={openModalUpdateProject}>
                           Update Project
                         </Dropdown.Item>
-                        <Dropdown.Item href="#">Dropdown Item 2</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
@@ -658,7 +667,7 @@ const ProjectDetailDescription = () => {
                             >
                               Description
                             </label>
-                            <Input
+                            {/* <Input
                               type="textarea"
                               className="form-control"
                               id="description"
@@ -667,6 +676,22 @@ const ProjectDetailDescription = () => {
                               onChange={(e) =>
                                 setCurrentDescription(e.target.value)
                               }
+                            /> */}
+
+                            <Editor
+                              class="fix-height"
+                              id="projectdes"
+                              apiKey="axy85kauuja11vgbfrm96qlmduhgfg6egrjpbjil00dfqpwf"
+                              // onEditorChange={(newValue) => {
+                              //   setValue(newValue);
+                              // }}
+                              init={{
+                                plugins:
+                                  "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
+                                //   plugins:
+                                //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
+                                //
+                              }}
                             />
                           </FormGroup>
 
@@ -741,21 +766,7 @@ const ProjectDetailDescription = () => {
                     }}
                     type="button"
                   >
-                    Payroll
-                  </NavLink>
-                </NavItem>
-                <NavItem role="presentation">
-                  <NavLink
-                    to="#"
-                    className={classnames("nav-link", {
-                      active: activeTab === "4",
-                    })}
-                    onClick={() => {
-                      tabChange("4");
-                    }}
-                    type="button"
-                  >
-                    History
+                    Pay Period
                   </NavLink>
                 </NavItem>
               </Nav>
@@ -879,7 +890,7 @@ const ProjectDetailDescription = () => {
                             >
                               <div className="candidate-profile text-center">
                                 <img
-                                  src={img0}
+                                  src={devInProjectDetail.userImage || img0}
                                   alt=""
                                   className="avatar-lg rounded-circle"
                                 />
@@ -916,7 +927,7 @@ const ProjectDetailDescription = () => {
                               </ul>
                             </Col>
                             <Col
-                              lg={2}
+                              lg={1}
                               className="d-flex gap-1 justify-content-center"
                             >
                               <i className="uil uil-keyboard"></i>
@@ -925,11 +936,11 @@ const ProjectDetailDescription = () => {
                               </p>
                             </Col>
                             <Col
-                              lg={2}
+                              lg={3}
                               className="d-flex justify-content-center"
                             >
                               <p className="mb-0 badge bg-blue text-light fs-13 ">
-                                {devInProjectDetail.devStatusString}
+                                {devInProjectDetail.hiredDevStatusString}
                               </p>
                             </Col>
                             <Col
@@ -947,7 +958,7 @@ const ProjectDetailDescription = () => {
                                     style={{ padding: "0px", color: "#ACB4B6" }}
                                   >
                                     <FontAwesomeIcon
-                                      icon={faEllipsisVertical}
+                                      icon={faUserMinus}
                                       size="xl"
                                     />
                                   </Dropdown.Toggle>
@@ -1453,71 +1464,6 @@ const ProjectDetailDescription = () => {
                         </TabPane>
                       </TabContent>
                     </div>
-                  </div>
-                </TabPane>
-
-                <TabPane tabId="4">
-                  <div className="mt-1 mb-2">
-                    <div>
-                      <h4>List History Payment</h4>
-                    </div>
-
-                    {devInProject.map((devInProjectDetail, key) => (
-                      <div
-                        style={{
-                          boxShadow:
-                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                        }}
-                        key={key}
-                        className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                      >
-                        <CardBody>
-                          <Row className="align-items-center">
-                            <Col
-                              lg={2}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>history name</div>
-                            </Col>
-                            <Col
-                              lg={3}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>history name</div>
-                            </Col>
-                            <Col
-                              lg={2}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>history name</div>
-                            </Col>
-                            <Col
-                              lg={2}
-                              className="d-flex gap-1 justify-content-center"
-                            >
-                              <div>history name</div>
-                            </Col>
-                            <Col
-                              lg={2}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>history name</div>
-                            </Col>
-                            <Col
-                              lg={1}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>
-                                <FontAwesomeIcon
-                                  icon={faEllipsisVertical}
-                                  size="xl"
-                                />
-                              </div>
-                            </Col>
-                          </Row>
-                        </CardBody>
-                      </div>
-                    ))}
                   </div>
                 </TabPane>
               </TabContent>

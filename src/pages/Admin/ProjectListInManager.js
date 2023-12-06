@@ -602,7 +602,7 @@ const ProjectListInManager = () => {
                                 }}
                                 type="button"
                               >
-                                Inprogress
+                                In progress
                               </NavLink>
                             </NavItem>
                             <NavItem role="presentation">

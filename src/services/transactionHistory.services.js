@@ -10,4 +10,11 @@ const getTransactionHistory = async (PageIndex, PageSize) => {
   return response;
 };
 
-export default { getTransactionHistory };
+const getAllTransactionHistory = async () => {
+  const serviceUrl =
+    urlConstant.endpoint.transactionHistory.getAllTransactionHistory;
+  const response = await utils.axiosLocalHost.get(serviceUrl);
+  return response;
+};
+
+export default { getTransactionHistory, getAllTransactionHistory };

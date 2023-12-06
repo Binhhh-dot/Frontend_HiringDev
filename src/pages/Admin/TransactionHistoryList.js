@@ -12,7 +12,7 @@ import {
   Container,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { Input, Space, Layout, Badge } from "antd";
+import { Input, Space, Layout, Badge, Modal } from "antd";
 import SiderBarWeb from "./SlideBar/SiderBarWeb";
 import { useNavigate, useLocation } from "react-router-dom";
 import img0 from "../../assets/images/user/img-00.jpg";
@@ -23,17 +23,35 @@ import {
   DropdownItem,
 } from "reactstrap";
 import transactionHistoryServices from "../../services/transactionHistory.services";
+import payServices from "../../services/pay.services";
+import classnames from "classnames";
 const { Header, Footer, Content } = Layout;
 
 const TransactionHistoryList = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [transactionHistoryList, setTransactionHistoryList] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [transactionHistoryDetail, setTransactionHistoryDetail] = useState({});
+  const [paySlipInTransaction, setPaySlipInTransaction] = useState([]);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
   //------------------------------------------------------------------------
+  const midleSelect = (id) => {
+    fetchGetTransactionHistoryById(id);
+    setShowPopup(true);
+  };
+  //------------------------------------------------------------------------
   const { Search } = Input;
   const onSearch = (value, _e, info) => console.log(info?.source, value);
+  //------------------------------------------------------------------------
+  const [activeTab, setActiveTab] = useState("1");
+  const tabChange = (tab) => {
+    if (activeTab) {
+      if (activeTab !== tab) setActiveTab(tab);
+    }
+  };
   //------------------------------------------------------------------------
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -83,7 +101,6 @@ const TransactionHistoryList = () => {
   };
 
   //------------------------------------------------------------------------
-  const [transactionHistoryList, setTransactionHistoryList] = useState([]);
 
   const fetchGetTransactionHistory = async () => {
     let response;
@@ -100,6 +117,39 @@ const TransactionHistoryList = () => {
     }
   };
 
+  //------------------------------------------------------------------------
+
+  const fetchGetTransactionHistoryById = async (id) => {
+    let response;
+    let selectTransaction;
+
+    try {
+      response = await transactionHistoryServices.getAllTransactionHistory();
+      console.log("all transaction");
+      console.log(response.data.data);
+      selectTransaction = response.data.data.filter(
+        (transaction) => transaction.transactionId == id
+      );
+      console.log(selectTransaction[0]);
+      setTransactionHistoryDetail(selectTransaction[0]);
+      fetchGetPaySlipInTransaction(selectTransaction[0].payPeriodId);
+    } catch (error) {
+      console.error("Error fetching list transaction history detail:", error);
+    }
+  };
+
+  //------------------------------------------------------------------------
+  const fetchGetPaySlipInTransaction = async (payPeriodId) => {
+    let response;
+    try {
+      response = await payServices.getPaySlip(payPeriodId);
+      console.log(response.data.data);
+      setPaySlipInTransaction(response.data.data);
+    } catch (error) {
+      console.error("Error fetching pay slip in transaction:", error);
+    }
+  };
+  //------------------------------------------------------------------------
   useEffect(() => {
     fetchGetTransactionHistory();
   }, []);
@@ -220,8 +270,70 @@ const TransactionHistoryList = () => {
                 <Row className="px-0">
                   <Col className="px-0">
                     <div className="me-lg-6">
+                      <h4>Transaction History List</h4>
                       <div className="d-flex justify-content-between">
-                        <h4>Transaction History List</h4>
+                        <Nav
+                          className="profile-content-nav nav-pills border-bottom gap-3 mb-3 "
+                          id="pills-tab"
+                          role="tablist"
+                        >
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTab === "1",
+                              })}
+                              onClick={() => {
+                                tabChange("1");
+                              }}
+                              type="button"
+                            >
+                              All
+                            </NavLink>
+                          </NavItem>
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTab === "2",
+                              })}
+                              onClick={() => {
+                                tabChange("2");
+                              }}
+                              type="button"
+                            >
+                              Created
+                            </NavLink>
+                          </NavItem>
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTab === "3",
+                              })}
+                              onClick={() => {
+                                tabChange("3");
+                              }}
+                              type="button"
+                            >
+                              Success
+                            </NavLink>
+                          </NavItem>
+                          <NavItem role="presentation">
+                            <NavLink
+                              to="#"
+                              className={classnames("nav-link", {
+                                active: activeTab === "4",
+                              })}
+                              onClick={() => {
+                                tabChange("4");
+                              }}
+                              type="button"
+                            >
+                              Failed
+                            </NavLink>
+                          </NavItem>
+                        </Nav>
 
                         <div className="d-flex align-items-center ">
                           <Space>
@@ -236,6 +348,239 @@ const TransactionHistoryList = () => {
                           </Space>
                         </div>
                       </div>
+
+                      <Modal
+                        centered
+                        open={showPopup}
+                        onOk={() => setShowPopup(false)}
+                        onCancel={() => setShowPopup(false)}
+                        width={1000}
+                        footer={null}
+                      >
+                        <Row className="p-3">
+                          <Col lg={6} className="border-end ">
+                            <div
+                              className="d-flex justify-content-between"
+                              style={{ width: "98%" }}
+                            >
+                              <h4 className="mb-0">Transaction Detail</h4>
+                              <p className="badge bg-success text-light fs-13 ">
+                                {transactionHistoryDetail.statusString}
+                              </p>
+                            </div>
+
+                            <div className="mt-3">
+                              <p className="mb-0 text-muted">Payment Method</p>
+                              <div
+                                className="p-2 border border-2"
+                                style={{
+                                  width: "98%",
+                                  fontWeight: "500",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {transactionHistoryDetail.paymentMethod}
+                              </div>
+                            </div>
+
+                            <div className="mt-3">
+                              <p className="mb-0 text-muted">PayPal ID</p>
+                              <div
+                                className="p-2 border border-2"
+                                style={{
+                                  width: "98%",
+                                  fontWeight: "500",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {transactionHistoryDetail.payPalTransactionId}
+                              </div>
+                            </div>
+                            <div className="mt-3">
+                              <p className="mb-0 text-muted">Pay For Month</p>
+                              <div
+                                className="p-2 border border-2 "
+                                style={{
+                                  width: "98%",
+                                  fontWeight: "500",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {transactionHistoryDetail.payForMonth}
+                              </div>
+                            </div>
+
+                            <div
+                              className="d-flex  justify-content-between"
+                              style={{ gap: "20px", width: "98%" }}
+                            >
+                              <div className="mt-3" style={{ width: "50%" }}>
+                                <p className="mb-0 text-muted">Amount </p>
+                                <div
+                                  className="p-2 border border-2"
+                                  style={{
+                                    fontWeight: "500",
+                                    borderRadius: "10px",
+                                  }}
+                                >
+                                  {transactionHistoryDetail.amount}
+                                </div>
+                              </div>
+
+                              <div className="mt-3" style={{ width: "50%" }}>
+                                <p className="mb-0 text-muted">Currency </p>
+                                <div
+                                  className="p-2 border border-2"
+                                  style={{
+                                    fontWeight: "500",
+                                    borderRadius: "10px",
+                                  }}
+                                >
+                                  {transactionHistoryDetail.currency}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="mt-3">
+                              <p className="mb-0 text-muted">Description</p>
+                              <div
+                                className="p-2 border border-2"
+                                style={{
+                                  width: "98%",
+                                  fontWeight: "500",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {transactionHistoryDetail.description}
+                              </div>
+                            </div>
+                          </Col>
+                          <Col lg={6} className="border-start ">
+                            {/* ------------------------------------------------------ */}
+                            <Row>
+                              <Col>
+                                <div className="candidate-profile-overview p-2">
+                                  <ul className="list-unstyled mb-0">
+                                    <h3 className="fs-17 fw-semibold mb-1">
+                                      Company Overview
+                                    </h3>
+                                    <li>
+                                      <div className="d-flex justify-content-start gap-2">
+                                        <label className="text-dark">
+                                          Company Name
+                                        </label>
+                                        <div>
+                                          <p className="text-muted mb-0">
+                                            {
+                                              transactionHistoryDetail.companyName
+                                            }
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li>
+
+                                    <h3 className="fs-17 fw-semibold mb-1 mt-3">
+                                      Project Overview
+                                    </h3>
+                                    <li>
+                                      <div className="d-flex justify-content-start gap-2">
+                                        <label className="text-dark">
+                                          Project Name
+                                        </label>
+                                        <div>
+                                          <p className="text-muted mb-0">
+                                            {
+                                              transactionHistoryDetail.projectName
+                                            }
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li>
+
+                                    <li>
+                                      <div className="d-flex justify-content-start gap-2">
+                                        <label className="text-dark">
+                                          Project Code
+                                        </label>
+                                        <div>
+                                          <p className="text-muted mb-0 ">
+                                            {
+                                              transactionHistoryDetail.projectCode
+                                            }
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li>
+
+                                    <h3 className="fs-17 fw-semibold mb-0 mt-3">
+                                      Developer Overview
+                                    </h3>
+
+                                    <li>
+                                      <div className="d-flex justify-content-start gap-2">
+                                        {/* <label className="text-dark">
+                                          Developers Name
+                                        </label> */}
+                                        <div>
+                                          <ul>
+                                            {paySlipInTransaction.map(
+                                              (
+                                                paySlipInTransactionNew,
+                                                key
+                                              ) => (
+                                                <li>
+                                                  <p
+                                                    key={key}
+                                                    className="text-muted mb-0"
+                                                  >
+                                                    {
+                                                      paySlipInTransactionNew.firstName
+                                                    }{" "}
+                                                    {
+                                                      paySlipInTransactionNew.lastName
+                                                    }
+                                                  </p>
+                                                </li>
+                                              )
+                                            )}
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    </li>
+
+                                    {/* <li>
+                                      <div className="d-flex justify-content-start">
+                                        <label className="text-dark">
+                                          Experience
+                                        </label>
+                                        <div>
+                                          <p className="text-muted mb-0 ">
+                                            {"yearOfExperience"}
+                                            Year
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div className="d-flex justify-content-start">
+                                        <label className="text-dark">
+                                          Salary
+                                        </label>
+                                        <div>
+                                          <p className="text-muted mb-0">
+                                            {"averageSalary"}$
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li> */}
+                                  </ul>
+                                </div>
+                              </Col>
+                            </Row>
+                            {/* ------------------------------------------------------ */}
+                          </Col>
+                        </Row>
+                      </Modal>
 
                       <div className="mt-3">
                         {transactionHistoryList.map(
@@ -269,22 +614,19 @@ const TransactionHistoryList = () => {
                                   </Col>
 
                                   <Col md={3}>
-                                    <div>
+                                    <div
+                                      onClick={() =>
+                                        midleSelect(
+                                          transactionHistoryListNew.transactionId
+                                        )
+                                      }
+                                    >
                                       <h5 className="fs-18 mb-0">
-                                        <Link
-                                          to="#"
-                                          className="text-dark"
-                                          //   state={{
-                                          //     reportId: reportListNew.reportId,
-                                          //     developerId:
-                                          //       reportListNew.developerId,
-                                          //     projectId: reportListNew.projectId,
-                                          //   }}
-                                        >
+                                        <div className="text-dark">
                                           {
                                             transactionHistoryListNew.companyName
                                           }
-                                        </Link>
+                                        </div>
                                       </h5>
                                       <p className="text-muted fs-14 mb-0">
                                         {
