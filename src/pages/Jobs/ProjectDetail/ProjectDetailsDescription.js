@@ -2478,6 +2478,12 @@ const ProjectDetailDesciption = () => {
                           </Row>
                         </Form>
                       </div>
+
+                      <CreateHiringRequestPopup
+                        isModalOpen={isModalCreateOpen}
+                        closeModal={closeModalCreateHiringRequest}
+                        requestId={selectedHiringRequestInfo}>
+                      </CreateHiringRequestPopup>
                       <div>
                         {jobVacancyList.length > 0 ? (
                           <>
