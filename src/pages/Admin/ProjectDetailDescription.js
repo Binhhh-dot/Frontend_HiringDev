@@ -415,11 +415,12 @@ const ProjectDetailDescription = () => {
   //------------------------------------------------------------------------------------------
   useEffect(() => {
     fetchGetProjectDetailByProjectId();
+    fetchGetDeveloperByProject();
   }, []);
 
   useEffect(() => {
-    fetchGetDeveloperByProject();
-  }, []);
+    fetchGetProjectDetailByProjectId();
+  }, [isModalUpdateOpen]);
 
   useEffect(() => {
     fetchGetPayPeriod();
@@ -969,18 +970,18 @@ const ProjectDetailDescription = () => {
                                             <span
                                               className={
                                                 listPeriod.statusString ===
-                                                "Created"
+                                                  "Created"
                                                   ? "badge bg-blue text-light fs-12"
                                                   : listPeriod.statusString ===
                                                     "cancelled"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : listPeriod.statusString ===
-                                                    "Inprogress"
-                                                  ? "badge bg-primary text-light fs-12"
-                                                  : listPeriod.statusString ===
-                                                    "completed"
-                                                  ? "badge bg-primary text-light fs-12"
-                                                  : ""
+                                                    ? "badge bg-danger text-light fs-12"
+                                                    : listPeriod.statusString ===
+                                                      "Inprogress"
+                                                      ? "badge bg-primary text-light fs-12"
+                                                      : listPeriod.statusString ===
+                                                        "completed"
+                                                        ? "badge bg-primary text-light fs-12"
+                                                        : ""
                                               }
                                             >
                                               {listPeriod.statusString}

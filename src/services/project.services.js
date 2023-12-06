@@ -63,25 +63,18 @@ const getDeveloperByProject = async (ProjectId) => {
 
 const updateProject = async (
   projectId,
-  ProjectId,
-  ProjectTypeId,
-  ProjectName,
-  Description,
-  StartDate,
-  EndDate
+  formData
 ) => {
   const serviceUrl = urlConstant.endpoint.project.updateProject.replace(
     "${projectId}",
     projectId
   );
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
-    ProjectId,
-    ProjectTypeId,
-    ProjectName,
-    Description,
-    StartDate,
-    EndDate,
-  });
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config);
 
   return response;
 };

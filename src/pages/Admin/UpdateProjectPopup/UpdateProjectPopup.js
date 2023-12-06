@@ -39,6 +39,7 @@ const UpdateProjectPopup = (
   const [descriptionError, setDescriptionError] = useState(null);
   const [startDateError, setStartDateError] = useState(null);
   const [endDateError, setEndDateError] = useState(null);
+  const [value, setValue] = useState("");
 
   //-----------------------------------------------------------------------
   const openModal = () => {
@@ -84,18 +85,56 @@ const UpdateProjectPopup = (
     }
   };
 
+  const handlePostJob = async () => {
+    const editor = window.tinymce.get("description");
+    try {
+      const formData = new FormData();
+      formData.append("ProjectId", projectId);
+      formData.append("ProjectTypeId", selectOptionProjectType.value);
+      formData.append("ProjectName", projectNameFormUpdateProject);
+      formData.append("Description", value);
+      formData.append("StartDate", startDateFormUpdateProject);
+      formData.append("EndDate", endDateFormUpdateProject);
+      console.log(projectId)
+      console.log(selectOptionProjectType.value)
+      console.log(projectNameFormUpdateProject)
+      console.log(value)
+      console.log(startDateFormUpdateProject)
+      console.log(endDateFormUpdateProject)
+      const response = await projectServices.updateProject(projectId, formData);
+      console.log(response)
+      toast.success("Update project successfully")
+      closeModal();
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      toast.success("Update project fail")
+    }
+  };
   //---------------------------------------------------------------------------
 
   const fetchGetProjectById = async () => {
     let response;
     try {
+      console.log("sadsadsadasdsadasdsadasdasdas")
       response = await projectServices.getProjectDetailByProjectId(projectId);
       console.log(response.data.data);
       setProjectNameFormUpdateProject(response.data.data.projectName);
       setDescriptionFormUpdateProject(response.data.data.description);
       setStartDateFormUpdateProject(response.data.data.startDate);
       setEndDateFormUpdateProject(response.data.data.endDate);
-      const editor = window.tinymce.get("description"); // Giả sử 'description' là id của Editor
+
+      const requiredTypeName = response.data.data.projectTypeName;
+      const foundType = optionProjectType.find(
+        (type) => type.label === requiredTypeName
+      );
+      if (foundType) {
+        const newType = {
+          value: foundType.value,
+          label: foundType.label,
+        };
+        setSelectOptionProjectType(newType);
+      }
+      const editor = window.tinymce.get("description");
       if (editor) {
         editor.setContent(response.data.data.description);
       }
@@ -145,6 +184,7 @@ const UpdateProjectPopup = (
                             maxlength="100"
                             required
                             value={projectNameFormUpdateProject}
+                            onChange={handleProjectNameChange}
                           ></input>
                           {projectNameError && (
                             <p className="text-danger mt-2">
@@ -181,6 +221,7 @@ const UpdateProjectPopup = (
                             class="form-control resume"
                             placeholder=""
                             value={startDateFormUpdateProject}
+                            onChange={handleStartDateChange}
                           ></input>
                           {startDateError && (
                             <p className="text-danger mt-2">{startDateError}</p>
@@ -195,6 +236,7 @@ const UpdateProjectPopup = (
                             class="form-control resume"
                             placeholder=""
                             value={endDateFormUpdateProject}
+                            onChange={handleEndDateChange}
                           ></input>
                           {endDateError && (
                             <p className="text-danger mt-2">{endDateError}</p>
@@ -207,15 +249,13 @@ const UpdateProjectPopup = (
                             class="fix-height"
                             id="description"
                             apiKey="axy85kauuja11vgbfrm96qlmduhgfg6egrjpbjil00dfqpwf"
-                            // onEditorChange={(newValue) => {
-                            //   setValue(newValue);
-                            // }}
+                            onEditorChange={(newValue) => {
+                              setValue(newValue);
+                            }}
                             init={{
                               plugins:
                                 "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
-                              //   plugins:
-                              //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
-                              //
+
                             }}
                           />
                           {descriptionError && (
@@ -231,7 +271,7 @@ const UpdateProjectPopup = (
                           <button
                             type="button"
                             className="btn btn-secondary"
-                            //onClick={}
+                            onClick={closeModal}
                           >
                             Cancel
                           </button>
@@ -239,7 +279,7 @@ const UpdateProjectPopup = (
                           <button
                             type="button"
                             className="btn btn-primary"
-                            //onClick={}
+                            onClick={handlePostJob}
                           >
                             Update Project
                           </button>
