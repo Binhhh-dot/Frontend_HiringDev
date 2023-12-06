@@ -1,11 +1,11 @@
 import urlConstant from "../Common/urlConstant";
-import utils from "../utils/customAxios";
+import axiosLocalHost from "../utils/customAxios";
 
 const getPayPeriod = async (projectId, inputDate) => {
   const serviceUrl = urlConstant.endpoint.pay.getPayPeriod
     .replace("${projectId}", projectId)
     .replace("${inputDate}", inputDate);
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -14,7 +14,7 @@ const getPaySlip = async (payPeriodId) => {
     "${payPeriodId}",
     payPeriodId
   );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -28,7 +28,7 @@ const getPaySlipAndPaging = async (payPeriodId, PageIndex, PageSize) => {
     .replace("${PageSize}", PageSize);
 
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -37,7 +37,7 @@ const getWorklog = async (paySlipId) => {
     "${paySlipId}",
     paySlipId
   );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 

@@ -56,7 +56,7 @@ const RightSideContent = () => {
 
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const companyIdFromLocalStorage = localStorage.getItem("companyId");
+  const [companyIdFromLocalStorage, setCompanyIdFromLocalStorage] = useState(null);
 
   useEffect(() => {
     const fetchCompanyDetail = async () => {
@@ -403,6 +403,10 @@ const RightSideContent = () => {
       }
     };
     fetchUserDetail();
+    const companyIdFromLocalStorage = localStorage.getItem("companyId");
+    console.log("companyIdFromLocalStorage")
+    console.log(companyIdFromLocalStorage)
+    setCompanyIdFromLocalStorage(companyIdFromLocalStorage);
   }, []);
 
   const [avatar, setAvatar] = useState();
@@ -818,7 +822,7 @@ const RightSideContent = () => {
                     </Row>
                   </div>
                   <div className="mt-4 text-end">
-                    {companyIdFromLocalStorage === "null" ? (
+                    {companyIdFromLocalStorage == null ? (
                       <div
                         className="btn btn-soft-primary fw-bold"
                         onClick={handleUpdateCompany}

@@ -46,6 +46,7 @@ const SignIn = () => {
     let expiration;
     let accessToken;
     let refreshToken;
+    let accessTokenExp;
     try {
       const response = await loginService.login(email, password);
       // Check if the API call was successful
@@ -57,6 +58,7 @@ const SignIn = () => {
         expiration = response.data.data.expiration;
         accessToken = response.data.data.accessToken;
         refreshToken = response.data.data.refreshToken;
+        accessTokenExp = response.data.data.accessTokenExp;
         if (userId) {
           // Save user ID to local storage
           localStorage.setItem("userId", userId);
@@ -64,6 +66,7 @@ const SignIn = () => {
           localStorage.setItem("expiration", expiration)
           localStorage.setItem("accessToken", accessToken)
           localStorage.setItem("refreshToken", refreshToken)
+          localStorage.setItem("accessTokenExp", accessTokenExp)
           // Navigate to "/layout3"
         }
       }

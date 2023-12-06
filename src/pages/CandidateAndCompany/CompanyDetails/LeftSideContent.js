@@ -1,24 +1,123 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardBody, Col } from "reactstrap";
 
 //Import images
 import featureImage from "../../../assets/images/featured-job/img-01.png";
+import companyServices from "../../../services/company.services";
+import axios from "axios";
 
 const LeftSideContent = () => {
+
+  const [activeTab, setActiveTab] = useState("1");
+  const [companyId, setCompanyId] = useState(null);
+  const [userImage, setUserImage] = useState(null);
+  const [userImage3, setUserImage3] = useState(null);
+  const [userImageState, setUserState] = useState(null);
+  const [dateState, setDateState] = useState(null);
+  const [firstNameState, setFirstnameState] = useState(null);
+  const [lastNameState, setLastnameState] = useState(null);
+  const [phoneState, setPhonenameState] = useState(null);
+  const [companyCreated, setCompanyCreated] = useState(false);
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
+  const [loadingUpdateAccount, setLoadingUpdateAccount] = useState(false);
+
+  const [firstNameError, setFirstNameError] = useState(null);
+  const [lastNameError, setLastNameError] = useState(null);
+  const [phoneNumberError, setPhoneNumberError] = useState(null);
+  const [dayOfBirthError, setDayOfBirthError] = useState(null);
+  const [imageError, setImageError] = useState(null);
+  const [companyIdFromLocalStorage, setCompanyIdFromLocalStorage] = useState(null);
+
+  const [companyDetail, setCompanyDetail] = useState([]);
+  const tabChange = (tab) => {
+    if (activeTab !== tab) setActiveTab(tab);
+  };
+
+
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
+  const fetchCompanyDetail = async () => {
+    let companyId = localStorage.getItem("companyId");
+    setCompanyId(companyId);
+    setCompanyIdFromLocalStorage(companyId);
+    const userId = localStorage.getItem("userId");
+    if (companyId) {
+      setCompanyCreated(true);
+      try {
+        // Make API request
+        const response = await companyServices.getCompanyByCompanyId(
+          companyId
+        );
+        console.log(response.data.data)
+        setCompanyDetail(response.data.data)
+        // Handle the response (you can show a success message or redirect to another page)
+
+        // const file = fileDev.target.files[0];
+
+        // setUserImage(fileDev);
+      } catch (error) {
+        // Handle errors (show an error message or log the error)
+        console.error("Error creating company:", error);
+        console.log(error.response.data);
+      }
+    } else {
+      // setUserImage(userImage2);
+    }
+
+    axios
+      .get(
+        "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4"
+      )
+      .then((response) => {
+        const data = response.data;
+        const formattedCountries = data.map((country) => ({
+          value: country.name.common,
+          label: country.name.common,
+        }));
+        setCountries(formattedCountries);
+        if (companyDetail) {
+          const selected = formattedCountries.find(
+            (country) => country.value === companyDetail.data.data.country
+          );
+          if (selected) {
+            const company = {
+              value: selected.value,
+              label: selected.label,
+            };
+            setSelectedCountry(company);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data", error);
+      });
+  };
+
+  useEffect(() => {
+    fetchCompanyDetail();
+  }, []);
   return (
     <React.Fragment>
       <Col lg={4}>
         <Card className="side-bar">
           <CardBody className="p-4">
             <div className="candidate-profile text-center">
-              <img
-                src={featureImage}
-                alt=""
-                className="avatar-lg rounded-circle"
-              />
-              <h6 className="fs-18 mb-1 mt-4">WeHire Technology Pvt.Ltd</h6>
-              <p className="text-muted mb-4">Since July 2017</p>
+
+              <div className="text-center">
+                <div className=" profile-user">
+                  <img
+                    src={companyDetail.companyImage || featureImage} // Giá trị mặc định là "userImage2"
+                    className="rounded-circle img-thumbnail profile-img"
+                    id="profile-img-2"
+                    alt=""
+                  />
+                </div>
+              </div>
+
+              <h6 className="fs-18 mb-1 mt-4">{companyDetail.companyName}</h6>
+              <p className="text-muted mb-4">{companyDetail.companyEmail}</p>
               <ul className="candidate-detail-social-menu list-inline mb-0">
                 <li className="list-inline-item">
                   <Link to="#" className="social-link">
@@ -44,17 +143,17 @@ const LeftSideContent = () => {
             <ul className="list-unstyled mb-0">
               <li>
                 <div className="d-flex">
-                  <label className="text-dark">Owner Name</label>
+                  <label className="text-dark">Phone number</label>
                   <div>
-                    <p className="text-muted mb-0">Charles Dickens</p>
+                    <p className="text-muted mb-0">{companyDetail.phoneNumber}</p>
                   </div>
                 </div>
               </li>
               <li>
                 <div className="d-flex">
-                  <label className="text-dark">Employees</label>
+                  <label className="text-dark">Address</label>
                   <div>
-                    <p className="text-muted mb-0">1500 - 1850</p>
+                    <p className="text-muted mb-0">{companyDetail.address}</p>
                   </div>
                 </div>
               </li>
@@ -62,34 +161,27 @@ const LeftSideContent = () => {
                 <div className="d-flex">
                   <label className="text-dark">Location</label>
                   <div>
-                    <p className="text-muted mb-0">New York</p>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="d-flex">
-                  <label className="text-dark">Website</label>
-                  <div>
-                    <p className="text-muted text-break mb-0">
-                      www.WeHire.ltd.com
-                    </p>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="d-flex">
-                  <label className="text-dark">Established</label>
-                  <div>
-                    <p className="text-muted mb-0">July 10 2017</p>
+                    <p className="text-muted mb-0">{companyDetail.country}</p>
                   </div>
                 </div>
               </li>
             </ul>
-            <div className="mt-3">
-              <Link to="#" className="btn btn-danger btn-hover w-100">
-                <i className="uil uil-phone"></i> Contact
-              </Link>
-            </div>
+
+            {companyIdFromLocalStorage == null ? (
+              <div
+                className="btn btn-soft-primary fw-bold w-100"
+              // onClick={handleUpdateCompany}
+              >
+                Create
+              </div>
+            ) : (
+              <div
+                className="btn btn-soft-blue fw-bold w-100"
+              // onClick={handleUpdateCompany}
+              >
+                Update
+              </div>
+            )}
           </CardBody>
           <CardBody className="p-4 border-top">
             <div className="ur-detail-wrap">
