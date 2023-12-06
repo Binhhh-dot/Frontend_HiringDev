@@ -82,7 +82,7 @@ const ProjectDetailDescription = () => {
 
   const [listWorklog, setListWorklog] = useState([]);
   //------------------------------------------------
-  const [selectProjectId, setSelectProjectId] = useState({});
+  const [selectProjectId, setSelectProjectId] = useState(null);
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const openModalUpdateProject = () => {
     setIsModalUpdateOpen(true);
@@ -419,7 +419,9 @@ const ProjectDetailDescription = () => {
   }, []);
 
   useEffect(() => {
-    fetchGetProjectDetailByProjectId();
+    if (isModalUpdateOpen) {
+      fetchGetProjectDetailByProjectId();
+    }
   }, [isModalUpdateOpen]);
 
   useEffect(() => {
@@ -464,7 +466,7 @@ const ProjectDetailDescription = () => {
 
                       <Dropdown.Menu>
                         {/* Nội dung của dropdown ở đây */}
-                        <Dropdown.Item onClick={openModalUpdateProject}>
+                        <Dropdown.Item onClick={() => openModalUpdateProject()}>
                           Update Project
                         </Dropdown.Item>
                       </Dropdown.Menu>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Input,
   Modal,
@@ -40,7 +40,7 @@ const UpdateProjectPopup = (
   const [startDateError, setStartDateError] = useState(null);
   const [endDateError, setEndDateError] = useState(null);
   const [value, setValue] = useState("");
-
+  const descriptionRef = useRef(null);
   //-----------------------------------------------------------------------
   const openModal = () => {
     setModal(!modal);
@@ -115,7 +115,8 @@ const UpdateProjectPopup = (
   const fetchGetProjectById = async () => {
     let response;
     try {
-      console.log("sadsadsadasdsadasdsadasdasdas")
+      const editor = window.tinymce.get("description");
+      console.log(editor)
       response = await projectServices.getProjectDetailByProjectId(projectId);
       console.log(response.data.data);
       setProjectNameFormUpdateProject(response.data.data.projectName);
@@ -134,7 +135,6 @@ const UpdateProjectPopup = (
         };
         setSelectOptionProjectType(newType);
       }
-      const editor = window.tinymce.get("description");
       if (editor) {
         editor.setContent(response.data.data.description);
       }
@@ -145,8 +145,19 @@ const UpdateProjectPopup = (
 
   useEffect(() => {
     fetchData();
-    fetchGetProjectById();
-  }, [isModalOpen, projectId]);
+
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      const timeout = setTimeout(() => {
+        if (descriptionRef.current) {
+          fetchGetProjectById();
+        }
+      }, 100); // Đợi 100ms để chắc chắn rằng phần tử đã được render
+      return () => clearTimeout(timeout);
+    }
+  }, [isModalOpen]);
 
   return (
     <React.Fragment>
@@ -252,6 +263,7 @@ const UpdateProjectPopup = (
                             onEditorChange={(newValue) => {
                               setValue(newValue);
                             }}
+                            ref={descriptionRef}
                             init={{
                               plugins:
                                 "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
