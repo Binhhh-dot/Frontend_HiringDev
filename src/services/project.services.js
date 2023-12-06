@@ -100,6 +100,24 @@ const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize,
   return response;
 };
 
+
+const updateImage = async (formData, projectId) => {
+  const serviceUrl = urlConstant.endpoint.project.updateImage.replace(
+    "${projectId}",
+    projectId
+  );
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  console.log(serviceUrl)
+  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config);
+  console.log(response)
+  return response;
+};
+
+
 export default {
   createProject,
   getAllProjectByCompanyId,
@@ -109,4 +127,5 @@ export default {
   getDeveloperByProject,
   updateProject,
   getAllProjectByCompanyIdAndPaging,
+  updateImage
 };

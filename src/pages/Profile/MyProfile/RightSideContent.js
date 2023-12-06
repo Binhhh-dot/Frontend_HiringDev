@@ -262,7 +262,7 @@ const RightSideContent = () => {
       formData.append("PhoneNumber", phoneNumber);
       formData.append("DateOfBirth", dateOfBirth);
       formData.append("file", file || null);
-
+      console.log(formData)
       try {
         // Make API request
         const response = await userSerrvices.updateUser(formData, userId);

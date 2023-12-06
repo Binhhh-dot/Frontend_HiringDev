@@ -17,7 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { HashLoader } from "react-spinners";
 
 const SignCompany = () => {
-    document.title = "Sign Up | Jobcy - Job Listing Template | Themesdesign";
+    document.title = "Sign Up | WeHire - Job Listing Template | Themesdesign";
     const navigate = useNavigate();
     const [avatar2, setAvatar2] = useState();
     const [userImage3, setUserImage3] = useState(null);
@@ -208,7 +208,7 @@ const SignCompany = () => {
                                                                 <h5>Let's Get Started</h5>
                                                                 <p className="text-white-70">
                                                                     Create company information to get access to all the features of
-                                                                    Jobcy
+                                                                    WeHire
                                                                 </p>
                                                             </div>
                                                             <Form action="/" className="auth-form " onSubmit={handleSignUp} lang="en" >

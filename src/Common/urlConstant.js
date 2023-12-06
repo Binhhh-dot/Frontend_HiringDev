@@ -6,6 +6,7 @@ export default {
     auth: {
       login: "/Account/Login",
       siginUp: "/Account/SignUp",
+      revoke: "/Account/Revoke?userId=${userId}",
     },
     skill: {
       getAll: "/Skill",
@@ -185,6 +186,7 @@ export default {
         "/Developer/ByProject/${projectId}?status=${status}",
       updateProject: "/Project/${projectId}",
       getAllProjectByCompanyIdAndPaging: "/Project/ByCompany/${companyId}?PageIndex={PageIndex}&PageSize={PageSize}&searchKeyString=${searchKeyString}&ProjectTypeId=${ProjectTypeId}&Status=${Status}",
+      updateImage: "/Project/UpdateImage/${projectId}",
     },
     contract: {
       getContract: "/Contract",
@@ -259,11 +261,15 @@ export default {
     transactionHistory: {
       getTransactionHistory:
         "/Transaction?PageIndex=${PageIndex}&PageSize=${PageSize}",
+      getTransactionByCompanyIdAndPaging: "/Transaction/ByCompany?companyId=${companyId}&PageIndex=${PageIndex}&PageSize=${PageSize}&PayPalTransactionId=${PayPalTransactionId}&Amount=${Amount}&Status=${Status}"
     },
     notification: {
       postUserDevice: "/UserDevice",
       getListNotificationByUserId: "/Notification/ByUser/${userId}",
       getCountNotificationByUserId: "/Notification/Count/${userId}",
+      readNotification: "/Notification/Read?notificationId=${notificationId}&userId=${userId}",
+      unNewNotification: "/Notification/UnNew?userId=${userId}",
+      deleteUserDevice: "/UserDevice/${userDeviceId}"
     }
   },
 };

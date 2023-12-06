@@ -5,7 +5,7 @@ import Section from "./Section";
 import Pagination from "../JobList2/Pagination";
 
 const JobGrid2 = () => {
-  document.title = "Job Grid2 | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Job Grid2 | WeHire - Job Listing Template | Themesdesign";
   return (
     <React.Fragment>
       <Section />

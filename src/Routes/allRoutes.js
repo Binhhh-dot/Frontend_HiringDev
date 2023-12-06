@@ -44,7 +44,7 @@ import BlogAuther from "../pages/Blog/BlogAuther/BlogAuther";
 import ContractListHR from "../pages/Jobs/ContractList/ContractList";
 //Contacts
 import Contact from "../pages/Contact/Contact";
-
+import TransactionList from "../pages/Jobs/TransactionList/TransactionList";
 //AuthPages
 import SignIn from "../pages/ExtraPages/SignIn";
 import SignUp from "../pages/ExtraPages/SignUp";
@@ -99,7 +99,7 @@ import ContractDetailHr from "../pages/Jobs/ContractDetail/ContractDetail";
 import ManageLevel from "../pages/Admin/Info/ManageLevel";
 import ManageSkill from "../pages/Admin/Info/ManageSkill";
 import ManageType from "../pages/Admin/Info/ManageType";
-
+import NotificationList from "../pages/Jobs/NotificationList/NotificationList";
 //Admin Management
 import ListAccountHR from "../pages/Admin/ListAccountHR";
 import ListAccountManager from "../pages/Admin/ListAccountManager";
@@ -175,12 +175,16 @@ const userRoutes = [
     component: <HiringRequestListInCompanyPartner />,
   },
   {
-    path: "/projectlist",
-    component: <ProjectList />,
+    path: "/notificationList",
+    component: <NotificationList />,
   },
   {
-    path: "/projectlistnew",
+    path: "/projectlist",
     component: <ProjectListNew />,
+  },
+  {
+    path: "/transactionlist",
+    component: <TransactionList />,
   },
   {
     path: "/projectdetailhr",

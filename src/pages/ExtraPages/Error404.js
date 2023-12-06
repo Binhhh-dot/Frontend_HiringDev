@@ -6,7 +6,7 @@ import { Col, Container, Row } from "reactstrap";
 import Error404Image from "../../assets/images/404.png";
 
 const Error404 = () => {
-  document.title = "Error 404 | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Error 404 | WeHire - Job Listing Template | Themesdesign";
   return (
     <React.Fragment>
       <div>
@@ -28,8 +28,9 @@ const Error404 = () => {
                         </p>
                         <div className="mt-4">
                           <Link
-                            className="btn btn-primary waves-effect waves-light"
-                            to="/"
+                            style={{ backgroundColor: "#02af746b" }}
+                            className="btn"
+                            to="/home"
                           >
                             <i className="mdi mdi-home"></i> Back to Home
                           </Link>

@@ -15,7 +15,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import companyServices from "../../../services/company.services";
 
 const CreateHiringRequest = () => {
-  document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
   let hiringRequestSaved;
   const location = useLocation();
   const [options, setOptions] = useState([]);
@@ -903,7 +903,7 @@ const CreateHiringRequest = () => {
                                 <h5>Sign Up</h5>
                                 <p className="text-muted">
                                   Sign Up and get access to all the features of
-                                  Jobcy
+                                  WeHire
                                 </p>
                               </div>
                               <Form action="#" className="auth-form">

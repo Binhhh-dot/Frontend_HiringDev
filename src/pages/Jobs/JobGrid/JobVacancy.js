@@ -19,7 +19,7 @@ const JobVacancy = () => {
       companyImg: jobImage1,
       jobDescription: "Magento Developer",
       experience: "0-2 Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       fullTime: true,
@@ -43,7 +43,7 @@ const JobVacancy = () => {
       companyImg: jobImage2,
       jobDescription: "Marketing Director",
       experience: "2-4 Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "New York",
       salary: "$250 - $800 / month",
       partTime: true,
@@ -62,7 +62,7 @@ const JobVacancy = () => {
       companyImg: jobImage3,
       jobDescription: "HTML Developer",
       experience: "2-4 Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       freeLance: true,
@@ -81,7 +81,7 @@ const JobVacancy = () => {
       companyImg: jobImage4,
       jobDescription: "Product Sales Specialist",
       experience: "5+ Yrs Exp.",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "California",
       salary: "$250 - $800 / month",
       fullTime: true,
@@ -154,12 +154,12 @@ const JobVacancy = () => {
                         jobVacancyDetails.fullTime === true
                           ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
                           : jobVacancyDetails.partTime === true
-                          ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                          : jobVacancyDetails.freeLance === true
-                          ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                          : jobVacancyDetails.internship === true
-                          ? "badge bg-blue-subtle text-blue fs-13 mt-1"
-                          : ""
+                            ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                            : jobVacancyDetails.freeLance === true
+                              ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                              : jobVacancyDetails.internship === true
+                                ? "badge bg-blue-subtle text-blue fs-13 mt-1"
+                                : ""
                       }
                     >
                       {jobVacancyDetails.timing}

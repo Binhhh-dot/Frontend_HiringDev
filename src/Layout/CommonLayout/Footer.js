@@ -134,7 +134,7 @@ const Footer = () => {
           <Row>
             <Col lg={4}>
               <div className="footer-item mt-4 mt-lg-0 me-lg-5">
-                <h4 className="text-white mb-4">Jobcy</h4>
+                <h4 className="text-white mb-4">WeHire</h4>
                 <p className="text-white-50">
                   It is a long established fact that a reader will be of a page
                   reader will be of at its layout.
@@ -176,7 +176,7 @@ const Footer = () => {
           <Row>
             <Col lg={12}>
               <p className="text-white-50 text-center mb-0">
-                {new Date().getFullYear()} &copy; Jobcy - Job Listing Page
+                {new Date().getFullYear()} &copy; WeHire - Job Listing Page
                 Template by{" "}
                 <Link
                   to="//themesdesign.in/"
