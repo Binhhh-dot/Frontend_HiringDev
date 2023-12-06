@@ -49,6 +49,7 @@ import "react-calendar/dist/Calendar.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { result } from "lodash";
 import hireddevServices from "../../services/hireddev.services";
+import UpdateProjectPopup from "./UpdateProjectPopup/UpdateProjectPopup";
 import { Editor } from "@tinymce/tinymce-react";
 
 dayjs.extend(customParseFormat);
@@ -80,6 +81,16 @@ const ProjectDetailDescription = () => {
   const [listPaySlip, setlistPaySlip] = useState([]);
 
   const [listWorklog, setListWorklog] = useState([]);
+  //------------------------------------------------
+  const [selectProjectId, setSelectProjectId] = useState({});
+  const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+  const openModalUpdateProject = () => {
+    setIsModalUpdateOpen(true);
+  };
+
+  const closeModalUpdateProject = () => {
+    setIsModalUpdateOpen(false);
+  };
   // -----------------------------------------------
 
   const convertDay = (yearmonthday) => {
@@ -124,6 +135,8 @@ const ProjectDetailDescription = () => {
 
       console.log("project detail");
       console.log(response.data.data);
+
+      setSelectProjectId(response.data.data.projectId);
 
       setProjectDetail(response.data.data);
 
@@ -246,90 +259,13 @@ const ProjectDetailDescription = () => {
     setSelectedCandidateInfo({});
     setIsModalOpen(false);
   };
-  //--------------------------------------------------------------------------------
-
-  const [optionProjectType, setOptionProjectType] = useState([]);
-  const [selectOption, setSelectOption] = useState([]);
-  //--------------------------------------------------------------------------------
-  const handleChangeOption = (selected) => {
-    console.log(selected);
-    setSelectOption(selected);
-  };
-  //--------------------------------------------------------------------------------
-
-  const fetchProjectType = async () => {
-    let response;
-    try {
-      response = await projectTypeServices.getAllProjectType();
-      const activeTypes = response.data.data.filter(
-        (type) => type.statusString === "Active"
-      );
-
-      if (projectDetail) {
-        const requiredTypeName = projectDetail.projectTypeName;
-        const foundType = activeTypes.find(
-          (type) => type.projectTypeName == requiredTypeName
-        );
-        if (foundType) {
-          const newType = {
-            value: foundType.projectTypeId.toString(),
-            label: foundType.projectTypeName,
-          };
-          setSelectOption(newType);
-        }
-      }
-      let formattedTypes = activeTypes.map((type) => ({
-        value: type.projectTypeId.toString(),
-        label: type.projectTypeName,
-      }));
-
-      setOptionProjectType(formattedTypes);
-    } catch (error) {
-      console.error("Error fetching project type:", error);
-    }
-  };
 
   //--------------------------------------------------------------------------------
-  const [modalUpdateProject, setModalUpdateProject] = useState(false);
-  const openModalUpdateProject = () => {
-    setModalUpdateProject(!modalUpdateProject);
+  // const [modalUpdateProject, setModalUpdateProject] = useState(false);
+  // const openModalUpdateProject = () => {
+  //   setModalUpdateProject(!modalUpdateProject);
+  // };
 
-    // const editor = window.tinymce.get("projectdes"); // Giả sử 'description' là id của Editor
-    // if (editor) {
-    //   editor.setContent(currentDescription);
-    // }
-    fetchProjectType();
-  };
-
-  //--------------------------------------------------------------------------------
-  const [resultUpdate, setresultUpdate] = useState([]);
-
-  const fetchUpdateProject = async () => {
-    let response;
-    try {
-      response = await projectServices.updateProject(
-        state.projectId,
-        state.projectId,
-        // currentProjectType,
-        selectOption.value,
-        currentProjectName,
-        currentDescription,
-        currentStartDate,
-        currentEndDate
-      );
-      console.log("Update OK");
-      console.log(response.data.data);
-      setresultUpdate(response.data.data);
-      //fetchGetProjectDetailByProjectId();
-    } catch (error) {
-      console.error("Error fetching update project:", error);
-      console.log(selectOption.value);
-    }
-  };
-  //--------------------------------------------------------------------------------
-  const updateProject = () => {
-    fetchUpdateProject();
-  };
   //--------------------------------------------------------------------------------
   const [activeTab, setActiveTab] = useState("1");
   const tabChange = (tab) => {
@@ -485,17 +421,9 @@ const ProjectDetailDescription = () => {
     fetchGetDeveloperByProject();
   }, []);
 
-  // useEffect(() => {
-  //   fetchProjectType();
-  // }, []);
-
   useEffect(() => {
     fetchGetPayPeriod();
   }, [defaultClickDay]);
-
-  // useEffect(() => {
-  //   fetchGetListPaySlip();
-  // }, [defaultClickDay]);
 
   //--------------------------------------------------------------------------------
 
@@ -543,171 +471,14 @@ const ProjectDetailDescription = () => {
                   </div>
                 </div>
 
-                {/* ------------------ */}
-                <Modal
-                  isOpen={modalUpdateProject}
-                  toggle={openModalUpdateProject}
-                  role="dialog"
-                  centered
-                  size="lg"
-                >
-                  <ModalBody className="p-4">
-                    <div className="position-absolute end-0 top-0 p-3">
-                      <button
-                        type="button"
-                        className="btn-close"
-                        onClick={openModalUpdateProject}
-                      ></button>
-                    </div>
-                    <div className="auth-content">
-                      <div className="w-100">
-                        <div className="text-center mb-4">
-                          <h5>Update Project</h5>
-                          <p className="text-muted"></p>
-                        </div>
-                        <Form action="#" className="auth-form">
-                          <FormGroup className="mb-3">
-                            <Label
-                              htmlFor="projectNameInput"
-                              className="form-label"
-                            >
-                              Project Name
-                            </Label>
-                            <Input
-                              type="text"
-                              className="form-control"
-                              id="project-name"
-                              value={currentProjectName}
-                              onChange={(e) =>
-                                setCurrentProjectName(e.target.value)
-                              }
-                            />
-                          </FormGroup>
+                {/* -------------------------------------------------------------------------------- */}
+                {/* Modal */}
+                <UpdateProjectPopup
+                  isModalOpen={isModalUpdateOpen}
+                  closeModal={closeModalUpdateProject}
+                  projectId={selectProjectId}
+                ></UpdateProjectPopup>
 
-                          <FormGroup className="mb-3">
-                            <Label
-                              htmlFor="projectTypeInput"
-                              className="form-label"
-                            >
-                              Project Type
-                            </Label>
-                            <div className="form-button">
-                              <Select
-                                options={optionProjectType}
-                                value={selectOption}
-                                onChange={handleChangeOption}
-                                className="Select Select--level-highest"
-                                style={{
-                                  maxHeight: "2000px",
-                                  overflowY: "auto",
-                                }}
-                              />
-                            </div>
-                          </FormGroup>
-                          <div className="d-flex justify-content-between gap-2">
-                            <FormGroup
-                              className="mb-3"
-                              style={{ width: "50%" }}
-                            >
-                              <Label
-                                htmlFor="startDateInput"
-                                className="form-label"
-                              >
-                                Start Date
-                              </Label>
-                              <Input
-                                type="date"
-                                className="form-control"
-                                id="start-date"
-                                value={currentStartDate}
-                                onChange={(e) =>
-                                  setcurrentStartDate(e.target.value)
-                                }
-                              />
-                            </FormGroup>
-
-                            <FormGroup
-                              className="mb-3"
-                              style={{ width: "50%" }}
-                            >
-                              <Label
-                                htmlFor="endDateInput"
-                                className="form-label"
-                              >
-                                End Date
-                              </Label>
-                              <Input
-                                type="date"
-                                className="form-control"
-                                id="end-date"
-                                value={currentEndDate}
-                                onChange={(e) =>
-                                  setCurrentEndDate(e.target.value)
-                                }
-                              />
-                            </FormGroup>
-                          </div>
-
-                          {/* <FormGroup className="mb-3">
-                            <label htmlFor="fileInput" className="form-label">
-                              File Image
-                            </label>
-                            <Input
-                              type="file"
-                              className="file"
-                              id="fileInput"
-                              onChange={convertFile}
-                            />
-                          </FormGroup> */}
-
-                          <FormGroup className="mb-3">
-                            <label
-                              htmlFor="passwordInput"
-                              className="form-label"
-                            >
-                              Description
-                            </label>
-                            {/* <Input
-                              type="textarea"
-                              className="form-control"
-                              id="description"
-                              style={{ height: 100 }}
-                              value={currentDescription}
-                              onChange={(e) =>
-                                setCurrentDescription(e.target.value)
-                              }
-                            /> */}
-
-                            <Editor
-                              class="fix-height"
-                              id="projectdes"
-                              apiKey="axy85kauuja11vgbfrm96qlmduhgfg6egrjpbjil00dfqpwf"
-                              // onEditorChange={(newValue) => {
-                              //   setValue(newValue);
-                              // }}
-                              init={{
-                                plugins:
-                                  "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
-                                //   plugins:
-                                //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
-                                //
-                              }}
-                            />
-                          </FormGroup>
-
-                          <div className="text-center">
-                            <div
-                              className="btn btn-primary w-100"
-                              onClick={() => updateProject()}
-                            >
-                              Update Project
-                            </div>
-                          </div>
-                        </Form>
-                      </div>
-                    </div>
-                  </ModalBody>
-                </Modal>
                 {/* -------------------------------------------------------------------------------- */}
 
                 <p
@@ -1473,11 +1244,11 @@ const ProjectDetailDescription = () => {
       </Card>
 
       {/* ----------------------------------------------------------------------------- */}
-      <DeveloperDetailInProjectPopup
+      {/* <DeveloperDetailInProjectPopup
         isModalOpen={isModalOpen}
         closeModal={closeModal}
         devId={selectedCandidateInfo.developerId}
-      />
+      /> */}
     </React.Fragment>
   );
 };
