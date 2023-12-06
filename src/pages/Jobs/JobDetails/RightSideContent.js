@@ -237,6 +237,7 @@ const RightSideContent = () => {
                   </Label>
                   <Input
                     type="file"
+                    accept=".jpg, .jpeg, .png"
                     className="form-control"
                     id="inputGroupFile01"
                   />

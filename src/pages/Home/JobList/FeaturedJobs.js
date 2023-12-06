@@ -283,6 +283,7 @@ const FeaturedJobs = () => {
                 </Label>
                 <Input
                   type="file"
+                  accept=".jpg, .jpeg, .png"
                   className="form-control"
                   id="inputGroupFile01"
                 />

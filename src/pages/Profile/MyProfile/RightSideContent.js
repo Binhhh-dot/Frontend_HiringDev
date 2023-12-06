@@ -743,6 +743,7 @@ const RightSideContent = () => {
                           </label>
                           <input
                             type="file"
+                            accept=".jpg, .jpeg, .png"
                             id="profile-img-file-input"
                             onChange={handlePreviewAvatar}
                             style={{ display: "none" }}

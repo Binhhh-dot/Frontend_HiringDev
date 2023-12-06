@@ -24,8 +24,15 @@ const getPayPeriodDetailByProjectIdAndDate = async (projectId, inputDate) => {
     return response
 }
 
+const createNewPayPeriod = async (projectId, inputDate) => {
+    const serviceUrl = urlConstant.endpoint.payPeriod.createNewPayPeriod;
+    const response = await utils.axiosLocalHost.post(serviceUrl, { projectId, inputDate });
+    return response
+}
+
 export default {
     exportToExcel,
     importExcel,
-    getPayPeriodDetailByProjectIdAndDate
+    getPayPeriodDetailByProjectIdAndDate,
+    createNewPayPeriod
 }

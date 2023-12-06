@@ -632,6 +632,7 @@ const CreateProject = () => {
                                       </label>
                                       <input
                                         type="file"
+                                        accept=".jpg, .jpeg, .png"
                                         id="profile-img-file-input-2"
                                         onChange={handlePreviewAvatar2}
                                         style={{ display: 'none' }}
