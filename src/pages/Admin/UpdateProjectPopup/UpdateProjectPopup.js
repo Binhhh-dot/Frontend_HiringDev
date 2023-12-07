@@ -95,19 +95,19 @@ const UpdateProjectPopup = (
       formData.append("Description", value);
       formData.append("StartDate", startDateFormUpdateProject);
       formData.append("EndDate", endDateFormUpdateProject);
-      console.log(projectId)
-      console.log(selectOptionProjectType.value)
-      console.log(projectNameFormUpdateProject)
-      console.log(value)
-      console.log(startDateFormUpdateProject)
-      console.log(endDateFormUpdateProject)
+      console.log(projectId);
+      console.log(selectOptionProjectType.value);
+      console.log(projectNameFormUpdateProject);
+      console.log(value);
+      console.log(startDateFormUpdateProject);
+      console.log(endDateFormUpdateProject);
       const response = await projectServices.updateProject(projectId, formData);
-      console.log(response)
-      toast.success("Update project successfully")
+      console.log(response);
+      toast.success("Update project successfully");
       closeModal();
     } catch (error) {
       console.error("Error fetching user data:", error);
-      toast.success("Update project fail")
+      toast.success("Update project fail");
     }
   };
   //---------------------------------------------------------------------------
@@ -116,7 +116,7 @@ const UpdateProjectPopup = (
     let response;
     try {
       const editor = window.tinymce.get("description");
-      console.log(editor)
+      console.log(editor);
       response = await projectServices.getProjectDetailByProjectId(projectId);
       console.log(response.data.data);
       setProjectNameFormUpdateProject(response.data.data.projectName);
@@ -145,7 +145,6 @@ const UpdateProjectPopup = (
 
   useEffect(() => {
     fetchData();
-
   }, [isModalOpen]);
 
   useEffect(() => {
@@ -154,7 +153,7 @@ const UpdateProjectPopup = (
         if (descriptionRef.current) {
           fetchGetProjectById();
         }
-      }, 100); // Đợi 100ms để chắc chắn rằng phần tử đã được render
+      }, 200); // Đợi 100ms để chắc chắn rằng phần tử đã được render
       return () => clearTimeout(timeout);
     }
   }, [isModalOpen]);
@@ -267,7 +266,6 @@ const UpdateProjectPopup = (
                             init={{
                               plugins:
                                 "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
-
                             }}
                           />
                           {descriptionError && (

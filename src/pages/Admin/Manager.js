@@ -47,6 +47,7 @@ import classname from "classnames";
 import userAuthorization from "../../utils/userAuthorization";
 import { arSA } from "date-fns/locale";
 import userSerrvices from "../../services/user.serrvices";
+import NavBarWeb from "./NavBar/NavBarWeb";
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
@@ -167,47 +168,48 @@ const Manager = () => {
   // };
 
   // console.log(selectedKeys);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  // const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
+  // const toggleDropdown = () => {
+  //   setDropdownOpen(!dropdownOpen);
+  // };
   //-------------------------------------------------------------------------------------
-  const [showPopupProfileUser, setShowPopupProfileUser] = useState(false);
-  const handleProfileUser = () => {};
-  const handleOkProfileUser = () => {};
+  // const [showPopupProfileUser, setShowPopupProfileUser] = useState(false);
+  // const handleProfileUser = () => {};
+  // const handleOkProfileUser = () => {};
   //-------------------------------------------------------------------------------------
-  const [name, setName] = useState("");
-  const [imgUser, setImgUser] = useState("");
-  const [status, setStatus] = useState("");
+  // const [name, setName] = useState("");
+  // const [imgUser, setImgUser] = useState("");
+  // const [status, setStatus] = useState("");
 
-  const fetchGetUserDetail = async () => {
-    const userId = localStorage.getItem("userId");
-    let response;
-    let fullName;
-    if (userId) {
-      try {
-        response = await userSerrvices.getUserById(userId);
-        fullName =
-          response.data.data.firstName + " " + response.data.data.lastName;
-        setName(fullName);
-        setImgUser(response.data.data.userImage);
-        setStatus(response.data.data.statusString);
-      } catch (error) {
-        console.error("Error fetching user detail", error);
-      }
-    }
-  };
+  // const fetchGetUserDetail = async () => {
+  //   const userId = localStorage.getItem("userId");
+  //   let response;
+  //   let fullName;
+  //   if (userId) {
+  //     try {
+  //       response = await userSerrvices.getUserById(userId);
+  //       fullName =
+  //         response.data.data.firstName + " " + response.data.data.lastName;
+  //       setName(fullName);
+  //       setImgUser(response.data.data.userImage);
+  //       setStatus(response.data.data.statusString);
+  //     } catch (error) {
+  //       console.error("Error fetching user detail", error);
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchGetUserDetail();
-  }, []);
+  // useEffect(() => {
+  //   fetchGetUserDetail();
+  // }, []);
   //-------------------------------------------------------------------------------------
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <SiderBarWeb choose={"menu-key/10"}></SiderBarWeb>
       <Layout>
-        <div
+        <NavBarWeb></NavBarWeb>
+        {/* <div
           style={{
             backgroundColor: "#FFFF",
             height: "70px",
@@ -233,14 +235,6 @@ const Manager = () => {
                 ></i>
               </Badge>
             </Space>
-            {/* <Space>
-              <Badge dot>
-                <i
-                  className="uil uil-envelope-open"
-                  style={{ color: "#8F78DF", fontSize: "20px" }}
-                ></i>
-              </Badge>
-            </Space> */}
 
             <div
               className="p-1  d-flex gap-3 align-items-center me-2"
@@ -309,16 +303,16 @@ const Manager = () => {
               </Dropdown>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* ------------------------------------------------------------------------------------- */}
-        <Modal
+        {/* <Modal
           centered
           open={showPopupProfileUser}
           onOk={() => handleOkProfileUser()}
           onCancel={() => setShowPopupProfileUser(false)}
           width={800}
-          okType="default" // Chuyển từ "blue" sang "default" để tránh ảnh hưởng khi sử dụng okButtonProps
+          okType="default"
           okButtonProps={{
             style: {
               background: "#6546D2",
@@ -330,7 +324,7 @@ const Manager = () => {
           <div>
             <h5>Profile Manager</h5>
           </div>
-        </Modal>
+        </Modal> */}
         {/* ------------------------------------------------------------------------------------- */}
 
         <Content>

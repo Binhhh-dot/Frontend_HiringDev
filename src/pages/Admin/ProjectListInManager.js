@@ -751,7 +751,7 @@ const ProjectListInManager = () => {
                                             className={
                                               projectListDetail.statusString ===
                                               "Preparing"
-                                                ? "badge bg-blue text-light fs-12"
+                                                ? "badge bg-warning text-light fs-12"
                                                 : projectListDetail.statusString ===
                                                   "cancelled"
                                                 ? "badge bg-danger text-light fs-12"
@@ -760,7 +760,7 @@ const ProjectListInManager = () => {
                                                 ? "badge bg-blue text-light fs-12"
                                                 : projectListDetail.statusString ===
                                                   "completed"
-                                                ? "badge bg-primary text-light fs-12"
+                                                ? "badge bg-success text-light fs-12"
                                                 : ""
                                             }
                                           >
@@ -917,7 +917,7 @@ const ProjectListInManager = () => {
                                               className={
                                                 projectListDetail.statusString ===
                                                 "Preparing"
-                                                  ? "badge bg-blue text-light fs-12"
+                                                  ? "badge bg-warning text-light fs-12"
                                                   : projectListDetail.statusString ===
                                                     "cancelled"
                                                   ? "badge bg-danger text-light fs-12"
@@ -1087,7 +1087,7 @@ const ProjectListInManager = () => {
                                               className={
                                                 projectListDetail.statusString ===
                                                 "Preparing"
-                                                  ? "badge bg-blue text-light fs-12"
+                                                  ? "badge bg-warning text-light fs-12"
                                                   : projectListDetail.statusString ===
                                                     "cancelled"
                                                   ? "badge bg-danger text-light fs-12"
@@ -1257,7 +1257,7 @@ const ProjectListInManager = () => {
                                               className={
                                                 projectListDetail.statusString ===
                                                 "Preparing"
-                                                  ? "badge bg-blue text-light fs-12"
+                                                  ? "badge bg-warning text-light fs-12"
                                                   : projectListDetail.statusString ===
                                                     "cancelled"
                                                   ? "badge bg-danger text-light fs-12"
@@ -1427,7 +1427,7 @@ const ProjectListInManager = () => {
                                               className={
                                                 projectListDetail.statusString ===
                                                 "Preparing"
-                                                  ? "badge bg-blue text-light fs-12"
+                                                  ? "badge bg-warning text-light fs-12"
                                                   : projectListDetail.statusString ===
                                                     "cancelled"
                                                   ? "badge bg-danger text-light fs-12"

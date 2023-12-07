@@ -257,7 +257,7 @@ const JobVacancyList = (a) => {
 
       console.log(response.data.data);
       tmp = response.data.data.filter(
-        (JobVacancyList) => JobVacancyList.statusString == "InProgress"
+        (JobVacancyList) => JobVacancyList.statusString == "In Progress"
       );
 
       setJobVacancyListInProgress(tmp);
@@ -954,7 +954,7 @@ const JobVacancyList = (a) => {
                     <Row className="align-items-center">
                       <Col md={2}>
                         <div>
-                          <Link to="/companydetails">
+                          <Link>
                             <img
                               style={{
                                 width: "80px",

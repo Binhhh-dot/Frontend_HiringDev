@@ -428,7 +428,7 @@ const TransactionHistoryList = () => {
                               </div>
 
                               <div className="mt-3" style={{ width: "50%" }}>
-                                <p className="mb-0 text-muted">Currency </p>
+                                <p className="mb-0 text-muted">Time stamp </p>
                                 <div
                                   className="p-2 border border-2"
                                   style={{
@@ -436,7 +436,7 @@ const TransactionHistoryList = () => {
                                     borderRadius: "10px",
                                   }}
                                 >
-                                  {transactionHistoryDetail.currency}
+                                  {transactionHistoryDetail.timestamp}
                                 </div>
                               </div>
                             </div>
@@ -582,6 +582,13 @@ const TransactionHistoryList = () => {
                         </Row>
                       </Modal>
 
+                      {/* <CardBody>
+                        <TabContent activeTab={activeTab}>
+                          <TabPane tabId="1"></TabPane>
+                          <TabPane tabId="1"></TabPane>
+                          <TabPane tabId="1"></TabPane>
+                        </TabContent>
+                      </CardBody> */}
                       <div className="mt-3">
                         {transactionHistoryList.map(
                           (transactionHistoryListNew, key) => (
