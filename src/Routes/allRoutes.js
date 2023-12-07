@@ -41,10 +41,10 @@ import BlogModern from "../pages/Blog/BlogModern/BlogModern";
 import BlogMasonary from "../pages/Blog/BlogMasonary/BlogMasonary";
 import BlogDetails from "../pages/Blog/BlogDetails/BlogDetails";
 import BlogAuther from "../pages/Blog/BlogAuther/BlogAuther";
-
+import ContractListHR from "../pages/Jobs/ContractList/ContractList";
 //Contacts
 import Contact from "../pages/Contact/Contact";
-
+import TransactionList from "../pages/Jobs/TransactionList/TransactionList";
 //AuthPages
 import SignIn from "../pages/ExtraPages/SignIn";
 import SignUp from "../pages/ExtraPages/SignUp";
@@ -94,13 +94,21 @@ import ProjectDetail from "../pages/Admin/ProjectDetail";
 import SideBarManager from "../pages/Admin/SideBarManager";
 
 // Manage info
-import ManageLevel from "../pages/Admin/Info/ManageLevel";
-import ManageSkill from "../pages/Admin/Info/ManageSkill";
-import ManageType from "../pages/Admin/Info/ManageType";
+// import ManageLevel from "../pages/Admin/Info/ManageLevel";
+// import ManageSkill from "../pages/Admin/Info/ManageSkill";
+// import ManageType from "../pages/Admin/Info/ManageType";
 
 //Dashboard
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";
 
+import CreateReport from "../pages/Jobs/CreateReport/CreateReport";
+import ReportListHR from "../pages/Jobs/ReportList/ReportList";
+import ContractDetailHr from "../pages/Jobs/ContractDetail/ContractDetail";
+//
+import ManageLevel from "../pages/Admin/Info/ManageLevel";
+import ManageSkill from "../pages/Admin/Info/ManageSkill";
+import ManageType from "../pages/Admin/Info/ManageType";
+import NotificationList from "../pages/Jobs/NotificationList/NotificationList";
 //Admin Management
 import ListAccountHR from "../pages/Admin/ListAccountHR";
 import ListAccountManager from "../pages/Admin/ListAccountManager";
@@ -112,6 +120,10 @@ import NewListInterviewInfo from "../pages/Admin/NewListInterviewInfo";
 import ProjectListInManager from "../pages/Admin/ProjectListInManager";
 import ContractList from "../pages/Admin/ContractList";
 import CallbackPayment from "../pages/ExtraPages/CallbackPayment";
+import CompanyDetailPartner from "../pages/Admin/CompanyDetailPartner";
+import ReportList from "../pages/Admin/ReportList";
+import ReportListDetail from "../pages/Admin/ReportListDetail";
+import TransactionHistoryList from "../pages/Admin/TransactionHistoryList";
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -172,12 +184,16 @@ const userRoutes = [
     component: <HiringRequestListInCompanyPartner />,
   },
   {
-    path: "/projectlist",
-    component: <ProjectList />,
+    path: "/notificationList",
+    component: <NotificationList />,
   },
   {
-    path: "/projectlistnew",
+    path: "/projectlist",
     component: <ProjectListNew />,
+  },
+  {
+    path: "/transactionlist",
+    component: <TransactionList />,
   },
   {
     path: "/projectdetailhr",
@@ -196,12 +212,28 @@ const userRoutes = [
     component: <CreateInterview />,
   },
   {
+    path: "/createReport",
+    component: <CreateReport />,
+  },
+  {
+    path: "/reportList",
+    component: <ReportListHR />,
+  },
+  {
+    path: "/contractListHr",
+    component: <ContractListHR />,
+  },
+  {
     path: "/detailInterview",
     component: <DetailInterview />,
   },
   {
     path: "/detailInterviewManager",
     component: <DetailInterviewManager />,
+  },
+  {
+    path: "/contractDetailHr",
+    component: <ContractDetailHr />,
   },
 
   { path: "/createhiringrequest", component: <CreateHiringRequest /> },
@@ -240,7 +272,7 @@ const authRoutes = [
   { path: "/manager", component: <Manager /> },
   { path: "/newhiringrequestdetail", component: <NewHiringRequestDetail /> },
   { path: "/projectdetail", component: <ProjectDetail /> },
-  { path: "/sidebarmanager", component: <SideBarManager /> },
+  // { path: "/sidebarmanager", component: <SideBarManager /> },
   { path: "/listAccountHR", component: <ListAccountHR /> },
   { path: "/listAccountManager", component: <ListAccountManager /> },
   { path: "/listAccountStaff", component: <ListAccountStaff /> },
@@ -250,6 +282,10 @@ const authRoutes = [
   { path: "/newlistinterview", component: <NewListInterviewInfo /> },
   { path: "/projectlistinmanager", component: <ProjectListInManager /> },
   { path: "/listcontract", component: <ContractList /> },
+  { path: "/listcompanyPartnerdetail", component: <CompanyDetailPartner /> },
+  { path: "/listreportinmanager", component: <ReportList /> },
+  { path: "/listreportinmanagerdetail", component: <ReportListDetail /> },
+  { path: "/listtransactionhistory", component: <TransactionHistoryList /> },
   { path: "/manageLevel", component: <ManageLevel /> },
   { path: "/manageSkill", component: <ManageSkill /> },
   { path: "/manageType", component: <ManageType /> },

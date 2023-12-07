@@ -85,19 +85,38 @@ const updateProject = async (
   return response;
 };
 
-const getAllProjectByCompanyIdAndPaging = async (
-  companyId,
-  PageIndex,
-  PageSize
-) => {
+const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize, ProjectTypeId, inputSearch, status) => {
   const serviceUrl =
     urlConstant.endpoint.project.getAllProjectByCompanyIdAndPaging
       .replace("${companyId}", companyId)
       .replace("{PageIndex}", PageIndex)
-      .replace("{PageSize}", PageSize);
+      .replace("{PageSize}", PageSize)
+      .replace("${ProjectTypeId}", ProjectTypeId)
+      .replace("${searchKeyString}", inputSearch)
+      .replace("${Status}", status)
+    ;
+  console.log(serviceUrl)
   const response = await utils.axiosLocalHost.get(serviceUrl);
   return response;
 };
+
+
+const updateImage = async (formData, projectId) => {
+  const serviceUrl = urlConstant.endpoint.project.updateImage.replace(
+    "${projectId}",
+    projectId
+  );
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  console.log(serviceUrl)
+  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config);
+  console.log(response)
+  return response;
+};
+
 
 export default {
   createProject,
@@ -108,4 +127,5 @@ export default {
   getDeveloperByProject,
   updateProject,
   getAllProjectByCompanyIdAndPaging,
+  updateImage
 };

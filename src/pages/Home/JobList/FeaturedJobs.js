@@ -58,7 +58,7 @@ const FeaturedJobs = () => {
       id: 3,
       companyImg: jobImage3,
       jobDescription: "Digital Marketing Manager",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "Phoenix, Arizona",
       salary: "1500-2400/m",
       freelancer: true,
@@ -156,10 +156,10 @@ const FeaturedJobs = () => {
                       featuredJobdetails.fullTime === true
                         ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
                         : featuredJobdetails.partTime === true
-                        ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                        : featuredJobdetails.freelancer === true
-                        ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                        : ""
+                          ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                          : featuredJobdetails.freelancer === true
+                            ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                            : ""
                     }
                   >
                     {featuredJobdetails.timing}
@@ -188,7 +188,7 @@ const FeaturedJobs = () => {
               </Col>
 
               <Col lg={6} md={5}>
-                {}
+                { }
                 <div>
                   <p className="text-muted mb-0">
                     <span className="text-dark">

@@ -6,7 +6,7 @@ import userAuthorization from "../../../utils/userAuthorization";
 
 const PaymenAgreement = () => {
   document.title =
-    "Privacy & Policy | Jobcy - Job Listing Template | Themesdesign";
+    "Privacy & Policy | WeHire - Job Listing Template | Themesdesign";
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoad, setIdLoad] = useState(false);

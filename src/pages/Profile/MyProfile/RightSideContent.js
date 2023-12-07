@@ -262,7 +262,7 @@ const RightSideContent = () => {
       formData.append("PhoneNumber", phoneNumber);
       formData.append("DateOfBirth", dateOfBirth);
       formData.append("file", file || null);
-
+      console.log(formData)
       try {
         // Make API request
         const response = await userSerrvices.updateUser(formData, userId);
@@ -698,18 +698,20 @@ const RightSideContent = () => {
                     </Row>
                   </div>
                 </Form>
-                <button
-                  id="rejectButton"
-                  className="btn btn-soft-primary mt-2 fw-bold"
-                  onClick={() => handleUpdateUserData()}
-                  disabled={loadingUpdateAccount}
-                >
-                  {loadingUpdateAccount ? (
-                    <HashLoader size={20} color={"white"} loading={true} />
-                  ) : (
-                    "Update"
-                  )}
-                </button>
+                <div className="d-flex justify-content-end">
+                  <button
+                    id="rejectButton"
+                    className="btn btn-soft-blue mt-2 fw-bold"
+                    onClick={() => handleUpdateUserData()}
+                    disabled={loadingUpdateAccount}
+                  >
+                    {loadingUpdateAccount ? (
+                      <HashLoader size={20} color={"white"} loading={true} />
+                    ) : (
+                      "Update"
+                    )}
+                  </button>
+                </div>
               </TabPane>
               <TabPane tabId="3">
                 <Form action="#">
@@ -817,14 +819,14 @@ const RightSideContent = () => {
                   <div className="mt-4 text-end">
                     {companyIdFromLocalStorage === "null" ? (
                       <div
-                        className="btn btn-primary"
+                        className="btn btn-soft-primary fw-bold"
                         onClick={handleUpdateCompany}
                       >
                         Create
                       </div>
                     ) : (
                       <div
-                        className="btn btn-warning"
+                        className="btn btn-soft-blue fw-bold"
                         onClick={handleUpdateCompany}
                       >
                         Update

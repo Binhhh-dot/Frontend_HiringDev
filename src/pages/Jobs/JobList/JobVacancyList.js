@@ -34,7 +34,7 @@ const JobVacancyList = () => {
       id: 2,
       companyImg: jobImage2,
       jobDescription: "Digital Marketing Manager",
-      companyName: "Jobcy Technology Pvt.Ltd",
+      companyName: "WeHire Technology Pvt.Ltd",
       location: "Phoenix, Arizona",
       jobPostTime: "15 min ago",
       fullTime: true,
@@ -226,12 +226,12 @@ const JobVacancyList = () => {
                         jobVacancyListDetails.fullTime === true
                           ? "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
                           : jobVacancyListDetails.partTime === true
-                          ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
-                          : jobVacancyListDetails.freeLance === true
-                          ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
-                          : jobVacancyListDetails.internship === true
-                          ? "badge bg-blue-subtle text-blue fs-13 mt-1"
-                          : ""
+                            ? "badge bg-danger-subtle text-danger fs-13 mt-1 mx-1"
+                            : jobVacancyListDetails.freeLance === true
+                              ? "badge bg-primary-subtle text-primary fs-13 mt-1 mx-1"
+                              : jobVacancyListDetails.internship === true
+                                ? "badge bg-blue-subtle text-blue fs-13 mt-1"
+                                : ""
                       }
                     >
                       {jobVacancyListDetails.timing}

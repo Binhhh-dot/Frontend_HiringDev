@@ -575,9 +575,9 @@ const JobDetailsDescription = () => {
                 style={{ maxWidth: "266px" }}
               >
                 <div>
-                  <p className="text-muted mb-0 fs-13">Type Of Developer</p>
+                  <p className="text-muted mb-0 fs-13">Employment Type</p>
                   <p className="fw-medium mb-0 badge bg-info-subtle text-info">
-                    {hiringRequestDetail.typeRequireName}
+                    {hiringRequestDetail.employmentTypeName}
                   </p>
                 </div>
               </Col>
@@ -587,19 +587,10 @@ const JobDetailsDescription = () => {
                 style={{ maxWidth: "266px" }}
               >
                 <div id="standard">
-                  <p className="text-muted fs-13 mb-0">Skill Requirement</p>
-                  <p className="fw-medium mb-0 ">
-                    {hiringRequestDetail.skillRequireStrings.map(
-                      (skill, index) => (
-                        <span
-                          key={index}
-                          style={{ marginRight: "3px" }}
-                          className="badge bg-success-subtle text-success"
-                        >
-                          {skill}
-                        </span>
-                      )
-                    )}
+                  <p className="text-muted fs-13 mb-0">Number Of Dev</p>
+
+                  <p className="fw-medium mb-0 badge bg-success-subtle text-success">
+                    {hiringRequestDetail.numberOfDev}
                   </p>
                 </div>
               </Col>
@@ -610,9 +601,12 @@ const JobDetailsDescription = () => {
                 style={{ maxWidth: "266px" }}
               >
                 <div>
-                  <p className="text-muted fs-13 mb-0">Level Requirement</p>
+                  <p className="text-muted fs-13 mb-0">
+                    Average Salary Developer{" "}
+                  </p>
+
                   <p className="fw-medium mb-0 badge bg-purplel text-purple">
-                    {hiringRequestDetail.levelRequireName}
+                    {hiringRequestDetail.salaryPerDev} VND
                   </p>
                 </div>
               </Col>
@@ -655,17 +649,18 @@ const JobDetailsDescription = () => {
                 </li>
 
                 <h5>Skill & Type Require</h5>
+
+                <li>
+                  <i className="uil uil-circle"></i>{" "}
+                  {hiringRequestDetail.typeRequireName}
+                </li>
+
                 {hiringRequestDetail.skillRequireStrings.map((skill, index) => (
                   <li key={index}>
                     <i className="uil uil-circle"></i>
                     {skill}
                   </li>
                 ))}
-
-                <li>
-                  <i className="uil uil-circle"></i>{" "}
-                  {hiringRequestDetail.typeRequireName}
-                </li>
               </ul>
             </div>
           </div>
@@ -1337,9 +1332,22 @@ const JobDetailsDescription = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="d-flex mb-2 align-items-center">
+                      <div className="d-flex mb-2 align-items-center justify-content-between">
                         <span className=" fs-14">Salary</span>
-                        <div
+
+                        <div>
+                          <Space size={30} swap>
+                            <Progress
+                              steps={5}
+                              percent={devHasBeenSentNew.salaryPerDevPercentage}
+                              strokeColor={getBarColor(
+                                devHasBeenSentNew.salaryPerDevPercentage
+                              )}
+                            />
+                          </Space>
+                        </div>
+
+                        {/* <div
                           className="devmatching-bar-salary border border-1"
                           style={{ marginLeft: "17px" }}
                         >
@@ -1352,13 +1360,24 @@ const JobDetailsDescription = () => {
                               ),
                             }}
                           ></div>
-                        </div>
+                        </div> */}
                       </div>
-                      <div className="d-flex mb-2 align-items-center">
-                        <span className=" fs-14" style={{ width: "30px" }}>
-                          Skill
-                        </span>
-                        <div
+                      <div className="d-flex mb-2 align-items-center justify-content-between">
+                        <span className=" fs-14">Skill</span>
+
+                        <div>
+                          <Space size={30} wrap>
+                            <Progress
+                              steps={5}
+                              percent={devHasBeenSentNew.skillPercentage}
+                              strokeColor={getBarColor(
+                                devHasBeenSentNew.skillPercentage
+                              )}
+                            />
+                          </Space>
+                        </div>
+
+                        {/* <div
                           className="devmatching-bar-skill border border-1 "
                           style={{ marginLeft: "23px" }}
                         >
@@ -1371,7 +1390,7 @@ const JobDetailsDescription = () => {
                               ),
                             }}
                           ></div>
-                        </div>
+                        </div> */}
                       </div>
                       <div>
                         <span>
@@ -1386,59 +1405,46 @@ const JobDetailsDescription = () => {
                       <div className="d-flex justify-content-end mb-2">
                         <span
                           className={
-                            devHasBeenSentNew.selectedDevStatus ===
+                            devHasBeenSentNew.hiredDeveloperStatus ===
                             "Interview Scheduled"
                               ? "badge bg-primary text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
+                              : devHasBeenSentNew.hiredDeveloperStatus ===
                                 "Rejected"
                               ? "badge bg-danger text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
+                              : devHasBeenSentNew.hiredDeveloperStatus ===
                                 "Waiting Interview"
                               ? "badge bg-warning text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
+                              : devHasBeenSentNew.hiredDeveloperStatus ===
                                 "Under Consideration"
                               ? "badge bg-blue text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
+                              : devHasBeenSentNew.hiredDeveloperStatus ===
                                 "Onboarding"
                               ? "badge bg-newGreen text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
+                              : devHasBeenSentNew.hiredDeveloperStatus ===
                                 "Contract Processing"
                               ? "badge bg-warning text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
+                              : devHasBeenSentNew.hiredDeveloperStatus ===
                                 "Contract Failed"
                               ? "badge bg-danger text-light"
-                              : devHasBeenSentNew.selectedDevStatus ===
+                              : devHasBeenSentNew.hiredDeveloperStatus ===
                                 "Request Closed"
                               ? "badge bg-danger text-light"
+                              : devHasBeenSentNew.hiredDeveloperStatus ===
+                                "Working"
+                              ? "badge bg-orangeRed2 text-light"
                               : ""
                           }
                         >
-                          {devHasBeenSentNew.selectedDevStatus}
+                          {devHasBeenSentNew.hiredDeveloperStatus}
                         </span>
                       </div>
                       <div className="right-side-percen-matching-devaccepted">
-                        {/* <div className="d-flex w-100 justify-content-center mb-2">
-                          <div className="d-flex align-items-center">
-                            <p
-                              style={{
-                                display: "contents",
-                                fontFamily: "Tahoma",
-                                fontSize: "15px",
-                              }}
-                            >
-                              Matching request total
-                            </p>
-                          </div>
-                        </div> */}
-
                         <Space size={10}>
                           <Progress
                             type="circle"
-                            percent={devHasBeenSentNew.averagedPercentage.toFixed(
-                              2
-                            )}
-                            size={90}
-                            strokeWidth={8}
+                            percent={devHasBeenSentNew.averagedPercentage}
+                            size={97}
+                            strokeWidth={9}
                             strokeColor={getBarColor(
                               devHasBeenSentNew.averagedPercentage
                             )}

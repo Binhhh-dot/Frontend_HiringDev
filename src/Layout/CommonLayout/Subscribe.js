@@ -18,7 +18,7 @@ const Subscribe = () => {
                 </p>
               </div>
             </Col>
-            <Col lg={6}>
+            {/* <Col lg={6}>
               <div className="mt-4 mt-lg-0">
                 <form className="subscribe-form" action="#">
                   <div className="input-group justify-content-center justify-content-lg-end">
@@ -38,7 +38,7 @@ const Subscribe = () => {
                   </div>
                 </form>
               </div>
-            </Col>
+            </Col> */}
           </Row>
         </Container>
         <div className="email-img d-none d-lg-block">

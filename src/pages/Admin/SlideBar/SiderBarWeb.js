@@ -14,6 +14,8 @@ import {
   CodeOutlined,
   AuditOutlined,
   BankOutlined,
+  HighlightOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -52,10 +54,26 @@ const SiderBarWeb = ({ choose }) => {
       key: "menu-key/sub-menu-key",
       icon: <UserOutlined />,
       children: [
-        { label: "Manager", key: "menu-key/sub-menu-key/3", link: "/listAccountManager" },
-        { label: "Staff", key: "menu-key/sub-menu-key/4", link: "/listAccountStaff" },
-        { label: "Human Resource", key: "menu-key/sub-menu-key/5", link: "/listAccountHR" },
-        { label: "Developer", key: "menu-key/sub-menu-key/6", link: "/listAccountDeveloper" },
+        {
+          label: "Manager",
+          key: "menu-key/sub-menu-key/3",
+          link: "/listAccountManager",
+        },
+        {
+          label: "Staff",
+          key: "menu-key/sub-menu-key/4",
+          link: "/listAccountStaff",
+        },
+        {
+          label: "Human Resource",
+          key: "menu-key/sub-menu-key/5",
+          link: "/listAccountHR",
+        },
+        {
+          label: "Developer",
+          key: "menu-key/sub-menu-key/6",
+          link: "/listAccountDeveloper",
+        },
       ],
       className: "option-2",
     },
@@ -64,26 +82,25 @@ const SiderBarWeb = ({ choose }) => {
       key: "menu-key1/sub-menu-key1",
       icon: <SolutionOutlined />,
       children: [
-        { label: "Level", key: "menu-key1/sub-menu-key1/1", link: "/manageLevel" },
-        { label: "Skill", key: "menu-key1/sub-menu-key1/2", link: "/manageSkill" },
-        { label: "Type", key: "menu-key1/sub-menu-key1/3", link: "/manageType" },
+        {
+          label: "Level",
+          key: "menu-key1/sub-menu-key1/1",
+          link: "/manageLevel",
+        },
+        {
+          label: "Skill",
+          key: "menu-key1/sub-menu-key1/2",
+          link: "/manageSkill",
+        },
+        {
+          label: "Type",
+          key: "menu-key1/sub-menu-key1/3",
+          link: "/manageType",
+        },
       ],
       className: "option-3",
     },
-    {
-      label: "Hiring Request",
-      key: "menu-key/10",
-      icon: <SnippetsOutlined />,
-      className: "hiringRequest",
-      link: "/manager",
-    },
-    {
-      label: "Interview",
-      key: "menu-key/11",
-      icon: <SolutionOutlined />,
-      className: "interview",
-      link: "/newlistinterview",
-    },
+
     {
       label: "Project",
       key: "menu-key/12",
@@ -91,6 +108,15 @@ const SiderBarWeb = ({ choose }) => {
       className: "project",
       link: "/projectlistinmanager",
     },
+
+    {
+      label: "Hiring Request",
+      key: "menu-key/10",
+      icon: <SnippetsOutlined />,
+      className: "hiringRequest",
+      link: "/manager",
+    },
+
     {
       label: "Contract",
       key: "menu-key/14",
@@ -98,12 +124,37 @@ const SiderBarWeb = ({ choose }) => {
       className: "contract",
       link: "/listcontract",
     },
+
+    {
+      label: "Interview",
+      key: "menu-key/11",
+      icon: <SolutionOutlined />,
+      className: "interview",
+      link: "/newlistinterview",
+    },
+
+    {
+      label: "Report",
+      key: "menu-key/16",
+      icon: <HighlightOutlined />,
+      className: "report",
+      link: "/listreportinmanager", // Add the link property
+    },
+
     {
       label: "Company",
       key: "menu-key/15",
       icon: <BankOutlined />,
       className: "company",
       link: "/listcompanyPartner",
+    },
+
+    {
+      label: "Transaction History",
+      key: "menu-key/17",
+      icon: <TransactionOutlined />,
+      className: "transactionHistory",
+      link: "/listtransactionhistory", // Add the link property
     },
   ];
 

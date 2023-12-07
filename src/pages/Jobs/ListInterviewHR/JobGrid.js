@@ -6,7 +6,7 @@ import Section from "./Section";
 import Selected from "./Selected";
 
 const InterviewList = () => {
-  document.title = "Job Grid | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Job Grid | WeHire - Job Listing Template | Themesdesign";
   return (
     <React.Fragment>
       <Section />

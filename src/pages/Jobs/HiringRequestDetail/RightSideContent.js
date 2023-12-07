@@ -106,7 +106,7 @@ const RightSideContent = () => {
                   <div className="ms-3">
                     <h6 className="fs-14 mb-2">Website</h6>
                     <p className="text-muted fs-14 text-break mb-0">
-                      www.Jobcytechnology.pvt.ltd.com
+                      www.WeHiretechnology.pvt.ltd.com
                     </p>
                   </div>
                 </div>

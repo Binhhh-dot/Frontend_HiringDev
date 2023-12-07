@@ -21,7 +21,7 @@ import backgroundImage from "../../../assets/images/logo/Frame 1.png";
 import projectServices from "../../../services/project.services";
 
 const CreateProject = () => {
-  document.title = "Job List | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
   const notify = () => {
     toast.info(' Wow so easy!', {
       position: "top-right",
@@ -332,18 +332,6 @@ const CreateProject = () => {
           check = false;
         } else {
           setJobDescriptionError(null);
-        }
-        if (document.getElementById("end-date").value && document.getElementById("start-date").value) {
-          var startDate = new Date(document.getElementById("start-date").value);
-          var endDate = new Date(document.getElementById("end-date").value);
-
-          var timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
-          var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Chuyển đổi khoảng cách thời gian thành số ngày
-
-          if (diffDays < 30) {
-            setStartDateError("The difference between start and end date must be greater than 1 month");
-            check = false;
-          }
         }
         if (check) {
           try {

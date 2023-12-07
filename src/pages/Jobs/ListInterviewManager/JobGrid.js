@@ -7,7 +7,7 @@ import Selected from "./Selected";
 import Sidebar from "./Sidebar";
 
 const InterviewListManager = () => {
-  document.title = "Job Grid | Jobcy - Job Listing Template | Themesdesign";
+  document.title = "Job Grid | WeHire - Job Listing Template | Themesdesign";
   return (
     <React.Fragment>
       <Section />

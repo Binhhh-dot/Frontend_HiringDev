@@ -57,6 +57,8 @@ import { useNavigate } from "react-router-dom";
 import { Empty } from 'antd';
 import { fi } from "date-fns/locale";
 import urlConstant from "../../../Common/urlConstant";
+import hireddevServices from "../../../services/hireddev.services";
+import projectServices from "../../../services/project.services";
 
 
 const HiringRequestDetails = () => {
@@ -67,6 +69,7 @@ const HiringRequestDetails = () => {
   const [modalEye, setModalEye] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [hiringRequestDetail, setHiringRequestDetail] = useState(null);
+  const [projectDetail, setProjectDetail] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
   const [listInterview, setlistInterview] = useState([]);
@@ -121,71 +124,119 @@ const HiringRequestDetails = () => {
   today.setDate(today.getDate() + 1);
   const tomorrow = today.toISOString().split('T')[0];
   const navigate = useNavigate();
+  const [isHaveReason, setIsHaveReason] = useState(false);
 
   useState(() => {
     setMinDate(tomorrow); // Thiết lập giá trị minDate thành ngày kế tiếp
   }, []);
 
-  const generateItems = () => {
-    if (selectInterviewDetail.statusString === "Waiting Approval") {
-      return [
-        {
-          label: (
-            <div
-              style={{ width: "100px" }}
-              onClick={() => onUpdateInterview()}
-            >
-              Edit
-            </div>
-          ),
-          key: '0',
-        },
-        {
-          label: (
-            <div
-              style={{ width: "100px" }}
-              onClick={() => {
-                AntdModal.confirm({
-                  title: 'Confirm cancel interview',
-                  content: 'Are you sure to cancel this interview?',
-                  onOk() {
-                    // Action when the user clicks OK
-                    console.log('Confirmed!');
-                    openWindowCancelInterview(selectInterviewDetail.interviewId);
-                  },
-                  onCancel() {
-                    // Action when the user cancels
-                    console.log('Cancelled!');
-                  },
-                  footer: (_, { OkBtn, CancelBtn }) => (
-                    <>
-                      <CancelBtn />
-                      <OkBtn />
-                    </>
-                  ),
-                });
-              }}
-            >
-              Cancel
-            </div>
-          ),
-          key: '1',
-        },
-      ];
-    } else {
-      return [
-        {
-          label: <div
-            onClick={() => cancelInterview()}
-            style={{ width: "100px" }}
-          >Cancel</div>,
-          key: '1',
-        },
-      ];
-    }
-  };
 
-  const items = generateItems();
+  const profileItems = [
+    {
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => onUpdateInterview()}
+        >
+          Edit
+        </div>
+      ),
+      key: '0',
+    },
+    {
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => {
+            AntdModal.confirm({
+              title: 'Confirm cancel interview',
+              content: 'Are you sure to cancel this interview?',
+              onOk() {
+                // Action when the user clicks OK
+                console.log('Confirmed!');
+                openWindowCancelInterview(selectInterviewDetail.interviewId);
+              },
+              onCancel() {
+                // Action when the user cancels
+                console.log('Cancelled!');
+              },
+              footer: (_, { OkBtn, CancelBtn }) => (
+                <>
+                  <CancelBtn />
+                  <OkBtn />
+                </>
+              ),
+            });
+          }}
+        >
+          Cancel
+        </div>
+      ),
+      key: '1',
+    },
+  ]
+
+  const profileItems2 = [
+    {
+      key: "1",
+      label: (
+        <div
+          onClick={() => cancelInterview()}
+          style={{ width: "100px" }}
+        >
+          Cancel
+        </div>
+      ),
+    },
+  ]
+
+
+
+  const profileItems3 = [
+    {
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => {
+            AntdModal.confirm({
+              content: (
+                <div style={{ paddingRight: "20px" }}>
+                  <p>Please provide a reason for closing this hiring request:</p>
+                  <Input
+                    type="text"
+                    id="reasonCloseHiringRequest"
+                  />
+                </div>
+              ),
+              onOk() {
+                const reason = document.getElementById("reasonCloseHiringRequest").value.trim();
+                console.log(reason);
+                if (reason != "") {
+                  console.log(reason);
+                  // Thực hiện hành động khi người dùng nhập lý do và ấn OK ở đây
+                  closeHiringRequest(reason);
+                } else {
+                  toast.error("Please provide your reason close this hiring request")
+                  // Hiển thị thông báo yêu cầu người dùng nhập lý do
+                }
+              },
+              onCancel() {
+                console.log('Cancelled!');
+                // Thực hiện hành động khi người dùng hủy bỏ ở đây (nếu cần)
+              },
+              okButtonProps: {
+                style: { marginRight: '20px' },
+              },
+            });
+          }}
+        >
+          Close
+        </div>
+      ),
+      key: '1',
+    },
+  ]
+
 
   const openModalCreateInterview = (developerId) => {
     setInterviewTitlError(null);
@@ -342,7 +393,7 @@ const HiringRequestDetails = () => {
     try {
       const queryParams = new URLSearchParams(location.search);
       const jobId = queryParams.get("Id");
-      const response = await developerServices.GetAllSelectedDevByHR(jobId);
+      const response = await hireddevServices.getListDeveloperInRequestByRequestId(jobId);
       const data = response.data;
       const candidategridDetails = data.data.map((dev) => {
         return {
@@ -361,7 +412,7 @@ const HiringRequestDetails = () => {
           label: false,
           skills: dev.skillRequireStrings,
           averagedPercentage: dev.averagedPercentage.toFixed(2),
-          selectedDevStatus: dev.selectedDevStatus,
+          selectedDevStatus: dev.hiredDeveloperStatus,
           interviewRound: dev.interviewRound,
         };
       });
@@ -376,21 +427,22 @@ const HiringRequestDetails = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchJobVacancies();
-  //   // fetchListInterview();
-  // }, []);
+
 
   const fetchHiringRequestDetailInCompany = async () => {
     let response;
     // const saveData = localStorage.getItem("myData");
-
     try {
       const queryParams = new URLSearchParams(location.search);
       const jobId = queryParams.get("Id");
       response = await hiringrequestService.getHiringRequestDetailInCompany(
         jobId
       );
+      console.log(response)
+      if (response.data.code == "200") {
+        const projectId = response.data.data.projectId;
+        fetchProjectDetail(projectId);
+      }
       setHiringRequestDetail(response.data.data);
 
       var parts2 = response.data.data.duration.split('-');
@@ -405,6 +457,24 @@ const HiringRequestDetails = () => {
         console.error("Invalid date format");
       }
 
+      return response;
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
+
+  const fetchProjectDetail = async (projectId) => {
+    let response;
+    // const saveData = localStorage.getItem("myData");
+    try {
+      response = await projectServices.getProjectDetailByProjectId(
+        projectId
+      );
+      console.log(response);
+      document.getElementById("projectNameOverview").innerHTML = response.data.data.projectName;
+      document.getElementById("projectTypeOverview").innerHTML = response.data.data.projectTypeName;
+      document.getElementById("startDayOverview").innerHTML = response.data.data.startDateMMM;
+      document.getElementById("endDayOverview").innerHTML = response.data.data.endDateMMM;
       return response;
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
@@ -452,6 +522,7 @@ const HiringRequestDetails = () => {
   useEffect(() => {
     fetchHiringRequestDetailInCompany();
     fetchJobVacancies();
+    fetchListInterview();
   }, []);
 
   const handleInterviewCreation = async () => {
@@ -509,18 +580,17 @@ const HiringRequestDetails = () => {
     try {
       const interviewId = interviewIdCancel;
       console.log(interviewId);
-      const response = await interviewServices.cancelInterview(interviewId);
-      console.log("cancel thanh cong")
-
-      if (response.data.code == 200) {
+      console.log("nhay do")
+      const redirectUrl = customUrl.redirectUrlCreateMeetting;
+      console.log(interviewId);
+      console.log(redirectUrl);
+      console.log(authenCodeCancel);
+      const responseCancelMeeting = await teamMeetingServices.deleteTeamMeeting(interviewId, redirectUrl, authenCodeCancel)
+      console.log(responseCancelMeeting)
+      if (responseCancelMeeting.data.code == 200) {
         try {
-          console.log("nhay do")
-          const redirectUrl = customUrl.redirectUrlCreateMeetting;
-          console.log(interviewId);
-          console.log(redirectUrl);
-          console.log(authenCodeCancel);
-          const responseCancelMeeting = await teamMeetingServices.deleteTeamMeeting(interviewId, redirectUrl, authenCodeCancel)
-          console.log(responseCancelMeeting)
+          const response = await interviewServices.cancelInterview(interviewId);
+          console.log(response)
         } catch (error) {
           console.log("error:", error)
         }
@@ -540,29 +610,29 @@ const HiringRequestDetails = () => {
     setLoading(true);
     try {
       const interviewId = interviewIdUpdate;
-      let response;
+      let responseCancelMeeting;
       try {
-        const title = document.getElementById("interview-title-popup").value;
-        const description = document.getElementById("description-title-popup").value;
-        const dateOfInterview = document.getElementById("date-of-interview-popup").value;
-        const startDate = document.getElementById("start-time-popup").value + ":00";
-        const endDate = document.getElementById("end-time-popup").value + ":00";
-        response = await interviewServices.updateInterview(interviewId, title, description, dateOfInterview, startDate, endDate);
-        console.log("api update :")
-        console.log(response);
+        const redirectUrl = customUrl.redirectUrlCreateMeetting;
+        console.log(interviewId);
+        console.log(redirectUrl);
+        console.log(authenCodeUpdate);
+        const responseCancelMeeting = await teamMeetingServices.editTeamMeeting(interviewId, redirectUrl, authenCodeUpdate)
+        console.log(responseCancelMeeting)
       } catch (error) {
-        console.error("Error completedInterview:", error);
+        console.log("error:", error)
       }
-      if (response.data.code == 200) {
+      if (responseCancelMeeting.data.code == 200) {
         try {
-          const redirectUrl = customUrl.redirectUrlCreateMeetting;
-          console.log(interviewId);
-          console.log(redirectUrl);
-          console.log(authenCodeUpdate);
-          const responseCancelMeeting = await teamMeetingServices.editTeamMeeting(interviewId, redirectUrl, authenCodeUpdate)
-          console.log(responseCancelMeeting)
+          const title = document.getElementById("interview-title-popup").value;
+          const description = document.getElementById("description-title-popup").value;
+          const dateOfInterview = document.getElementById("date-of-interview-popup").value;
+          const startDate = document.getElementById("start-time-popup").value + ":00";
+          const endDate = document.getElementById("end-time-popup").value + ":00";
+          const response = await interviewServices.updateInterview(interviewId, title, description, dateOfInterview, startDate, endDate);
+          console.log("api update :")
+          console.log(response);
         } catch (error) {
-          console.log("error:", error)
+          console.error("Error completedInterview:", error);
         }
       }
       setIsUpdateInterview(!isUpdateInterview);
@@ -601,9 +671,11 @@ const HiringRequestDetails = () => {
   }, [authenCodeUpdate]);
 
   useEffect(() => {
+    fetchHiringRequestDetailInCompany();
     fetchJobVacancies();
     fetchListInterview();
   }, [loadListDeveloper]);
+
 
   useEffect(() => {
     fetchListInterview();
@@ -911,27 +983,33 @@ const HiringRequestDetails = () => {
   };
 
 
-  const openFacebook = () => {
-    const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=800, height=800, top=100, left=600';
-    const urlCreateInterview = customUrl.urlCreateInterview;
-    const popupWindow = window.open(urlCreateInterview, "popupWindow", windowFeatures);
-    // Lắng nghe các thông điệp từ cửa sổ popup
-    window.addEventListener('message', (event) => {
-      const code = event.data;
-      // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
-      if (code) {
-        console.log(code)
-        popupWindow.close();
-      }
-    });
-  };
-
-
   const onUpdateInterview = () => {
     document.getElementById('buttonSaveFormInterview').style.display = 'block';
     document.getElementById('buttonCancelFormInterview').style.display = 'block';
     setIsInputEditable(true);
   };
+
+  const closeHiringRequest = async (reason) => {
+    try {
+      setLoading(true);
+      const queryParams = new URLSearchParams(location.search);
+      const requestId = queryParams.get("Id");
+      const isCompanyPartner = true;
+      const response = await hiringrequestService.closeHiringRequest(requestId,
+        reason,
+        isCompanyPartner);
+      console.log(response)
+      setLoadListDeveloper(!loadListDeveloper);
+      setLoading(false);
+      toast.success("Close hiring request sucessfully")
+    } catch (error) {
+      setLoading(false);
+      toast.error("Close hiring request fail")
+      console.log(error)
+    }
+  };
+
+
 
   const cancelInterview = async (interviewId) => {
     try {
@@ -989,7 +1067,7 @@ const HiringRequestDetails = () => {
       <section class="section">
         <div class="row  justify-content-center " style={{ margin: "0px" }}>
           <div class="col-lg-8 " style={{ padding: "0px" }}>
-            <Card className="job-detail overflow-hidden">
+            <Card className="job-detail overflow-hidden" style={{ minHeight: "807px" }}>
               <div>
                 <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
                   <img
@@ -1013,7 +1091,7 @@ const HiringRequestDetails = () => {
                     <Col md={8}>
                       <h4 className="mb-1">{hiringRequestDetail.jobTitle}</h4>
                     </Col>
-                    <Col lg={4}>
+                    <Col lg={4} className="d-flex justify-content-end gap-3">
                       <ul className="list-inline mb-0 text-lg-end mt-3 mt-lg-0">
                         <li>
                           <span
@@ -1031,15 +1109,15 @@ const HiringRequestDetails = () => {
                                       ? "badge bg-danger text-light mb-2"
                                       : hiringRequestDetail.statusString ===
                                         "Cancelled"
-                                        ? "badge bg-danger text-light mb-2"
+                                        ? "badge bg-blue text-light mb-2"
                                         : hiringRequestDetail.statusString ===
                                           "Finished"
                                           ? "badge bg-primary text-light mb-2"
                                           : hiringRequestDetail.statusString ===
-                                            "Complete"
+                                            "Completed"
                                             ? "badge bg-primary text-light mb-2"
-                                            : hiringRequestDetail.statusString === "Saved"
-                                              ? "badge bg-info text-light mb-2"
+                                            : hiringRequestDetail.statusString === "Closed"
+                                              ? "badge bg-teal text-light mb-2"
                                               : ""
                             }
                           >
@@ -1047,6 +1125,11 @@ const HiringRequestDetails = () => {
                           </span>{" "}
                         </li>
                       </ul>
+                      <DropdownAntd trigger={['click']} menu={{ items: profileItems3 }}>
+                        <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                          <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                        </a>
+                      </DropdownAntd>
                     </Col>
                   </Row>
                 </div>
@@ -1103,7 +1186,7 @@ const HiringRequestDetails = () => {
                 </div>
 
                 <div className="mt-4">
-                  <h5 className="mb-3">Job Description</h5>
+                  <h5 className="mb-3">Hiring request description</h5>
                   <div className="">
                     <p
                       className=""
@@ -1272,23 +1355,24 @@ const HiringRequestDetails = () => {
                       {selectInterviewDetail.statusString}
                     </p>
                   </div>
-                  {selectInterviewDetail.statusString !== 'Completed' && (
-                    <DropdownAntd
-                      menu={{
-                        items,
-                      }}
-                      trigger={['click']}
-                    >
-                      <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
-                        <FontAwesomeIcon
-                          icon={faGear}
-                          size="xl"
-                          color="#909191"
-                        />
-                      </a>
-                    </DropdownAntd>
-                  )}
 
+                  {selectInterviewDetail.statusString !== 'Completed' && (
+                    <>
+                      {selectInterviewDetail.statusString === 'Waiting Approval' ? (
+                        <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }}>
+                          <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                            <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                          </a>
+                        </DropdownAntd>
+                      ) : (
+                        <DropdownAntd trigger={['click']} menu={{ items: profileItems }}>
+                          <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                            <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                          </a>
+                        </DropdownAntd>
+                      )}
+                    </>
+                  )}
 
                 </div>
                 <Form action="#" className="auth-form">
@@ -1646,14 +1730,23 @@ const HiringRequestDetails = () => {
           <div class="col-lg-3 d-flex flex-column gap-4">
             <Card className="job-overview ">
               <CardBody className="p-4">
-                <h4>Hiring Request Overview</h4>
+                <h4>Project Overview</h4>
                 <ul className="list-unstyled mt-4 mb-0">
                   <li>
                     <div className="d-flex mt-4">
                       <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Project </h6>
-                        <p className="text-muted mb-0">Project name</p>
+                        <p className="text-muted mb-0" id="projectNameOverview"></p>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="d-flex mt-4">
+                      <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                      <div className="ms-3">
+                        <h6 className="fs-14 mb-0">Project type </h6>
+                        <p className="text-muted mb-0" id="projectTypeOverview"></p>
                       </div>
                     </div>
                   </li>
@@ -1662,7 +1755,7 @@ const HiringRequestDetails = () => {
                       <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Start date of project </h6>
-                        <p className="text-muted mb-0">Project name</p>
+                        <p className="text-muted mb-0" id="startDayOverview"></p>
                       </div>
                     </div>
                   </li><li>
@@ -1670,10 +1763,17 @@ const HiringRequestDetails = () => {
                       <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">End date of project </h6>
-                        <p className="text-muted mb-0">Project name</p>
+                        <p className="text-muted mb-0" id="endDayOverview"></p>
                       </div>
                     </div>
                   </li>
+                </ul>
+              </CardBody>
+            </Card>
+            <Card className="job-overview ">
+              <CardBody className="p-4">
+                <h4>Hiring Request Overview</h4>
+                <ul className="list-unstyled mt-4 mb-0">
                   <li>
                     <div className="d-flex mt-4">
                       <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
@@ -1731,6 +1831,7 @@ const HiringRequestDetails = () => {
                 </ul>
               </CardBody>
             </Card>
+
           </div>
           <div class="col-lg-11 p-0">
             <Card
@@ -1744,7 +1845,6 @@ const HiringRequestDetails = () => {
               >
                 <NavItem role="presentation">
                   <NavLink
-                    to="#"
                     className={classnames({ active: activeTab === "1" })}
                     onClick={() => {
                       tabChange("1");
@@ -1756,7 +1856,6 @@ const HiringRequestDetails = () => {
                 </NavItem>
                 <NavItem role="presentation">
                   <NavLink
-                    to="#"
                     className={classnames({ active: activeTab === "2" })}
                     onClick={() => {
                       tabChange("2");
@@ -1938,6 +2037,19 @@ const HiringRequestDetails = () => {
                                   <>
                                     <button
                                       id="interviewButton"
+                                      className="btn btn-soft-blue w-100 mt-2 fw-bold"
+                                      onClick={() =>
+                                        openModalCreateInterview(
+                                          candidategridDetailsNew.id
+                                        )
+                                      }
+                                    >
+                                      <>
+                                        Create Interview {candidategridDetailsNew.interviewRound > 0 ? `Round ${candidategridDetailsNew.interviewRound + 1}` : ''}
+                                      </>
+                                    </button>
+                                    <button
+                                      id="interviewButton"
                                       className="btn btn-soft-primary btn-hover w-100 mt-2 fw-bold"
                                       onClick={() =>
                                         handleInterviewClick(
@@ -1959,6 +2071,31 @@ const HiringRequestDetails = () => {
                                           <i className="mdi mdi-account-check"></i>
                                           Interview
                                         </>
+                                      )}
+                                    </button>
+                                    <button
+                                      id="onboardButton"
+                                      className="btn btn-soft-primary w-100 mt-2 fw-bold"
+                                      onClick={() =>
+                                        handleOnboard(candidategridDetailsNew.id)
+                                      }
+                                      disabled={loadingOnboard[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
+
+                                    >
+                                      {loadingOnboard[candidategridDetailsNew.id] ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"white"}
+                                          loading={true}
+                                        />
+                                      ) : isListLoading2 ? (
+                                        <HashLoader
+                                          size={20}
+                                          color={"white"}
+                                          loading={true}
+                                        />
+                                      ) : (
+                                        "Hire"
                                       )}
                                     </button>
                                     <button

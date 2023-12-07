@@ -3,8 +3,9 @@ import { Modal, ModalBody, Input, Label, Card, CardBody } from "reactstrap";
 import { Link, useLocation } from "react-router-dom";
 
 import companyServices from "../../services/company.services";
-// import hiringrequestService from "../../../services/hiringrequest.service";
 import hiringrequestService from "../../services/hiringrequest.service";
+//import projectService from "../../services/project.services";
+import projectServices from "../../services/project.services";
 
 const RightSideContent = () => {
   //Apply Now Model
@@ -16,6 +17,7 @@ const RightSideContent = () => {
   const [companyInfoInManager, setCompanyInfoInManager] = useState(null);
   const [hiringRequestDetailOverview, setHiringRequestDetailOverview] =
     useState(null);
+  const [projectInfoInManager, setProjectInfoInManager] = useState({});
   //////////////////////////////////////////////////////////
   const fetchGetCompanyByCompanyId = async () => {
     let response;
@@ -44,10 +46,25 @@ const RightSideContent = () => {
       console.error("Error fetching hiring request detail overview:", error);
     }
   };
+  ///////////////////////////////////////////////////////////////////////////
+  const fetchGetProjectOverview = async () => {
+    let response;
+    try {
+      response = await projectServices.getProjectDetailByProjectId(
+        state.projectId
+      );
+      setProjectInfoInManager(response.data.data);
+      console.log(response.data.data);
+    } catch (error) {
+      console.error("Error fetching project overview:", error);
+    }
+  };
+
   ////////////////////////////////////////////////////////////
   useEffect(() => {
     fetchGetCompanyByCompanyId();
     fetchGetHiringDetailOverview();
+    fetchGetProjectOverview();
   }, []);
   ////////////////////////////////////////////////////////////
 
@@ -140,7 +157,7 @@ const RightSideContent = () => {
           }}
         >
           <CardBody className="p-4">
-            <h4>Hiring More Details</h4>
+            <h4>Project Overview</h4>
             <ul className="list-unstyled mt-4 mb-0">
               <li>
                 <div className="d-flex mt-4">
@@ -148,7 +165,7 @@ const RightSideContent = () => {
                   <div className="ms-3">
                     <h6 className="fs-14 mb-2">Project</h6>
                     <p className="text-muted mb-0">
-                      {hiringRequestDetailOverview.jobTitle}
+                      {projectInfoInManager.projectName}
                     </p>
                   </div>
                 </div>
@@ -156,11 +173,11 @@ const RightSideContent = () => {
 
               <li>
                 <div className="d-flex mt-4">
-                  <i className="uil uil-usd-circle icon bg-primary-subtle text-primary"></i>
+                  <i className="uil  uil-bars icon bg-primary-subtle text-primary"></i>
                   <div className="ms-3">
-                    <h6 className="fs-14 mb-2">Offered Salary</h6>
+                    <h6 className="fs-14 mb-2">Type Of Project</h6>
                     <p className="text-muted mb-0">
-                      {hiringRequestDetailOverview.salaryPerDev} $
+                      {projectInfoInManager.projectTypeName}
                     </p>
                   </div>
                 </div>
@@ -168,22 +185,23 @@ const RightSideContent = () => {
 
               <li>
                 <div className="d-flex mt-4">
-                  <i className="uil uil-briefcase-alt icon bg-primary-subtle text-primary"></i>
+                  <i className="uil uil-calendar-alt icon bg-primary-subtle text-primary"></i>
+
                   <div className="ms-3">
-                    <h6 className="fs-14 mb-2">Employment Type</h6>
+                    <h6 className="fs-14 mb-2">Start Date</h6>
                     <p className="text-muted mb-0">
-                      {hiringRequestDetailOverview.employmentTypeName}
+                      {projectInfoInManager.startDateMMM}
                     </p>
                   </div>
                 </div>
               </li>
               <li>
                 <div className="d-flex mt-4">
-                  <i className="uil uil-history icon bg-primary-subtle text-primary"></i>
+                  <i className="uil uil-calender icon bg-primary-subtle text-primary"></i>
                   <div className="ms-3">
-                    <h6 className="fs-14 mb-2">Date Posted</h6>
+                    <h6 className="fs-14 mb-2">End Date</h6>
                     <p className="text-muted mb-0">
-                      {hiringRequestDetailOverview.postedTime}
+                      {projectInfoInManager.endDateMMM}
                     </p>
                   </div>
                 </div>
@@ -191,11 +209,11 @@ const RightSideContent = () => {
 
               <li>
                 <div className="d-flex mt-4">
-                  <i className="uil uil-users-alt icon bg-primary-subtle text-primary"></i>
+                  <i className="uil uil-folder-info icon bg-primary-subtle text-primary"></i>
                   <div className="ms-3">
-                    <h6 className="fs-14 mb-2">No. Developer</h6>
+                    <h6 className="fs-14 mb-2">Status</h6>
                     <p className="text-muted mb-0">
-                      {hiringRequestDetailOverview.numberOfDev}
+                      {projectInfoInManager.statusString}
                     </p>
                   </div>
                 </div>

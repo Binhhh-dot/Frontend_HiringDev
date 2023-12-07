@@ -346,10 +346,10 @@ const JobVacancyList = () => {
                           <span
                             key={index}
                             className={`badge ${index === 0
-                                ? "bg-info text-light"
-                                : index === 1
-                                  ? "bg-danger-subtle text-danger"
-                                  : "bg-primary-subtle text-primary"
+                              ? "bg-info text-light"
+                              : index === 1
+                                ? "bg-danger-subtle text-danger"
+                                : "bg-primary-subtle text-primary"
                               }  ms-2`}
                           >
                             {skill.trim()}
