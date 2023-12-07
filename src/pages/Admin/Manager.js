@@ -30,7 +30,7 @@ import {
   AuditOutlined,
   BankOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Input, Button } from "antd";
+import { Layout, Menu, Input, Button, Modal } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Col,
@@ -47,6 +47,7 @@ import classname from "classnames";
 import userAuthorization from "../../utils/userAuthorization";
 import { arSA } from "date-fns/locale";
 import userSerrvices from "../../services/user.serrvices";
+import NavBarWeb from "./NavBar/NavBarWeb";
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
@@ -167,43 +168,48 @@ const Manager = () => {
   // };
 
   // console.log(selectedKeys);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  // const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
+  // const toggleDropdown = () => {
+  //   setDropdownOpen(!dropdownOpen);
+  // };
   //-------------------------------------------------------------------------------------
-  const [name, setName] = useState("");
-  const [imgUser, setImgUser] = useState("");
-  const [status, setStatus] = useState("");
+  // const [showPopupProfileUser, setShowPopupProfileUser] = useState(false);
+  // const handleProfileUser = () => {};
+  // const handleOkProfileUser = () => {};
+  //-------------------------------------------------------------------------------------
+  // const [name, setName] = useState("");
+  // const [imgUser, setImgUser] = useState("");
+  // const [status, setStatus] = useState("");
 
-  const fetchGetUserDetail = async () => {
-    const userId = localStorage.getItem("userId");
-    let response;
-    let fullName;
-    if (userId) {
-      try {
-        response = await userSerrvices.getUserById(userId);
-        fullName =
-          response.data.data.firstName + " " + response.data.data.lastName;
-        setName(fullName);
-        setImgUser(response.data.data.userImage);
-        setStatus(response.data.data.statusString);
-      } catch (error) {
-        console.error("Error fetching user detail", error);
-      }
-    }
-  };
+  // const fetchGetUserDetail = async () => {
+  //   const userId = localStorage.getItem("userId");
+  //   let response;
+  //   let fullName;
+  //   if (userId) {
+  //     try {
+  //       response = await userSerrvices.getUserById(userId);
+  //       fullName =
+  //         response.data.data.firstName + " " + response.data.data.lastName;
+  //       setName(fullName);
+  //       setImgUser(response.data.data.userImage);
+  //       setStatus(response.data.data.statusString);
+  //     } catch (error) {
+  //       console.error("Error fetching user detail", error);
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchGetUserDetail();
-  }, []);
+  // useEffect(() => {
+  //   fetchGetUserDetail();
+  // }, []);
   //-------------------------------------------------------------------------------------
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <SiderBarWeb choose={"menu-key/10"}></SiderBarWeb>
       <Layout>
-        <div
+        <NavBarWeb></NavBarWeb>
+        {/* <div
           style={{
             backgroundColor: "#FFFF",
             height: "70px",
@@ -229,14 +235,6 @@ const Manager = () => {
                 ></i>
               </Badge>
             </Space>
-            {/* <Space>
-              <Badge dot>
-                <i
-                  className="uil uil-envelope-open"
-                  style={{ color: "#8F78DF", fontSize: "20px" }}
-                ></i>
-              </Badge>
-            </Space> */}
 
             <div
               className="p-1  d-flex gap-3 align-items-center me-2"
@@ -281,9 +279,15 @@ const Manager = () => {
                   }}
                 >
                   <DropdownItem style={{ padding: "0px" }}>
+                    <div onClick={() => setShowPopupProfileUser(true)}>
+                      <div className="dropdown-item">Profile</div>
+                    </div>
+                  </DropdownItem>
+
+                  <DropdownItem style={{ padding: "0px" }}>
                     <div>
                       <Link to="#" className="dropdown-item">
-                        Setting
+                        Change Password
                       </Link>
                     </div>
                   </DropdownItem>
@@ -299,7 +303,29 @@ const Manager = () => {
               </Dropdown>
             </div>
           </div>
-        </div>
+        </div> */}
+
+        {/* ------------------------------------------------------------------------------------- */}
+        {/* <Modal
+          centered
+          open={showPopupProfileUser}
+          onOk={() => handleOkProfileUser()}
+          onCancel={() => setShowPopupProfileUser(false)}
+          width={800}
+          okType="default"
+          okButtonProps={{
+            style: {
+              background: "#6546D2",
+              borderColor: "#6546D2",
+              color: "white",
+            },
+          }}
+        >
+          <div>
+            <h5>Profile Manager</h5>
+          </div>
+        </Modal> */}
+        {/* ------------------------------------------------------------------------------------- */}
 
         <Content>
           <section

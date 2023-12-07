@@ -456,7 +456,7 @@ const CompanyListPartner = () => {
                               <Row className="align-items-center">
                                 <Col md={2}>
                                   <div>
-                                    <Link to="/companydetails">
+                                    <Link>
                                       <img
                                         style={{
                                           width: "80px",
