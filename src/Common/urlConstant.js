@@ -254,6 +254,13 @@ export default {
       kickDevInProject:
         "/HiredDeveloper/TerminateFromProject?projectId=${projectId}&developerId=${developerId}",
     },
+
+    dashboard: {
+      getDashboard: "/Dashboard",
+      getDashboardProject: "/Dashboard/Project?dateInWeek=${dateInWeek}",
+      getDashboardHiringRequest: "/Dashboard/HiringRequest?dateInWeek=${dateInWeek}",
+      getDashboardRecentHiringRequest: "/Dashboard/RecentHiringRequest",
+    },
     report: {
       getReportType: "/ReportType",
       createReport: "/Report",
