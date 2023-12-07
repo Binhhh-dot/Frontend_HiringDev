@@ -125,10 +125,13 @@ const CreateReport = () => {
       );
       console.log(response)
       toast.success("Create report successfully")
+      navigate("/reportList")
+      CreateInterviewModalClose();
       setLoading(false);
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
       toast.success("Create report fail")
+      CreateInterviewModalClose();
       setLoading(false);
     }
   };
@@ -148,9 +151,6 @@ const CreateReport = () => {
     setSelectedCandidateInfo({});
     setIsModalOpen(false);
   };
-
-
-  const [isCreateInterviewModal, setIsCreateInterviewModal] = useState(false);
 
   const CreateInterviewModalOpen = () => {
     let check = true;
@@ -181,6 +181,9 @@ const CreateReport = () => {
       setIsCreateInterviewModal(true);
     }
   };
+
+  const [isCreateInterviewModal, setIsCreateInterviewModal] = useState(false);
+
 
 
   const CreateInterviewModalClose = () => {
@@ -300,7 +303,7 @@ const CreateReport = () => {
                         <div className="row">
                           <li className="col-lg-6">
                             <div className="d-flex">
-                              <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                              <i className="uil uil-parking-square icon bg-primary-subtle text-primary"></i>
                               <div className="ms-3">
                                 <h6 className="fs-14 mb-0">Project </h6>
                                 <p className="text-muted mb-0" id="projectNameOverview"> {projectDetail.projectName}</p>
@@ -309,7 +312,7 @@ const CreateReport = () => {
                           </li>
                           <li className="col-lg-6">
                             <div className="d-flex ">
-                              <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                              <i className="uil uil-list-ul icon bg-primary-subtle text-primary"></i>
                               <div className="ms-3">
                                 <h6 className="fs-14 mb-0">Project type </h6>
                                 <p className="text-muted mb-0" id="projectTypeOverview">{projectDetail.projectTypeName}</p>
@@ -320,7 +323,7 @@ const CreateReport = () => {
                         <div className="row">
                           <li className="col-lg-6">
                             <div className="d-flex ">
-                              <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                              <i className="uil uil-windsock icon bg-primary-subtle text-primary"></i>
                               <div className="ms-3">
                                 <h6 className="fs-14 mb-0">Start date of project </h6>
                                 <p className="text-muted mb-0" id="startDayOverview">{projectDetail.startDateMMM}</p>
@@ -329,7 +332,7 @@ const CreateReport = () => {
                           </li>
                           <li className="col-lg-6">
                             <div className="d-flex ">
-                              <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                              <i className="uil uil-times-circle icon bg-primary-subtle text-primary"></i>
                               <div className="ms-3">
                                 <h6 className="fs-14 mb-0">End date of project </h6>
                                 <p className="text-muted mb-0" id="endDayOverview">{projectDetail.endDateMMM}</p>
@@ -342,6 +345,41 @@ const CreateReport = () => {
                   </Card>
                 </>
               )}
+              <Modal
+                style={{ padding: "10px" }}
+                isOpen={isCreateInterviewModal}
+                centered
+                tabIndex="-1"
+                contentLabel="Confirm Create Interview Modal"
+              >
+                <div className="modal-header">
+                  <h3>Confirm Create Report</h3>
+                </div>
+                <ModalBody>
+                  <div>
+                    <h6 style={{ color: "#969BA5" }}>
+                      Are you sure you would like to report this developer
+                    </h6>
+                  </div>
+                </ModalBody>
+                <div className="d-flex justify-content-around   mt-4 modal-footer">
+                  <button
+                    style={{ width: "100px" }}
+                    className="btn btn-danger"
+                    onClick={CreateInterviewModalClose}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    style={{ width: "100px" }}
+                    className="btn btn-primary"
+                    onClick={handleCreateReport}
+
+                  >
+                    Create
+                  </button>
+                </div>
+              </Modal>
               <Row className="mt-4">
                 <Col lg={12} className="d-flex flex-column gap-2">
                   {jobListing && (
@@ -426,7 +464,6 @@ const CreateReport = () => {
                                   <i className="mdi mdi-eye"></i>
                                 </div>
                               </div>
-
                             </div>
                           </div>
                           <div className="row" style={{ alignItems: "center" }}>

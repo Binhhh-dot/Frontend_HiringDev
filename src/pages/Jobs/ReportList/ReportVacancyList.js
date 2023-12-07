@@ -204,9 +204,10 @@ const ReportVacancyList = (a) => {
         }));
     };
 
-    const midleSelect = (developerId, projectId, hiredDeveloperId) => {
-        fetchDetailReport(developerId);
+    const midleSelect = (reportId, projectId, hiredDeveloperId) => {
+        fetchDetailReport(reportId);
         fetchDetailProject(projectId);
+        // fetchDetailDev(hiredDeveloperId);
         setShowPopup(true);
     };
 
@@ -370,7 +371,7 @@ const ReportVacancyList = (a) => {
                                         <div className="row">
                                             <li className="col-lg-6">
                                                 <div className="d-flex">
-                                                    <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                                                    <i className="uil uil-parking-square icon bg-primary-subtle text-primary"></i>
                                                     <div className="ms-3">
                                                         <h6 className="fs-14 mb-0">Project </h6>
                                                         <p className="text-muted mb-0" id="projectNameOverview"> {projectDetail.projectName}</p>
@@ -379,7 +380,7 @@ const ReportVacancyList = (a) => {
                                             </li>
                                             <li className="col-lg-6">
                                                 <div className="d-flex ">
-                                                    <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                                                    <i className="uil uil-list-ul icon bg-primary-subtle text-primary"></i>
                                                     <div className="ms-3">
                                                         <h6 className="fs-14 mb-0">Project type </h6>
                                                         <p className="text-muted mb-0" id="projectTypeOverview">{projectDetail.projectTypeName}</p>
@@ -390,7 +391,7 @@ const ReportVacancyList = (a) => {
                                         <div className="row">
                                             <li className="col-lg-6">
                                                 <div className="d-flex ">
-                                                    <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                                                    <i className="uil uil-windsock icon bg-primary-subtle text-primary"></i>
                                                     <div className="ms-3">
                                                         <h6 className="fs-14 mb-0">Start date of project </h6>
                                                         <p className="text-muted mb-0" id="startDayOverview">{projectDetail.startDateMMM}</p>
@@ -399,7 +400,7 @@ const ReportVacancyList = (a) => {
                                             </li>
                                             <li className="col-lg-6">
                                                 <div className="d-flex ">
-                                                    <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                                                    <i className="uil uil-times-circle icon bg-primary-subtle text-primary"></i>
                                                     <div className="ms-3">
                                                         <h6 className="fs-14 mb-0">End date of project </h6>
                                                         <p className="text-muted mb-0" id="endDayOverview">{projectDetail.endDateMMM}</p>
@@ -410,6 +411,132 @@ const ReportVacancyList = (a) => {
                                     </div>
 
                                 </Row>
+                                {/* <Row className="mt-4">
+                <Col lg={12} className="d-flex flex-column gap-2">
+                  {jobListing && (
+                    <>
+                      <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
+                        <CardBody className="p-4 dev-accepted  d-flex flex-column gap-1" style={{ borderRadius: "15px" }}>
+                          <div className="d-flex mb-2 justify-content-between">
+                            <div className="d-flex">
+                              <div
+                                className="flex-shrink-0 position-relative"
+                                onClick={() =>
+                                  openModal(developerState)
+                                }
+                              >
+                                <img
+                                  src={
+                                    developerState.userImg ||
+                                    userImage0
+                                  }
+                                  alt=""
+                                  className="avatar-md rounded"
+                                />
+                                <span
+                                  className={
+                                    developerState.candidateStatusClassName
+                                  }
+                                ></span>
+                              </div>
+                              <div className="ms-3">
+                                <div className="primary-link">
+                                  <h5
+                                    className="fs-17"
+                                    onClick={() =>
+                                      openModal(developerState)
+                                    }
+                                  >
+                                    {developerState.firstName} {developerState.lastName}
+                                  </h5>
+                                </div>
+                                <span
+                                  className={
+                                    developerState.hiredDevStatusString ===
+                                      "Rejected"
+                                      ? "badge bg-danger text-light mb-2"
+                                      : developerState.hiredDevStatusString ===
+                                        "Under Consideration"
+                                        ? "badge bg-warning text-light mb-2"
+                                        : developerState.hiredDevStatusString ===
+                                          "Working"
+                                          ? "badge bg-blue text-light mb-2"
+                                          : developerState.hiredDevStatusString ===
+                                            "Expired"
+                                            ? "badge bg-danger text-light mb-2"
+                                            : developerState.hiredDevStatusString ===
+                                              "Cancelled"
+                                              ? "badge bg-danger text-light mb-2"
+                                              : developerState.hiredDevStatusString ===
+                                                "Waiting Interview"
+                                                ? "badge bg-warning text-light mb-2"
+                                                : developerState.hiredDevStatusString ===
+                                                  "Onboarding"
+                                                  ? "badge bg-primary text-light mb-2"
+                                                  : developerState.hiredDevStatusString ===
+                                                    "Saved"
+                                                    ? "badge bg-info text-light mb-2"
+                                                    : ""
+                                  }
+                                >
+                                  {developerState.hiredDevStatusString}
+                                </span>{" "}
+                              </div>
+                            </div>
+                            <div className="d-flex gap-1">
+                              <div
+                                className="list-inline-item"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                onClick={() => openModal(developerState)}
+                                title="View More"
+                              >
+                                <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
+                                  <i className="mdi mdi-eye"></i>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="row" style={{ alignItems: "center" }}>
+                            <FontAwesomeIcon icon={faEnvelope} className="col-lg-1" style={{ padding: "0px" }} />
+                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                              {developerState.email}
+                            </div>
+                          </div >
+                          <div className="row" style={{ alignItems: "center" }}>
+                            <FontAwesomeIcon icon={faMobileScreen} className="col-lg-1" style={{ padding: "0px" }} />
+                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                              {developerState.phoneNumber}
+                            </div>
+                          </div >
+                          <div className="row" style={{ alignItems: "center" }}>
+                            <FontAwesomeIcon icon={faLocationDot} className="col-lg-1" style={{ padding: "0px" }} />
+                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                              {developerState.employmentTypeName}
+                            </div>
+                          </div >
+                          <div className="row" style={{ alignItems: "center" }}>
+                            <FontAwesomeIcon icon={faFlag} className="col-lg-1" style={{ padding: "0px" }} />
+                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                              Start day:
+                              {developerState.startWorkingDate}
+                            </div>
+                          </div >
+                          <div className="row" style={{ alignItems: "center" }}>
+                            <FontAwesomeIcon icon={faCircleXmark} className="col-lg-1" style={{ padding: "0px" }} />
+                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                              End day:
+                              {developerState.endWorkingDate}
+                            </div>
+                          </div >
+
+
+                        </CardBody>
+                      </div>
+                    </>
+                  )}
+                </Col>
+              </Row> */}
                                 {/* ------------------------------------------------------ */}
                             </Col>
                         </Row>

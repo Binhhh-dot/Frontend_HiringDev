@@ -865,12 +865,12 @@ const ProjectDetailDesciption = () => {
 
 
 
-  const openPayment = async (payPeriodId) => {
+  const openPayment = async (payPeriodId, companyName) => {
     setLoading(true);
     setLoadingPaynow(true)
     try {
       const payerId = localStorage.getItem("userId");
-      const description = "khong biet la cai gi het";
+      const description = companyName + "pays for" + listMonth[currentMonthIndex];
       const queryParams = new URLSearchParams(location.search);
       const projectId = queryParams.get("Id");
       console.log(payPeriodId);
@@ -1744,27 +1744,33 @@ const ProjectDetailDesciption = () => {
                                                 "Rejected"
                                                 ? "badge bg-danger text-light mb-2"
                                                 : candidategridDetailsNew.hiredDevStatusString ===
-                                                  "Under Consideration"
-                                                  ? "badge bg-warning text-light mb-2"
+                                                  "Contract Failed"
+                                                  ? "badge bg-danger text-light mb-2"
                                                   : candidategridDetailsNew.hiredDevStatusString ===
                                                     "Working"
                                                     ? "badge bg-blue text-light mb-2"
                                                     : candidategridDetailsNew.hiredDevStatusString ===
-                                                      "Expired"
-                                                      ? "badge bg-danger text-light mb-2"
+                                                      "Under Consideration"
+                                                      ? "badge bg-warning text-light mb-2"
                                                       : candidategridDetailsNew.hiredDevStatusString ===
-                                                        "Cancelled"
-                                                        ? "badge bg-danger text-light mb-2"
+                                                        "Contract Processing"
+                                                        ? "badge bg-warning text-light mb-2"
                                                         : candidategridDetailsNew.hiredDevStatusString ===
-                                                          "Waiting Interview"
-                                                          ? "badge bg-warning text-light mb-2"
+                                                          "Interview Scheduled"
+                                                          ? "badge bg-blue text-light mb-2"
                                                           : candidategridDetailsNew.hiredDevStatusString ===
-                                                            "Onboarding"
+                                                            "Completed"
                                                             ? "badge bg-primary text-light mb-2"
                                                             : candidategridDetailsNew.hiredDevStatusString ===
-                                                              "Saved"
-                                                              ? "badge bg-info text-light mb-2"
-                                                              : ""
+                                                              "Waiting Interview"
+                                                              ? "badge bg-warning text-light mb-2"
+                                                              : candidategridDetailsNew.hiredDevStatusString ===
+                                                                "Terminated"
+                                                                ? "badge bg-danger text-light mb-2"
+                                                                : candidategridDetailsNew.hiredDevStatusString ===
+                                                                  "Request Closed"
+                                                                  ? "badge  bg-teal text-light mb-2"
+                                                                  : ""
                                             }
                                           >
                                             {candidategridDetailsNew.hiredDevStatusString}
@@ -2170,7 +2176,7 @@ const ProjectDetailDesciption = () => {
                                             <div className="px-3 d-flex justify-content-end align-items-end">
                                               <button className="btn btn-warning fw-bold d-flex align-items-center justify-content-center mt-3"
                                                 onClick={() => {
-                                                  openPayment(payPeriodDetail.payPeriodId);
+                                                  openPayment(payPeriodDetail.payPeriodId, payPeriodDetail.companyName);
                                                 }}
                                                 disabled={loadingPayNow}
                                                 style={{ width: "1000px" }}

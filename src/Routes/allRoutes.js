@@ -91,7 +91,6 @@ import Developer from "../pages/Jobs/Developer/Developer";
 //import NewListInterview from "../pages/NewAdmin/NewListInterview";
 import NewHiringRequestDetail from "../pages/Admin/NewHiringRequestDetail";
 import ProjectDetail from "../pages/Admin/ProjectDetail";
-import SideBarManager from "../pages/Admin/SideBarManager";
 
 //Dashboard
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";

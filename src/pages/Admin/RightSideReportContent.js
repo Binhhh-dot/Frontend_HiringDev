@@ -158,7 +158,7 @@ const RightSideReportContent = () => {
             <ul className="list-unstyled mt-4 mb-0">
               <li>
                 <div className="d-flex mt-4">
-                  <i className="uil uil-folder icon bg-primary-subtle text-primary"></i>
+                  <i className="uil uil-parking-square icon bg-primary-subtle text-primary"></i>
                   <div className="ms-3">
                     <h6 className="fs-14 mb-2">Project</h6>
                     <p className="text-muted mb-0">
@@ -174,7 +174,7 @@ const RightSideReportContent = () => {
 
               <li>
                 <div className="d-flex mt-4">
-                  <i className="uil  uil-bars icon bg-primary-subtle text-primary"></i>
+                  <i className="uil  uil-list-ul icon bg-primary-subtle text-primary"></i>
                   <div className="ms-3">
                     <h6 className="fs-14 mb-2">Type Of Project</h6>
                     <p className="text-muted mb-0">
@@ -186,7 +186,7 @@ const RightSideReportContent = () => {
 
               <li>
                 <div className="d-flex mt-4">
-                  <i className="uil uil-calendar-alt icon bg-primary-subtle text-primary"></i>
+                  <i className="uil uil-windsock icon bg-primary-subtle text-primary"></i>
 
                   <div className="ms-3">
                     <h6 className="fs-14 mb-2">Start Date</h6>
@@ -198,7 +198,7 @@ const RightSideReportContent = () => {
               </li>
               <li>
                 <div className="d-flex mt-4">
-                  <i className="uil uil-calendar-alt icon bg-primary-subtle text-primary"></i>
+                  <i className="uil uil-times-circle icon bg-primary-subtle text-primary"></i>
                   <div className="ms-3">
                     <h6 className="fs-14 mb-2">End Date</h6>
                     <p className="text-muted mb-0">
