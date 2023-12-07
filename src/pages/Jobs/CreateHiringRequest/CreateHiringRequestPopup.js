@@ -62,7 +62,7 @@ const CreateHiringRequestPopup = (
     const [companyPhoneNumberFormCreateCompany, setCompanyPhoneNumberFormCreateCompany] = useState(null);
     const [addressFormCreateCompany, setAddressFormCreateCompany] = useState(null);
     const [minDateDuration, setMinDateDuration] = useState('');
-
+    const [selectedDate, setSelectedDate] = useState('');
     const today = new Date();
 
     today.setDate(today.getDate() + 4);
@@ -73,6 +73,13 @@ const CreateHiringRequestPopup = (
 
         const formattedDate = `${year}-${month}-${day}`;
         setMinDateDuration(formattedDate)
+        const today2 = new Date();
+        const year2 = today2.getFullYear();
+        const month2 = String(today2.getMonth() + 1).padStart(2, '0');
+        const day2 = String(today2.getDate()).padStart(2, '0');
+        const formattedDate2 = `${year2}-${month2}-${day2}`;
+
+        setSelectedDate(formattedDate2)
     }, []);
 
     const openModal = () => {
@@ -437,7 +444,6 @@ const CreateHiringRequestPopup = (
                         if (requestId) {
                             const response = await hiringRequestService.updateHiringRequest(
                                 requestId,
-                                projectId,
                                 jobTitle,
                                 jobDescription,
                                 numberOfDev,
@@ -546,7 +552,6 @@ const CreateHiringRequestPopup = (
                     if (requestId) {
                         const response = await hiringRequestService.updateHiringRequest(
                             requestId,
-                            projectId,
                             jobTitle,
                             jobDescription,
                             numberOfDev,
@@ -634,12 +639,12 @@ const CreateHiringRequestPopup = (
                                             <div class="row">
                                                 <div class="col-md-9">
                                                     <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Job Title</label>
+                                                        <label class="text-muted">Hiring request title</label>
                                                         <input
                                                             id="job-title"
                                                             type="text"
                                                             class="form-control resume"
-                                                            placeholder=""
+                                                            placeholder="Title..."
                                                             maxlength="100"
                                                             required
                                                         ></input>
@@ -655,7 +660,7 @@ const CreateHiringRequestPopup = (
                                                             id="number-dev"
                                                             type="number"
                                                             class="form-control resume"
-                                                            placeholder="2"
+                                                            placeholder="0"
                                                         ></input>
                                                         {numberDevError && (
                                                             <p className="text-danger mt-2">{numberDevError}</p>
@@ -680,9 +685,21 @@ const CreateHiringRequestPopup = (
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-3">
                                                     <div class="form-group app-label mt-2">
                                                         <label class="text-muted">Duration</label>
+                                                        <input
+                                                            type="date"
+                                                            class="form-control resume"
+                                                            placeholder=""
+                                                            readOnly
+                                                            value={selectedDate}
+                                                        ></input>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group app-label mt-2">
+                                                        <label class="text-muted"></label>
                                                         <input
                                                             id="duration"
                                                             type="date"
@@ -719,7 +736,7 @@ const CreateHiringRequestPopup = (
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Type of developer</label>
+                                                        <label class="text-muted">Type of developer requirement</label>
                                                         <div className="form-button">
                                                             <Select
                                                                 options={options2}
@@ -776,7 +793,7 @@ const CreateHiringRequestPopup = (
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Job Description</label>
+                                                        <label class="text-muted">Hiring request description</label>
                                                         <Editor
                                                             class="fix-height"
                                                             id="description"

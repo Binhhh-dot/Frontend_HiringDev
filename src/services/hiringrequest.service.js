@@ -35,7 +35,6 @@ const createHiringRequest = async (
 
 const updateHiringRequest = async (
   requestId,
-  projectId,
   jobTitle,
   jobDescription,
   numberOfDev,
@@ -54,7 +53,6 @@ const updateHiringRequest = async (
     );
   const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
-    projectId,
     jobTitle,
     jobDescription,
     numberOfDev,

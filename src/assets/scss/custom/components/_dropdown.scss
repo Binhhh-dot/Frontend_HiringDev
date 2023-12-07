@@ -7,6 +7,7 @@
     box-shadow: $box-shadow;
     min-width: 12rem;
     margin-top: 0;
+
     .dropdown-item {
       font-size: 13px;
       font-weight: 600;
@@ -15,11 +16,13 @@
       transition: all 0.5s ease;
       background-color: transparent;
 
-      &:hover, &.active {
+      &:hover,
+      &.active {
         color: var(--#{$prefix}primary);
         padding-left: 14px;
       }
     }
+
     &.dropdown-menu-sm {
       min-width: 18rem;
     }
@@ -93,14 +96,17 @@
     animation-name: DropDownSlide;
     animation-duration: .3s;
     animation-fill-mode: both;
+
     &.dropdown-menu-lg {
-      min-width: 40rem;
+      min-width: 30rem;
     }
+
     &.dropdown-menu-center {
       left: 50%;
       transform: translate(-50%, 0);
     }
   }
+
   .dropdown-hover:hover>.dropdown-menu {
     display: block;
   }
@@ -115,4 +121,3 @@
     margin-top: 8px;
   }
 }
-

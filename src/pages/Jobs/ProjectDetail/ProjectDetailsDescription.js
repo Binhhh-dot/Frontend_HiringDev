@@ -34,7 +34,9 @@ import {
   faAngleLeft,
   faGear,
   faCircle,
-  faMobileScreen
+  faMobileScreen,
+  faLocationDot,
+  faSheetPlastic
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
@@ -51,6 +53,7 @@ import { Modal as AntdModal, Button as AntdButton } from "antd";
 import "./index.css";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 import CreateHiringRequestPopup from "../CreateHiringRequest/CreateHiringRequestPopup";
+import UpdateProjectPopup from "../UpdateProjectPopup/UpdateProjectPopup";
 import userImage0 from "../../../assets/images/user/img-00.jpg";
 import projectServices from "../../../services/project.services";
 import classnames from "classnames";
@@ -113,11 +116,13 @@ const ProjectDetailDesciption = () => {
   const [developerOnboardList, setDeveloperOnboardList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
+  const [isModalUpdateProjectOpen, setIsModalUpdateProjectOpen] = useState(false);
   const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
   const [payPeriodDetail, setPayPeriodDetail] = useState(null);
   const [payRollDetail, setPayRollDetail] = useState([]);
   const [workLoglist, setWorkLoglist] = useState([]);
   const [selectedHiringRequestInfo, setSelectedHiringRequestInfo] = useState({});
+  const [selectedProjectInfo, setSelectedProjectInfo] = useState({});
   const [selectedJobPositionInfo, setSelectedJobPositionInfo] = useState({});
   const [checkHeightListHiringRequest, setCheckHeightListHiringRequest] = useState(false);
   const monthFormat = "YYYY/MM";
@@ -220,10 +225,8 @@ const ProjectDetailDesciption = () => {
     { label: 'Paid leave', value: 1 },
     { label: 'Unpaid leave', value: 2 },
   ];
-  const redButtonStyle = {
-    backgroundColor: 'red',
-    borderColor: 'red', // Set border color to match if needed
-  };
+
+
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -293,11 +296,6 @@ const ProjectDetailDesciption = () => {
       setShowPopup(false)
       setLoading(false)
     }
-  };
-
-  const handleDateChange = (date) => {
-    setDateValue(date);
-    // Thực hiện các thao tác khác khi người dùng thay đổi ngày
   };
 
 
@@ -385,47 +383,27 @@ const ProjectDetailDesciption = () => {
       key: "1",
       label: (
         <div
-          style={{ width: "100px" }}
+          style={{ width: "70px" }}
           onClick={() => reportDeveloper()}
         >
           Report
         </div>
       ),
-    },
+    }
+  ]
+
+  const profileItems5 = [
     {
-      key: "2",
+      key: "1",
       label: (
         <div
-          style={{ width: "100px" }}
-          // onClick={() => onUpdateWorkLog()}
-          onClick={() => {
-            AntdModal.confirm({
-              title: 'Confirm delete job position',
-              content: (<div>
-                <p>Are you sure to delete this job position?</p>
-                <p>All activities in the hiring request of this job position will stop</p>
-              </div>),
-              onOk() {
-                // Action when the user clicks OK
-                console.log('Confirmed!');
-              },
-              onCancel() {
-                // Action when the user cancels
-                console.log('Cancelled!');
-              },
-              footer: (_, { OkBtn, CancelBtn }) => (
-                <>
-                  <CancelBtn />
-                  <OkBtn />
-                </>
-              ),
-            });
-          }}
+          style={{ width: "80px" }}
+          onClick={() => openModalUpdateProject()}
         >
-          Delete
+          Edit project
         </div>
       ),
-    },
+    }
   ]
 
   const [showCollapse, setShowCollapse] = useState(Array(payRollDetail.length).fill(false));
@@ -483,6 +461,18 @@ const ProjectDetailDesciption = () => {
     setIsModalOpen(false);
   };
 
+  const openModalUpdateProject = () => {
+    const queryParams = new URLSearchParams(location.search);
+    const projectId = queryParams.get("Id");
+    setSelectedProjectInfo(projectId);
+    setIsModalUpdateProjectOpen(true);
+  };
+
+  const closeModalUpdateProject = () => {
+    setIsModalUpdateProjectOpen(false);
+    fetchProjectDetails();
+  };
+
   const handleChangeStatus = (selected) => {
     console.log(selected)
     const key = '' + keyPayRoll + keyWorkLog;
@@ -497,6 +487,8 @@ const ProjectDetailDesciption = () => {
     setIsModalCreateOpen(false);
     fetchJobVacancies();
   };
+
+
 
   const fetchOptions = async () => {
     try {
@@ -671,7 +663,9 @@ const ProjectDetailDesciption = () => {
           lastWord: lastWord,
           email: dev.email,
           phoneNumber: dev.phoneNumber,
-
+          endWorkingDate: " " + dev.endWorkingDate,
+          startWorkingDate: " " + dev.startWorkingDate,
+          employmentTypeName: dev.employmentTypeName
         };
       });
       setDeveloperOnboardList(listDeveloperOnboard);
@@ -1557,7 +1551,7 @@ const ProjectDetailDesciption = () => {
                           </li>
                         </ul>
                       </div>
-                      <div>
+                      <div className="d-flex gap-3 align-items-center">
                         <Avatar.Group
                           maxCount={4}
                           maxStyle={{
@@ -1581,7 +1575,25 @@ const ProjectDetailDesciption = () => {
                             </>
                           ))}
                         </Avatar.Group>
+                        <DropdownAntd trigger={['click']} menu={{ items: profileItems5 }}
+                          overlayStyle={{ right: '2.688px', bottom: "auto", left: "auto" }} >
+                          <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                            <FontAwesomeIcon
+                              icon={faEllipsisVertical}
+                              size="xl"
+                              color="#909191"
+                            />
+                          </a>
+                        </DropdownAntd>
                       </div>
+                    </div>
+                    <div style={{ color: "grey" }} className="d-flex gap-4">
+                      <div>
+                        <FontAwesomeIcon icon={faSheetPlastic} style={{ marginRight: "8px" }} />
+                        Project type :{" "}
+                        {hiringRequestDetail.projectTypeName}
+                      </div>
+
                     </div>
                     <div style={{ color: "grey" }} className="d-flex gap-4">
                       <div>
@@ -1782,14 +1794,40 @@ const ProjectDetailDesciption = () => {
                                         </DropdownAntd>
                                       </div>
                                     </div>
-                                    <div className="d-flex gap-2 align-items-center">
-                                      <FontAwesomeIcon icon={faEnvelope} />
-                                      {candidategridDetailsNew.email}
-                                    </div>
-                                    <div className="d-flex gap-2 align-items-center">
-                                      <FontAwesomeIcon icon={faMobileScreen} />
-                                      {candidategridDetailsNew.phoneNumber}
-                                    </div>
+                                    <div className="row" style={{ alignItems: "center" }}>
+                                      <FontAwesomeIcon icon={faEnvelope} className="col-lg-1" />
+                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                        {candidategridDetailsNew.email}
+                                      </div>
+                                    </div >
+                                    <div className="row" style={{ alignItems: "center" }}>
+                                      <FontAwesomeIcon icon={faMobileScreen} className="col-lg-1" />
+                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                        {candidategridDetailsNew.phoneNumber}
+                                      </div>
+                                    </div >
+                                    <div className="row" style={{ alignItems: "center" }}>
+                                      <FontAwesomeIcon icon={faLocationDot} className="col-lg-1" />
+                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                        {candidategridDetailsNew.employmentTypeName}
+                                      </div>
+                                    </div >
+                                    <div className="row" style={{ alignItems: "center" }}>
+                                      <FontAwesomeIcon icon={faFlag} className="col-lg-1" />
+                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                        Start day:
+                                        {candidategridDetailsNew.startWorkingDate}
+                                      </div>
+                                    </div >
+                                    <div className="row" style={{ alignItems: "center" }}>
+                                      <FontAwesomeIcon icon={faCircleXmark} className="col-lg-1" />
+                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                        End day:
+                                        {candidategridDetailsNew.endWorkingDate}
+                                      </div>
+                                    </div >
+
+
                                   </CardBody>
                                 </div>
                               </Col>
@@ -2564,6 +2602,7 @@ const ProjectDetailDesciption = () => {
                                   id="choices-single-categories"
                                   aria-label="Default select example"
                                   value={skill}
+                                  placeholder="Select skill of developer"
                                   onChange={setSkillValue}
                                   menuPosition={'fixed'}
                                 />
@@ -2580,6 +2619,7 @@ const ProjectDetailDesciption = () => {
                                   id="choices-single-categories"
                                   aria-label="Default select example"
                                   value={typeRequire}
+                                  placeholder="Select type of developer"
                                   onChange={setTypeValue}
                                   menuPosition={'fixed'}
                                   isClearable
@@ -2597,6 +2637,7 @@ const ProjectDetailDesciption = () => {
                                   name="choices-single-categories"
                                   id="choices-single-categories"
                                   aria-label="Default select example"
+                                  placeholder="Select level of developer"
                                   value={levelRequire}
                                   onChange={setLevelValue}
                                   menuPosition={'fixed'}
@@ -2613,6 +2654,7 @@ const ProjectDetailDesciption = () => {
                                   className="selectForm__inner"
                                   name="choices-single-categories"
                                   id="choices-single-categories"
+                                  placeholder="Select status of hiring request"
                                   aria-label="Default select example"
                                   value={status}
                                   onChange={setStatusValue}
@@ -2630,6 +2672,13 @@ const ProjectDetailDesciption = () => {
                         closeModal={closeModalCreateHiringRequest}
                         requestId={selectedHiringRequestInfo}>
                       </CreateHiringRequestPopup>
+
+                      <UpdateProjectPopup
+                        isModalOpen={isModalUpdateProjectOpen}
+                        closeModal={closeModalUpdateProject}
+                        projectId={selectedProjectInfo}>
+                      </UpdateProjectPopup>
+
                       <div>
                         {jobVacancyList.length > 0 ? (
                           <>
