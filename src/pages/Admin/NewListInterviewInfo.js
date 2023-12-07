@@ -1012,7 +1012,8 @@ const NewListInterviewInfo = () => {
                                         </label>
                                         <div>
                                           <p className="text-muted mb-0">
-                                            {devInterviewDetail.averageSalary}$
+                                            {devInterviewDetail.averageSalary}
+                                            VND
                                           </p>
                                         </div>
                                       </div>

@@ -93,11 +93,6 @@ import NewHiringRequestDetail from "../pages/Admin/NewHiringRequestDetail";
 import ProjectDetail from "../pages/Admin/ProjectDetail";
 import SideBarManager from "../pages/Admin/SideBarManager";
 
-// Manage info
-// import ManageLevel from "../pages/Admin/Info/ManageLevel";
-// import ManageSkill from "../pages/Admin/Info/ManageSkill";
-// import ManageType from "../pages/Admin/Info/ManageType";
-
 //Dashboard
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";
 
@@ -272,7 +267,6 @@ const authRoutes = [
   { path: "/manager", component: <Manager /> },
   { path: "/newhiringrequestdetail", component: <NewHiringRequestDetail /> },
   { path: "/projectdetail", component: <ProjectDetail /> },
-  // { path: "/sidebarmanager", component: <SideBarManager /> },
   { path: "/listAccountHR", component: <ListAccountHR /> },
   { path: "/listAccountManager", component: <ListAccountManager /> },
   { path: "/listAccountStaff", component: <ListAccountStaff /> },

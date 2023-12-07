@@ -18,13 +18,17 @@ import {
   TabContent,
   Collapse,
 } from "reactstrap";
+
 import projectServices from "../../services/project.services";
 import { useLocation } from "react-router";
 import img0 from "../../assets/images/user/img-00.jpg";
 import DeveloperDetailInProjectPopup from "../Home/SubSection/DeveloperDetailInProject";
 //import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEllipsisVertical,
+  faUserMinus,
+} from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown } from "react-bootstrap";
@@ -45,12 +49,16 @@ import "react-calendar/dist/Calendar.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { result } from "lodash";
 import hireddevServices from "../../services/hireddev.services";
+import UpdateProjectPopup from "./UpdateProjectPopup/UpdateProjectPopup";
+import { Editor } from "@tinymce/tinymce-react";
+
 dayjs.extend(customParseFormat);
 
 const monthFormat = "YYYY-MM-DD";
 
 const ProjectDetailDescription = () => {
   const { state } = useLocation();
+  const [value, setValue] = useState("");
   const [allowedMonthsList, setAllowedMonthsList] = useState([]);
   //--------------------------------------------------------------------------------
   const [projectDetail, setProjectDetail] = useState([]);
@@ -73,6 +81,16 @@ const ProjectDetailDescription = () => {
   const [listPaySlip, setlistPaySlip] = useState([]);
 
   const [listWorklog, setListWorklog] = useState([]);
+  //------------------------------------------------
+  const [selectProjectId, setSelectProjectId] = useState(null);
+  const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+  const openModalUpdateProject = () => {
+    setIsModalUpdateOpen(true);
+  };
+
+  const closeModalUpdateProject = () => {
+    setIsModalUpdateOpen(false);
+  };
   // -----------------------------------------------
 
   const convertDay = (yearmonthday) => {
@@ -109,6 +127,7 @@ const ProjectDetailDescription = () => {
 
   const fetchGetProjectDetailByProjectId = async () => {
     let response;
+
     try {
       response = await projectServices.getProjectDetailByProjectId(
         state.projectId
@@ -116,6 +135,8 @@ const ProjectDetailDescription = () => {
 
       console.log("project detail");
       console.log(response.data.data);
+
+      setSelectProjectId(response.data.data.projectId);
 
       setProjectDetail(response.data.data);
 
@@ -213,14 +234,11 @@ const ProjectDetailDescription = () => {
   };
 
   //----------------------------------------------------------------------------------
-  const [projectDevStatus, setProjectDevStatus] = useState(0);
+  // const [projectDevStatus, setProjectDevStatus] = useState(0);
   const fetchGetDeveloperByProject = async () => {
     let response;
     try {
-      response = await projectServices.getDeveloperByProject(
-        state.projectId,
-        8
-      );
+      response = await projectServices.getDeveloperByProject(state.projectId);
       console.log("danh sach dev tham gia tham gia vào project");
       console.log(response.data.data);
       setDevInProject(response.data.data);
@@ -241,85 +259,13 @@ const ProjectDetailDescription = () => {
     setSelectedCandidateInfo({});
     setIsModalOpen(false);
   };
-  //--------------------------------------------------------------------------------
-
-  const [optionProjectType, setOptionProjectType] = useState([]);
-  const [selectOption, setSelectOption] = useState([]);
-  //--------------------------------------------------------------------------------
-  const handleChangeOption = (selected) => {
-    console.log(selected);
-    setSelectOption(selected);
-  };
-  //--------------------------------------------------------------------------------
-
-  const fetchProjectType = async () => {
-    let response;
-    try {
-      response = await projectTypeServices.getAllProjectType();
-      const activeTypes = response.data.data.filter(
-        (type) => type.statusString === "Active"
-      );
-
-      if (projectDetail) {
-        const requiredTypeName = projectDetail.projectTypeName;
-        const foundType = activeTypes.find(
-          (type) => type.projectTypeName == requiredTypeName
-        );
-        if (foundType) {
-          const newType = {
-            value: foundType.projectTypeId.toString(),
-            label: foundType.projectTypeName,
-          };
-          setSelectOption(newType);
-        }
-      }
-      let formattedTypes = activeTypes.map((type) => ({
-        value: type.projectTypeId.toString(),
-        label: type.projectTypeName,
-      }));
-
-      setOptionProjectType(formattedTypes);
-    } catch (error) {
-      console.error("Error fetching project type:", error);
-    }
-  };
 
   //--------------------------------------------------------------------------------
-  const [modalUpdateProject, setModalUpdateProject] = useState(false);
-  const openModalUpdateProject = () => {
-    fetchProjectType();
-    setModalUpdateProject(!modalUpdateProject);
-  };
+  // const [modalUpdateProject, setModalUpdateProject] = useState(false);
+  // const openModalUpdateProject = () => {
+  //   setModalUpdateProject(!modalUpdateProject);
+  // };
 
-  //--------------------------------------------------------------------------------
-  const [resultUpdate, setresultUpdate] = useState([]);
-
-  const fetchUpdateProject = async () => {
-    let response;
-    try {
-      response = await projectServices.updateProject(
-        state.projectId,
-        state.projectId,
-        // currentProjectType,
-        selectOption.value,
-        currentProjectName,
-        currentDescription,
-        currentStartDate,
-        currentEndDate
-      );
-      console.log("Update OK");
-      console.log(response.data.data);
-      setresultUpdate(response.data.data);
-      //fetchGetProjectDetailByProjectId();
-    } catch (error) {
-      console.error("Error fetching update project:", error);
-      console.log(selectOption.value);
-    }
-  };
-  //--------------------------------------------------------------------------------
-  const updateProject = () => {
-    fetchUpdateProject();
-  };
   //--------------------------------------------------------------------------------
   const [activeTab, setActiveTab] = useState("1");
   const tabChange = (tab) => {
@@ -469,23 +415,18 @@ const ProjectDetailDescription = () => {
   //------------------------------------------------------------------------------------------
   useEffect(() => {
     fetchGetProjectDetailByProjectId();
-  }, []);
-
-  useEffect(() => {
     fetchGetDeveloperByProject();
   }, []);
 
-  // useEffect(() => {
-  //   fetchProjectType();
-  // }, []);
+  useEffect(() => {
+    if (isModalUpdateOpen) {
+      fetchGetProjectDetailByProjectId();
+    }
+  }, [isModalUpdateOpen]);
 
   useEffect(() => {
     fetchGetPayPeriod();
   }, [defaultClickDay]);
-
-  // useEffect(() => {
-  //   fetchGetListPaySlip();
-  // }, [defaultClickDay]);
 
   //--------------------------------------------------------------------------------
 
@@ -525,164 +466,22 @@ const ProjectDetailDescription = () => {
 
                       <Dropdown.Menu>
                         {/* Nội dung của dropdown ở đây */}
-                        <Dropdown.Item onClick={openModalUpdateProject}>
+                        <Dropdown.Item onClick={() => openModalUpdateProject()}>
                           Update Project
                         </Dropdown.Item>
-                        <Dropdown.Item href="#">Dropdown Item 2</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
                 </div>
 
-                {/* ------------------ */}
-                <Modal
-                  isOpen={modalUpdateProject}
-                  toggle={openModalUpdateProject}
-                  role="dialog"
-                  centered
-                  size="lg"
-                >
-                  <ModalBody className="p-4">
-                    <div className="position-absolute end-0 top-0 p-3">
-                      <button
-                        type="button"
-                        className="btn-close"
-                        onClick={openModalUpdateProject}
-                      ></button>
-                    </div>
-                    <div className="auth-content">
-                      <div className="w-100">
-                        <div className="text-center mb-4">
-                          <h5>Update Project</h5>
-                          <p className="text-muted"></p>
-                        </div>
-                        <Form action="#" className="auth-form">
-                          <FormGroup className="mb-3">
-                            <Label
-                              htmlFor="projectNameInput"
-                              className="form-label"
-                            >
-                              Project Name
-                            </Label>
-                            <Input
-                              type="text"
-                              className="form-control"
-                              id="project-name"
-                              value={currentProjectName}
-                              onChange={(e) =>
-                                setCurrentProjectName(e.target.value)
-                              }
-                            />
-                          </FormGroup>
+                {/* -------------------------------------------------------------------------------- */}
+                {/* Modal */}
+                <UpdateProjectPopup
+                  isModalOpen={isModalUpdateOpen}
+                  closeModal={closeModalUpdateProject}
+                  projectId={selectProjectId}
+                ></UpdateProjectPopup>
 
-                          <FormGroup className="mb-3">
-                            <Label
-                              htmlFor="projectTypeInput"
-                              className="form-label"
-                            >
-                              Project Type
-                            </Label>
-                            <div className="form-button">
-                              <Select
-                                options={optionProjectType}
-                                value={selectOption}
-                                onChange={handleChangeOption}
-                                className="Select Select--level-highest"
-                                style={{
-                                  maxHeight: "2000px",
-                                  overflowY: "auto",
-                                }}
-                              />
-                            </div>
-                          </FormGroup>
-                          <div className="d-flex justify-content-between gap-2">
-                            <FormGroup
-                              className="mb-3"
-                              style={{ width: "50%" }}
-                            >
-                              <Label
-                                htmlFor="startDateInput"
-                                className="form-label"
-                              >
-                                Start Date
-                              </Label>
-                              <Input
-                                type="date"
-                                className="form-control"
-                                id="start-date"
-                                value={currentStartDate}
-                                onChange={(e) =>
-                                  setcurrentStartDate(e.target.value)
-                                }
-                              />
-                            </FormGroup>
-
-                            <FormGroup
-                              className="mb-3"
-                              style={{ width: "50%" }}
-                            >
-                              <Label
-                                htmlFor="endDateInput"
-                                className="form-label"
-                              >
-                                End Date
-                              </Label>
-                              <Input
-                                type="date"
-                                className="form-control"
-                                id="end-date"
-                                value={currentEndDate}
-                                onChange={(e) =>
-                                  setCurrentEndDate(e.target.value)
-                                }
-                              />
-                            </FormGroup>
-                          </div>
-
-                          {/* <FormGroup className="mb-3">
-                            <label htmlFor="fileInput" className="form-label">
-                              File Image
-                            </label>
-                            <Input
-                              type="file"
-                              className="file"
-                              id="fileInput"
-                              onChange={convertFile}
-                            />
-                          </FormGroup> */}
-
-                          <FormGroup className="mb-3">
-                            <label
-                              htmlFor="passwordInput"
-                              className="form-label"
-                            >
-                              Description
-                            </label>
-                            <Input
-                              type="textarea"
-                              className="form-control"
-                              id="description"
-                              style={{ height: 100 }}
-                              value={currentDescription}
-                              onChange={(e) =>
-                                setCurrentDescription(e.target.value)
-                              }
-                            />
-                          </FormGroup>
-
-                          <div className="text-center">
-                            <div
-                              className="btn btn-primary w-100"
-                              onClick={() => updateProject()}
-                            >
-                              Update Project
-                            </div>
-                          </div>
-                        </Form>
-                      </div>
-                    </div>
-                  </ModalBody>
-                </Modal>
                 {/* -------------------------------------------------------------------------------- */}
 
                 <p
@@ -741,21 +540,7 @@ const ProjectDetailDescription = () => {
                     }}
                     type="button"
                   >
-                    Payroll
-                  </NavLink>
-                </NavItem>
-                <NavItem role="presentation">
-                  <NavLink
-                    to="#"
-                    className={classnames("nav-link", {
-                      active: activeTab === "4",
-                    })}
-                    onClick={() => {
-                      tabChange("4");
-                    }}
-                    type="button"
-                  >
-                    History
+                    Pay Period
                   </NavLink>
                 </NavItem>
               </Nav>
@@ -879,7 +664,7 @@ const ProjectDetailDescription = () => {
                             >
                               <div className="candidate-profile text-center">
                                 <img
-                                  src={img0}
+                                  src={devInProjectDetail.userImage || img0}
                                   alt=""
                                   className="avatar-lg rounded-circle"
                                 />
@@ -916,7 +701,7 @@ const ProjectDetailDescription = () => {
                               </ul>
                             </Col>
                             <Col
-                              lg={2}
+                              lg={1}
                               className="d-flex gap-1 justify-content-center"
                             >
                               <i className="uil uil-keyboard"></i>
@@ -925,11 +710,11 @@ const ProjectDetailDescription = () => {
                               </p>
                             </Col>
                             <Col
-                              lg={2}
+                              lg={3}
                               className="d-flex justify-content-center"
                             >
                               <p className="mb-0 badge bg-blue text-light fs-13 ">
-                                {devInProjectDetail.devStatusString}
+                                {devInProjectDetail.hiredDevStatusString}
                               </p>
                             </Col>
                             <Col
@@ -947,7 +732,7 @@ const ProjectDetailDescription = () => {
                                     style={{ padding: "0px", color: "#ACB4B6" }}
                                   >
                                     <FontAwesomeIcon
-                                      icon={faEllipsisVertical}
+                                      icon={faUserMinus}
                                       size="xl"
                                     />
                                   </Dropdown.Toggle>
@@ -1187,18 +972,18 @@ const ProjectDetailDescription = () => {
                                             <span
                                               className={
                                                 listPeriod.statusString ===
-                                                "Created"
+                                                  "Created"
                                                   ? "badge bg-blue text-light fs-12"
                                                   : listPeriod.statusString ===
                                                     "cancelled"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : listPeriod.statusString ===
-                                                    "Inprogress"
-                                                  ? "badge bg-primary text-light fs-12"
-                                                  : listPeriod.statusString ===
-                                                    "completed"
-                                                  ? "badge bg-primary text-light fs-12"
-                                                  : ""
+                                                    ? "badge bg-danger text-light fs-12"
+                                                    : listPeriod.statusString ===
+                                                      "Inprogress"
+                                                      ? "badge bg-primary text-light fs-12"
+                                                      : listPeriod.statusString ===
+                                                        "completed"
+                                                        ? "badge bg-primary text-light fs-12"
+                                                        : ""
                                               }
                                             >
                                               {listPeriod.statusString}
@@ -1455,71 +1240,6 @@ const ProjectDetailDescription = () => {
                     </div>
                   </div>
                 </TabPane>
-
-                <TabPane tabId="4">
-                  <div className="mt-1 mb-2">
-                    <div>
-                      <h4>List History Payment</h4>
-                    </div>
-
-                    {devInProject.map((devInProjectDetail, key) => (
-                      <div
-                        style={{
-                          boxShadow:
-                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                        }}
-                        key={key}
-                        className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                      >
-                        <CardBody>
-                          <Row className="align-items-center">
-                            <Col
-                              lg={2}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>history name</div>
-                            </Col>
-                            <Col
-                              lg={3}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>history name</div>
-                            </Col>
-                            <Col
-                              lg={2}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>history name</div>
-                            </Col>
-                            <Col
-                              lg={2}
-                              className="d-flex gap-1 justify-content-center"
-                            >
-                              <div>history name</div>
-                            </Col>
-                            <Col
-                              lg={2}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>history name</div>
-                            </Col>
-                            <Col
-                              lg={1}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>
-                                <FontAwesomeIcon
-                                  icon={faEllipsisVertical}
-                                  size="xl"
-                                />
-                              </div>
-                            </Col>
-                          </Row>
-                        </CardBody>
-                      </div>
-                    ))}
-                  </div>
-                </TabPane>
               </TabContent>
             </CardBody>
           </div>
@@ -1527,11 +1247,11 @@ const ProjectDetailDescription = () => {
       </Card>
 
       {/* ----------------------------------------------------------------------------- */}
-      <DeveloperDetailInProjectPopup
+      {/* <DeveloperDetailInProjectPopup
         isModalOpen={isModalOpen}
         closeModal={closeModal}
         devId={selectedCandidateInfo.developerId}
-      />
+      /> */}
     </React.Fragment>
   );
 };
