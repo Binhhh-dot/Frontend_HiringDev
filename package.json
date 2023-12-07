@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/charts": "^1.4.3",
     "@ant-design/icons": "^5.2.6",
     "@daypilot/daypilot-lite-react": "^3.18.0",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
