@@ -204,6 +204,8 @@ const RightSideContent = () => {
     }
   };
 
+  //---------------------------------------------------------------------------
+
   const handleUpdateUserData = async () => {
     setLoadingUpdateAccount(true);
     let check = true;
@@ -262,7 +264,7 @@ const RightSideContent = () => {
       formData.append("PhoneNumber", phoneNumber);
       formData.append("DateOfBirth", dateOfBirth);
       formData.append("file", file || null);
-      console.log(formData)
+      console.log(formData);
       try {
         // Make API request
         const response = await userSerrvices.updateUser(formData, userId);
@@ -409,6 +411,7 @@ const RightSideContent = () => {
     setCompanyIdFromLocalStorage(companyIdFromLocalStorage);
   }, []);
 
+  //----------------------------------------------------------------------------
   const [avatar, setAvatar] = useState();
   const [avatar2, setAvatar2] = useState();
 

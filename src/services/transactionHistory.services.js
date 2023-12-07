@@ -10,7 +10,22 @@ const getTransactionHistory = async (PageIndex, PageSize) => {
   return response;
 };
 
-const getTransactionByCompanyIdAndPaging = async (companyId, PageIndex, PageSize, PayPalTransactionId, Status, Amount) => {
+const getAllTransactionHistory = async () => {
+  const serviceUrl =
+    urlConstant.endpoint.transactionHistory.getAllTransactionHistory;
+
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
+const getTransactionByCompanyIdAndPaging = async (
+  companyId,
+  PageIndex,
+  PageSize,
+  PayPalTransactionId,
+  Status,
+  Amount
+) => {
   const serviceUrl =
     urlConstant.endpoint.transactionHistory.getTransactionByCompanyIdAndPaging
       .replace("${PageIndex}", PageIndex)
@@ -24,8 +39,10 @@ const getTransactionByCompanyIdAndPaging = async (companyId, PageIndex, PageSize
   return response;
 };
 
+// export default { getTransactionHistory, getAllTransactionHistory };
 
 export default {
   getTransactionHistory,
-  getTransactionByCompanyIdAndPaging
+  getTransactionByCompanyIdAndPaging,
+  getAllTransactionHistory,
 };

@@ -62,30 +62,30 @@ const getDeveloperByProject = async (projectId, status) => {
 
 const updateProject = async (
   projectId,
-  ProjectId,
-  ProjectTypeId,
-  ProjectName,
-  Description,
-  StartDate,
-  EndDate
+  formData
 ) => {
   const serviceUrl = urlConstant.endpoint.project.updateProject.replace(
     "${projectId}",
     projectId
   );
-  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
-    ProjectId,
-    ProjectTypeId,
-    ProjectName,
-    Description,
-    StartDate,
-    EndDate,
-  });
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
 
   return response;
 };
 
-const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize, ProjectTypeId, inputSearch, status) => {
+const getAllProjectByCompanyIdAndPaging = async (
+  companyId,
+  PageIndex,
+  PageSize,
+  ProjectTypeId,
+  inputSearch,
+  status
+) => {
   const serviceUrl =
     urlConstant.endpoint.project.getAllProjectByCompanyIdAndPaging
       .replace("${companyId}", companyId)
