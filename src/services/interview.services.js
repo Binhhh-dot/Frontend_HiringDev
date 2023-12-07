@@ -1,5 +1,5 @@
 import urlConstant from "../Common/urlConstant";
-import utils from "../utils/customAxios";
+import axiosLocalHost from "../utils/customAxios";
 
 const createAnInterview = async (
   requestId,
@@ -11,7 +11,7 @@ const createAnInterview = async (
   endTime
 ) => {
   const serviceUrl = urlConstant.endpoint.interview.createAnInterview;
-  const response = await utils.axiosLocalHost.post(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     requestId,
     developerId,
     title,
@@ -29,7 +29,7 @@ const getListInterviewByRequestId = async (requestId) => {
       "${requestId}",
       requestId
     );
-  const response = await utils.axiosLocalHost.get(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl, {
     requestId,
   });
   return response;
@@ -41,7 +41,7 @@ const getAllInterviewByHRAndPaging = async (companyId, requestId, pageSize, page
     .replace("${PageSize}", pageSize)
     .replace("${PageIndex}", pageIndex)
     .replace("${requestId}", requestId);
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -57,7 +57,7 @@ const getAllInterviewByHRAndRequestIdAndPaging = async (
       .replace("${PageSize}", pageSize)
       .replace("${PageIndex}", pageIndex)
       .replace("${requestId}", requestId);
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -68,7 +68,7 @@ const getDetailInterviewByInterviewId = async (
     urlConstant.endpoint.interview.getDetailInterviewByInterviewId
       .replace("${InterviewId}", interviewId)
 
-  const response = await utils.axiosLocalHost.get(serviceUrl, interviewId);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl, interviewId);
   return response;
 };
 
@@ -78,7 +78,7 @@ const getAllInterviewByManagerAndPaging = async (pageIndex, pageSize) => {
       .replace("${PageIndex}", pageIndex)
       .replace("${PageSize}", pageSize);
 
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -86,7 +86,7 @@ const approvalByManager = async (interviewId) => {
   const isApproved = true;
   const rejectionReason = "Accpect";
   const serviceUrl = urlConstant.endpoint.interview.approvalByManager;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     interviewId,
     isApproved,
     rejectionReason,
@@ -96,7 +96,7 @@ const approvalByManager = async (interviewId) => {
 
 const completedInterview = async (interviewId) => {
   const serviceUrl = urlConstant.endpoint.interview.completeInterview.replace("${interviewId}", interviewId);
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     interviewId
   });
   return response;
@@ -111,7 +111,7 @@ const updateInterview = async (
   endTime
 ) => {
   const serviceUrl = urlConstant.endpoint.interview.updateInterview.replace("${interviewId}", interviewId);
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     interviewId,
     title,
     description,
@@ -126,7 +126,7 @@ const cancelInterview = async (
   interviewId
 ) => {
   const serviceUrl = urlConstant.endpoint.interview.cancelInterview.replace("${interviewId}", interviewId);
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     interviewId
   });
   return response;

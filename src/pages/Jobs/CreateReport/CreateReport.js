@@ -24,7 +24,8 @@ import {
   faAngleLeft,
   faGear,
   faCircle,
-  faMobileScreen
+  faMobileScreen,
+  faLocationDot
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
@@ -148,110 +149,7 @@ const CreateReport = () => {
     setIsModalOpen(false);
   };
 
-  //   let check = true;
-  //   setLoading(true);
-  //   if (!document.getElementById("interview-title").value) {
-  //     setInterviewTitlError("Please enter a interview title");
-  //     check = false;
-  //   } else {
-  //     setInterviewTitlError(null);
-  //   }
-  //   if (!document.getElementById("description").value) {
-  //     setDesError("Please enter a description");
-  //     check = false;
-  //   } else {
-  //     setDesError(null);
-  //   }
-  //   if (!document.getElementById("date-of-interview").value) {
-  //     setDateOfInterViewError("Please enter a date of interview");
-  //     check = false;
-  //   } else {
-  //     setDateOfInterViewError(null);
-  //   }
-  //   if (!document.getElementById("startTime").value) {
-  //     setTimeStartError("Please enter the start time of the interview ");
-  //     check = false;
-  //   } else {
-  //     setTimeStartError(null);
-  //   }
-  //   if (!document.getElementById("endTime").value) {
-  //     setTimeEndError("Please enter the end time of the interview");
-  //     check = false;
-  //   } else {
-  //     setTimeEndError(null);
-  //   }
-  //   if (document.getElementById("date-of-interview").value) {
-  //     const currentDate = new Date();
-  //     const selectedDate = new Date(
-  //       document.getElementById("date-of-interview").value
-  //     );
 
-  //     if (selectedDate < currentDate) {
-  //       setDateOfInterViewError(
-  //         "Please enter a date greater than the current date"
-  //       );
-  //       check = false;
-  //     } else {
-  //       setDateOfInterViewError(null);
-  //     }
-  //   }
-
-  //   if (
-  //     document.getElementById("endTime").value &&
-  //     document.getElementById("startTime").value &&
-  //     document.getElementById("startTime") !==
-  //     document.getElementById("endTime").value
-  //   ) {
-  //     const startTimeDate = new Date(
-  //       "1970-01-01T" + document.getElementById("startTime").value + "Z"
-  //     );
-  //     const endTimeDate = new Date(
-  //       "1970-01-01T" + document.getElementById("endTime").value + "Z"
-  //     );
-  //     if (startTimeDate > endTimeDate) {
-  //       // Hiển thị thông báo lỗi
-  //       setTimeStartError("Start Time must be before End Time");
-  //       // Cập nhật DOM để hiển thị thông báo
-  //       check = false;
-  //     } else {
-  //       setTimeStartError(null);
-  //     }
-  //   }
-  //   if (check) {
-  //     try {
-  //       const title = document.getElementById("interview-title").value;
-  //       const description = document.getElementById("description").value;
-  //       const dateOfInterview =
-  //         document.getElementById("date-of-interview").value;
-
-  //       const startTime = document.getElementById("startTime").value + ":00";
-  //       console.log(startTime);
-  //       const endTime = document.getElementById("endTime").value + ":00";
-  //       const queryParams = new URLSearchParams(location.search);
-  //       const requestId = queryParams.get("requestId");
-  //       const response = await interviewServices.createAnInterview(
-  //         requestId,
-  //         title,
-  //         description,
-  //         dateOfInterview,
-  //         startTime,
-  //         endTime
-  //       );
-  //       let data = response.data;
-  //       console.log(data);
-  //       fetchListDevInterview();
-  //       setLoading(false);
-  //       navigate(`/hiringrequestlistincompanypartnerdetail?Id=${requestId}`);
-  //     } catch (error) {
-  //       console.error("Error fetching job vacancies:", error);
-  //       setLoading(false);
-  //     }
-  //   }
-  //   setLoading(false);
-  // };
-
-  //-----------------------------------------------------------------------------
-  // Modal create  interview
   const [isCreateInterviewModal, setIsCreateInterviewModal] = useState(false);
 
   const CreateInterviewModalOpen = () => {
@@ -528,57 +426,47 @@ const CreateReport = () => {
                                   <i className="mdi mdi-eye"></i>
                                 </div>
                               </div>
+
                             </div>
                           </div>
-                          <div className="d-flex gap-2 align-items-center">
-                            <FontAwesomeIcon icon={faEnvelope} />
-                            {developerState.email}
-                          </div>
-                          <div className="d-flex gap-2 align-items-center">
-                            <FontAwesomeIcon icon={faMobileScreen} />
-                            {developerState.phoneNumber}
-                          </div>
+                          <div className="row" style={{ alignItems: "center" }}>
+                            <FontAwesomeIcon icon={faEnvelope} className="col-lg-1" style={{ padding: "0px" }} />
+                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                              {developerState.email}
+                            </div>
+                          </div >
+                          <div className="row" style={{ alignItems: "center" }}>
+                            <FontAwesomeIcon icon={faMobileScreen} className="col-lg-1" style={{ padding: "0px" }} />
+                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                              {developerState.phoneNumber}
+                            </div>
+                          </div >
+                          <div className="row" style={{ alignItems: "center" }}>
+                            <FontAwesomeIcon icon={faLocationDot} className="col-lg-1" style={{ padding: "0px" }} />
+                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                              {developerState.employmentTypeName}
+                            </div>
+                          </div >
+                          <div className="row" style={{ alignItems: "center" }}>
+                            <FontAwesomeIcon icon={faFlag} className="col-lg-1" style={{ padding: "0px" }} />
+                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                              Start day:
+                              {developerState.startWorkingDate}
+                            </div>
+                          </div >
+                          <div className="row" style={{ alignItems: "center" }}>
+                            <FontAwesomeIcon icon={faCircleXmark} className="col-lg-1" style={{ padding: "0px" }} />
+                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                              End day:
+                              {developerState.endWorkingDate}
+                            </div>
+                          </div >
+
+
                         </CardBody>
                       </div>
                     </>
                   )}
-
-                  <Modal
-                    style={{ padding: "10px" }}
-                    isOpen={isCreateInterviewModal}
-                    centered
-                    tabIndex="-1"
-                    contentLabel="Confirm Create Interview Modal"
-                  >
-                    <div className="modal-header">
-                      <h3>Confirm Report Developer</h3>
-                    </div>
-                    <ModalBody>
-                      <div>
-                        <h6 style={{ color: "#969BA5" }}>
-                          Are you sure you want to report this developer?
-                        </h6>
-                      </div>
-                    </ModalBody>
-                    <div className="d-flex justify-content-around   mt-4 modal-footer">
-                      <button
-                        style={{ width: "100px" }}
-                        className="btn btn-danger"
-                        onClick={CreateInterviewModalClose}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        style={{ width: "100px" }}
-                        className="btn btn-primary"
-                        onClick={() =>
-                          handleCreateReport()
-                        }
-                      >
-                        Report
-                      </button>
-                    </div>
-                  </Modal>
                 </Col>
               </Row>
 
@@ -588,7 +476,7 @@ const CreateReport = () => {
               <DeveloperDetailInCompanyPopup
                 isModalOpen={isModalOpen}
                 closeModal={closeModal}
-                devId={selectedCandidateInfo.developerId}
+                devId={selectedCandidateInfo.id}
               />
             </div>
           </div>

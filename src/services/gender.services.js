@@ -1,9 +1,9 @@
 import urlConstant from "../Common/urlConstant";
-import utils from "../utils/customAxios";
+import axiosLocalHost from "../utils/customAxios";
 
 const getAllGender = async () => {
   const serviceUrl = urlConstant.endpoint.gender.getAllGender;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 

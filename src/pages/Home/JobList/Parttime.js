@@ -276,6 +276,7 @@ const Parttime = () => {
                   type="file"
                   className="form-control"
                   id="inputGroupFile01"
+                  accept=".jpg, .jpeg, .png"
                 />
               </div>
               <button type="submit" className="btn btn-primary w-100">

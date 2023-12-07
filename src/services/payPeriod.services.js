@@ -1,9 +1,9 @@
 import urlConstant from "../Common/urlConstant"
-import utils from "../utils/customAxios"
+import axiosLocalHost from "../utils/customAxios";
 
 const exportToExcel = async (projectId, inputDate) => {
     const serviceUrl = urlConstant.endpoint.payPeriod.exportToExcel.replace("${projectId}", projectId).replace("${inputDate}", inputDate);
-    const response = await utils.axiosLocalHost.get(serviceUrl, { responseType: 'blob' })
+    const response = await axiosLocalHost.normalRequest.get(serviceUrl, { responseType: 'blob' })
     return response
 }
 
@@ -14,18 +14,25 @@ const importExcel = async (projectId, formData) => {
             'Content-Type': 'multipart/form-data',
         },
     }
-    const response = await utils.axiosLocalHost.post(serviceUrl, formData, config);
+    const response = await axiosLocalHost.normalRequest.post(serviceUrl, formData, config);
     return response
 }
 
 const getPayPeriodDetailByProjectIdAndDate = async (projectId, inputDate) => {
     const serviceUrl = urlConstant.endpoint.payPeriod.getPayPeriodDetailByProjectIdAndDate.replace("${projectId}", projectId).replace("${inputDate}", inputDate);
-    const response = await utils.axiosLocalHost.get(serviceUrl);
+    const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+    return response
+}
+
+const createNewPayPeriod = async (projectId, inputDate) => {
+    const serviceUrl = urlConstant.endpoint.payPeriod.createNewPayPeriod;
+    const response = await axiosLocalHost.normalRequest.post(serviceUrl, { projectId, inputDate });
     return response
 }
 
 export default {
     exportToExcel,
     importExcel,
-    getPayPeriodDetailByProjectIdAndDate
+    getPayPeriodDetailByProjectIdAndDate,
+    createNewPayPeriod
 }

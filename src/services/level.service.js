@@ -1,9 +1,9 @@
 import urlConstant from "../Common/urlConstant"
-import utils from "../utils/customAxios"
+import axiosLocalHost from "../utils/customAxios";
 
 const getAllLevel = async () => {
     const serviceUrl = urlConstant.endpoint.level.getAll;
-    const response = await utils.axiosLocalHost.get(serviceUrl)
+    const response = await axiosLocalHost.normalRequest.get(serviceUrl)
     return response
 }
 
@@ -12,7 +12,7 @@ const createLevel = async (
     levelDescription,
 ) => {
     const serviceUrl = urlConstant.endpoint.level.postLevel;
-    const response = await utils.axiosLocalHost.post(serviceUrl, {
+    const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
         levelName,
         levelDescription,
     });
@@ -27,7 +27,7 @@ const updateLevel = async (
 ) => {
     const serviceUrl =
         urlConstant.endpoint.level.editLevel;
-    const response = await utils.axiosLocalHost.put(serviceUrl, {
+    const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
         levelId,
         levelName,
         levelDescription,
@@ -38,7 +38,7 @@ const updateLevel = async (
 
 const deleteLevel = async (levelId) => {
     const serviceUrl = urlConstant.endpoint.level.deleteLevel.replace("${levelId}", levelId);
-    const response = await utils.axiosLocalHost.delete(serviceUrl)
+    const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
     return response
 }
 export default {

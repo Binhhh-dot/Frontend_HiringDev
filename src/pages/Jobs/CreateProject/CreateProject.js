@@ -22,19 +22,6 @@ import projectServices from "../../../services/project.services";
 
 const CreateProject = () => {
   document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
-  const notify = () => {
-    toast.info(" Wow so easy!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  };
-
   let hiringRequestSaved;
   const location = useLocation();
   const [options, setOptions] = useState([]);
@@ -95,10 +82,6 @@ const CreateProject = () => {
   const [projectTypeError, setProjectTypeError] = useState(null);
   const [jobDescriptionError, setJobDescriptionError] = useState(null);
 
-  useState(() => {
-    // setMinDateEndDay(_30DayLater);
-    // Thiết lập giá trị minDate thành ngày kế tiếp
-  }, []);
 
   const openModal = () => {
     setModal(!modal);
@@ -125,22 +108,11 @@ const CreateProject = () => {
     setAddressFormCreateCompany(newValue);
   };
 
-  const handleChange = (selected) => {
-    setSelectedOptions(selected);
-  };
   const handleChange2 = (selected) => {
     console.log(selected);
     setSelectedOptions2(selected);
   };
-  const handleChange3 = (selected) => {
-    setSelectedOptions3(selected);
-  };
-  const handleChange4 = (selected) => {
-    setSelectedOptions4(selected);
-  };
-  const handleChange5 = (selected) => {
-    setSelectedOptions5(selected);
-  };
+
   const navigate = useNavigate();
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -230,35 +202,6 @@ const CreateProject = () => {
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
-      }
-
-      try {
-        const requestIdParam = location.state.requestId;
-        console.log(requestIdParam);
-        const response =
-          await hiringRequestService.getHiringRequestDetailInCompany(
-            requestIdParam
-          );
-        console.log(response);
-        hiringRequestSaved = response.data.data;
-        document.getElementById("job-title").value =
-          hiringRequestSaved.jobTitle;
-        document.getElementById("number-dev").value =
-          hiringRequestSaved.numberOfDev;
-        document.getElementById("budget").value =
-          hiringRequestSaved.salaryPerDev;
-        console.log(hiringRequestSaved.salaryPerDev);
-        localStorage.setItem("requestId", hiringRequestSaved.requestId);
-        const formattedDuration = hiringRequestSaved.duration.split("T")[0];
-        const editor = window.tinymce.get("description"); // Giả sử 'description' là id của Editor
-        if (editor) {
-          editor.setContent(hiringRequestSaved.jobDescription);
-        }
-
-        // Đặt giá trị cho input duration
-        document.getElementById("duration").value = formattedDuration;
-      } catch (error) {
-        console.error("Error:", error);
       }
 
       try {
@@ -411,13 +354,6 @@ const CreateProject = () => {
     }
   };
 
-  const handlePreviewAvatar = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      file.preview = URL.createObjectURL(file);
-      setAvatar(file);
-    }
-  };
   return (
     <React.Fragment>
       {loading && (
@@ -628,6 +564,7 @@ const CreateProject = () => {
                                       </label>
                                       <input
                                         type="file"
+                                        accept=".jpg, .jpeg, .png"
                                         id="profile-img-file-input-2"
                                         onChange={handlePreviewAvatar2}
                                         style={{ display: "none" }}

@@ -40,6 +40,7 @@ const RightSideContent = () => {
   const [companyCreated, setCompanyCreated] = useState(false);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [loadingUpdateAccount, setLoadingUpdateAccount] = useState(false);
+  const [loadingUpdateCompany, setLoadingUpdateCompany] = useState(false);
 
   const { userData, updateUserData } = useUser();
   const [editableData, setEditableData] = useState({ ...userData });
@@ -56,7 +57,7 @@ const RightSideContent = () => {
 
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const companyIdFromLocalStorage = localStorage.getItem("companyId");
+  const [companyIdFromLocalStorage, setCompanyIdFromLocalStorage] = useState(null);
 
   useEffect(() => {
     const fetchCompanyDetail = async () => {
@@ -136,6 +137,7 @@ const RightSideContent = () => {
   }, [isUpdateMode]);
 
   const handleUpdateCompany = async () => {
+    setLoadingUpdateCompany(true);
     const companyName = document.getElementById("company-name").value;
     const companyEmail = document.getElementById("email-address").value;
     const phoneNumber = document.getElementById("number").value;
@@ -169,11 +171,18 @@ const RightSideContent = () => {
         );
         const userData = responseUser.data;
         localStorage.setItem("companyId", userData.data.companyId);
+        toast.success("Update company sucessfully")
         setCompanyId(userData.data.companyId);
         setCompanyCreated(true);
+        setLoadingUpdateCompany(false);
+
       } catch (error) {
         // Handle errors (show an error message or log the error)
         console.error("Error creating company:", error);
+        toast.success("Update company fail")
+
+        setLoadingUpdateCompany(false);
+
       }
     } else {
       const formData = new FormData();
@@ -196,10 +205,18 @@ const RightSideContent = () => {
         const userData = responseUser.data;
         localStorage.setItem("companyId", userData.data.companyId);
         setIsUpdateMode(true);
+        toast.success("Update company sucessfully")
+
+        setLoadingUpdateCompany(false);
+
       } catch (error) {
         // Handle errors (show an error message or log the error)
         console.error("Error creating company:", error);
         console.log(error);
+        toast.success("Update company fail")
+
+        setLoadingUpdateCompany(false);
+
       }
     }
   };
@@ -213,21 +230,29 @@ const RightSideContent = () => {
     if (!firstName) {
       setFirstNameError("Enter your first name");
       check = false;
+    } else {
+      setFirstNameError("");
     }
     const lastName = document.getElementById("lastNameTab2").value;
     if (!lastName) {
       setLastNameError("Enter your last name");
       check = false;
+    } else {
+      setLastNameError("");
     }
     const phoneNumber = document.getElementById("phoneNumberTab2").value;
     if (!phoneNumber) {
       setPhoneNumberError("Enter your phone number");
       check = false;
+    } else {
+      setPhoneNumberError("");
     }
     const dateOfBirth = document.getElementById("dayOfBirhTab2").value;
     if (!phoneNumber) {
       setDayOfBirthError("Enter your date of birth");
       check = false;
+    } else {
+      setDayOfBirthError("");
     }
     const fileInput = document.getElementById("profile-img-file-input-2");
     const file = fileInput.files[0];
@@ -405,6 +430,10 @@ const RightSideContent = () => {
       }
     };
     fetchUserDetail();
+    const companyIdFromLocalStorage = localStorage.getItem("companyId");
+    console.log("companyIdFromLocalStorage")
+    console.log(companyIdFromLocalStorage)
+    setCompanyIdFromLocalStorage(companyIdFromLocalStorage);
   }, []);
 
   //----------------------------------------------------------------------------
@@ -746,6 +775,7 @@ const RightSideContent = () => {
                           </label>
                           <input
                             type="file"
+                            accept=".jpg, .jpeg, .png"
                             id="profile-img-file-input"
                             onChange={handlePreviewAvatar}
                             style={{ display: "none" }}
@@ -820,19 +850,30 @@ const RightSideContent = () => {
                     </Row>
                   </div>
                   <div className="mt-4 text-end">
-                    {companyIdFromLocalStorage === "null" ? (
+                    {companyIdFromLocalStorage == null ? (
                       <div
                         className="btn btn-soft-primary fw-bold"
                         onClick={handleUpdateCompany}
+                        disabled={loadingUpdateCompany}
                       >
-                        Create
+                        {loadingUpdateCompany ? (
+                          <HashLoader size={20} color={"white"} loading={true} />
+                        ) : (
+                          "Create"
+                        )}
+
                       </div>
                     ) : (
                       <div
                         className="btn btn-soft-blue fw-bold"
                         onClick={handleUpdateCompany}
+                        disabled={loadingUpdateCompany}
                       >
-                        Update
+                        {loadingUpdateCompany ? (
+                          <HashLoader size={20} color={"white"} loading={true} />
+                        ) : (
+                          "Update"
+                        )}
                       </div>
                     )}
                   </div>

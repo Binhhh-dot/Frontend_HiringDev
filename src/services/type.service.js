@@ -1,9 +1,9 @@
 import urlConstant from "../Common/urlConstant"
-import utils from "../utils/customAxios"
+import axiosLocalHost from "../utils/customAxios";
 
 const getAllType = async () => {
     const serviceUrl = urlConstant.endpoint.type.getAll;
-    const response = await utils.axiosLocalHost.get(serviceUrl)
+    const response = await axiosLocalHost.normalRequest.get(serviceUrl)
     return response
 }
 
@@ -12,7 +12,7 @@ const createType = async (
     typeDescription,
 ) => {
     const serviceUrl = urlConstant.endpoint.type.postType;
-    const response = await utils.axiosLocalHost.post(serviceUrl, {
+    const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
         typeName,
         typeDescription,
     });
@@ -27,7 +27,7 @@ const updateType = async (
 ) => {
     const serviceUrl =
         urlConstant.endpoint.type.editType;
-    const response = await utils.axiosLocalHost.put(serviceUrl, {
+    const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
         typeId,
         typeName,
         typeDescription,
@@ -38,7 +38,7 @@ const updateType = async (
 
 const deleteType = async (typeId) => {
     const serviceUrl = urlConstant.endpoint.type.deleteType.replace("${typeId}", typeId);
-    const response = await utils.axiosLocalHost.delete(serviceUrl)
+    const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
     return response
 }
 export default {

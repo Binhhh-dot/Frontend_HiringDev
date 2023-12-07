@@ -146,6 +146,7 @@ const CreateCompanyAccount = () => {
                           <input
                             id="company-image"
                             type="file"
+                            accept=".jpg, .jpeg, .png"
                             //class="resume custom-date"
                             className="form-control resume custom-file-input"
                           />

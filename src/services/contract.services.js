@@ -1,16 +1,16 @@
 import urlConstant from "../Common/urlConstant"
-import utils from "../utils/customAxios"
+import axiosLocalHost from "../utils/customAxios";
 
 const getPreContract = async (developerId, requestId) => {
   const serviceUrl = urlConstant.endpoint.contract.getPreContract.replace("${developerId}", developerId).replace("${requestId}", requestId);
-  const response = await utils.axiosLocalHost.get(serviceUrl, { developerId, requestId })
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl, { developerId, requestId })
   return response
 }
 
 
 const getContract = async () => {
   const serviceUrl = urlConstant.endpoint.contract.getContract;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -20,13 +20,13 @@ const getContractAndPaging = async (PageIndex, PageSize) => {
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
 const postContract = async (requestId, developerId, fromDate, toDate, legalRepresentation, legalRepresentationPosition) => {
   const serviceUrl = urlConstant.endpoint.contract.postContract;
-  const response = await utils.axiosLocalHost.post(serviceUrl, { requestId, developerId, fromDate, toDate, legalRepresentation, legalRepresentationPosition });
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, { requestId, developerId, fromDate, toDate, legalRepresentation, legalRepresentationPosition });
   return response
 };
 
@@ -36,7 +36,7 @@ const getContractById = async (contractId) => {
     "${contractId}",
     contractId
   );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -47,7 +47,7 @@ const confirmContract = async (contractId) => {
     contractId
   );
 
-  const response = await utils.axiosLocalHost.put(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl);
   return response;
 };
 
@@ -60,7 +60,7 @@ const getListContractByCompanyIdAndPaging = async (companyId, PageIndex, pageSiz
     .replace("${Status}", status)
     ;
 
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 }
 

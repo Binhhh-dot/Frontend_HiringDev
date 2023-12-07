@@ -386,14 +386,12 @@ const NavBar = (props) => {
                 </ul>
               </NavItem>
 
-              {!(role === null) && (
+              {(role === "HR") && (
                 <>
                   <li className="nav-item dropdown dropdown-hover">
                     <Link
                       id="pagesdoropdown"
-                      // to="/projectlist"
                       className="nav-link dropdown-toggle arrow-none"
-                    // onClick={() => setPages(!pages)}
                     >
                       Page
                       <div className="arrow-down"></div>
@@ -408,22 +406,10 @@ const NavBar = (props) => {
                       <Row>
                         {role === "HR" && (
                           <>
-                            <Col lg={12}>
+                            <Col lg={6}>
                               <span className="dropdown-header">
-                                Hiring Request
+                                another
                               </span>
-                              <Link
-                                className="dropdown-item"
-                                to="/projectlist"
-                              >
-                                Project List
-                              </Link>
-                              <Link
-                                className="dropdown-item"
-                                to="/createproject"
-                              >
-                                Create new project
-                              </Link>
                               <Link
                                 className="dropdown-item"
                                 to="/reportList"
@@ -442,11 +428,22 @@ const NavBar = (props) => {
                               >
                                 Transaction List
                               </Link>
+                            </Col>
+                            <Col lg={6}>
+                              <span className="dropdown-header">
+                                Project
+                              </span>
                               <Link
                                 className="dropdown-item"
-                                to="/notificationList"
+                                to="/projectlist"
                               >
-                                Notification List
+                                Project List
+                              </Link>
+                              <Link
+                                className="dropdown-item"
+                                to="/createproject"
+                              >
+                                Create new project
                               </Link>
                             </Col>
                           </>

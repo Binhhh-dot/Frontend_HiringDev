@@ -34,7 +34,9 @@ import {
   faAngleLeft,
   faGear,
   faCircle,
-  faMobileScreen
+  faMobileScreen,
+  faLocationDot,
+  faSheetPlastic
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
@@ -44,10 +46,14 @@ import {
   faCalendar,
 
 } from "@fortawesome/free-regular-svg-icons";
+import { enUS } from 'date-fns/locale';
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import { Modal as AntdModal, Button as AntdButton } from "antd";
 import "./index.css";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 import CreateHiringRequestPopup from "../CreateHiringRequest/CreateHiringRequestPopup";
+import UpdateProjectPopup from "../UpdateProjectPopup/UpdateProjectPopup";
 import userImage0 from "../../../assets/images/user/img-00.jpg";
 import projectServices from "../../../services/project.services";
 import classnames from "classnames";
@@ -78,8 +84,6 @@ import { Dropdown as DropdownAntd } from 'antd';
 import { Empty, TimePicker } from 'antd';
 import { theme } from 'antd';
 import moment from 'moment';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
 import paySlipServices from "../../../services/paySlip.services";
 import workLogServices from "../../../services/workLog.services";
 import { HashLoader } from "react-spinners";
@@ -112,11 +116,13 @@ const ProjectDetailDesciption = () => {
   const [developerOnboardList, setDeveloperOnboardList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
+  const [isModalUpdateProjectOpen, setIsModalUpdateProjectOpen] = useState(false);
   const [selectedCandidateInfo, setSelectedCandidateInfo] = useState({});
   const [payPeriodDetail, setPayPeriodDetail] = useState(null);
   const [payRollDetail, setPayRollDetail] = useState([]);
   const [workLoglist, setWorkLoglist] = useState([]);
   const [selectedHiringRequestInfo, setSelectedHiringRequestInfo] = useState({});
+  const [selectedProjectInfo, setSelectedProjectInfo] = useState({});
   const [selectedJobPositionInfo, setSelectedJobPositionInfo] = useState({});
   const [checkHeightListHiringRequest, setCheckHeightListHiringRequest] = useState(false);
   const monthFormat = "YYYY/MM";
@@ -155,7 +161,10 @@ const ProjectDetailDesciption = () => {
   const [idDeveloperReport, setIdDeveloperReport] = useState(null);
   const [dateValue, setDateValue] = useState(new Date());
   const [loadingGenerateExel, setLoadingGenerateExel] = useState(false);
+  const [loadingSavePaySlip, setLoadingSavePaySlip] = useState(false);
+  const [loadingSaveWorkLog, setLoadingSaveWorkLog] = useState(false);
   const [loadingImportExel, setLoadingImportExel] = useState(false);
+  const [loadingCreateNew, setLoadingCreateNew] = useState(false);
   const [loadingPayNow, setLoadingPaynow] = useState(false);
 
   const [keyPayRoll, setKeyPayRoll] = useState(null);
@@ -185,15 +194,39 @@ const ProjectDetailDesciption = () => {
 
   const [avatar, setAvatar] = useState();
 
+  const [selectedRange, setSelectedRange] = useState([]);
+
+  const setRangeCalendar = () => {
+    const startDate = listStartDay[currentMonthIndex];
+    let startDateRange;
+    if (startDate) {
+      let startDateParts = startDate.split(".");
+      let newStartDate = startDateParts[2] + "-" + startDateParts[1] + "-" + startDateParts[0];
+      startDateRange = new Date(newStartDate);
+    }
+    let endDateRange;
+    const endDate = listEndDay[currentMonthIndex];
+    if (endDate) {
+      let endDateParts = endDate.split(".");
+      let newEndDate = endDateParts[2] + "-" + endDateParts[1] + "-" + endDateParts[0];
+      endDateRange = new Date(newEndDate);
+    }
+    console.log("startDateRange")
+    console.log(startDate)
+    console.log("endDateRange")
+    console.log(endDate)
+    setSelectedRange([startDateRange, endDateRange])
+  }
+
+
+
   const optionsStatus = [
     { label: 'Normally', value: 0 },
     { label: 'Paid leave', value: 1 },
     { label: 'Unpaid leave', value: 2 },
   ];
-  const redButtonStyle = {
-    backgroundColor: 'red',
-    borderColor: 'red', // Set border color to match if needed
-  };
+
+
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -263,11 +296,6 @@ const ProjectDetailDesciption = () => {
       setShowPopup(false)
       setLoading(false)
     }
-  };
-
-  const handleDateChange = (date) => {
-    setDateValue(date);
-    // Thực hiện các thao tác khác khi người dùng thay đổi ngày
   };
 
 
@@ -355,47 +383,27 @@ const ProjectDetailDesciption = () => {
       key: "1",
       label: (
         <div
-          style={{ width: "100px" }}
+          style={{ width: "70px" }}
           onClick={() => reportDeveloper()}
         >
           Report
         </div>
       ),
-    },
+    }
+  ]
+
+  const profileItems5 = [
     {
-      key: "2",
+      key: "1",
       label: (
         <div
-          style={{ width: "100px" }}
-          // onClick={() => onUpdateWorkLog()}
-          onClick={() => {
-            AntdModal.confirm({
-              title: 'Confirm delete job position',
-              content: (<div>
-                <p>Are you sure to delete this job position?</p>
-                <p>All activities in the hiring request of this job position will stop</p>
-              </div>),
-              onOk() {
-                // Action when the user clicks OK
-                console.log('Confirmed!');
-              },
-              onCancel() {
-                // Action when the user cancels
-                console.log('Cancelled!');
-              },
-              footer: (_, { OkBtn, CancelBtn }) => (
-                <>
-                  <CancelBtn />
-                  <OkBtn />
-                </>
-              ),
-            });
-          }}
+          style={{ width: "80px" }}
+          onClick={() => openModalUpdateProject()}
         >
-          Delete
+          Edit project
         </div>
       ),
-    },
+    }
   ]
 
   const [showCollapse, setShowCollapse] = useState(Array(payRollDetail.length).fill(false));
@@ -453,6 +461,18 @@ const ProjectDetailDesciption = () => {
     setIsModalOpen(false);
   };
 
+  const openModalUpdateProject = () => {
+    const queryParams = new URLSearchParams(location.search);
+    const projectId = queryParams.get("Id");
+    setSelectedProjectInfo(projectId);
+    setIsModalUpdateProjectOpen(true);
+  };
+
+  const closeModalUpdateProject = () => {
+    setIsModalUpdateProjectOpen(false);
+    fetchProjectDetails();
+  };
+
   const handleChangeStatus = (selected) => {
     console.log(selected)
     const key = '' + keyPayRoll + keyWorkLog;
@@ -467,6 +487,8 @@ const ProjectDetailDesciption = () => {
     setIsModalCreateOpen(false);
     fetchJobVacancies();
   };
+
+
 
   const fetchOptions = async () => {
     try {
@@ -641,7 +663,9 @@ const ProjectDetailDesciption = () => {
           lastWord: lastWord,
           email: dev.email,
           phoneNumber: dev.phoneNumber,
-
+          endWorkingDate: " " + dev.endWorkingDate,
+          startWorkingDate: " " + dev.startWorkingDate,
+          employmentTypeName: dev.employmentTypeName
         };
       });
       setDeveloperOnboardList(listDeveloperOnboard);
@@ -781,6 +805,7 @@ const ProjectDetailDesciption = () => {
 
   const updatedWorkLog = async (timeIn, timeOut, isPaid) => {
     let response;
+    setLoadingSaveWorkLog(true)
     try {
       console.log(workLogIdOnClick)
       console.log(timeIn)
@@ -801,9 +826,11 @@ const ProjectDetailDesciption = () => {
       toast.success("Update worklog successfully")
       setLoadListWorkLog(!loadListWorkLog);
       setIsCompleteEditWorkLog(true);
+      setLoadingSaveWorkLog(false)
       setEditableRowId(null);
     } catch (error) {
       setIsCompleteEditWorkLog(false);
+      setLoadingSaveWorkLog(false)
       console.error("Error fetching job vacancies:", error);
       toast.error("Update worklog fail")
     }
@@ -811,6 +838,7 @@ const ProjectDetailDesciption = () => {
 
   const updatedPayslip = async (totalOT) => {
     let response;
+    setLoadingSavePaySlip(true)
     try {
       console.log(payslipIdOnClick)
       console.log(totalOT)
@@ -826,9 +854,12 @@ const ProjectDetailDesciption = () => {
       }
       toast.success("Update payslip successfully")
       setEdiPaySlipRowId(null);
+      setLoadingSavePaySlip(false)
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
       toast.error("Update payslip fail")
+
+      setLoadingSavePaySlip(false)
     }
   };
 
@@ -1017,6 +1048,8 @@ const ProjectDetailDesciption = () => {
       const newDate = `${parts[2]}-${parts[1]}-25`;
       fetchDetailPayPeriod(newDate)
     }
+    console.log("luc doi")
+    setRangeCalendar()
   }, [currentMonthIndex]);
 
   useEffect(() => {
@@ -1025,8 +1058,6 @@ const ProjectDetailDesciption = () => {
       const parts = temp.split('.');
       const newDate = `${parts[2]}-${parts[1]}-25`;
       fetchDetailPayPeriod(newDate)
-      console.log("set Calendar")
-
     }
   }, [loadPayPeriod]);
 
@@ -1133,6 +1164,7 @@ const ProjectDetailDesciption = () => {
           console.log(temp)
           document.getElementById(temp).value = totalOTPayslipSave;
           setEdiPaySlipRowId(null);
+
         } else {
           if (formatTime00(document.getElementById(temp2).value) != totalOTPayslipSave) {
             updatedPayslip(document.getElementById(temp2).value)
@@ -1148,8 +1180,10 @@ const ProjectDetailDesciption = () => {
         console.log(temp2)
         document.getElementById(temp2).value = totalOTPayslipSave;
         setEdiPaySlipRowId(null);
+
       } catch (error) {
         console.log("Loi khi update worklog", error)
+
       }
     }
   }, [isEditPayslip]);
@@ -1284,6 +1318,7 @@ const ProjectDetailDesciption = () => {
   const previousMonth = () => {
     const updatedShowCollapse = showCollapse.map(() => false);
     setShowCollapse(updatedShowCollapse);
+    setRangeCalendar();
     setIsEditWorkLog(!isEditWorkLog);
     setIsEditPayslip(!isEditPayslip);
     setIsCancelEditPayslip(true);
@@ -1308,6 +1343,27 @@ const ProjectDetailDesciption = () => {
 
     downloadExcelFile(projectId, formattedDate, filename)
 
+  };
+
+  const createNewPayPeriod = async () => {
+    setLoadingCreateNew(true)
+    try {
+      const queryParams = new URLSearchParams(location.search);
+      const projectId = queryParams.get("Id");
+      const currentMonthData = listMonth[currentMonthIndex];
+
+      const date = new Date(currentMonthData);
+      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-25` + "T08:47:13.849Z";
+
+      const response = await payPeriodServices.createNewPayPeriod(projectId, formattedDate);
+      console.log(response)
+      toast.success("Create pay period successfully")
+      setLoadPayPeriod(!loadPayPeriod);
+      setLoadingCreateNew(false);
+    } catch (error) {
+      toast.error("Create pay period fail")
+      setLoadingCreateNew(false);
+    }
   };
 
   const importExcel = async (formData2) => {
@@ -1403,6 +1459,8 @@ const ProjectDetailDesciption = () => {
     }
   };
 
+
+
   return (
     <React.Fragment>
       {loading && (
@@ -1440,6 +1498,7 @@ const ProjectDetailDesciption = () => {
                     />
                     <input
                       type="file"
+                      accept=".jpg, .jpeg, .png"
                       id="profile-img-file-input"
                       onChange={handlePreviewAvatar}
                       style={{ display: "none" }}
@@ -1492,7 +1551,7 @@ const ProjectDetailDesciption = () => {
                           </li>
                         </ul>
                       </div>
-                      <div>
+                      <div className="d-flex gap-3 align-items-center">
                         <Avatar.Group
                           maxCount={4}
                           maxStyle={{
@@ -1516,7 +1575,25 @@ const ProjectDetailDesciption = () => {
                             </>
                           ))}
                         </Avatar.Group>
+                        <DropdownAntd trigger={['click']} menu={{ items: profileItems5 }}
+                          overlayStyle={{ right: '2.688px', bottom: "auto", left: "auto" }} >
+                          <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                            <FontAwesomeIcon
+                              icon={faEllipsisVertical}
+                              size="xl"
+                              color="#909191"
+                            />
+                          </a>
+                        </DropdownAntd>
                       </div>
+                    </div>
+                    <div style={{ color: "grey" }} className="d-flex gap-4">
+                      <div>
+                        <FontAwesomeIcon icon={faSheetPlastic} style={{ marginRight: "8px" }} />
+                        Project type :{" "}
+                        {hiringRequestDetail.projectTypeName}
+                      </div>
+
                     </div>
                     <div style={{ color: "grey" }} className="d-flex gap-4">
                       <div>
@@ -1717,14 +1794,40 @@ const ProjectDetailDesciption = () => {
                                         </DropdownAntd>
                                       </div>
                                     </div>
-                                    <div className="d-flex gap-2 align-items-center">
-                                      <FontAwesomeIcon icon={faEnvelope} />
-                                      {candidategridDetailsNew.email}
-                                    </div>
-                                    <div className="d-flex gap-2 align-items-center">
-                                      <FontAwesomeIcon icon={faMobileScreen} />
-                                      {candidategridDetailsNew.phoneNumber}
-                                    </div>
+                                    <div className="row" style={{ alignItems: "center" }}>
+                                      <FontAwesomeIcon icon={faEnvelope} className="col-lg-1" />
+                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                        {candidategridDetailsNew.email}
+                                      </div>
+                                    </div >
+                                    <div className="row" style={{ alignItems: "center" }}>
+                                      <FontAwesomeIcon icon={faMobileScreen} className="col-lg-1" />
+                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                        {candidategridDetailsNew.phoneNumber}
+                                      </div>
+                                    </div >
+                                    <div className="row" style={{ alignItems: "center" }}>
+                                      <FontAwesomeIcon icon={faLocationDot} className="col-lg-1" />
+                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                        {candidategridDetailsNew.employmentTypeName}
+                                      </div>
+                                    </div >
+                                    <div className="row" style={{ alignItems: "center" }}>
+                                      <FontAwesomeIcon icon={faFlag} className="col-lg-1" />
+                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                        Start day:
+                                        {candidategridDetailsNew.startWorkingDate}
+                                      </div>
+                                    </div >
+                                    <div className="row" style={{ alignItems: "center" }}>
+                                      <FontAwesomeIcon icon={faCircleXmark} className="col-lg-1" />
+                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                        End day:
+                                        {candidategridDetailsNew.endWorkingDate}
+                                      </div>
+                                    </div >
+
+
                                   </CardBody>
                                 </div>
                               </Col>
@@ -1752,10 +1855,25 @@ const ProjectDetailDesciption = () => {
                               </div>
 
                               <div className="d-flex gap-5 justify-content-end">
-                                <div className="btn btn-soft-primary fw-bold"
+
+                                <button className="btn btn-soft-primary fw-bold"
+                                  onClick={() => {
+                                    createNewPayPeriod();
+                                  }}
+                                  disabled={loadingCreateNew}
                                 >
-                                  Create new
-                                </div>
+                                  {loadingCreateNew ? (
+                                    <div style={{ width: "110px" }} className="d-flex align-items-center justify-content-center">
+                                      <HashLoader
+                                        size={20}
+                                        color={"white"}
+                                        loading={true}
+                                      />
+                                    </div>
+                                  ) : (
+                                    "Create new"
+                                  )}
+                                </button>
                                 <div className="d-flex justify-content-end gap-2">
                                   <div>
                                     <input
@@ -1852,7 +1970,7 @@ const ProjectDetailDesciption = () => {
                                   {payPeriodDetail ? (
                                     <>
                                       <div className="row">
-                                        <div className="col-lg-9 p-4 d-flex flex-column gap-4 card " style={{
+                                        <div className="col-lg-9 p-4 d-flex flex-column gap-4 card  " style={{
                                           boxShadow:
                                             "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
                                         }}>
@@ -1898,15 +2016,30 @@ const ProjectDetailDesciption = () => {
                                                 setShowPopup(true);
                                               }}>Continues</div>
                                             )}
+                                            {payPeriodDetail.statusString == "Paid" && (
+                                              <div className="btn btn-soft-primary fw-bold" onClick={() => {
+                                                setShowPopup(true);
+                                              }}>View detail</div>
+                                            )}
                                           </div>
                                         </div>
-                                        <div className="col-lg-3"
-                                          style={{ paddingLeft: "24px" }}>
-                                          <Calendar
-                                            onChange={handleDateChange}
-                                            value={dateValue}
-                                          // Các propkhác của Calendar nếu cần
-                                          />
+                                        <div className="col-lg-3 "
+                                        >
+                                          <div className="card p-3" style={{
+                                            boxShadow:
+                                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                          }}>
+                                            <Calendar
+                                              value={selectedRange}
+                                              view={"month"}
+                                              locale='en-US'
+                                              // tileContent={<Text color='brand.500'></Text>}
+                                              prevLabel={<FontAwesomeIcon icon={faAngleLeft} style={{ fontSize: '20px' }} />}
+                                              nextLabel={<FontAwesomeIcon icon={faAngleRight} style={{ fontSize: '20px' }} />}
+                                            // onClickDay={() => null}
+                                            // disabled={true}
+                                            />
+                                          </div>
                                         </div>
                                       </div>
 
@@ -1925,7 +2058,7 @@ const ProjectDetailDesciption = () => {
                                           <div className="col-lg-9">
                                             <div className=" profile-user">
                                               <img
-                                                src={userImage0}  // Giá trị mặc định là "userImage2"
+                                                src={payPeriodDetail.companyImage}  // Giá trị mặc định là "userImage2"
                                                 className="rounded-circle img-thumbnail"
                                                 style={{ width: "120px" }}
                                                 id="profile-img-2"
@@ -1942,7 +2075,7 @@ const ProjectDetailDesciption = () => {
                                             <div style={{ fontSize: "15px", color: "grey" }}>{currentDateBill}</div>
                                           </div>
                                         </div>
-                                        <Divider style={{ marginBottom: "12px" }}></Divider>
+                                        <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
 
                                         <div className="px-3 d-flex justify-content-between align-items-center">
                                           <div style={{ fontWeight: "600" }}>
@@ -1952,7 +2085,7 @@ const ProjectDetailDesciption = () => {
                                             {payPeriodDetail.totalActualAmount}
                                           </div>
                                         </div>
-                                        <Divider style={{ marginBottom: "12px" }}></Divider>
+                                        <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
 
                                         <div className="px-3 d-flex justify-content-between align-items-center">
                                           <div style={{ fontWeight: "600" }}>
@@ -1962,14 +2095,30 @@ const ProjectDetailDesciption = () => {
                                             {payPeriodDetail.totalOTAmount}
                                           </div>
                                         </div>
-                                        <Divider style={{ marginBottom: "12px" }}></Divider>
-
-                                        <div className="px-3 d-flex justify-content-end align-items-end">
-                                          <div style={{ fontWeight: "600", fontSize: "20px" }}>
-                                            TOTAL DUE : {payPeriodDetail.totalAmount}
+                                        <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
+                                        <div className="px-3 d-flex justify-content-between align-items-center">
+                                          <div style={{ fontWeight: "600" }}>
+                                            Total amount
+                                          </div>
+                                          <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
+                                            {payPeriodDetail.totalAmount}
                                           </div>
                                         </div>
-                                        <Divider style={{ marginBottom: "12px" }}></Divider>
+
+                                        <div className="px-3 d-flex justify-content-between align-items-center">
+                                          <div style={{ fontWeight: "600" }}>
+                                            Commission amount (8%)
+                                          </div>
+                                          <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
+                                            {payPeriodDetail.commissionAmount}
+                                          </div>
+                                        </div>
+                                        <div className="px-3 d-flex justify-content-end align-items-end">
+                                          <div style={{ fontWeight: "600", fontSize: "20px" }}>
+                                            Total Due : {payPeriodDetail.totalDue}
+                                          </div>
+                                        </div>
+                                        <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
 
 
                                         <div className="row" style={{ paddingLeft: "30px", paddingRight: "30px" }}>
@@ -2016,27 +2165,31 @@ const ProjectDetailDesciption = () => {
                                             </div>
                                           </div>
                                         </div>
-                                        <div className="px-3 d-flex justify-content-end align-items-end">
-                                          <button className="btn btn-warning fw-bold d-flex align-items-center justify-content-center mt-3"
-                                            onClick={() => {
-                                              openPayment(payPeriodDetail.payPeriodId);
-                                            }}
-                                            disabled={loadingPayNow}
-                                            style={{ width: "1000px" }}
-                                          >
-                                            {loadingPayNow ? (
-                                              <div style={{ width: "300px" }} className="d-flex align-items-center justify-content-center">
-                                                <HashLoader
-                                                  size={20}
-                                                  color={"white"}
-                                                  loading={true}
-                                                />
-                                              </div>
-                                            ) : (
-                                              <img src={paypalImage} alt="PayPal" style={{ width: "150px" }}></img>
-                                            )}
-                                          </button>
-                                        </div>
+                                        {payPeriodDetail.statusString !== "Paid" && (
+                                          <>
+                                            <div className="px-3 d-flex justify-content-end align-items-end">
+                                              <button className="btn btn-warning fw-bold d-flex align-items-center justify-content-center mt-3"
+                                                onClick={() => {
+                                                  openPayment(payPeriodDetail.payPeriodId);
+                                                }}
+                                                disabled={loadingPayNow}
+                                                style={{ width: "1000px" }}
+                                              >
+                                                {loadingPayNow ? (
+                                                  <div style={{ width: "300px" }} className="d-flex align-items-center justify-content-center">
+                                                    <HashLoader
+                                                      size={20}
+                                                      color={"white"}
+                                                      loading={true}
+                                                    />
+                                                  </div>
+                                                ) : (
+                                                  <img src={paypalImage} alt="PayPal" style={{ width: "150px" }}></img>
+                                                )}
+                                              </button>
+                                            </div>
+                                          </>
+                                        )}
                                       </AntdModal>
 
                                     </>
@@ -2156,6 +2309,7 @@ const ProjectDetailDesciption = () => {
                                                     className="form-control"
                                                     id={`totalOT${key2}`}
                                                     readOnly={ediPaySlipRowId !== payRollDetailNew.paySlipId}
+                                                    defaultValue={0}
                                                   />
                                                 </Col>
 
@@ -2226,11 +2380,27 @@ const ProjectDetailDesciption = () => {
                                                         >
                                                           Cancel
                                                         </div>
-                                                        <div className="btn btn-soft-blue"
-                                                          onClick={() => saveUpdatePayslip()}
+
+                                                        <button className="btn btn-soft-blue "
+                                                          onClick={() => {
+                                                            saveUpdatePayslip();
+                                                          }}
+                                                          disabled={loadingSavePaySlip}
                                                         >
-                                                          Save
-                                                        </div>
+                                                          {loadingSavePaySlip ? (
+                                                            <div style={{ width: "45px" }} className="d-flex align-items-center justify-content-center">
+                                                              <HashLoader
+                                                                size={20}
+                                                                color={"white"}
+                                                                loading={true}
+                                                              />
+                                                            </div>
+                                                          ) : (
+                                                            "Save"
+                                                          )}
+                                                        </button>
+
+
                                                       </Col>
                                                     </Row>
                                                   </>
@@ -2351,11 +2521,25 @@ const ProjectDetailDesciption = () => {
                                                             >
                                                               Cancel
                                                             </div>
-                                                            <div className="btn btn-soft-blue"
-                                                              onClick={() => saveUpdateWorkLog()}
+                                                            <button className="btn btn-soft-blue "
+                                                              onClick={() => {
+                                                                saveUpdateWorkLog();
+                                                              }}
+                                                              disabled={loadingSaveWorkLog}
                                                             >
-                                                              Save
-                                                            </div>
+                                                              {loadingSaveWorkLog ? (
+                                                                <div style={{ width: "45px" }} className="d-flex align-items-center justify-content-center">
+                                                                  <HashLoader
+                                                                    size={20}
+                                                                    color={"white"}
+                                                                    loading={true}
+                                                                  />
+                                                                </div>
+                                                              ) : (
+                                                                "Save"
+                                                              )}
+                                                            </button>
+
                                                           </Col>
                                                         </Row>
                                                       </>
@@ -2418,6 +2602,7 @@ const ProjectDetailDesciption = () => {
                                   id="choices-single-categories"
                                   aria-label="Default select example"
                                   value={skill}
+                                  placeholder="Select skill of developer"
                                   onChange={setSkillValue}
                                   menuPosition={'fixed'}
                                 />
@@ -2434,6 +2619,7 @@ const ProjectDetailDesciption = () => {
                                   id="choices-single-categories"
                                   aria-label="Default select example"
                                   value={typeRequire}
+                                  placeholder="Select type of developer"
                                   onChange={setTypeValue}
                                   menuPosition={'fixed'}
                                   isClearable
@@ -2451,6 +2637,7 @@ const ProjectDetailDesciption = () => {
                                   name="choices-single-categories"
                                   id="choices-single-categories"
                                   aria-label="Default select example"
+                                  placeholder="Select level of developer"
                                   value={levelRequire}
                                   onChange={setLevelValue}
                                   menuPosition={'fixed'}
@@ -2467,6 +2654,7 @@ const ProjectDetailDesciption = () => {
                                   className="selectForm__inner"
                                   name="choices-single-categories"
                                   id="choices-single-categories"
+                                  placeholder="Select status of hiring request"
                                   aria-label="Default select example"
                                   value={status}
                                   onChange={setStatusValue}
@@ -2484,6 +2672,13 @@ const ProjectDetailDesciption = () => {
                         closeModal={closeModalCreateHiringRequest}
                         requestId={selectedHiringRequestInfo}>
                       </CreateHiringRequestPopup>
+
+                      <UpdateProjectPopup
+                        isModalOpen={isModalUpdateProjectOpen}
+                        closeModal={closeModalUpdateProject}
+                        projectId={selectedProjectInfo}>
+                      </UpdateProjectPopup>
+
                       <div>
                         {jobVacancyList.length > 0 ? (
                           <>

@@ -1,23 +1,23 @@
 import urlConstant from "../Common/urlConstant";
-import utils from "../utils/customAxios";
+import axiosLocalHost from "../utils/customAxios";
 
 const getReportList = async (PageIndex, PageSize) => {
   const serviceUrl = urlConstant.endpoint.report.getReportList
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
 const getReportType = async () => {
   const serviceUrl = urlConstant.endpoint.report.getReportType;
-  const response = await utils.axiosLocalHost.get(serviceUrl)
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl)
   return response
 }
 
 const createReport = async (developerId, projectId, reportTypeId, reportTitle, reportContent) => {
   const serviceUrl = urlConstant.endpoint.report.createReport;
-  const response = await utils.axiosLocalHost.post(serviceUrl, { developerId, projectId, reportTypeId, reportTitle, reportContent })
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, { developerId, projectId, reportTypeId, reportTitle, reportContent })
   return response
 }
 
@@ -26,13 +26,13 @@ const getReportById = async (reportId) => {
     "${reportId}",
     reportId
   );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
 const handleRelyReport = async (reportId, responseContent) => {
   const serviceUrl = urlConstant.endpoint.report.handleRelyReport;
-  const response = await utils.axiosLocalHost.post(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     reportId,
     responseContent,
   });
@@ -45,7 +45,7 @@ const handleConfirmReport = async (reportId) => {
     reportId
   );
 
-  const response = await utils.axiosLocalHost.put(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl);
   return response;
 };
 
@@ -57,7 +57,7 @@ const getReportListByCompanyIdAndPaging = async (companyId, PageIndex, PageSize,
     .replace("${Status}", status)
     .replace("${searchKeyString}", searchKeyString);
   console.log(serviceUrl)
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 

@@ -1713,6 +1713,7 @@ const ListAccountDeveloper = () => {
                     <input
                       type="file"
                       id="profile-img-file-input"
+                      accept=".jpg, .jpeg, .png"
                       onChange={handlePreviewAvatar}
                       style={{ display: "none" }}
                     />

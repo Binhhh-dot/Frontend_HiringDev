@@ -226,6 +226,7 @@ export default {
       importExcel: "/PayPeriod/ImportExcel/${projectId}",
       getPayPeriodDetailByProjectIdAndDate:
         "/PayPeriod/${projectId}?inputDate=${inputDate}",
+      createNewPayPeriod: "/PayPeriod",
     },
     paySlip: {
       getPaySlipByPayPeriodId: "PaySlip/ByPayPeriod/${payPeriodId}",

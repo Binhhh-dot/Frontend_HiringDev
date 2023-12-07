@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Card, Col, Input, Row, CardBody } from "reactstrap";
 
-import lightLogo from "../../assets/images/logo-light.png";
-import darkLogo from "../../assets/images/logo-dark.png";
+import lightLogo from "../../assets/images/we-hire-green.png";
+import darkLogo from "../../assets/images/we-hire-green.png";
 
 import signUpImage from "../../assets/images/auth/sign-up.png";
 import { Form } from "react-bootstrap";
