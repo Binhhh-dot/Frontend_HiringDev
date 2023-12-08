@@ -1,9 +1,9 @@
 import urlConstant from "../Common/urlConstant"
-import utils from "../utils/customAxios"
+import axiosLocalHost from "../utils/customAxios"
 
 const getAllSkill = async () => {
     const serviceUrl = urlConstant.endpoint.skill.getAll;
-    const response = await utils.axiosLocalHost.get(serviceUrl)
+    const response = await axiosLocalHost.normalRequest.get(serviceUrl)
     return response
 }
 
@@ -12,7 +12,7 @@ const createSkill = async (
     skillDescription,
 ) => {
     const serviceUrl = urlConstant.endpoint.skill.postSkill;
-    const response = await utils.axiosLocalHost.post(serviceUrl, {
+    const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
         skillName,
         skillDescription,
     });
@@ -27,7 +27,7 @@ const updateSkill = async (
 ) => {
     const serviceUrl =
         urlConstant.endpoint.skill.editSkill;
-    const response = await utils.axiosLocalHost.put(serviceUrl, {
+    const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
         skillId,
         skillName,
         skillDescription,
@@ -37,7 +37,7 @@ const updateSkill = async (
 };
 const deleteSkill = async (skillId) => {
     const serviceUrl = urlConstant.endpoint.skill.deleteSkill.replace("${skillId}", skillId);
-    const response = await utils.axiosLocalHost.delete(serviceUrl)
+    const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
     return response
 }
 

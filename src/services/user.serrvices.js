@@ -1,12 +1,12 @@
 import urlConstant from "../Common/urlConstant";
-import utils from "../utils/customAxios";
+import axiosLocalHost from "../utils/customAxios";
 
 const getUserById = async (userId) => {
   const serviceUrl = urlConstant.endpoint.user.getUserById.replace(
     "${userId}",
     userId
   );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -20,7 +20,7 @@ const updateUser = async (formData, userId) => {
       "Content-Type": "multipart/form-data",
     },
   };
-  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
 
   return response;
 };
@@ -29,13 +29,13 @@ const updateUser = async (formData, userId) => {
 //   const serviceUrl = urlConstant.endpoint.user.getStaff
 //     .replace("${PageIndex}", PageIndex)
 //     .replace("${PageSize}", PageSize);
-//   const response = await utils.axiosLocalHost.get(serviceUrl);
+//   const response = await axiosLocalHost.normalRequest.get(serviceUrl);
 //   return response;
 // };
 
 const getStaff = async () => {
   const serviceUrl = urlConstant.endpoint.user.getStaff;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -45,44 +45,44 @@ const getStaffPaging = async (PageIndex, PageSize) => {
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   console.log(fullUrl);
   return response;
 };
 
 const getStaff2 = async (PageIndex, pageSize) => {
   const serviceUrl = `/User/Staff?PageIndex=${PageIndex}&PageSize=${pageSize}`;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
 
-const getListManager = async() =>{
+const getListManager = async () => {
   const serviceUrl = urlConstant.endpoint.user.getListManager;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 }
 
-const getListStaff = async() => {
+const getListStaff = async () => {
   const serviceUrl = urlConstant.endpoint.user.getListStaff;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 }
 
-const getListHR = async() => {
+const getListHR = async () => {
   const serviceUrl = urlConstant.endpoint.user.getListHR;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 }
-const getListDeveloper = async() => {
+const getListDeveloper = async () => {
   const serviceUrl = urlConstant.endpoint.user.getListDeveloper;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 }
 
 const getStaffById = async (id) => {
   const serviceUrl = urlConstant.endpoint.user.getStaffById.replace("${id}", id);
-  const response = await utils.axiosLocalHost.get(serviceUrl)
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl)
 
   return response
 }
@@ -91,7 +91,7 @@ const getStaffById = async (id) => {
 
 const getHRById = async (id) => {
   const serviceUrl = urlConstant.endpoint.user.getHRById.replace("${id}", id);
-  const response = await utils.axiosLocalHost.get(serviceUrl)
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl)
 
   return response
 }
@@ -99,18 +99,18 @@ const getHRById = async (id) => {
 const updateHR = async (id, formData) => {
   const serviceUrl = urlConstant.endpoint.user.updateHR.replace("${id}", id);
   const config = {
-      headers: {
-          'Content-Type': 'multipart/form-data',
-      },
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
   }
-  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config)
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config)
 
   return response
 }
 
 const deleteHR = async (userId) => {
   const serviceUrl = urlConstant.endpoint.user.deleteHR.replace("${userId}", userId);
-  const response = await utils.axiosLocalHost.delete(serviceUrl)
+  const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
 
   return response
 }
@@ -126,7 +126,7 @@ const createHR = async (
 
 ) => {
   const serviceUrl = urlConstant.endpoint.user.createHR;
-  const response = await utils.axiosLocalHost.post(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     firstName,
     lastName,
     email,
@@ -141,14 +141,14 @@ const createHR = async (
 //Devloper
 const getDeveloperById = async (devId) => {
   const serviceUrl = urlConstant.endpoint.user.getDeveloperById.replace("${devId}", devId);
-  const response = await utils.axiosLocalHost.get(serviceUrl)
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl)
 
   return response
 }
 
 const deleteDeveloper = async (userId) => {
   const serviceUrl = urlConstant.endpoint.user.deleteDeveloper.replace("${userId}", userId);
-  const response = await utils.axiosLocalHost.delete(serviceUrl)
+  const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
 
   return response
 }
@@ -156,7 +156,7 @@ const deleteDeveloper = async (userId) => {
 //Manager
 const getManagerById = async (id) => {
   const serviceUrl = urlConstant.endpoint.user.getManagerById.replace("${id}", id);
-  const response = await utils.axiosLocalHost.get(serviceUrl)
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl)
 
   return response
 }
@@ -164,11 +164,11 @@ const getManagerById = async (id) => {
 const updateManager = async (id, formData) => {
   const serviceUrl = urlConstant.endpoint.user.updateManager.replace("${id}", id);
   const config = {
-      headers: {
-          'Content-Type': 'multipart/form-data',
-      },
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
   }
-  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config)
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config)
 
   return response
 }
@@ -183,7 +183,7 @@ const createManager = async (
 
 ) => {
   const serviceUrl = urlConstant.endpoint.user.createManager;
-  const response = await utils.axiosLocalHost.post(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     firstName,
     lastName,
     email,
@@ -197,7 +197,7 @@ const createManager = async (
 
 const deleteManager = async (userId) => {
   const serviceUrl = urlConstant.endpoint.user.deleteManager.replace("${userId}", userId);
-  const response = await utils.axiosLocalHost.delete(serviceUrl)
+  const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
 
   return response
 }
@@ -207,11 +207,11 @@ const deleteManager = async (userId) => {
 const updateStaff = async (id, formData) => {
   const serviceUrl = urlConstant.endpoint.user.updateStaff.replace("${id}", id);
   const config = {
-      headers: {
-          'Content-Type': 'multipart/form-data',
-      },
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
   }
-  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config)
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config)
 
   return response
 }
@@ -227,7 +227,7 @@ const createStaff = async (
 
 ) => {
   const serviceUrl = urlConstant.endpoint.user.createManager;
-  const response = await utils.axiosLocalHost.post(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     firstName,
     lastName,
     email,
@@ -241,7 +241,7 @@ const createStaff = async (
 
 const deleteStaff = async (userId) => {
   const serviceUrl = urlConstant.endpoint.user.deleteManager.replace("${userId}", userId);
-  const response = await utils.axiosLocalHost.delete(serviceUrl)
+  const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
 
   return response
 }

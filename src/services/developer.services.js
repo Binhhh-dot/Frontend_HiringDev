@@ -1,5 +1,5 @@
 import urlConstant from "../Common/urlConstant";
-import utils from "../utils/customAxios";
+import axiosLocalHost from "../utils/customAxios";
 
 const GetAllSelectedDevByHR = async (hiringRequestId) => {
   const serviceUrl =
@@ -7,7 +7,7 @@ const GetAllSelectedDevByHR = async (hiringRequestId) => {
       "${hiringRequestId}",
       hiringRequestId
     );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -17,13 +17,13 @@ const GetAllSelectedDevByHR = async (hiringRequestId) => {
 //       "${requestId}",
 //       requestId
 //     );
-//   const response = await utils.axiosLocalHost.get(serviceUrl);
+//   const response = await axiosLocalHost.normalRequest.get(serviceUrl);
 //   return response;
 // };
 
 const sendDevToHR = async (requestId, developerIds) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.sendDevToHR;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     developerIds,
   });
@@ -36,13 +36,13 @@ const sendDevToHR = async (requestId, developerIds) => {
 //   sendDevToHR,
 // };
 //     const serviceUrl = urlConstant.endpoint.selectingDeveloper.getAllSelectedDevByHR.replace("${hiringRequestId}", hiringRequestId);
-//     const response = await utils.axiosLocalHost.get(serviceUrl);
+//     const response = await axiosLocalHost.normalRequest.get(serviceUrl);
 //     return response;
 // };
 
 const approvalInterviewByHR = async (requestId, developerId, isApproved) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.approvalByHR;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     developerId,
     isApproved,
@@ -52,7 +52,7 @@ const approvalInterviewByHR = async (requestId, developerId, isApproved) => {
 
 const approvalOnboardingByHR = async (requestId, developerId, isApproved) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.onboarnding;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     developerId,
     isApproved,
@@ -65,7 +65,7 @@ const getListDevWaitingInterview = async (requestId, PageSize, PageIndex) => {
     .replace("${requestId}", requestId)
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -73,7 +73,7 @@ const rejectSelectedDev = async (requestId, developerId) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.rejectSelectedDev
     .replace("${requestId}", requestId)
     .replace("${developerId}", developerId);
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     developerId,
   });
@@ -83,7 +83,7 @@ const rejectSelectedDev = async (requestId, developerId) => {
 const appectDevToInterview = async (requestId, interviewId, devIds) => {
   const serviceUrl =
     urlConstant.endpoint.selectingDeveloper.accpectDevToInterview;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     interviewId,
     devIds,
@@ -96,7 +96,7 @@ const removeOutOfWaitingInterview = async (requestId, devIds) => {
     urlConstant.endpoint.selectingDeveloper.removeOutOfWaitingInterview
       .replace("${requestId}", requestId)
       .replace("${developerId}", devIds);
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     devIds,
   });
@@ -108,7 +108,7 @@ const getDeveloperDetailByDevId = async (devIds) => {
   const serviceUrl =
     urlConstant.endpoint.developer.getDeveloperDetailByDevId
       .replace("${developerId}", devIds);
-  const response = await utils.axiosLocalHost.get(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl, {
     devIds,
   });
   return response;
@@ -129,7 +129,7 @@ const CreateDeveloperAccount = async (
   skills
 ) => {
   const serviceUrl = urlConstant.endpoint.developer.createDeveloper;
-  const response = await utils.axiosLocalHost.post(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     firstName,
     lastName,
     email,
@@ -148,7 +148,7 @@ const CreateDeveloperAccount = async (
 
 const getDeveloperUnofficial = async () => {
   const serviceUrl = urlConstant.endpoint.developer.getDeveloperUnofficial;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -159,7 +159,7 @@ const getDeveloperUnofficialPaging = async (currentPage, PageSize) => {
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -171,7 +171,7 @@ const changeStatusDevUnofficialInTaskDetailForStaff = async (
   const serviceUrl =
     urlConstant.endpoint.developer
       .changeStatusDevUnofficialInTaskDetailForStaff;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     developerId,
     taskId,
     isApproved,
@@ -181,7 +181,7 @@ const changeStatusDevUnofficialInTaskDetailForStaff = async (
 
 // const sendDevToHRNew = async (requestId, developerIds) => {
 //   const serviceUrl = urlConstant.endpoint.selectingDeveloper.sendDevToHRNew;
-//   const response = await utils.axiosLocalHost.post(serviceUrl, {
+//   const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
 //     requestId,
 //     developerIds,
 //   });
@@ -193,7 +193,7 @@ const onbardingDeveloper = async (requestId, developerId) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.onboardDeveloper
     .replace("${requestId}", requestId)
     .replace("${developerId}", developerId);
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     developerId,
   });
@@ -208,7 +208,7 @@ const getListDeveloperOnboardByProjectId = async (projectId, status) => {
       projectId
     ) + values.join('');;
 
-  const response = await utils.axiosLocalHost.get(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl, {
     projectId,
   });
   return response;
@@ -225,7 +225,7 @@ const updateDeveloperByAdmin = async (developerId, formData) => {
       "Content-Type": "multipart/form-data",
     },
   };
-  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
   return response;
 };
 
@@ -236,7 +236,7 @@ const getDeveloperMatchingInManager = async (requestId) => {
       requestId
     );
 
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -245,7 +245,7 @@ const getDeveloperByDevId = async (devId) => {
     "${devId}",
     devId
   );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 

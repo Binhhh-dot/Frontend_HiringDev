@@ -1,5 +1,5 @@
 import urlConstant from "../Common/urlConstant";
-import utils from "../utils/customAxios";
+import axiosLocalHost from "../utils/customAxios";
 
 const createAssignTask = async (
   userId,
@@ -9,7 +9,7 @@ const createAssignTask = async (
   deadline
 ) => {
   const serviceUrl = urlConstant.endpoint.assignTask.createAssignTask;
-  const response = await utils.axiosLocalHost.post(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     userId,
     devIds,
     taskTitle,
@@ -25,13 +25,13 @@ const getAssignTaskDetail = async (taskId) => {
       "${taskId}",
       taskId
     );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 //-----------------------------------------------------------------------------------------
 const getAllAssignTaskForManager = async () => {
   const serviceUrl = urlConstant.endpoint.assignTask.getAllAssignTaskForManager;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -43,13 +43,13 @@ const getPagingAssignTaskForManager = async (PageIndex, PageSize) => {
       .replace("${PageIndex}", PageIndex)
       .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 //----------------------------------------------------------------------------------------
 const getAllAssignTaskForStaff = async () => {
   const serviceUrl = urlConstant.endpoint.assignTask.getAllAssignTaskForStaff;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -66,7 +66,7 @@ const getPagingAssignTaskForStaffWithId = async (
       .replace("${PageIndex}", PageIndex)
       .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -77,7 +77,7 @@ const handleCompleteTask = async (taskId) => {
     "${taskId}",
     taskId
   );
-  const response = await utils.axiosLocalHost.put(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl);
   return response;
 };
 
@@ -85,7 +85,7 @@ const handleCompleteTask = async (taskId) => {
 
 const handleApproveAssignTask = async (taskId, rejectionReason, isApproval) => {
   const serviceUrl = urlConstant.endpoint.assignTask.handleApproveAssignTask;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     taskId,
     rejectionReason,
     isApproval,

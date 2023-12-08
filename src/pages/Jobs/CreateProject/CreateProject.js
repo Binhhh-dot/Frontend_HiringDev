@@ -14,27 +14,14 @@ import scheduleTypeService from "../../../services/scheduleType";
 import employmentTypeServices from "../../../services/employmentType.services";
 import { Editor } from "@tinymce/tinymce-react";
 import companyServices from "../../../services/company.services";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import projectTypeServices from "../../../services/projectType.services";
 import backgroundImage from "../../../assets/images/logo/Frame 1.png";
 import projectServices from "../../../services/project.services";
 
 const CreateProject = () => {
   document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
-  const notify = () => {
-    toast.info(' Wow so easy!', {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });;
-  }
-
   let hiringRequestSaved;
   const location = useLocation();
   const [options, setOptions] = useState([]);
@@ -70,19 +57,24 @@ const CreateProject = () => {
   const [avatar2, setAvatar2] = useState();
   const [avatar, setAvatar] = useState();
   const [userImage3, setUserImage3] = useState(null);
-  const [companyNameFormCreateCompany, setCompanyNameFormCreateCompany] = useState(null);
+  const [companyNameFormCreateCompany, setCompanyNameFormCreateCompany] =
+    useState(null);
   const [emailFormCreateCompany, setEmailFormCreateCompany] = useState(null);
-  const [companyPhoneNumberFormCreateCompany, setCompanyPhoneNumberFormCreateCompany] = useState(null);
-  const [addressFormCreateCompany, setAddressFormCreateCompany] = useState(null);
-  const [minDate, setMinDate] = useState('');
-  const [maxDate, setMaxDate] = useState('');
-  const [minDateEndDay, setMinDateEndDay] = useState('');
+  const [
+    companyPhoneNumberFormCreateCompany,
+    setCompanyPhoneNumberFormCreateCompany,
+  ] = useState(null);
+  const [addressFormCreateCompany, setAddressFormCreateCompany] =
+    useState(null);
+  const [minDate, setMinDate] = useState("");
+  const [maxDate, setMaxDate] = useState("");
+  const [minDateEndDay, setMinDateEndDay] = useState("");
   const today = new Date();
   const today2 = new Date();
   today.setDate(today.getDate() + 10);
   today2.setDate(today2.getDate() + 40);
-  const tomorrow = today.toISOString().split('T')[0];
-  const _30DayLater = today2.toISOString().split('T')[0];
+  const tomorrow = today.toISOString().split("T")[0];
+  const _30DayLater = today2.toISOString().split("T")[0];
 
   const [projectNameError, setProjectNameError] = useState(null);
   const [startDateError, setStartDateError] = useState(null);
@@ -90,10 +82,6 @@ const CreateProject = () => {
   const [projectTypeError, setProjectTypeError] = useState(null);
   const [jobDescriptionError, setJobDescriptionError] = useState(null);
 
-  useState(() => {
-    // setMinDateEndDay(_30DayLater);
-    // Thiết lập giá trị minDate thành ngày kế tiếp
-  }, []);
 
   const openModal = () => {
     setModal(!modal);
@@ -120,22 +108,11 @@ const CreateProject = () => {
     setAddressFormCreateCompany(newValue);
   };
 
-  const handleChange = (selected) => {
-    setSelectedOptions(selected);
-  };
   const handleChange2 = (selected) => {
     console.log(selected);
     setSelectedOptions2(selected);
   };
-  const handleChange3 = (selected) => {
-    setSelectedOptions3(selected);
-  };
-  const handleChange4 = (selected) => {
-    setSelectedOptions4(selected);
-  };
-  const handleChange5 = (selected) => {
-    setSelectedOptions5(selected);
-  };
+
   const navigate = useNavigate();
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -146,39 +123,39 @@ const CreateProject = () => {
     }
   });
 
-
   const createCompany = async () => {
     const formData = new FormData();
-    const userId = localStorage.getItem('userId');
-    formData.append('companyName', companyNameFormCreateCompany);
-    formData.append('companyEmail', emailFormCreateCompany);
-    formData.append('phoneNumber', companyPhoneNumberFormCreateCompany);
-    formData.append('address', addressFormCreateCompany);
-    formData.append('country', selectedCountry);
-    formData.append('userId', userId);
-    formData.append('file', avatar2);
+    const userId = localStorage.getItem("userId");
+    formData.append("companyName", companyNameFormCreateCompany);
+    formData.append("companyEmail", emailFormCreateCompany);
+    formData.append("phoneNumber", companyPhoneNumberFormCreateCompany);
+    formData.append("address", addressFormCreateCompany);
+    formData.append("country", selectedCountry);
+    formData.append("userId", userId);
+    formData.append("file", avatar2);
 
     try {
       // Make API request
       const response = await companyServices.createCompany(formData);
 
       // Handle the response (you can show a success message or redirect to another page)
-      console.log('API Response:', response.data);
-      const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+      console.log("API Response:", response.data);
+      const responseUser = await axios.get(
+        `https://wehireapi.azurewebsites.net/api/User/${userId}`
+      );
       const userData = responseUser.data;
-      localStorage.setItem('companyId', userData.data.companyId);
-      console.log("thanh cong roi yeahh")
+      localStorage.setItem("companyId", userData.data.companyId);
+      console.log("thanh cong roi yeahh");
     } catch (error) {
       // Handle errors (show an error message or log the error)
-      console.error('Error creating company:', error);
+      console.error("Error creating company:", error);
       console.log(error.response.data);
     }
   };
 
-
   useEffect(() => {
-    console.log(minDate)
-    console.log(minDateEndDay)
+    console.log(minDate);
+    console.log(minDateEndDay);
     fetch(
       "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4"
     )
@@ -221,41 +198,10 @@ const CreateProject = () => {
         const userId = localStorage.getItem("userId");
         const companyId = localStorage.getItem("companyId");
         if (userId && companyId == "null") {
-
           openModal2();
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
-      }
-
-      try {
-        const requestIdParam = location.state.requestId;
-        console.log(requestIdParam);
-        const response =
-          await hiringRequestService.getHiringRequestDetailInCompany(
-            requestIdParam
-          );
-        console.log(response)
-        hiringRequestSaved = response.data.data;
-        document.getElementById("job-title").value =
-          hiringRequestSaved.jobTitle;
-        document.getElementById("number-dev").value =
-          hiringRequestSaved.numberOfDev;
-        document.getElementById("budget").value =
-          hiringRequestSaved.salaryPerDev;
-        console.log(hiringRequestSaved.salaryPerDev)
-        localStorage.setItem("requestId", hiringRequestSaved.requestId);
-        const formattedDuration = hiringRequestSaved.duration.split("T")[0];
-        const editor = window.tinymce.get("description"); // Giả sử 'description' là id của Editor
-        if (editor) {
-          editor.setContent(hiringRequestSaved.jobDescription);
-        }
-
-        // Đặt giá trị cho input duration
-        document.getElementById("duration").value = formattedDuration;
-
-      } catch (error) {
-        console.error("Error:", error);
       }
 
       try {
@@ -309,26 +255,23 @@ const CreateProject = () => {
         if (!document.getElementById("start-date").value) {
           setStartDateError("Enter start date of project");
           check = false;
-
         } else {
           setStartDateError(null);
         }
         if (!document.getElementById("end-date").value) {
           setEndDateError("Enter end date of project");
           check = false;
-
         } else {
           setEndDateError(null);
         }
         if (!selectedOptions2.value) {
-          setProjectTypeError("Select project type")
+          setProjectTypeError("Select project type");
           check = false;
-
         } else {
           setProjectTypeError(null);
         }
         if (!value) {
-          setJobDescriptionError("Enter job description")
+          setJobDescriptionError("Enter job description");
           check = false;
         } else {
           setJobDescriptionError(null);
@@ -341,40 +284,37 @@ const CreateProject = () => {
             const endDate = document.getElementById("end-date").value;
             const projectTypeRequireId = selectedOptions2.value;
             const formData = new FormData();
-            formData.append('companyId', companyIdErr);
-            formData.append('projectName', projectName);
-            formData.append('projectTypeId', projectTypeRequireId);
-            formData.append('startDate', startDate);
-            formData.append('endDate', endDate);
-            formData.append('description', projectDescription);
-            const response = await projectServices.createProject(
-              formData
-            );
+            formData.append("companyId", companyIdErr);
+            formData.append("projectName", projectName);
+            formData.append("projectTypeId", projectTypeRequireId);
+            formData.append("startDate", startDate);
+            formData.append("endDate", endDate);
+            formData.append("description", projectDescription);
+            const response = await projectServices.createProject(formData);
             // }
             setLoading(false);
             setErrorMessage(null);
             navigate("/projectlist");
-            toast.success("Create project successfully!")
+            toast.success("Create project successfully!");
           } catch (error) {
             console.log(value);
             console.error("Error posting job:", error);
             setLoading(false);
             setSuccessMessage(null);
-            toast.error("Create project fail!")
+            toast.error("Create project fail!");
             // Handle error, show error message, etc.
           }
         } else {
           setLoading(false);
           setSuccessMessage(null);
-          toast.error("Create project fail!")
+          toast.error("Create project fail!");
         }
       }
     }
   };
 
-
   const handleChooseAvatar2 = () => {
-    const inputElement = document.getElementById('profile-img-file-input-2');
+    const inputElement = document.getElementById("profile-img-file-input-2");
     inputElement.click();
   };
   const handlePreviewAvatar2 = (e) => {
@@ -383,7 +323,6 @@ const CreateProject = () => {
       file.preview = URL.createObjectURL(file);
       setAvatar2(file);
     }
-
   };
 
   const setMinDateEndDayByJs = () => {
@@ -395,11 +334,11 @@ const CreateProject = () => {
       const minDay = startDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
 
       console.log(minDay);
-      setMinDateEndDay(minDay)
+      setMinDateEndDay(minDay);
     } else {
-      setMinDateEndDay(_30DayLater)
+      setMinDateEndDay(_30DayLater);
     }
-  }
+  };
 
   const setMinDateByJs = () => {
     if (document.getElementById("end-date").value) {
@@ -409,20 +348,12 @@ const CreateProject = () => {
 
       const minDay = endDate.toISOString().slice(0, 10); // Chuyển đổi về chuỗi ngày tháng (YYYY-MM-DD)
 
-      setMaxDate(minDay)
+      setMaxDate(minDay);
     } else {
       setMaxDate(null);
     }
-  }
-
-  const handlePreviewAvatar = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      file.preview = URL.createObjectURL(file);
-      setAvatar(file);
-    }
-
   };
+
   return (
     <React.Fragment>
       {loading && (
@@ -458,7 +389,9 @@ const CreateProject = () => {
                             required
                           ></input>
                           {projectNameError && (
-                            <p className="text-danger mt-2">{projectNameError}</p>
+                            <p className="text-danger mt-2">
+                              {projectNameError}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -474,12 +407,14 @@ const CreateProject = () => {
                               value={selectedOptions2}
                               onChange={handleChange2}
                               className="Select Select--level-highest"
-                              style={{ maxHeight: '2000px', overflowY: 'auto' }}
+                              style={{ maxHeight: "2000px", overflowY: "auto" }}
                             />
                           </div>
 
                           {projectTypeError && (
-                            <p className="text-danger mt-2">{projectTypeError}</p>
+                            <p className="text-danger mt-2">
+                              {projectTypeError}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -523,7 +458,6 @@ const CreateProject = () => {
                       </div>
                     </div>
 
-
                     <div class="row">
                       <div class="col-md-12">
                         <div class="form-group app-label mt-2">
@@ -536,10 +470,11 @@ const CreateProject = () => {
                               setValue(newValue);
                             }}
                             init={{
-                              plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                              plugins:
+                                "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
                               //   plugins:
                               //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
-                              // 
+                              //
                             }}
                           />
                           {jobDescriptionError && (
@@ -579,8 +514,6 @@ const CreateProject = () => {
                         </div>
                       )}
 
-
-
                       {/* Modal for create company */}
                       <Modal
                         isOpen={modal2}
@@ -606,11 +539,9 @@ const CreateProject = () => {
                               </div>
                               <Form action="#" className="auth-form">
                                 <div style={{ textAlign: "center" }}>
-
                                   <div className="mb-4 profile-user">
                                     {avatar2 ? (
                                       <img
-
                                         src={avatar2.preview}
                                         className="rounded-circle img-thumbnail profile-img"
                                         id="profile-img"
@@ -618,23 +549,25 @@ const CreateProject = () => {
                                       />
                                     ) : (
                                       <img
-                                        src={userImage3}  // Giá trị mặc định là "userImage2"
+                                        src={userImage3} // Giá trị mặc định là "userImage2"
                                         className="rounded-circle img-thumbnail profile-img"
                                         id="profile-img-2"
                                         alt=""
                                       />
                                     )}
                                     <div className="p-0 rounded-circle profile-photo-edit">
-                                      <label
-                                        className="profile-photo-edit avatar-xs"
-                                      >
-                                        <i className="uil uil-edit" onClick={handleChooseAvatar2}></i>
+                                      <label className="profile-photo-edit avatar-xs">
+                                        <i
+                                          className="uil uil-edit"
+                                          onClick={handleChooseAvatar2}
+                                        ></i>
                                       </label>
                                       <input
                                         type="file"
+                                        accept=".jpg, .jpeg, .png"
                                         id="profile-img-file-input-2"
                                         onChange={handlePreviewAvatar2}
-                                        style={{ display: 'none' }}
+                                        style={{ display: "none" }}
                                       />
                                     </div>
                                   </div>
@@ -699,7 +632,8 @@ const CreateProject = () => {
                                     styles={{
                                       control: (provided) => ({
                                         ...provided,
-                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        backgroundColor:
+                                          "rgba(255, 255, 255, 0.1)",
                                         border: "1px solid #ede8e8",
                                       }),
                                       singleValue: (provided) => ({

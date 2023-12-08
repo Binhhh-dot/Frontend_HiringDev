@@ -1,5 +1,5 @@
 import urlConstant from "../Common/urlConstant";
-import utils from "../utils/customAxios";
+import axiosLocalHost from "../utils/customAxios";
 
 const createCompany = async (formData) => {
   const serviceUrl = urlConstant.endpoint.company.createCompany;
@@ -8,7 +8,7 @@ const createCompany = async (formData) => {
       "Content-Type": "multipart/form-data",
     },
   };
-  const response = await utils.axiosLocalHost.post(
+  const response = await axiosLocalHost.normalRequest.post(
     serviceUrl,
     formData,
     config
@@ -27,7 +27,7 @@ const updateCompany = async (companyId, formData) => {
       "Content-Type": "multipart/form-data",
     },
   };
-  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
 
   return response;
 };
@@ -37,14 +37,14 @@ const getCompanyByCompanyId = async (companyId) => {
     "${companyId}",
     companyId
   );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
 
   return response;
 };
 
 const getCompany = async () => {
   const serviceUrl = urlConstant.endpoint.company.getCompany;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -54,7 +54,7 @@ const getCompanyAndPaging = async (PageIndex, PageSize) => {
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 

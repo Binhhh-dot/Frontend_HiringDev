@@ -1,9 +1,9 @@
 import urlConstant from "../Common/urlConstant"
-import utils from "../utils/customAxios"
+import axiosLocalHost from "../utils/customAxios";
 
 const login = async (email, password) => {
     const serviceUrl = urlConstant.endpoint.auth.login;
-    const response = await utils.axiosLocalHost.post(serviceUrl, {
+    const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
         email,
         password,
     })
@@ -12,7 +12,7 @@ const login = async (email, password) => {
 const signUp = async (formData) => {
     const serviceUrl = urlConstant.endpoint.auth.siginUp;
     try {
-        const response = await utils.axiosLocalHost.post(serviceUrl, formData);
+        const response = await axiosLocalHost.normalRequest.post(serviceUrl, formData);
         console.log("API Response:", response);
         return response;
     } catch (error) {
@@ -24,7 +24,7 @@ const signUp = async (formData) => {
 const revokeAccount = async (userId) => {
     const serviceUrl = urlConstant.endpoint.auth.revoke.replace("${userId}", userId);
     try {
-        const response = await utils.axiosLocalHost.delete(serviceUrl, userId);
+        const response = await axiosLocalHost.normalRequest.delete(serviceUrl, userId);
         console.log("API Response:", response);
         return response;
     } catch (error) {

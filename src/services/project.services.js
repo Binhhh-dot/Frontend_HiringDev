@@ -1,9 +1,9 @@
 import urlConstant from "../Common/urlConstant";
-import utils from "../utils/customAxios";
+import axiosLocalHost from "../utils/customAxios";
 
 const getProjectList = async () => {
   const serviceUrl = urlConstant.endpoint.project.getProjectList;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -13,7 +13,7 @@ const getProjectListPaging = async (PageIndex, PageSize) => {
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -24,7 +24,7 @@ const createProject = async (formData) => {
       "Content-Type": "multipart/form-data",
     },
   };
-  const response = await utils.axiosLocalHost.post(
+  const response = await axiosLocalHost.normalRequest.post(
     serviceUrl,
     formData,
     config
@@ -38,7 +38,7 @@ const getAllProjectByCompanyId = async (companyId) => {
       "${companyId}",
       companyId
     );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -48,7 +48,7 @@ const getProjectDetailByProjectId = async (projectId) => {
       "${projectId}",
       projectId
     );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -56,36 +56,36 @@ const getDeveloperByProject = async (projectId, status) => {
   const serviceUrl = urlConstant.endpoint.project.getDeveloperByProject
     .replace("${projectId}", projectId)
     .replace("${status}", status);
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
 const updateProject = async (
   projectId,
-  ProjectId,
-  ProjectTypeId,
-  ProjectName,
-  Description,
-  StartDate,
-  EndDate
+  formData
 ) => {
   const serviceUrl = urlConstant.endpoint.project.updateProject.replace(
     "${projectId}",
     projectId
   );
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
-    ProjectId,
-    ProjectTypeId,
-    ProjectName,
-    Description,
-    StartDate,
-    EndDate,
-  });
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
 
   return response;
 };
 
-const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize, ProjectTypeId, inputSearch, status) => {
+const getAllProjectByCompanyIdAndPaging = async (
+  companyId,
+  PageIndex,
+  PageSize,
+  ProjectTypeId,
+  inputSearch,
+  status
+) => {
   const serviceUrl =
     urlConstant.endpoint.project.getAllProjectByCompanyIdAndPaging
       .replace("${companyId}", companyId)
@@ -96,7 +96,7 @@ const getAllProjectByCompanyIdAndPaging = async (companyId, PageIndex, PageSize,
       .replace("${Status}", status)
     ;
   console.log(serviceUrl)
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -112,7 +112,7 @@ const updateImage = async (formData, projectId) => {
     },
   };
   console.log(serviceUrl)
-  const response = await utils.axiosLocalHost.put(serviceUrl, formData, config);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
   console.log(response)
   return response;
 };

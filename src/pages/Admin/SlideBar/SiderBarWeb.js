@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import logo from "../../../assets/images/we-hire-green.png";
 import {
   PieChartOutlined,
   DesktopOutlined,
@@ -166,11 +167,16 @@ const SiderBarWeb = ({ choose }) => {
       width={250}
       style={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}
     >
-      <div className="d-flex mt-3 justify-content-between ms-3 me-3">
+      <div className="d-flex mt-3 justify-content-between ms-3 me-3 align-items-center">
         {showWeHire && (
-          <h2 className="mb-0" id="wehire">
-            WeHire
-          </h2>
+          <div className="mb-0" id="wehire">
+            <img
+              src={logo}
+              alt=""
+              className="logo-light"
+              style={{ objectFit: "cover", width: "170px" }}
+            />
+          </div>
         )}
         {isLeftIcon ? (
           <div

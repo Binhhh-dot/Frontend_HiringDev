@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { HashLoader } from "react-spinners";
 import { requestPermission } from "../../utils/firebase";
 import notificationServices from "../../services/notification.services";
+import userSerrvices from "../../services/user.serrvices";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -46,6 +47,7 @@ const SignIn = () => {
     let expiration;
     let accessToken;
     let refreshToken;
+    let accessTokenExp;
     try {
       const response = await loginService.login(email, password);
       // Check if the API call was successful
@@ -57,6 +59,7 @@ const SignIn = () => {
         expiration = response.data.data.expiration;
         accessToken = response.data.data.accessToken;
         refreshToken = response.data.data.refreshToken;
+        accessTokenExp = response.data.data.accessTokenExp;
         if (userId) {
           // Save user ID to local storage
           localStorage.setItem("userId", userId);
@@ -64,7 +67,39 @@ const SignIn = () => {
           localStorage.setItem("expiration", expiration)
           localStorage.setItem("accessToken", accessToken)
           localStorage.setItem("refreshToken", refreshToken)
+          localStorage.setItem("accessTokenExp", accessTokenExp)
           // Navigate to "/layout3"
+        }
+        const responseUser = await userSerrvices.getUserById(userId);;
+        const userData = responseUser.data;
+        console.log(userData.data.companyId)
+        console.log(role)
+        if (role == "Manager") {
+          navigate("/manager")
+        } else {
+          if (userData.data.companyId != null) {
+            localStorage.setItem('companyId', userData.data.companyId);
+            setLoadingSignIn(false);
+            toast.success('Login successfully!');
+            navigate("/home")
+            requestPermission((token) => {
+              console.log(token)
+              sendDeviceToken(token);
+            });
+          } else {
+            navigate("/signcompany")
+            setLoadingSignIn(false);
+            toast.info("Let's create company information!", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
         }
       }
     } catch (error) {
@@ -81,37 +116,6 @@ const SignIn = () => {
       setLoadingSignIn(false);
     }
 
-    const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
-    const userData = responseUser.data;
-    console.log(userData.data.companyId)
-    console.log(role)
-    if (role == "Manager") {
-      navigate("/manager")
-    } else {
-      if (userData.data.companyId != null) {
-        localStorage.setItem('companyId', userData.data.companyId);
-        setLoadingSignIn(false);
-        toast.success('Login successfully!');
-        navigate("/home")
-        requestPermission((token) => {
-          console.log(token)
-          sendDeviceToken(token);
-        });
-      } else {
-        navigate("/signcompany")
-        setLoadingSignIn(false);
-        toast.info("Let's create company information!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-    }
   };
 
 

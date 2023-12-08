@@ -1,5 +1,5 @@
 import urlConstant from "../Common/urlConstant";
-import utils from "../utils/customAxios";
+import axiosLocalHost from "../utils/customAxios";
 
 const createHiringRequest = async (
   companyId,
@@ -16,7 +16,7 @@ const createHiringRequest = async (
   employmentTypeId
 ) => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.createHiringRequest;
-  const response = await utils.axiosLocalHost.post(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     companyId,
     projectId,
     jobTitle,
@@ -35,7 +35,6 @@ const createHiringRequest = async (
 
 const updateHiringRequest = async (
   requestId,
-  projectId,
   jobTitle,
   jobDescription,
   numberOfDev,
@@ -52,9 +51,8 @@ const updateHiringRequest = async (
       "${requestId}",
       requestId
     );
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
-    projectId,
     jobTitle,
     jobDescription,
     numberOfDev,
@@ -71,13 +69,13 @@ const updateHiringRequest = async (
 
 const getAllHiringRequest = async () => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.getAll;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
 const getAllStatusHiringRequest = async () => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.getAllStatus;
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   console.log(serviceUrl);
   return response;
 };
@@ -88,7 +86,7 @@ const getHiringRequestAndPaging = async (currentPage, pageSize) => {
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", pageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -125,7 +123,7 @@ const getAllHiringRequestByJobTitleAndSkill = async (
     const fullUrls = skillUrls.join("&");
     fullUrl += fullUrls;
   }
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   console.log(fullUrl);
   return response;
 };
@@ -138,7 +136,7 @@ const getHiringRequestDetailInManager = async (hiringRequestId) => {
       hiringRequestId
     );
 
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
 
   return response;
 };
@@ -150,7 +148,7 @@ const getHiringRequestDetailInCompany = async (hiringRequestId) => {
       hiringRequestId
     );
 
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 //-----------------------------------------------------------------------------------------
@@ -166,7 +164,7 @@ const getHiringRequestSaved = async (companyId) => {
       0
     );
   const fullUrl = serviceUrl + statusUrls;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -177,14 +175,14 @@ const getHiringRequestSaved = async (companyId) => {
 //       devMatchingId
 //     );
 
-//   const response = await utils.axiosLocalHost.get(serviceUrl);
+//   const response = await axiosLocalHost.get(serviceUrl);
 //   return response;
 // };
 
 const sendHiringRequestToDevMatching = async (requestId, developerIds) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.sendHiringRequestToDevMatching;
-  const response = await utils.axiosLocalHost.post(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     requestId,
     developerIds,
   });
@@ -197,7 +195,7 @@ const getDevMatchingHasBeenSent = async (requestId) => {
       "${requestId}",
       requestId
     );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -207,7 +205,7 @@ const getDeveloperDetailInManager = async (devId) => {
       "${devId}",
       devId
     );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -231,7 +229,7 @@ const getHiringRequestByidAndPaging = async (
       status
     );
   const fullUrl = serviceUrl + pagingUrl + statusUrls;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -282,7 +280,7 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   //       );
   //     fullUrl += statusUrls;
   //   }
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   console.log(fullUrl);
   return response;
 };
@@ -294,7 +292,7 @@ const approvedHirringRequestStatus = async (
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.approvedHirringRequestStatus;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     rejectionReason,
     isApproved,
@@ -309,7 +307,7 @@ const cancelHirringRequestStatus = async (
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.cancelHirringRequestStatus;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     rejectionReason,
     isApproved,
@@ -325,7 +323,7 @@ const cancelHirringRequestStatusAfter = async (
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.cancelHirringRequestStatusAfter;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     rejectionReason,
     isCompanyPartner,
@@ -347,7 +345,7 @@ const getHiringRequestByProjectIdAndPaging = async (
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", pageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await utils.axiosLocalHost.get(fullUrl);
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -357,7 +355,7 @@ const getHiringRequestByProjectId = async (projectId) => {
       "${projectId}",
       projectId
     );
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -376,7 +374,7 @@ const getAllHiringRequestByProjectIdAndPaging = async (
       .replace("${Status}", statusSearch)
     + values.join('');
   console.log(serviceUrl)
-  const response = await utils.axiosLocalHost.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 }
 
@@ -388,7 +386,7 @@ const closeHiringRequest = async (
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.closeHirringRequestStatus;
-  const response = await utils.axiosLocalHost.put(serviceUrl, {
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
     requestId,
     rejectionReason,
     isCompanyPartner,

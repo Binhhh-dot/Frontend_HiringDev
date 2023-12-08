@@ -1,28 +1,28 @@
 import urlConstant from "../Common/urlConstant"
-import utils from "../utils/customAxios"
+import axiosLocalHost from "../utils/customAxios";
 
 
 const createJobPosition = async (projectId, positionName) => {
     const serviceUrl = urlConstant.endpoint.jobPosition.createJobPosition;
-    const response = await utils.axiosLocalHost.post(serviceUrl, { projectId, positionName })
+    const response = await axiosLocalHost.normalRequest.post(serviceUrl, { projectId, positionName })
     return response
 }
 
 const getJobPostionByProjectId = async (projectId) => {
     const serviceUrl = urlConstant.endpoint.jobPosition.getJobPositionByProjectId.replace("${projectId}", projectId);
-    const response = await utils.axiosLocalHost.get(serviceUrl, projectId)
+    const response = await axiosLocalHost.normalRequest.get(serviceUrl, projectId)
     return response
 }
 
 const getJobPositionsWithHiringRequest = async (projectId) => {
     const serviceUrl = urlConstant.endpoint.jobPosition.getJobPositionsWithHiringRequest.replace("${projectId}", projectId);
-    const response = await utils.axiosLocalHost.get(serviceUrl, projectId)
+    const response = await axiosLocalHost.normalRequest.get(serviceUrl, projectId)
     return response
 }
 
 const deleteJobPosition = async (jobPositionId) => {
     const serviceUrl = urlConstant.endpoint.jobPosition.deleteJobPosition.replace("${jobPosition}", jobPositionId);
-    const response = await utils.axiosLocalHost.delete(serviceUrl, jobPositionId)
+    const response = await axiosLocalHost.normalRequest.delete(serviceUrl, jobPositionId)
     return response
 }
 
