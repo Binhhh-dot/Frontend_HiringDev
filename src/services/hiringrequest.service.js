@@ -394,6 +394,28 @@ const closeHiringRequest = async (
   return response;
 };
 
+const cloneHiringRequest = async (
+  requestId
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.cloneHiringRequest.replace("${requestId}", requestId);
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
+    requestId,
+  });
+  return response;
+};
+
+const extendDuration = async (
+  requestId, newDuration
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.extendDuration;
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    requestId, newDuration
+  });
+  return response;
+};
+
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -416,5 +438,7 @@ export default {
   getHiringRequestByProjectIdAndPaging,
   getHiringRequestByProjectId,
   getAllHiringRequestByProjectIdAndPaging,
-  closeHiringRequest
+  closeHiringRequest,
+  cloneHiringRequest,
+  extendDuration
 };

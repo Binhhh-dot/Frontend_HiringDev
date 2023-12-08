@@ -34,7 +34,7 @@ export const requestPermission = async (callback) => {
         if (permission === 'granted') {
             console.log("Notification User Permission Granted");
             getToken(messaging,
-                { vapidKey: 'BEaFCuP4AjqUdyvmqAiLwiwR-1Xvau3BrBBYpmcgBLWu9ayYUN_KBdwL4IIPNqKViB41uJZyImy6fmDmOb8q1rI' })
+                { vapidKey: 'BDKHLHFQ1ThY1oiED9MkNHxrXdLjD_sRVOXkjwL_EK4ras1rVkjYeVOP-swX8KtytrWAH_GnexnysOoNPtqPG68' })
                 .then((currentToken) => {
                     if (currentToken) {
                         callback(currentToken);

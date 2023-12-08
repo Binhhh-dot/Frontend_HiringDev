@@ -76,6 +76,10 @@ const SignIn = () => {
         console.log(role)
         if (role == "Manager") {
           navigate("/manager")
+          requestPermission((token) => {
+            console.log(token)
+            sendDeviceToken(token);
+          });
         } else {
           if (userData.data.companyId != null) {
             localStorage.setItem('companyId', userData.data.companyId);

@@ -61,11 +61,24 @@ const deleteUserDevice = async (userDeviceId) => {
     }
 }
 
+const getUserDeviceId = async (userId) => {
+    const serviceUrl = urlConstant.endpoint.notification.getUserDeviceId.replace("${userId}", userId);
+    try {
+        const response = await axiosLocalHost.normalRequest.get(serviceUrl, { userId });
+        console.log(response)
+        return response;
+    } catch (error) {
+        throw error; // Nếu bạn muốn chuyển tiếp lỗi cho phía gọi hàm
+    }
+}
+
+
 export default {
     postUserDevice,
     getListNotificationByUserId,
     getCountNotificationByUserId,
     readNotification,
     unNewNotification,
-    deleteUserDevice
+    deleteUserDevice,
+    getUserDeviceId
 }

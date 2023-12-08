@@ -26,6 +26,7 @@ import { Modal as AntdModal, Button as AntdButton } from "antd";
 import { Container } from "reactstrap";
 import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetailInCompany";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
+import ExtendDurationHiringRequestPopup from "../CreateHiringRequest/ExtendDurationHiringRequestPopup";
 import { HashLoader } from "react-spinners";
 import { Link, useLocation } from "react-router-dom";
 import hiringrequestService from "../../../services/hiringrequest.service";
@@ -125,6 +126,8 @@ const HiringRequestDetails = () => {
   const tomorrow = today.toISOString().split('T')[0];
   const navigate = useNavigate();
   const [isHaveReason, setIsHaveReason] = useState(false);
+  const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
+  const [selectedHiringRequestInfo, setSelectedHiringRequestInfo] = useState({});
 
   useState(() => {
     setMinDate(tomorrow); // Thiết lập giá trị minDate thành ngày kế tiếp
@@ -234,6 +237,129 @@ const HiringRequestDetails = () => {
         </div>
       ),
       key: '1',
+    },
+    {
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => cloneHiringRequest()}
+        >
+          Clone
+        </div>
+      ),
+      key: '2',
+    },
+
+    {
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => {
+            openModalCreateHiringrequest();
+          }}
+        >
+          Extend duration
+        </div>
+      ),
+      key: '3',
+    },
+
+  ]
+
+  const profileItems4 = [
+    {
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => {
+            AntdModal.confirm({
+              content: (
+                <div style={{ paddingRight: "20px" }}>
+                  <p>Please provide a reason for closing this hiring request:</p>
+                  <Input
+                    type="text"
+                    id="reasonCloseHiringRequest"
+                  />
+                </div>
+              ),
+              onOk() {
+                const reason = document.getElementById("reasonCloseHiringRequest").value.trim();
+                console.log(reason);
+                if (reason != "") {
+                  console.log(reason);
+                  // Thực hiện hành động khi người dùng nhập lý do và ấn OK ở đây
+                  closeHiringRequest(reason);
+                } else {
+                  toast.error("Please provide your reason close this hiring request")
+                  // Hiển thị thông báo yêu cầu người dùng nhập lý do
+                }
+              },
+              onCancel() {
+                console.log('Cancelled!');
+                // Thực hiện hành động khi người dùng hủy bỏ ở đây (nếu cần)
+              },
+              okButtonProps: {
+                style: { marginRight: '20px' },
+              },
+            });
+          }}
+        >
+          Close
+        </div>
+      ),
+      key: '1',
+    },
+    {
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => cloneHiringRequest()}
+        >
+          Clone
+        </div>
+      ),
+      key: '2',
+    },
+  ]
+
+  const profileItems5 = [
+    {
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => cloneHiringRequest()}
+        >
+          Clone
+        </div>
+      ),
+      key: '2',
+    },
+  ]
+
+  const profileItems6 = [
+    {
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => cloneHiringRequest()}
+        >
+          Clone
+        </div>
+      ),
+      key: '2',
+    },
+    {
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => {
+            openModalCreateHiringrequest();
+          }}
+        >
+          Extend duration
+        </div>
+      ),
+      key: '3',
     },
   ]
 
@@ -524,6 +650,12 @@ const HiringRequestDetails = () => {
     fetchJobVacancies();
     fetchListInterview();
   }, []);
+
+  useEffect(() => {
+    fetchHiringRequestDetailInCompany();
+    fetchJobVacancies();
+    fetchListInterview();
+  }, [isModalCreateOpen]);
 
   const handleInterviewCreation = async () => {
     setLoading(true);
@@ -1009,6 +1141,44 @@ const HiringRequestDetails = () => {
     }
   };
 
+  const extendDuration = async () => {
+    try {
+      setLoading(true);
+      const queryParams = new URLSearchParams(location.search);
+      const requestId = queryParams.get("Id");
+      const isCompanyPartner = true;
+      const response = await hiringrequestService.closeHiringRequest(requestId,
+
+        isCompanyPartner);
+      console.log(response)
+      setLoadListDeveloper(!loadListDeveloper);
+      setLoading(false);
+      toast.success("Close hiring request sucessfully")
+    } catch (error) {
+      setLoading(false);
+      toast.error("Close hiring request fail")
+      console.log(error)
+    }
+  };
+
+  const cloneHiringRequest = async () => {
+    try {
+      setLoading(true);
+      const queryParams = new URLSearchParams(location.search);
+      const requestId = queryParams.get("Id");
+      const response = await hiringrequestService.cloneHiringRequest(requestId);
+      setLoadListDeveloper(!loadListDeveloper);
+      setLoading(false);
+      const projectId = response.data.data.projectId;
+      toast.success("Clone hiring request sucessfully")
+      navigate("/projectdetailhr?Id=" + projectId);
+    } catch (error) {
+      setLoading(false);
+      toast.error("Clone hiring request fail")
+      console.log(error)
+    }
+  };
+
 
 
   const cancelInterview = async (interviewId) => {
@@ -1055,6 +1225,17 @@ const HiringRequestDetails = () => {
     }
   };
 
+  const closeModalCreateHiringRequest = () => {
+    setSelectedHiringRequestInfo(null);
+    setIsModalCreateOpen(false);
+  };
+
+  const openModalCreateHiringrequest = () => {
+    const queryParams = new URLSearchParams(location.search);
+    const requestId = queryParams.get("Id");
+    setSelectedHiringRequestInfo(requestId);
+    setIsModalCreateOpen(true);
+  };
 
 
   return (
@@ -1065,7 +1246,13 @@ const HiringRequestDetails = () => {
         </div>
       )}
       <section class="section">
-        <div class="row  justify-content-center " style={{ margin: "0px" }}>
+
+        <div class="row justify-content-center " style={{ margin: "0px" }}>
+          <div className="col-lg-11" style={{ paddingLeft: "0px", paddingRight: "12px" }}>
+            <div className=" alert alert-danger mt-2" role="alert">
+              bi huy roi
+            </div>
+          </div>
           <div class="col-lg-8 " style={{ padding: "0px" }}>
             <Card className="job-detail overflow-hidden" style={{ minHeight: "807px" }}>
               <div>
@@ -1125,11 +1312,78 @@ const HiringRequestDetails = () => {
                           </span>{" "}
                         </li>
                       </ul>
-                      <DropdownAntd trigger={['click']} menu={{ items: profileItems3 }}>
-                        <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
-                          <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
-                        </a>
-                      </DropdownAntd>
+                      {hiringRequestDetail.statusString == "Expired" && (
+                        <>
+                          <DropdownAntd trigger={['click']} menu={{ items: profileItems6 }}>
+                            <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                              <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                            </a>
+                          </DropdownAntd>
+                        </>
+                      )}
+                      {hiringRequestDetail.statusString == "Rejected" && (
+                        <>
+                          <DropdownAntd trigger={['click']} menu={{ items: profileItems5 }}>
+                            <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                              <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                            </a>
+                          </DropdownAntd>
+                        </>
+                      )}
+                      {hiringRequestDetail.statusString == "Waiting Approval" && (
+                        <>
+                          <DropdownAntd trigger={['click']} menu={{ items: profileItems4 }}>
+                            <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                              <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                            </a>
+                          </DropdownAntd>
+                        </>
+                      )}
+                      {hiringRequestDetail.statusString == "In Progress" && (
+                        <>
+                          <DropdownAntd trigger={['click']} menu={{ items: profileItems4 }}>
+                            <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                              <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                            </a>
+                          </DropdownAntd>
+                        </>
+                      )}
+                      {hiringRequestDetail.statusString == "Cancelled" && (
+                        <>
+                          <DropdownAntd trigger={['click']} menu={{ items: profileItems5 }}>
+                            <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                              <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                            </a>
+                          </DropdownAntd>
+                        </>
+                      )}
+                      {hiringRequestDetail.statusString == "Finished" && (
+                        <>
+                          <DropdownAntd trigger={['click']} menu={{ items: profileItems5 }}>
+                            <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                              <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                            </a>
+                          </DropdownAntd>
+                        </>
+                      )}
+                      {hiringRequestDetail.statusString == "Completed" && (
+                        <>
+                          <DropdownAntd trigger={['click']} menu={{ items: profileItems5 }}>
+                            <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                              <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                            </a>
+                          </DropdownAntd>
+                        </>
+                      )}
+                      {hiringRequestDetail.statusString == "Closed" && (
+                        <>
+                          <DropdownAntd trigger={['click']} menu={{ items: profileItems5 }}>
+                            <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                              <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                            </a>
+                          </DropdownAntd>
+                        </>
+                      )}
                     </Col>
                   </Row>
                 </div>
@@ -1734,7 +1988,7 @@ const HiringRequestDetails = () => {
                 <ul className="list-unstyled mt-4 mb-0">
                   <li>
                     <div className="d-flex mt-4">
-                      <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                      <i className="uil uil-parking-square icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Project </h6>
                         <p className="text-muted mb-0" id="projectNameOverview"></p>
@@ -1743,7 +1997,7 @@ const HiringRequestDetails = () => {
                   </li>
                   <li>
                     <div className="d-flex mt-4">
-                      <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                      <i className="uil uil-list-ul icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Project type </h6>
                         <p className="text-muted mb-0" id="projectTypeOverview"></p>
@@ -1752,7 +2006,7 @@ const HiringRequestDetails = () => {
                   </li>
                   <li>
                     <div className="d-flex mt-4">
-                      <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                      <i className="uil uil-windsock icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Start date of project </h6>
                         <p className="text-muted mb-0" id="startDayOverview"></p>
@@ -1760,7 +2014,7 @@ const HiringRequestDetails = () => {
                     </div>
                   </li><li>
                     <div className="d-flex mt-4">
-                      <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                      <i className="uil uil-times-circle icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">End date of project </h6>
                         <p className="text-muted mb-0" id="endDayOverview"></p>
@@ -1776,7 +2030,7 @@ const HiringRequestDetails = () => {
                 <ul className="list-unstyled mt-4 mb-0">
                   <li>
                     <div className="d-flex mt-4">
-                      <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
+                      <i className="uil uil-window-maximize icon bg-primary-subtle text-primary"></i>
                       <div className="ms-3">
                         <h6 className="fs-14 mb-0">Hiring Request Title</h6>
                         <p className="text-muted mb-0">
@@ -1831,8 +2085,15 @@ const HiringRequestDetails = () => {
                 </ul>
               </CardBody>
             </Card>
-
+            <ExtendDurationHiringRequestPopup
+              isModalOpen={isModalCreateOpen}
+              closeModal={closeModalCreateHiringRequest}
+              requestId={selectedHiringRequestInfo}>
+            </ExtendDurationHiringRequestPopup>
           </div>
+
+
+
           <div class="col-lg-11 p-0">
             <Card
               className="profile-content-page mt-4 mt-lg-0"
@@ -1922,27 +2183,30 @@ const HiringRequestDetails = () => {
                                             "Contract Failed"
                                             ? "badge bg-danger text-light mb-2"
                                             : candidategridDetailsNew.selectedDevStatus ===
-                                              "Under Consideration"
-                                              ? "badge bg-warning text-light mb-2"
+                                              "Working"
+                                              ? "badge bg-blue text-light mb-2"
                                               : candidategridDetailsNew.selectedDevStatus ===
-                                                "Contract Processing"
+                                                "Under Consideration"
                                                 ? "badge bg-warning text-light mb-2"
                                                 : candidategridDetailsNew.selectedDevStatus ===
-                                                  "Interview Scheduled"
-                                                  ? "badge bg-blue text-light mb-2"
+                                                  "Contract Processing"
+                                                  ? "badge bg-warning text-light mb-2"
                                                   : candidategridDetailsNew.selectedDevStatus ===
-                                                    "Expired"
-                                                    ? "badge bg-danger text-light mb-2"
+                                                    "Interview Scheduled"
+                                                    ? "badge bg-blue text-light mb-2"
                                                     : candidategridDetailsNew.selectedDevStatus ===
-                                                      "Waiting Interview"
-                                                      ? "badge bg-warning text-light mb-2"
+                                                      "Completed"
+                                                      ? "badge bg-primary text-light mb-2"
                                                       : candidategridDetailsNew.selectedDevStatus ===
-                                                        "Onboarding"
-                                                        ? "badge bg-primary text-light mb-2"
+                                                        "Waiting Interview"
+                                                        ? "badge bg-warning text-light mb-2"
                                                         : candidategridDetailsNew.selectedDevStatus ===
-                                                          "RequestClosed"
-                                                          ? "badge  bg-teal text-light mb-2"
-                                                          : ""
+                                                          "Terminated"
+                                                          ? "badge bg-danger text-light mb-2"
+                                                          : candidategridDetailsNew.selectedDevStatus ===
+                                                            "Request Closed"
+                                                            ? "badge  bg-teal text-light mb-2"
+                                                            : ""
                                       }
                                     >
                                       {candidategridDetailsNew.selectedDevStatus}
@@ -2045,33 +2309,8 @@ const HiringRequestDetails = () => {
                                       }
                                     >
                                       <>
-                                        Create Interview {candidategridDetailsNew.interviewRound > 0 ? `Round ${candidategridDetailsNew.interviewRound + 1}` : ''}
+                                        Interview {candidategridDetailsNew.interviewRound > 0 ? `Round ${candidategridDetailsNew.interviewRound + 1}` : ''}
                                       </>
-                                    </button>
-                                    <button
-                                      id="interviewButton"
-                                      className="btn btn-soft-primary btn-hover w-100 mt-2 fw-bold"
-                                      onClick={() =>
-                                        handleInterviewClick(
-                                          candidategridDetailsNew.id
-                                        )
-                                      }
-                                      disabled={loadingInterview[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
-                                    >
-                                      {loadingInterview[
-                                        candidategridDetailsNew.id
-                                      ] ? (
-                                        <HashLoader
-                                          size={20}
-                                          color={"white"}
-                                          loading={true}
-                                        />
-                                      ) : (
-                                        <>
-                                          <i className="mdi mdi-account-check"></i>
-                                          Interview
-                                        </>
-                                      )}
                                     </button>
                                     <button
                                       id="onboardButton"
@@ -2136,7 +2375,7 @@ const HiringRequestDetails = () => {
                                       }
                                     >
                                       <>
-                                        Create Interview {candidategridDetailsNew.interviewRound > 0 ? `Round ${candidategridDetailsNew.interviewRound + 1}` : ''}
+                                        Interview {candidategridDetailsNew.interviewRound > 0 ? `Round ${candidategridDetailsNew.interviewRound + 1}` : ''}
                                       </>
                                     </button>
 

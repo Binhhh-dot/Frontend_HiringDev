@@ -9,31 +9,42 @@ import { Link } from "react-router-dom";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import loginService from "../../services/login.service";
+import notificationServices from "../../services/notification.services";
 
 const SignOut = () => {
   document.title = "Sign Out | WeHire - Job Listing Template | Themesdesign";
   console.log(process.env.SERVICE_URL);
   const clearData = async () => {
+    let response;
+    let response2;
     try {
       const userId = localStorage.getItem("userId");
-      const response = loginService.revokeAccount(userId);
-      console.log(response)
-    } catch (error) {
-      console.log(error)
-    }
+      const promise1 = loginService.revokeAccount(userId);
+      const promise2 = notificationServices.getUserDeviceId(userId);
 
-    try {
-      const userId = localStorage.getItem("userId");
-      const response = loginService.revokeAccount(userId);
-      console.log(response)
+      [response, response2] = await Promise.all([promise1, promise2]);
+
+      console.log(response);
+      console.log(response2);
+
+      if (response2?.status === 200) {
+        const deviceToken = localStorage.getItem("deviceToken");
+        const foundDevice = response2.data.data.find(item => item.deviceToken === deviceToken);
+        if (foundDevice) {
+          console.log("DeviceToken tồn tại trong danh sách:");
+          console.log("UserDeviceId:", foundDevice.userDeviceId);
+          const response3 = notificationServices.deleteUserDevice(foundDevice.userDeviceId);
+          localStorage.clear();
+        } else {
+          console.log("DeviceToken không tồn tại trong danh sách.");
+        }
+      }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   useEffect(() => {
     document.title = "Sign Out | WeHire - Job Listing Template | Themesdesign";
-    // Clear all data in local storage
-    localStorage.clear();
     clearData();
     sendMessageToParent();
   }, []);
