@@ -18,11 +18,11 @@ import {
 import levelService from '../../../services/level.service';
 import skillService from '../../../services/skill.service';
 import img0 from "../../../assets/images/user/img-00.jpg"
-import SliderBarWeb from "../SlideBar/SiderBarWeb";
 
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SiderBarWebAdmin from '../SlideBar/SiderBarWebAdmin';
 
 const { Column } = Table;
 const { Option } = Select;
@@ -214,7 +214,7 @@ const ManageSkill = () => {
     return (
         <React.Fragment>
             <Layout style={{ minHeight: "100vh" }}>
-                <SliderBarWeb choose={"menu-key1/sub-menu-key1/2"}></SliderBarWeb>
+                <SiderBarWebAdmin choose={"menu-key/6"}></SiderBarWebAdmin>
                 <Layout>
                     <div
                         style={{
@@ -339,7 +339,7 @@ const ManageSkill = () => {
                                     className="me-1 d-flex flex-column align-items-end"
                                     onClick={showModal1}
                                 >
-                                    <FontAwesomeIcon size="3x" icon={faPlusSquare} />
+                                    <FontAwesomeIcon size="2xl" icon={faPlusSquare} />
                                 </a>
                                 <Form form={form}>
                                     <Table className="custom-table"

@@ -18,6 +18,7 @@ import img0 from "../../../assets/images/user/img-00.jpg"
 import { Link } from "react-router-dom";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SiderBarWebAdmin from "../SlideBar/SiderBarWebAdmin";
 
 const { Content } = Layout;
 
@@ -330,7 +331,7 @@ const Dashboard = () => {
     return (
         <React.Fragment>
             <Layout style={{ minHeight: "100vh" }}>
-                <SiderBarWeb choose={"menu-key1/sub-menu-key1/2"}></SiderBarWeb>
+                <SiderBarWebAdmin choose={"menu-key/1"}></SiderBarWebAdmin>
                 <Layout>
                     <div
                         style={{

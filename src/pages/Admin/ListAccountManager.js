@@ -62,6 +62,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import SiderBarWebAdmin from "./SlideBar/SiderBarWebAdmin";
 
 const page = {
   pageSize: 6, // Number of items per page
@@ -185,6 +186,7 @@ const ListAccountManager = () => {
       .then(async (values) => {
         await createManager(values);
         form.resetFields();
+        fetchManagerPaging();
         setVisibleModal1(false);
       })
       .catch((errorInfo) => {
@@ -312,6 +314,7 @@ const ListAccountManager = () => {
     try {
       await handleDeleteConfirm(userId);
       setVisibleModal4(false);
+      fetchManagerPaging();
     } catch (error) {
       // Handle any errors that might occur during the deletion process
       console.error("Error deleting user:", error);
@@ -394,7 +397,7 @@ const ListAccountManager = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SliderBarWeb choose={"menu-key/sub-menu-key/3"}></SliderBarWeb>
+        <SiderBarWebAdmin choose={"menu-key/2"}></SiderBarWebAdmin>
         <Layout>
           <div
             style={{
@@ -610,8 +613,8 @@ const ListAccountManager = () => {
                             text === "Active"
                               ? "badge text-bg-success"
                               : text === "OnTasking"
-                              ? "badge bg-warning text-light"
-                              : "badge text-bg-danger"
+                                ? "badge bg-warning text-light"
+                                : "badge text-bg-danger"
                           }
                         >
                           {text}
@@ -637,7 +640,7 @@ const ListAccountManager = () => {
                             />
                           </a>
                           {record.statusString === "Active" ||
-                          record.statusString === "OnTasking" ? (
+                            record.statusString === "OnTasking" ? (
                             <a
                               onClick={(event) => {
                                 handleDeleteClick(record.userId);
