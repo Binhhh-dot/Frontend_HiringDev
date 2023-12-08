@@ -93,8 +93,8 @@ const Dashboard = () => {
         const currentDate = new Date(currentWeekProject);
         currentDate.setDate(currentDate.getDate() + 7);
         const nextWeek = currentDate.toISOString().split('T')[0];
-        setCurrentWeekProjectHiring(nextWeek);
-        fetchDashboardHiringRequest(nextWeek);
+        setCurrentWeekProject(nextWeek);
+        fetchDashboardProject(nextWeek);
     };
 
     useEffect(() => {
@@ -204,82 +204,6 @@ const Dashboard = () => {
     };
 
 
-
-
-    // const handlePreviousWeekHiring = () => {
-    //     const currentDate = new Date(currentWeekHiring);
-    //     currentDate.setDate(currentDate.getDate() - 7);
-    //     const previousWeek = currentDate.toISOString().split('T')[0];
-    //     setCurrentWeekProjectHiring(previousWeek);
-    //     fetchDashboardHiringRequest(previousWeek);
-    // };
-
-    // const handleNextWeekHiring = () => {
-    //     const currentDate = new Date();
-    //     const nextDate = new Date(currentWeekHiring);
-    //     nextDate.setDate(nextDate.getDate() + 7);
-    //     if (nextDate <= currentDate) {
-    //         const nextWeek = nextDate.toISOString().split('T')[0];
-    //         setCurrentWeekProjectHiring(nextWeek);
-    //         fetchDashboardHiringRequest(nextWeek);
-    //     } else {
-    //         // Display a toast notification if trying to navigate beyond the current date
-    //         toast.error("Cannot navigate to future weeks.");
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     fetchDashboardHiringRequest(currentWeekHiring);
-    // }, [currentWeekHiring]);
-
-
-    // const getDayNumber = (day) => {
-    //     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    //     return days.indexOf(day);
-    // };
-
-    // const getFormattedDate = (dayOfWeek, targetDay) => {
-    //     const today = new Date(targetDay);
-    //     const currentDay = today.getDay();
-    //     const daysToAdd = currentDay - getDayNumber(dayOfWeek);
-    //     today.setDate(today.getDate() - daysToAdd);
-    //     return today.toLocaleDateString(); // You can customize the date format here
-    // };
-
-    // const dataHiring = [
-    //     { label: 'Sunday', day: 'Sun', date: getFormattedDate('Sunday', currentWeekHiring), projects: hiringRequestWeek?.Sunday || 0 },
-    //     { label: 'Monday', day: 'Mon', date: getFormattedDate('Monday', currentWeekHiring), projects: hiringRequestWeek?.Monday || 0 },
-    //     { label: 'Tuesday', day: 'Tue', date: getFormattedDate('Tuesday', currentWeekHiring), projects: hiringRequestWeek?.Tuesday || 0 },
-    //     { label: 'Wednesday', day: 'Wed', date: getFormattedDate('Wednesday', currentWeekHiring), projects: hiringRequestWeek?.Wednesday || 0 },
-    //     { label: 'Thursday', day: 'Thu', date: getFormattedDate('Thursday', currentWeekHiring), projects: hiringRequestWeek?.Thursday || 0 },
-    //     { label: 'Friday', day: 'Fri', date: getFormattedDate('Friday', currentWeekHiring), projects: hiringRequestWeek?.Friday || 0 },
-    //     { label: 'Saturday', day: 'Sat', date: getFormattedDate('Saturday', currentWeekHiring), projects: hiringRequestWeek?.Saturday || 0 },
-    // ];
-
-    // const config2 = {
-    //     data: dataHiring,
-    //     xField: 'date',
-    //     yField: 'projects',
-    //     label: {
-    //         position: 'middle',
-    //         style: {
-    //             fill: '#FFFFFF',
-    //             opacity: 0.6,
-    //         },
-    //     },
-    //     xAxis: {
-    //         label: {
-    //             formatter: (value) => `${dataHiring.find((day) => day.date === value)?.day || ''}\n${value}`,
-    //         },
-    //     },
-    //     meta: {
-    //         projects: { alias: 'Projects Count' },
-    //     },
-    //     color: '#00CED1',
-    // };
-
-
-    //Get RecentHiringRequest
 
     const [listRecentHiringRequest, setRecentHiringRequest] = useState([]);
 
@@ -523,10 +447,10 @@ const Dashboard = () => {
                                 </div>
                             </div>
                             <div className="ecommerce-widget">
-                                <div className="row">
+                                <div className="row row-with-margin">
                                     <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
                                         <div className="card border-3 border-top border-top-primary">
-                                            <div className="card-body">
+                                            <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total Project</h5>
                                                 <div className="metric-value d-inline-block">
                                                     {hRInfo && (
@@ -538,7 +462,7 @@ const Dashboard = () => {
                                     </div>
                                     <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
                                         <div className="card border-3 border-top border-top-primary">
-                                            <div className="card-body">
+                                            <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total Hiring Request</h5>
                                                 <div className="metric-value d-inline-block">
                                                     {hRInfo && (
@@ -550,7 +474,7 @@ const Dashboard = () => {
                                     </div>
                                     <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
                                         <div className="card border-3 border-top border-top-primary">
-                                            <div className="card-body">
+                                            <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total User</h5>
                                                 <div className="metric-value d-inline-block">
                                                     {hRInfo && (
@@ -562,7 +486,7 @@ const Dashboard = () => {
                                     </div>
                                     <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
                                         <div className="card border-3 border-top border-top-primary">
-                                            <div className="card-body">
+                                            <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total Money</h5>
                                                 <div className="metric-value d-inline-block">
                                                     {hRInfo && (
@@ -575,86 +499,18 @@ const Dashboard = () => {
                                     </div>
                                 </div>
 
-
-                                {/* <div className="row">
-                                    <div className="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                                        <div className="card " >
-                                            <div className="card-body">
-                                                <h5 className="text-muted">Total Project</h5>
-                                                <div className="metric-value d-inline-block">
-                                                    {hRInfo && (
-                                                        <h1>{hRInfo.totalProject}</h1>
-                                                    )}
-                                                </div>
-                                                <div className="metric-label d-inline-block float-right text-success font-weight-bold">
-                                            <span><i className="fa fa-fw fa-arrow-up" /></span><span>5.86%</span>
-                                        </div>
-                                            </div>
-                                            <div id="sparkline-revenue" />
-                                        </div>
-                                    </div>
-                                    <div className="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                                        <div className="card">
-                                            <div className="card-body">
-                                                <h5 className="text-muted">Total Hiring Request</h5>
-                                                <div className="metric-value d-inline-block">
-                                                    {hRInfo && (
-                                                        <h1>{hRInfo.totalHiringRequest}</h1>
-                                                    )}
-                                                </div>
-                                                <div className="metric-label d-inline-block float-right text-success font-weight-bold">
-                                            <span><i className="fa fa-fw fa-arrow-up" /></span><span>5.86%</span>
-                                        </div>
-                                            </div>
-                                            <div id="sparkline-revenue2" />
-                                        </div>
-                                    </div>
-                                    <div className="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                                        <div className="card">
-                                            <div className="card-body">
-                                                <h5 className="text-muted">Total Money</h5>
-                                                <div className="metric-value d-inline-block">
-                                                    {hRInfo && (
-                                                        <h1>{hRInfo.totalMoney}</h1>
-                                                    )}
-                                                </div>
-                                                <div className="metric-label d-inline-block float-right text-primary font-weight-bold">
-                                            <span>N/A</span>
-                                        </div>
-                                            </div>
-                                            <div id="sparkline-revenue3" />
-                                        </div>
-                                    </div>
-                                    <div className="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                                        <div className="card">
-                                            <div className="card-body">
-                                                <h5 className="text-muted">Total User</h5>
-                                                <div className="metric-value d-inline-block">
-                                                    {hRInfo && (
-                                                        <h1>{hRInfo.accountDashboard.totalUser}</h1>
-                                                    )}
-                                                </div>
-                                                <div className="metric-label d-inline-block float-right text-secondary font-weight-bold">
-                                                    <span>User</span>
-                                                </div>
-                                            </div>
-                                            <div id="sparkline-revenue4" />
-                                        </div>
-                                    </div>
-                                </div> */}
-
-                                <div className="row">
+                                <div className="row row-with-margin">
                                     <div className="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12">
                                         <div className="card">
                                             <h5 className="card-header">Recent Hiring Requests</h5>
-                                            <div className="card-body p-0">
+                                            <div className="card-body-dashboard p-0">
                                                 <div className="table-responsive">
                                                     <table className="table">
                                                         <thead className="bg-light">
                                                             <tr className="border-0">
-                                                                <th className="border-0">Request Code</th>
-                                                                <th className="border-0">JobTitle</th>
-                                                                <th className="border-0">Duration</th>
+                                                                <th className="border-0" >Request Code</th>
+                                                                <th className="border-0">Job Title</th>
+                                                                <th className="border-0" >Duration</th>
                                                                 <th className="border-0">Posted Time</th>
                                                                 <th className="border-0">Status</th>
                                                             </tr>
@@ -662,23 +518,29 @@ const Dashboard = () => {
                                                         <tbody>
                                                             {listRecentHiringRequest.map((request) => (
                                                                 <tr key={request.requestId}>
-
-                                                                    <td>{request.requestCode}</td>
-                                                                    <td>{request.jobTitle}</td>
-
-                                                                    <td>{request.duration}</td>
-                                                                    <td>{request.postedTime}</td>
-                                                                    <td>
+                                                                    <td >{request.requestCode}</td>
+                                                                    <td >{request.jobTitle}</td>
+                                                                    <td >{request.duration}</td>
+                                                                    <td >{request.postedTime}</td>
+                                                                    <td >
                                                                         <Badge
-                                                                            status={request.statusString === 'Completed' ? 'success' : request.statusString === 'In Progress' ? 'processing' : 'error'}
+                                                                            status={
+                                                                                request.statusString === 'Completed'
+                                                                                    ? 'success'
+                                                                                    : request.statusString === 'In Progress'
+                                                                                        ? 'processing'
+                                                                                        : request.statusString === 'Closed'
+                                                                                            ? 'error'
+                                                                                            : 'default' // Or any other status you want for unmatched cases
+                                                                            }
                                                                             text={request.statusString}
                                                                         />
                                                                     </td>
                                                                 </tr>
                                                             ))}
-
                                                         </tbody>
                                                     </table>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -686,22 +548,15 @@ const Dashboard = () => {
                                     <div className="col-xl-6 col-lg-5 col-md-12 col-sm-12 col-12">
                                         <div className="card">
                                             <h5 className="card-header">Account by role</h5>
-                                            <div className="card-body">
-                                                {loading ? (
-                                                    <p>Loading...</p>
-                                                ) : error ? (
-                                                    <p>{error}</p>
-                                                ) : (
-                                                    <div>
-
-                                                        <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '10px' }}>
-                                                            <div style={{ width: '100%' }}>
-                                                                <Pie {...pieConfig} />
-                                                            </div>
-                                                            {/* You can add more charts or components as needed */}
+                                            <div className="card-body-dashboard">
+                                                <div>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '10px' }}>
+                                                        <div style={{ width: '100%' }}>
+                                                            <Pie {...pieConfig} />
                                                         </div>
+                                                        {/* You can add more charts or components as needed */}
                                                     </div>
-                                                )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -712,7 +567,7 @@ const Dashboard = () => {
                                     {/* <div className="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                                 <div className="card">
                                     <h5 className="card-header"> Product Category</h5>
-                                    <div className="card-body">
+                                    <div className="card-body-dashboard">
                                         <div className="ct-chart-category ct-golden-section" style={{ height: 315 }} />
                                         <div className="text-center m-t-40">
                                             <span className="legend-item mr-3">
@@ -735,7 +590,7 @@ const Dashboard = () => {
                                             <div className="card-header">
                                                 <h5 className="mb-0">Number Of Projects</h5>
                                             </div>
-                                            <div className="card-body">
+                                            <div className="card-body-dashboard">
                                                 <div>
                                                     <Column {...configProject} />
                                                 </div>
@@ -759,7 +614,7 @@ const Dashboard = () => {
                                             <div className="card-header">
                                                 <h5 className="mb-0">Number Of Hiring Requests</h5>
                                             </div>
-                                            <div className="card-body">
+                                            <div className="card-body-dashboard">
                                                 <div>
                                                     <Column {...configHiring} />
                                                 </div>
