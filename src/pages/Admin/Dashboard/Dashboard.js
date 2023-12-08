@@ -368,7 +368,7 @@ const Dashboard = () => {
                             </Space>
 
                             <div
-                                className="p-2 d-flex gap-3 align-items-center"
+                                className="p-2  d-flex gap-3 align-items-center"
                                 style={{
                                     height: "inherit",
                                     backgroundColor: "#6546D2",
