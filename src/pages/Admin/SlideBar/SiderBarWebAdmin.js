@@ -8,6 +8,9 @@ import {
   faIdCardClip,
   faChalkboardUser,
   faBuildingUser,
+  faUserGear,
+  faSignal,
+  faCodeMerge
 } from "@fortawesome/free-solid-svg-icons";
 import {
   PieChartOutlined,
@@ -53,6 +56,7 @@ const SiderBarWebAdmin = ({ choose }) => {
       key: "menu-key/1",
       icon: <HomeOutlined />,
       className: "dashboard",
+      link: "/dashboard",
     },
 
     // {
@@ -95,6 +99,27 @@ const SiderBarWebAdmin = ({ choose }) => {
       icon: <FontAwesomeIcon icon={faChalkboardUser} size="xl" />,
       className: "listAccountDeveloper",
       link: "/listAccountDeveloper", // Add the link property
+    },
+    {
+      label: "Manage Skill",
+      key: "menu-key/6",
+      icon: <FontAwesomeIcon icon={faUserGear} size="xl" />,
+      className: "manageSKill",
+      link: "/manageSkill", // Add the link property
+    },
+    {
+      label: "Manage Level",
+      key: "menu-key/7",
+      icon: <FontAwesomeIcon icon={faSignal} size="xl" />,
+      className: "manageLevel",
+      link: "/manageLevel", // Add the link property
+    },
+    {
+      label: "Manage Type",
+      key: "menu-key/8",
+      icon: <FontAwesomeIcon icon={faCodeMerge} size="xl" />,
+      className: "manageType",
+      link: "/manageType", // Add the link property
     },
   ];
 

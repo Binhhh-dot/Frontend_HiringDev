@@ -968,6 +968,7 @@ const ListAccountDeveloper = () => {
     try {
       await handleDeleteConfirm(userId);
       setVisibleModal4(false);
+      fetchDeveloperPaging();
     } catch (error) {
       // Handle any errors that might occur during the deletion process
       console.error("Error deleting user:", error);
@@ -983,7 +984,7 @@ const ListAccountDeveloper = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SliderBarWeb choose={"menu-key/sub-menu-key/6"}></SliderBarWeb>
+        <SiderBarWebAdmin choose={"menu-key/5"}></SiderBarWebAdmin>
         {/* <SiderBarWebAdmin choose={"menu-key/5"}></SiderBarWebAdmin> */}
         <Layout>
           <div
@@ -1287,7 +1288,7 @@ const ListAccountDeveloper = () => {
             onOk={handleOk}
             onCancel={handleCancel}
             footer={null}
-            // width={700}
+            width={800}
             style={{
               alignItems: "center",
               justifyContent: "center",
@@ -1298,112 +1299,168 @@ const ListAccountDeveloper = () => {
                 style={{
                   padding: "10px",
                   fontSize: "16px",
+                  display: "flex", // Use flexbox
+                  justifyContent: "space-between", // Align items to left and right
+                  flexWrap: "wrap", // Wrap content to the next line if needed
                 }}
               >
-                {hRInfo.userImage ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      // flexDirection: "column",
-                    }}
-                  >
-                    <img
-                      src={hRInfo.userImage}
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    maxWidth: "50%", // Adjust as needed
+                  }}
+                >
+
+                  {hRInfo.userImage ? (
+                    <div
                       style={{
-                        width: "100px",
-                        height: "100px",
-                        borderRadius: "50%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "flex-start",  // Align at the top
+                        marginBottom: "10px",
+                        width: "100%",  // Occupy full width
+                      }}
+                    >
+
+                      <img
+                        src={hRInfo.userImage}
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          borderRadius: "50%",
+                          marginBottom: "10px",
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "column",
                         marginBottom: "10px",
                       }}
-                    />
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexDirection: "column",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FaUserAltSlash
-                      style={{
-                        fontSize: "24px",
+                    >
+                      <FaUserAltSlash
+                        style={{
+                          fontSize: "24px",
+                          color: "#6d73f6",
+                        }}
+                      />
+                      <span>No Image</span>
+                    </div>
+                  )}
 
-                        color: "#6d73f6",
-                      }}
-                    />
-                    <span>No Image</span>
-                  </div>
-                )}
-                <p>
-                  <strong>Code Name:</strong> {hRInfo.codeName}
-                </p>
-                <p>
-                  <strong>Name:</strong>{" "}
-                  {`${hRInfo.firstName} ${hRInfo.lastName}`}
-                </p>
-                <p>
-                  <strong>Email:</strong> {hRInfo.email}
-                </p>
-                <p>
-                  <strong>Password:</strong> {hRInfo.password}
-                </p>
-                <p>
-                  <strong>Phone:</strong> {hRInfo.phoneNumber}
-                </p>
-                <p>
-                  <strong>Date Of Birth:</strong> {hRInfo.dateOfBirth}
-                </p>
+                  <p>
+                    <strong>Code Name:</strong> {hRInfo.codeName}
+                  </p>
+                  <p>
+                    <strong>Name:</strong>{" "}
+                    {`${hRInfo.firstName} ${hRInfo.lastName}`}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {hRInfo.email}
+                  </p>
+                  <p>
+                    <strong>Password:</strong> {hRInfo.password}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {hRInfo.phoneNumber}
+                  </p>
 
-                <p>
-                  <strong>Gender Name: </strong> {hRInfo.genderName}
-                </p>
+                  <p>
+                    <strong>Date Of Birth:</strong> {hRInfo.dateOfBirth}
+                  </p>
+                  <p>
+                    <strong>Gender Name: </strong> {hRInfo.genderName}
+                  </p>
+                </div>
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    maxWidth: "50%", // Adjust as needed
+                  }}
+                >
+                  <p>
+                    <strong>Year Of Experience:</strong> {hRInfo.yearOfExperience}
+                  </p>
 
-                <p>
-                  <strong>Year Of Experience:</strong> {hRInfo.yearOfExperience}
-                </p>
-                <p>
-                  <strong>Average Salary:</strong> {hRInfo.averageSalary}
-                </p>
-
-                <p>
-                  <strong>Employment Type Name:</strong>{" "}
-                  {hRInfo.employmentTypeName}
-                </p>
-                <p>
-                  <strong>Developer Status:</strong>{" "}
-                  <span
-                    className={
-                      hRInfo.devStatusString === "On Working"
-                        ? "badge bg-warning text-light"
-                        : hRInfo.devStatusString === "Selected On Request"
-                          ? "badge bg-info text-light"
-                          : hRInfo.devStatusString === "Available"
-                            ? "badge bg-success text-light"
-                            : "badge text-bg-danger"
-                    }
-                  >
-                    {hRInfo.devStatusString}
-                  </span>
-                </p>
-                <p>
-                  <strong>Account Status:</strong>{" "}
-                  <span
-                    className={
-                      hRInfo.userStatusString === "Active"
-                        ? "badge  text-bg-success"
-                        : hRInfo.userStatusString === "Selected On Request"
+                  <p>
+                    <strong>Average Salary:</strong> {hRInfo.averageSalary}
+                  </p>
+                  <p>
+                    <strong>Employment Type Name:</strong>{" "}
+                    {hRInfo.employmentTypeName}
+                  </p>
+                  <p>
+                    <strong>Developer Status:</strong>{" "}
+                    <span
+                      className={
+                        hRInfo.devStatusString === "On Working"
                           ? "badge bg-warning text-light"
-                          : "badge text-bg-danger"
-                    }
-                  >
-                    {hRInfo.userStatusString}
-                  </span>
-                </p>
+                          : hRInfo.devStatusString === "Selected On Request"
+                            ? "badge bg-info text-light"
+                            : hRInfo.devStatusString === "Available"
+                              ? "badge bg-success text-light"
+                              : "badge text-bg-danger"
+                      }
+                    >
+                      {hRInfo.devStatusString}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Account Status:</strong>{" "}
+                    <span
+                      className={
+                        hRInfo.userStatusString === "Active"
+                          ? "badge  text-bg-success"
+                          : hRInfo.userStatusString === "Selected On Request"
+                            ? "badge bg-warning text-light"
+                            : "badge text-bg-danger"
+                      }
+                    >
+                      {hRInfo.userStatusString}
+                    </span>
+                  </p>
+
+                  {/* Additional Fields */}
+                  {hRInfo.level && (
+                    <p>
+                      <strong>Level:</strong> {hRInfo.level.levelName}
+                    </p>
+                  )}
+                  {hRInfo.skills && (
+                    <p>
+                      <strong>Skills:</strong>{" "}
+                      {hRInfo.skills.map((skill, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            display: "inline-block",
+                            padding: "0.25em 0.25em",
+                            margin: "0.1em",
+                            borderRadius: "0.4em",
+                            backgroundColor: "#C0C0C0", // Màu xanh dương của badge-info
+                            color: "#000000", // Màu chữ trắng
+                          }}
+                        >
+                          {skill.skillName}
+                        </span>
+                      ))}
+                    </p>
+                  )}
+
+                  {hRInfo.types && hRInfo.types[0] && (
+                    <p>
+                      <strong>Type:</strong> {hRInfo.types[0].typeName}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </Modal>

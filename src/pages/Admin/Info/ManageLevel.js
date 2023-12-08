@@ -24,6 +24,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import SliderBarWeb from "../SlideBar/SiderBarWeb";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SiderBarWebAdmin from '../SlideBar/SiderBarWebAdmin';
 
 
 const { Column } = Table;
@@ -220,7 +221,7 @@ const ManageLevel = () => {
     return (
         <React.Fragment>
             <Layout style={{ minHeight: "100vh" }}>
-                <SliderBarWeb choose={"menu-key1/sub-menu-key1/1"}></SliderBarWeb>
+                <SiderBarWebAdmin choose={"menu-key/7"}></SiderBarWebAdmin>
                 <Layout>
                     <div
                         style={{
@@ -346,7 +347,7 @@ const ManageLevel = () => {
                                     className="me-1 d-flex flex-column align-items-end"
                                     onClick={showModal1}
                                 >
-                                    <FontAwesomeIcon size="3x" icon={faPlusSquare} />
+                                    <FontAwesomeIcon size="2xl" icon={faPlusSquare} />
                                 </a>
                                 <Form form={form}>
                                     <Table className="custom-table"
