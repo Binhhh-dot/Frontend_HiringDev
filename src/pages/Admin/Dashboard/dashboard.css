@@ -11,7 +11,7 @@
 
 .table thead th,
 
-.table-bordered {
+.table .table-bordered {
     border: 1px solid #e6e6f2;
 }
 
