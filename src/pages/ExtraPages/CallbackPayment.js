@@ -18,17 +18,15 @@ const CallbackPayment = () => {
     console.log(process.env.SERVICE_URL);
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
-        const code = queryParams.get("code");
+        const code = queryParams.get("token");
         const PayerID = queryParams.get("PayerID");
-        const paymentId = queryParams.get("paymentId");
         console.log(code)
         console.log(PayerID)
-        console.log(paymentId)
-        sendMessageToParent(PayerID, paymentId);
+        sendMessageToParent(code, PayerID);
     }, []);
 
-    const sendMessageToParent = (PayerID, paymentId) => {
-        window.opener.postMessage({ PayerID, paymentId }, '*');
+    const sendMessageToParent = (code, PayerID) => {
+        window.opener.postMessage({ code, PayerID }, '*');
     };
 
 

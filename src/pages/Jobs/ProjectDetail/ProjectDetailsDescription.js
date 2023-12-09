@@ -899,10 +899,10 @@ const ProjectDetailDesciption = () => {
         const intervalId = setInterval(checkPopupStatus, 1000);
 
         window.addEventListener('message', (event) => {
-          const { PayerID, paymentId } = event.data;
-          if (PayerID && paymentId) {
+          const { code, PayerID } = event.data;
+          if (code && PayerID) {
             event.source.close();
-            executePayment(paymentId, PayerID);
+            executePayment(code, PayerID);
           }
         });
 
