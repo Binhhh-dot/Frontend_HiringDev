@@ -110,6 +110,7 @@ const TransactionHistoryList = () => {
         7
       );
       console.log(response.data.data);
+      console.log(response.data.paging.total);
       setTransactionHistoryList(response.data.data);
       setTotalPages(Math.ceil(response.data.paging.total / pageSize));
     } catch (error) {

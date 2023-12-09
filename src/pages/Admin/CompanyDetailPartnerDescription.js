@@ -43,76 +43,76 @@ const CompanyDetailPartnerDescription = () => {
   };
 
   //----------------------------------------------------------------------------------------
-  let companyUpdateDetail;
-  const [avatar, setAvatar] = useState();
-  const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [companyCreated, setCompanyCreated] = useState(false);
-  const [companyImageUpdate, setCompanyImageUpdate] = useState(null);
-  const [isUpdateMode, setIsUpdateMode] = useState(false);
+  // let companyUpdateDetail;
+  // const [avatar, setAvatar] = useState();
+  // const [countries, setCountries] = useState([]);
+  // const [selectedCountry, setSelectedCountry] = useState(null);
+  // const [companyCreated, setCompanyCreated] = useState(false);
+  // const [companyImageUpdate, setCompanyImageUpdate] = useState(null);
+  // const [isUpdateMode, setIsUpdateMode] = useState(false);
 
-  useEffect(() => {
-    return () => avatar && URL.revokeObjectURL(avatar.preview);
-  }, [avatar]);
+  // useEffect(() => {
+  //   return () => avatar && URL.revokeObjectURL(avatar.preview);
+  // }, [avatar]);
 
-  useEffect(() => {
-    const fetchCompanyDetailUpdate = async () => {
-      const userId = localStorage.getItem("userId");
-      if (state.companyId) {
-        setCompanyCreated(true);
-        try {
-          const response = await companyServices.getCompanyByCompanyId(
-            state.companyId
-          );
-          companyUpdateDetail = response;
-          document.getElementById("company-name").value =
-            response.data.data.companyName;
-          document.getElementById("email-address").value =
-            response.data.data.companyEmail;
-          document.getElementById("address").value = response.data.data.address;
-          document.getElementById("number").value =
-            response.data.data.phoneNumber;
+  // useEffect(() => {
+  //   const fetchCompanyDetailUpdate = async () => {
+  //     const userId = localStorage.getItem("userId");
+  //     if (state.companyId) {
+  //       setCompanyCreated(true);
+  //       try {
+  //         const response = await companyServices.getCompanyByCompanyId(
+  //           state.companyId
+  //         );
+  //         companyUpdateDetail = response;
+  //         document.getElementById("company-name").value =
+  //           response.data.data.companyName;
+  //         document.getElementById("email-address").value =
+  //           response.data.data.companyEmail;
+  //         document.getElementById("address").value = response.data.data.address;
+  //         document.getElementById("number").value =
+  //           response.data.data.phoneNumber;
 
-          const fileDev = response.data.data.companyImage;
-          setCompanyImageUpdate(fileDev);
-        } catch (error) {
-          console.error("Error get detail update company:", error);
-        }
-      } else {
-        setCompanyImageUpdate(img0);
-      }
+  //         const fileDev = response.data.data.companyImage;
+  //         setCompanyImageUpdate(fileDev);
+  //       } catch (error) {
+  //         console.error("Error get detail update company:", error);
+  //       }
+  //     } else {
+  //       setCompanyImageUpdate(img0);
+  //     }
 
-      axios
-        .get(
-          "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4"
-        )
-        .then((response) => {
-          const data = response.data;
-          const formattedCountries = data.map((country) => ({
-            value: country.name.common,
-            label: country.name.common,
-          }));
-          setCountries(formattedCountries);
-          if (companyUpdateDetail) {
-            const selected = formattedCountries.find(
-              (country) =>
-                country.value === companyUpdateDetail.data.data.country
-            );
-            if (selected) {
-              const company = {
-                value: selected.value,
-                label: selected.label,
-              };
-              setSelectedCountry(company);
-            }
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching data", error);
-        });
-    };
-    fetchCompanyDetailUpdate();
-  }, [isUpdateMode]);
+  //     axios
+  //       .get(
+  //         "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4"
+  //       )
+  //       .then((response) => {
+  //         const data = response.data;
+  //         const formattedCountries = data.map((country) => ({
+  //           value: country.name.common,
+  //           label: country.name.common,
+  //         }));
+  //         setCountries(formattedCountries);
+  //         if (companyUpdateDetail) {
+  //           const selected = formattedCountries.find(
+  //             (country) =>
+  //               country.value === companyUpdateDetail.data.data.country
+  //           );
+  //           if (selected) {
+  //             const company = {
+  //               value: selected.value,
+  //               label: selected.label,
+  //             };
+  //             setSelectedCountry(company);
+  //           }
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching data", error);
+  //       });
+  //   };
+  //   fetchCompanyDetailUpdate();
+  // }, [isUpdateMode]);
 
   //----------------------------------------------------------------------------------------
 
@@ -179,7 +179,7 @@ const CompanyDetailPartnerDescription = () => {
 
           {/* ---------------------------------------------------------------------------------- */}
           {/* Modal */}
-          <Modal
+          {/* <Modal
             centered
             open={showPopupProfileCompany}
             onOk={() => handleOKProfileCompany()}
@@ -208,7 +208,7 @@ const CompanyDetailPartnerDescription = () => {
                       />
                     ) : (
                       <img
-                        src={companyImageUpdate} // Giá trị mặc định là "userImage2"
+                        src={companyImageUpdate}
                         className="rounded-circle img-thumbnail profile-img"
                         id="profile-img-2"
                         alt=""
@@ -216,15 +216,11 @@ const CompanyDetailPartnerDescription = () => {
                     )}
                     <div className="p-0 rounded-circle profile-photo-edit">
                       <label className="profile-photo-edit avatar-xs">
-                        <i
-                          className="uil uil-edit"
-                          //onClick={handleChooseAvatar}
-                        ></i>
+                        <i className="uil uil-edit"></i>
                       </label>
                       <input
                         type="file"
                         id="profile-img-file-input"
-                        // onChange={handlePreviewAvatar}
                         style={{ display: "none" }}
                       />
                     </div>
@@ -247,13 +243,7 @@ const CompanyDetailPartnerDescription = () => {
                     <div className="mb-3">
                       <Label class="text-muted">Country</Label>
                       <div style={{ paddingBottom: "10px" }}>
-                        <Select
-                        // options={countries}
-                        // value={selectedCountry}
-                        // onChange={(selectedOption) =>
-                        //   setSelectedCountry(selectedOption)
-                        // }
-                        />
+                        <Select />
                       </div>
                     </div>
                   </Col>
@@ -292,25 +282,8 @@ const CompanyDetailPartnerDescription = () => {
                   </Col>
                 </Row>
               </div>
-              {/* <div className="mt-4 text-end">
-                    {companyIdFromLocalStorage === "null" ? (
-                      <div
-                        className="btn btn-soft-primary fw-bold"
-                        onClick={handleUpdateCompany}
-                      >
-                        Create
-                      </div>
-                    ) : (
-                      <div
-                        className="btn btn-soft-blue fw-bold"
-                        onClick={handleUpdateCompany}
-                      >
-                        Update
-                      </div>
-                    )}
-                  </div> */}
             </Form>
-          </Modal>
+          </Modal> */}
 
           {/* ---------------------------------------------------------------------------------- */}
 
