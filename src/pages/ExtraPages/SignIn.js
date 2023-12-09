@@ -201,7 +201,7 @@ const SignIn = () => {
                                     htmlFor="passwordInput"
                                     className="form-label"
                                   >
-                                    Mật khẩu
+                                    Password
                                   </label>
                                   <Input
                                     type="password"

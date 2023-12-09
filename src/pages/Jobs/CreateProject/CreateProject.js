@@ -461,7 +461,7 @@ const CreateProject = () => {
                     <div class="row">
                       <div class="col-md-12">
                         <div class="form-group app-label mt-2">
-                          <label class="text-muted">Job Description</label>
+                          <label class="text-muted">Project Description</label>
                           <Editor
                             class="fix-height"
                             id="description"
