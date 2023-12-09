@@ -17,7 +17,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import userSerrvices from "../../../services/user.serrvices";
 
-const CreateHiringRequestPopup = (
+const ExtendDurationHiringRequestPopup = (
     { isModalOpen, closeModal, requestId },
     ...props
 ) => {
@@ -65,7 +65,7 @@ const CreateHiringRequestPopup = (
     const [selectedDate, setSelectedDate] = useState('');
     const today = new Date();
     const descriptionRef = useRef(null);
-
+    const [isCreateInterviewModal, setIsCreateInterviewModal] = useState(false);
 
     today.setDate(today.getDate() + 4);
     useState(() => {
@@ -131,36 +131,6 @@ const CreateHiringRequestPopup = (
     const navigate = useNavigate();
 
     const fetchData = async () => {
-        try {
-            // Lấy userId từ localStorage
-            const userId = localStorage.getItem("userId");
-            if (!userId) {
-                openModal();
-            }
-
-
-            const responseUser = userSerrvices.getUserById(userId);
-            const userData = responseUser.data;
-
-            // Lưu companyId vào state và localStorage
-            setCompanyId(userData.data.companyId);
-
-            localStorage.setItem("companyId", userData.data.companyId);
-        } catch (error) {
-            console.error("Error fetching user data:", error);
-        }
-
-        try {
-            // Lấy userId từ localStorage
-            const userId = localStorage.getItem("userId");
-            const companyId = localStorage.getItem("companyId");
-            if (userId && companyId == "null") {
-                openModal2();
-            }
-        } catch (error) {
-            console.error("Error fetching user data:", error);
-        }
-
         try {
             if (requestId) {
                 const response =
@@ -333,270 +303,66 @@ const CreateHiringRequestPopup = (
 
     const handlePostJob = async () => {
         // Kiểm tra xem có userID trong localStorage không
-        const userId = localStorage.getItem("userId");
-        if (!userId) {
-            openModal(); // Nếu không có, mở modal signup
+        setLoading(true);
+        let check = true;
+
+        // Kiểm tra lỗi cho Duration
+        if (!document.getElementById("duration").value) {
+            check = false;
+            setDurationError("Please enter the duration.");
         } else {
-            const companyIdErr = localStorage.getItem("companyId");
-            if (companyIdErr == "null") {
-                openModal2();
-            } else {
-                setLoading(true);
-                let check = true;
-                if (!document.getElementById("job-title").value) {
-                    setJobTitleError("Please enter a job title.");
-                    check = false;
-                } else {
-                    setJobTitleError(null);
-                }
-                if (
-                    !document.getElementById("number-dev").value ||
-                    parseInt(document.getElementById("number-dev").value, 10) <= 0
-                ) {
-                    setNumberDevError(
-                        "Please enter a valid number of developers (greater than 0)."
+            setDurationError(null);
+        }
+        console.log("Posting job...");
+        if (check) {
+            try {
+                const duration = document.getElementById("duration").value;
+                if (requestId) {
+                    const response = await hiringRequestService.extendDuration(
+                        requestId,
+                        duration
                     );
-                    check = false;
-                } else {
-                    setNumberDevError(null);
+                    console.log(response);
                 }
-
-                // Kiểm tra lỗi cho Type of developer
-                if (!selectedOptions2.value) {
-                    setTypeError("Please select the type of developer.");
-                    check = false;
-                } else {
-                    setTypeError(null);
-                }
-
-                // Kiểm tra lỗi cho Level requirement
-                if (!selectedOptions3.value) {
-                    setLevelError("Please select the level requirement.");
-                    check = false;
-                } else {
-                    setLevelError(null);
-                }
-
-
-                if (!selectedOptions5.value) {
-                    setEmploymentTypeError(
-                        "Please select the employment type requirement."
-                    );
-                    check = false;
-                } else {
-                    setEmploymentTypeError(null);
-                }
-
-                // Kiểm tra lỗi cho Skill requirement
-                if (selectedOptions.length === 0) {
-                    setSkillError("Please select at least one skill.");
-                    check = false;
-                } else {
-                    setSkillError(null);
-                }
-
-                // Kiểm tra lỗi cho Budget
-                if (
-                    !document.getElementById("budget").value ||
-                    parseInt(document.getElementById("budget").value, 10) <= 0
-                ) {
-                    setBudgetError("Please enter the budget(greater than 0).");
-                    check = false;
-                } else {
-                    setBudgetError(null);
-                }
-
-                // Kiểm tra lỗi cho Duration
-                if (!document.getElementById("duration").value) {
-                    check = false;
-                    setDurationError("Please enter the duration.");
-                } else {
-                    setDurationError(null);
-                }
-                // Kiểm tra lỗi cho Job Description
-
-                if (value == "") {
-                    setDescriptionError("Please enter the job description.");
-                    check = false;
-                } else {
-                    setDescriptionError(null);
-                }
-                // Nếu có, thực hiện logic để đăng job
-                // Đây có thể là nơi gửi yêu cầu đăng job lên server
-                console.log("Posting job...");
-                if (check) {
-                    try {
-                        const jobTitle = document.getElementById("job-title").value; // replace with the actual job title from your input
-                        const jobDescription = value; // get job description from the textarea
-                        const numberOfDev = parseInt(
-                            document.getElementById("number-dev").value,
-                            10
-                        ); // parse as integer
-                        const salaryPerDev = parseFloat(
-                            document.getElementById("budget").value
-                        ); // parse as float
-                        const duration = document.getElementById("duration").value; // get duration from the date input
-                        const typeRequireId = selectedOptions2.value; // replace with actual value from the type dropdown
-                        const levelRequireId = selectedOptions3.value; // replace with actual value from the level dropdown
-                        const employmentTypeId = selectedOptions5.value;
-                        const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
-                        const isSaved = false;
-                        const queryParams = new URLSearchParams(location.search);
-                        const projectId = queryParams.get("Id");
-                        if (requestId) {
-                            const response = await hiringRequestService.updateHiringRequest(
-                                requestId,
-                                jobTitle,
-                                jobDescription,
-                                numberOfDev,
-                                salaryPerDev,
-                                duration,
-                                typeRequireId,
-                                levelRequireId,
-                                skillIds,
-                                isSaved,
-                                levelRequireId,
-                            );
-                            console.log(response);
-                        } else {
-                            const response = await hiringRequestService.createHiringRequest(
-                                companyIdErr,
-                                projectId,
-                                jobTitle,
-                                jobDescription,
-                                numberOfDev,
-                                salaryPerDev,
-                                duration,
-                                typeRequireId,
-                                levelRequireId,
-                                skillIds,
-                                isSaved,
-                                employmentTypeId
-                            );
-                        }
-                        setLoading(false);
-                        localStorage.removeItem("requestId");
-                        setErrorMessage(null);
-                        toast.success('Create hiring request successfully!');
-                        closeModal();
-                    } catch (error) {
-                        console.log(value);
-                        setLoading(false);
-                        setSuccessMessage(null);
-                        toast.error('Create hiring request fail!');
-
-                        // Handle error, show error message, etc.
-                    }
-                } else {
-                    setLoading(false);
-                    setSuccessMessage(null);
-                }
+                setLoading(false);
+                localStorage.removeItem("requestId");
+                setErrorMessage(null);
+                toast.success('Extend duration hiring request successfully!');
+                CreateInterviewModalClose()
+                closeModal();
+            } catch (error) {
+                console.log(value);
+                setLoading(false);
+                setSuccessMessage(null);
+                toast.error('Extend duration hiring request fail!');
+                CreateInterviewModalClose()
+                // Handle error, show error message, etc.
             }
+        } else {
+            setLoading(false);
+            setSuccessMessage(null);
+            CreateInterviewModalClose()
         }
     };
 
-    const handleSavePostJob = async () => {
-        // Kiểm tra xem có userID trong localStorage không
-        const userId = localStorage.getItem("userId");
-        const companyIdErr = localStorage.getItem("companyId");
-        const checkVali = true;
-        if (!userId) {
-            openModal(); // Nếu không có, mở modal signup
-        } else {
-            const companyIdErr = localStorage.getItem("companyId");
-            if (companyIdErr == "null") {
-                openModal2();
-            } else {
-                if (!document.getElementById("job-title").value) {
-                    setJobTitleError("Please enter a job title.");
-                    setNumberDevError(null);
-                    setTypeError(null);
-                    setLevelError(null);
-                    setEmploymentTypeError(null);
-                    setSkillError(null);
-                    setBudgetError(null);
-                    setDurationError(null);
-                    setDescriptionError(null);
-                    checkVali = false;
-                }
-                setLoading(true);
-                try {
-                    const jobTitleInput = document.getElementById("job-title");
-                    const jobTitle =
-                        jobTitleInput.value.trim() !== "" ? jobTitleInput.value : null; // replace with the actual job title from your input
-                    const jobDescription = value.trim() !== "" ? value : null; // get job description from the textarea
-                    const numberDevInput = document.getElementById("number-dev");
-                    const numberOfDev =
-                        numberDevInput.value !== ""
-                            ? parseInt(numberDevInput.value, 10)
-                            : null;
-                    const budgetInput = document.getElementById("budget");
-                    const salaryPerDev =
-                        budgetInput.value !== "" ? parseFloat(budgetInput.value) : null;
-                    const durationInput = document.getElementById("duration");
-                    const duration =
-                        durationInput.value.trim() !== "" ? durationInput.value : null; // get duration from the date input
-                    const typeRequireId = selectedOptions2.value
-                        ? selectedOptions2.value
-                        : null; // replace with actual value from the type dropdown
-                    const levelRequireId = selectedOptions3.value
-                        ? selectedOptions3.value
-                        : null; // replace with actual value from the level dropdown
-                    const employmentTypeId = selectedOptions5.value
-                        ? selectedOptions5.value
-                        : null;
-                    const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
-                    const isSaved = true;
-                    // const requestIdState = location.state?.requestId || null;
-                    const queryParams = new URLSearchParams(location.search);
-                    const projectId = queryParams.get("Id");
+    const CreateInterviewModalOpen = () => {
+        let check = true;
 
-                    if (requestId) {
-                        const response = await hiringRequestService.updateHiringRequest(
-                            requestId,
-                            jobTitle,
-                            jobDescription,
-                            numberOfDev,
-                            salaryPerDev,
-                            duration,
-                            typeRequireId,
-                            levelRequireId,
-                            skillIds,
-                            isSaved,
-                            employmentTypeId
-                        );
-                        toast.success('Save hiring request successfully!');
-                        console.log("Save hiring request successfully:", response);
-                    } else {
-                        const response = await hiringRequestService.createHiringRequest(
-                            companyIdErr,
-                            projectId,
-                            jobTitle,
-                            jobDescription,
-                            numberOfDev,
-                            salaryPerDev,
-                            duration,
-                            typeRequireId,
-                            levelRequireId,
-                            skillIds,
-                            isSaved,
-                            employmentTypeId
-                        );
-                        toast.success('Save hiring request successfully!');
-                    }
-                    setLoading(false);
-                    setJobTitleError(null);
-                    setErrorMessage(null);
-                    closeModal();
-                } catch (error) {
-                    console.error("Error posting job:", error);
-                    setLoading(false);
-                    toast.error('Save hiring request fail!');
-                    setSuccessMessage(null);
-                    // Handle error, show error message, etc.
-                }
-            }
+        if (!document.getElementById("duration").value) {
+            check = false;
+            setDurationError("Please enter the duration.");
+        } else {
+            setDurationError(null);
         }
+
+        if (check) {
+            setIsCreateInterviewModal(true);
+        }
+    };
+
+
+    const CreateInterviewModalClose = () => {
+        setIsCreateInterviewModal(false);
     };
 
     useEffect(() => {
@@ -654,6 +420,7 @@ const CreateHiringRequestPopup = (
                                                             class="form-control resume"
                                                             placeholder="Title..."
                                                             maxlength="100"
+                                                            readOnly
                                                             required
                                                         ></input>
                                                         {jobTitleError && (
@@ -669,6 +436,7 @@ const CreateHiringRequestPopup = (
                                                             type="number"
                                                             class="form-control resume"
                                                             placeholder="0"
+                                                            readOnly
                                                         ></input>
                                                         {numberDevError && (
                                                             <p className="text-danger mt-2">{numberDevError}</p>
@@ -686,6 +454,7 @@ const CreateHiringRequestPopup = (
                                                             type="number"
                                                             class="form-control resume"
                                                             placeholder="3000000 VND"
+                                                            readOnly
                                                         ></input>
                                                         {budgetError && (
                                                             <p className="text-danger mt-2">{budgetError}</p>
@@ -733,6 +502,8 @@ const CreateHiringRequestPopup = (
                                                                 value={selectedOptions5}
                                                                 onChange={handleChange5}
                                                                 className="Select Select--level-highest"
+                                                                isDisabled={true}
+
                                                             />
                                                         </div>
                                                         {employmentTypeError && (
@@ -752,6 +523,8 @@ const CreateHiringRequestPopup = (
                                                                 onChange={handleChange2}
                                                                 className="Select Select--level-highest"
                                                                 style={{ maxHeight: '2000px', overflowY: 'auto' }}
+                                                                isDisabled={true}
+
                                                             />
                                                         </div>
 
@@ -771,6 +544,8 @@ const CreateHiringRequestPopup = (
                                                                 value={selectedOptions3}
                                                                 onChange={handleChange3}
                                                                 className="Select Select--level-high"
+                                                                isDisabled={true}
+
                                                             />
                                                         </div>
                                                         {levelError && (
@@ -789,6 +564,7 @@ const CreateHiringRequestPopup = (
                                                                 value={selectedOptions}
                                                                 onChange={handleChange}
                                                                 className="Select Select--level-high"
+                                                                isDisabled={true}
                                                             />
                                                         </div>
                                                         {skillError && (
@@ -809,12 +585,11 @@ const CreateHiringRequestPopup = (
                                                             onEditorChange={(newValue) => {
                                                                 setValue(newValue);
                                                             }}
+                                                            disabled={true}
                                                             ref={descriptionRef}
                                                             init={{
                                                                 plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-                                                                //   plugins:
-                                                                //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
-                                                                // 
+
                                                             }}
                                                         />
                                                         {descriptionError && (
@@ -828,29 +603,17 @@ const CreateHiringRequestPopup = (
 
                                             <div class="row">
                                                 <div class="col-lg-12 mt-2 d-flex justify-content-end gap-2">
-                                                    <button
-                                                        type="button"
-                                                        className=" btn btn-info "
-                                                        style={{ backgroundColor: "#0051ffe0" }}
-                                                        onClick={handleSavePostJob}
-                                                        disabled={loading}
-                                                    >
-                                                        {loading ? (
-                                                            <RingLoader color="#fff" loading={true} size={20} />
-                                                        ) : (
-                                                            "Save"
-                                                        )}
-                                                    </button>
+
                                                     <button
                                                         type="button"
                                                         className="btn btn-primary"
-                                                        onClick={handlePostJob}
+                                                        onClick={CreateInterviewModalOpen}
                                                         disabled={loading}
                                                     >
                                                         {loading ? (
                                                             <RingLoader color="#fff" loading={true} size={20} />
                                                         ) : (
-                                                            "Post a hiring request"
+                                                            "Extend duration"
                                                         )}
                                                     </button>
                                                 </div>
@@ -876,10 +639,44 @@ const CreateHiringRequestPopup = (
                         {/* </div> */}
                         {/* </section > */}
                     </ModalBody>
+                    <Modal
+                        style={{ padding: "10px" }}
+                        isOpen={isCreateInterviewModal}
+                        centered
+                        tabIndex="-1"
+                        contentLabel="Confirm Create Interview Modal"
+                    >
+                        <div className="modal-header">
+                            <h3>Confirm Create Report</h3>
+                        </div>
+                        <ModalBody>
+                            <div>
+                                <h6 style={{ color: "#969BA5" }}>
+                                    Are you sure you want to extend the duration of this hiring request? You will not be able to extend duration again!
+                                </h6>
+                            </div>
+                        </ModalBody>
+                        <div className="d-flex justify-content-around   mt-4 modal-footer">
+                            <button
+                                style={{ width: "100px" }}
+                                className="btn btn-danger"
+                                onClick={CreateInterviewModalClose}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                style={{ width: "100px" }}
+                                className="btn btn-primary"
+                                onClick={handlePostJob}
+                            >
+                                Create
+                            </button>
+                        </div>
+                    </Modal>
                 </Modal>
             </div>
         </React.Fragment>
     );
 };
 
-export default CreateHiringRequestPopup;
+export default ExtendDurationHiringRequestPopup;

@@ -242,7 +242,6 @@ const createStaff = async (
 const deleteStaff = async (userId) => {
   const serviceUrl = urlConstant.endpoint.user.deleteManager.replace("${userId}", userId);
   const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
-
   return response
 }
 

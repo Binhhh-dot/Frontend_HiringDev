@@ -396,7 +396,7 @@ const TransactionVacancyList = (a) => {
                                         <div className="row">
                                             <li className="col-lg-12">
                                                 <div className="d-flex">
-                                                    <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                                                    <i className="uil uil-parking-square icon bg-primary-subtle text-primary"></i>
                                                     <div className="ms-3">
                                                         <h6 className="fs-14 mb-0">Project name </h6>
                                                         <p className="text-muted mb-0" id="projectNameOverview"> {selectReportDetail.projectName}</p>
@@ -407,7 +407,7 @@ const TransactionVacancyList = (a) => {
                                         <div className="row">
                                             <li className="col-lg-12">
                                                 <div className="d-flex ">
-                                                    <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                                                    <i className="uil uil-parcel icon bg-primary-subtle text-primary"></i>
                                                     <div className="ms-3">
                                                         <h6 className="fs-14 mb-0">Project code </h6>
                                                         <p className="text-muted mb-0" id="projectTypeOverview">{selectReportDetail.projectCode}</p>
@@ -418,7 +418,7 @@ const TransactionVacancyList = (a) => {
                                         <div className="row">
                                             <li className="col-lg-12">
                                                 <div className="d-flex ">
-                                                    <i className="uil uil-graduation-cap icon bg-primary-subtle text-primary"></i>
+                                                    <i className="uil uil-user icon bg-primary-subtle text-primary"></i>
                                                     <div className="ms-3">
                                                         <h6 className="fs-14 mb-0">Company name </h6>
                                                         <p className="text-muted mb-0" id="startDayOverview">{selectReportDetail.companyName}</p>

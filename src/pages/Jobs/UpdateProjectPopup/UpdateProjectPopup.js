@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Input, Modal, ModalBody, Form, FormGroup, Button, Label } from "reactstrap"; // Assuming you are using reactstrap for modal components
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -45,7 +45,7 @@ const UpdateProjectPopup = (
     const [endDateError, setEndDateError] = useState(null);
     const [projectTypeError, setProjectTypeError] = useState(null);
     const [jobDescriptionError, setJobDescriptionError] = useState(null);
-
+    const descriptionRef = useRef(null);
 
     const handleChange2 = (selected) => {
         console.log(selected);
@@ -187,6 +187,17 @@ const UpdateProjectPopup = (
 
     useEffect(() => {
         fetchDetailProjectUpdate();
+    }, [isModalOpen]);
+
+    useEffect(() => {
+        if (isModalOpen) {
+            const timeout = setTimeout(() => {
+                if (descriptionRef.current) {
+                    fetchDetailProjectUpdate();
+                }
+            }, 200); // Đợi 100ms để chắc chắn rằng phần tử đã được render
+            return () => clearTimeout(timeout);
+        }
     }, [isModalOpen]);
 
     const setMinDateEndDayByJs = () => {
@@ -341,6 +352,7 @@ const UpdateProjectPopup = (
                                                             onEditorChange={(newValue) => {
                                                                 setValue(newValue);
                                                             }}
+                                                            ref={descriptionRef}
                                                             init={{
                                                                 plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
                                                                 //   plugins:

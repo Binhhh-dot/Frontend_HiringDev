@@ -63,6 +63,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import SiderBarWebAdmin from "./SlideBar/SiderBarWebAdmin";
 
 const page = {
   pageSize: 6, // Number of items per page
@@ -218,6 +219,7 @@ const ListAccountHR = () => {
       .then(async (values) => {
         await createHR(values);
         form.resetFields();
+        fetchHRPaging();
         setVisibleModal1(false);
       })
       .catch((errorInfo) => {
@@ -348,6 +350,7 @@ const ListAccountHR = () => {
     try {
       await handleDeleteConfirm(userId);
       setVisibleModal4(false);
+      fetchHRPaging();
     } catch (error) {
       // Handle any errors that might occur during the deletion process
       console.error("Error deleting user:", error);
@@ -430,7 +433,7 @@ const ListAccountHR = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SliderBarWeb choose={"menu-key/sub-menu-key/5"}></SliderBarWeb>
+        <SiderBarWebAdmin choose={"menu-key/4"}></SiderBarWebAdmin>
         <Layout>
           <div
             style={{

@@ -73,6 +73,8 @@ export default {
       getAllHiringRequestByProjectIdAndPaging:
         "/HiringRequest/ByProject?projectId=${projectId}&PageIndex=${PageIndex}&PageSize=${PageSize}&searchKeyString=${searchKeyString}&TypeRequireId=${TypeRequireId}&LevelRequireId=${LevelRequireId}&Status=${Status}",
       closeHirringRequestStatus: "/HiringRequestStatus/Closed",
+      cloneHiringRequest: "/HiringRequest/Clone/${requestId}",
+      extendDuration: "/HiringRequestStatus/ExtendDuration"
     },
 
     selectingDeveloper: {
@@ -286,6 +288,7 @@ export default {
         "/Notification/Read?notificationId=${notificationId}&userId=${userId}",
       unNewNotification: "/Notification/UnNew?userId=${userId}",
       deleteUserDevice: "/UserDevice/${userDeviceId}",
+      getUserDeviceId: "/UserDevice/User/${userId}",
     },
   },
 };
