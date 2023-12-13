@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, CardBody, Col } from "reactstrap";
 import hiringrequestService from "../../../services/hiringrequest.service";
 //Import images
-import profileImage from "../../../assets/images/profile.jpg";
+import profileImage from "../../../assets/images/user/img-00.jpg";
 import userSerrvices from "../../../services/user.serrvices";
 import axios from "axios";
 import { useUser } from "./UserContext";

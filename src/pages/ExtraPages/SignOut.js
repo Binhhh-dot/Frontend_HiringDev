@@ -37,7 +37,10 @@ const SignOut = () => {
           localStorage.clear();
         } else {
           console.log("DeviceToken không tồn tại trong danh sách.");
+          localStorage.clear();
         }
+      } else {
+        localStorage.clear();
       }
     } catch (error) {
       console.log(error);

@@ -17,17 +17,11 @@ const getProjectListPaging = async (PageIndex, PageSize) => {
   return response;
 };
 
-const createProject = async (formData) => {
+const createProject = async (companyId, projectName, projectTypeId, status, startDate, endDate, description) => {
   const serviceUrl = urlConstant.endpoint.project.createProject;
-  const config = {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  };
   const response = await axiosLocalHost.normalRequest.post(
     serviceUrl,
-    formData,
-    config
+    { companyId, projectName, projectTypeId, status, startDate, endDate, description }
   );
   return response;
 };

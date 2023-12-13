@@ -10,7 +10,7 @@
     text-align: center;
 }
 
-.swiper-pagination{
+.swiper-pagination {
     .swiper-pagination-bullet {
         width: 8px;
         height: 8px;
@@ -18,9 +18,171 @@
         opacity: 0.5;
         border-radius: 8px;
         transition: all 0.5s ease;
-        &.swiper-pagination-bullet-active{
+
+        &.swiper-pagination-bullet-active {
             opacity: 1;
             width: 26px;
         }
+    }
+}
+
+.step-progress-bar {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.step {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    margin: 0 10px;
+    background-color: #fff;
+    position: relative;
+}
+
+.step.active {
+    background-color: #55b776;
+    color: #fff;
+}
+
+.progress {
+    height: 10px;
+    background-color: #ccc;
+    margin: 20px 0;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #55b776;
+    transition: width 0.3s ease-in-out;
+}
+
+.containter-progressbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+    position: relative;
+}
+
+.circle-progressbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #387cf6;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 50%;
+    color: white;
+    position: relative;
+}
+
+.circle-progressbar::before,
+.circle-progressbar::after {
+    content: '';
+    position: absolute;
+    background-color: #387cf6;
+    height: 2px;
+    width: calc(100% + 20px);
+    /* Width of line */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.circle-progressbar:first-child::before {
+    left: 100%;
+}
+
+.circle-progressbar:nth-child(2)::before {
+    left: -50%;
+}
+
+.circle-progressbar:nth-child(2)::after {
+    left: 100%;
+}
+
+.circle-progressbar:nth-child(3)::after {
+    left: -50%;
+}
+
+.indexedStep {
+    color: rgb(190, 190, 190);
+    width: 45px;
+    height: 45px;
+    font-size: 12px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(206, 206, 206);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.indexedStep.accomplished {
+    background-color: #4db193;
+    color: white;
+    border-style: none;
+    font-size: 17px;
+}
+
+.RSPBprogressBar {
+    height: 2px;
+    width: 64%;
+    line-height: 1;
+    border-radius: 10px;
+    position: relative;
+    background-color: rgb(207, 207, 207);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 0;
+    margin: 20px auto;
+}
+
+.RSPBprogressBar .RSPBstep {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    position: absolute;
+    transform: translateX(-50%);
+    transition-property: all;
+    transition-timing-function: ease;
+}
+
+.RSPBprogressBar .RSPBprogressBarText {
+    color: white;
+    font-size: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.RSPBprogressBar .RSPBprogression {
+    position: absolute;
+    transition: width 0.3s ease;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 10px;
+    background: #4db193;
+    z-index: -1;
+}
+
+@media screen and (max-width: 480px) {
+    .indexedStep {
+        width: 15px;
+        height: 15px;
+        font-size: 6px;
     }
 }

@@ -403,7 +403,41 @@ const ProjectDetailDesciption = () => {
           Edit project
         </div>
       ),
-    }
+    },
+    {
+      key: "2",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          // onClick={() => onUpdateWorkLog()}
+          onClick={() => {
+            AntdModal.confirm({
+              title: 'Confirm close project',
+              content: (<div>
+                <p>Are you sure to clost this project ?</p>
+                <p>All activities in the hiring request of this job position will stop</p>
+              </div>),
+              onOk() {
+                // Action when the user clicks OK
+                console.log('Confirmed!');
+              },
+              onCancel() {
+                // Action when the user cancels
+                console.log('Cancelled!');
+              },
+              footer: (_, { OkBtn, CancelBtn }) => (
+                <>
+                  <CancelBtn />
+                  <OkBtn />
+                </>
+              ),
+            });
+          }}
+        >
+          Close project
+        </div>
+      ),
+    },
   ]
 
   const [showCollapse, setShowCollapse] = useState(Array(payRollDetail.length).fill(false));

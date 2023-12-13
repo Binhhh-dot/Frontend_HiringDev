@@ -613,271 +613,367 @@ const CreateHiringRequestPopup = (
 
     return (
         <React.Fragment>
-            <div>
-                <Modal isOpen={isModalOpen} toggle={closeModal} size={"xl"}>
-                    <div className="mt-2 d-flex justify-content-end ">
-                        <Button
-                            close
-                            className="close-button"
-                            onClick={closeModal}
-                            style={{ marginRight: "10px" }}
-                        ></Button>
-                    </div>
-                    <ModalBody className="rounded">
-                        {loading && (
-                            <div className="overlay" style={{ zIndex: "2000" }}>
-                                <div className="spinner"></div>
-                            </div>
-                        )}
 
-                        {/* <section class="section"> */}
-                        {/* <div class="container"> */}
-                        <div class="row justify-content-center">
-                            <div class="col-lg-12">
-                                <div class="rounded shadow bg-white p-4">
-                                    <div class="custom-form">
-                                        <div id="message3"></div>
-                                        <form
-                                            method="post"
-                                            action="php/contact.php"
-                                            name="contact-form"
-                                            id="contact-form3"
-                                        >
-                                            <h4 class="text-dark mb-3">Create new hiring request </h4>
-                                            <div class="row">
-                                                <div class="col-md-9">
-                                                    <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Hiring request title</label>
-                                                        <input
-                                                            id="job-title"
-                                                            type="text"
-                                                            class="form-control resume"
-                                                            placeholder="Title..."
-                                                            maxlength="100"
-                                                            required
-                                                        ></input>
-                                                        {jobTitleError && (
-                                                            <p className="text-danger mt-2">{jobTitleError}</p>
-                                                        )}
-                                                    </div>
+            <Modal isOpen={isModalOpen} toggle={closeModal} size={"xl"}>
+                <div className="mt-2 d-flex justify-content-end ">
+                    <Button
+                        close
+                        className="close-button"
+                        onClick={closeModal}
+                        style={{ marginRight: "10px" }}
+                    ></Button>
+                </div>
+                <ModalBody className="rounded" style={{ padding: "0px" }}>
+                    {loading && (
+                        <div className="overlay" style={{ zIndex: "2000" }}>
+                            <div className="spinner"></div>
+                        </div>
+                    )}
+
+                    {/* <section class="section"> */}
+                    {/* <div class="container"> */}
+                    <div class="row justify-content-center">
+                        <div class="col-lg-12">
+                            <div class="rounded shadow bg-white p-4">
+                                <div class="custom-form">
+                                    <div id="message3"></div>
+                                    <form
+                                        method="post"
+                                        action="php/contact.php"
+                                        name="contact-form"
+                                        id="contact-form3"
+                                    >
+                                        <h4 class="text-dark mb-3">Create new hiring request </h4>
+                                        <div class="row">
+                                            <div class="col-md-9">
+                                                <div class="form-group app-label mt-2">
+                                                    <label class="text-muted">Hiring request title</label>
+                                                    <input
+                                                        id="job-title"
+                                                        type="text"
+                                                        class="form-control resume"
+                                                        placeholder="Title..."
+                                                        maxlength="100"
+                                                        required
+                                                    ></input>
+                                                    {jobTitleError && (
+                                                        <p className="text-danger mt-2">{jobTitleError}</p>
+                                                    )}
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Number of developer</label>
-                                                        <input
-                                                            id="number-dev"
-                                                            type="number"
-                                                            class="form-control resume"
-                                                            placeholder="0"
-                                                        ></input>
-                                                        {numberDevError && (
-                                                            <p className="text-danger mt-2">{numberDevError}</p>
-                                                        )}
-                                                    </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group app-label mt-2">
+                                                    <label class="text-muted">Number of developer</label>
+                                                    <input
+                                                        id="number-dev"
+                                                        type="number"
+                                                        class="form-control resume"
+                                                        placeholder="0"
+                                                    ></input>
+                                                    {numberDevError && (
+                                                        <p className="text-danger mt-2">{numberDevError}</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group app-label mt-2">
+                                                    <label class="text-muted">Salary per dev (VND)</label>
+                                                    <input
+                                                        id="budget"
+                                                        type="number"
+                                                        class="form-control resume"
+                                                        placeholder="3000000 VND"
+                                                    ></input>
+                                                    {budgetError && (
+                                                        <p className="text-danger mt-2">{budgetError}</p>
+                                                    )}
                                                 </div>
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Salary per dev (VND)</label>
-                                                        <input
-                                                            id="budget"
-                                                            type="number"
-                                                            class="form-control resume"
-                                                            placeholder="3000000 VND"
-                                                        ></input>
-                                                        {budgetError && (
-                                                            <p className="text-danger mt-2">{budgetError}</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Duration</label>
-                                                        <input
-                                                            type="date"
-                                                            class="form-control resume"
-                                                            placeholder=""
-                                                            readOnly
-                                                            value={selectedDate}
-                                                        ></input>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group app-label mt-2">
-                                                        <label class="text-muted"></label>
-                                                        <input
-                                                            id="duration"
-                                                            type="date"
-                                                            class="form-control resume"
-                                                            placeholder=""
-                                                            min={minDateDuration}
-                                                        ></input>
-                                                        {durationError && (
-                                                            <p className="text-danger mt-2">{durationError}</p>
-                                                        )}
-                                                    </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group app-label mt-2">
+                                                    <label class="text-muted">Duration</label>
+                                                    <input
+                                                        type="date"
+                                                        class="form-control resume"
+                                                        placeholder=""
+                                                        readOnly
+                                                        value={selectedDate}
+                                                    ></input>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">
-                                                            Employment type requirement
-                                                        </label>
-                                                        <div className="form-button">
-                                                            <Select
-                                                                options={options5}
-                                                                value={selectedOptions5}
-                                                                onChange={handleChange5}
-                                                                className="Select Select--level-highest"
-                                                            />
-                                                        </div>
-                                                        {employmentTypeError && (
-                                                            <p className="text-danger mt-2">
-                                                                {employmentTypeError}
-                                                            </p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Type of developer requirement</label>
-                                                        <div className="form-button">
-                                                            <Select
-                                                                options={options2}
-                                                                value={selectedOptions2}
-                                                                onChange={handleChange2}
-                                                                className="Select Select--level-highest"
-                                                                style={{ maxHeight: '2000px', overflowY: 'auto' }}
-                                                            />
-                                                        </div>
-
-                                                        {typeError && (
-                                                            <p className="text-danger mt-2">{typeError}</p>
-                                                        )}
-                                                    </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group app-label mt-2">
+                                                    <label class="text-muted"></label>
+                                                    <input
+                                                        id="duration"
+                                                        type="date"
+                                                        class="form-control resume"
+                                                        placeholder=""
+                                                        min={minDateDuration}
+                                                    ></input>
+                                                    {durationError && (
+                                                        <p className="text-danger mt-2">{durationError}</p>
+                                                    )}
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Level requirement</label>
-                                                        <div className="form-button">
-                                                            <Select
-                                                                options={options3}
-                                                                value={selectedOptions3}
-                                                                onChange={handleChange3}
-                                                                className="Select Select--level-high"
-                                                            />
-                                                        </div>
-                                                        {levelError && (
-                                                            <p className="text-danger mt-2">{levelError}</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6">
-                                                    <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Skill requirement</label>
-                                                        <div className="form-button">
-                                                            <Select
-                                                                isMulti
-                                                                options={options}
-                                                                value={selectedOptions}
-                                                                onChange={handleChange}
-                                                                className="Select Select--level-high"
-                                                            />
-                                                        </div>
-                                                        {skillError && (
-                                                            <p className="text-danger mt-2">{skillError}</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group app-label mt-2">
-                                                        <label class="text-muted">Hiring request description</label>
-                                                        <Editor
-                                                            class="fix-height"
-                                                            id="description"
-                                                            apiKey="axy85kauuja11vgbfrm96qlmduhgfg6egrjpbjil00dfqpwf"
-                                                            onEditorChange={(newValue) => {
-                                                                setValue(newValue);
-                                                            }}
-                                                            ref={descriptionRef}
-                                                            init={{
-                                                                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-                                                                //   plugins:
-                                                                //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
-                                                                // 
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group app-label mt-2">
+                                                    <label class="text-muted">
+                                                        Employment type requirement
+                                                    </label>
+                                                    <div className="form-button">
+                                                        <Select
+                                                            options={options5}
+                                                            value={selectedOptions5}
+                                                            onChange={handleChange5}
+                                                            className="Select Select--level-highest"
+                                                            styles={{
+                                                                control: (provided) => ({
+                                                                    ...provided,
+                                                                    backgroundColor:
+                                                                        "rgba(255, 255, 255, 0.1)",
+                                                                    border: "1px solid #ede8e8",
+                                                                }),
+                                                                singleValue: (provided) => ({
+                                                                    ...provided,
+                                                                    color: "black",
+                                                                }),
+                                                                placeholder: (provided) => ({
+                                                                    ...provided,
+                                                                    color: "#ADB5BD",
+                                                                }),
+                                                                menu: (provided) => ({
+                                                                    ...provided,
+                                                                    backgroundColor: "white",
+                                                                }),
+                                                                option: (provided, state) => ({
+                                                                    ...provided,
+                                                                    color: "black",
+                                                                })
                                                             }}
                                                         />
-                                                        {descriptionError && (
-                                                            <p className="text-danger mt-2">
-                                                                {descriptionError}
-                                                            </p>
-                                                        )}
                                                     </div>
+                                                    {employmentTypeError && (
+                                                        <p className="text-danger mt-2">
+                                                            {employmentTypeError}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group app-label mt-2">
+                                                    <label class="text-muted">Type of developer requirement</label>
+                                                    <div className="form-button">
+                                                        <Select
+                                                            options={options2}
+                                                            value={selectedOptions2}
+                                                            onChange={handleChange2}
+                                                            className="Select Select--level-highest"
+                                                            style={{ maxHeight: '2000px', overflowY: 'auto' }}
+                                                            styles={{
+                                                                control: (provided) => ({
+                                                                    ...provided,
+                                                                    backgroundColor:
+                                                                        "rgba(255, 255, 255, 0.1)",
+                                                                    border: "1px solid #ede8e8",
+                                                                }),
+                                                                singleValue: (provided) => ({
+                                                                    ...provided,
+                                                                    color: "black",
+                                                                }),
+                                                                placeholder: (provided) => ({
+                                                                    ...provided,
+                                                                    color: "#ADB5BD",
+                                                                }),
+                                                                menu: (provided) => ({
+                                                                    ...provided,
+                                                                    backgroundColor: "white",
+                                                                }),
+                                                                option: (provided, state) => ({
+                                                                    ...provided,
+                                                                    color: "black",
+                                                                })
+                                                            }}
+                                                        />
+                                                    </div>
+
+                                                    {typeError && (
+                                                        <p className="text-danger mt-2">{typeError}</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group app-label mt-2">
+                                                    <label class="text-muted">Level requirement</label>
+                                                    <div className="form-button">
+                                                        <Select
+                                                            options={options3}
+                                                            value={selectedOptions3}
+                                                            onChange={handleChange3}
+                                                            className="Select Select--level-high"
+                                                            styles={{
+                                                                control: (provided) => ({
+                                                                    ...provided,
+                                                                    backgroundColor:
+                                                                        "rgba(255, 255, 255, 0.1)",
+                                                                    border: "1px solid #ede8e8",
+                                                                }),
+                                                                singleValue: (provided) => ({
+                                                                    ...provided,
+                                                                    color: "black",
+                                                                }),
+                                                                placeholder: (provided) => ({
+                                                                    ...provided,
+                                                                    color: "#ADB5BD",
+                                                                }),
+                                                                menu: (provided) => ({
+                                                                    ...provided,
+                                                                    backgroundColor: "white",
+                                                                }),
+                                                                option: (provided, state) => ({
+                                                                    ...provided,
+                                                                    color: "black",
+                                                                })
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    {levelError && (
+                                                        <p className="text-danger mt-2">{levelError}</p>
+                                                    )}
                                                 </div>
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col-lg-12 mt-2 d-flex justify-content-end gap-2">
-                                                    <button
-                                                        type="button"
-                                                        className=" btn btn-info "
-                                                        style={{ backgroundColor: "#0051ffe0" }}
-                                                        onClick={handleSavePostJob}
-                                                        disabled={loading}
-                                                    >
-                                                        {loading ? (
-                                                            <RingLoader color="#fff" loading={true} size={20} />
-                                                        ) : (
-                                                            "Save"
-                                                        )}
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-primary"
-                                                        onClick={handlePostJob}
-                                                        disabled={loading}
-                                                    >
-                                                        {loading ? (
-                                                            <RingLoader color="#fff" loading={true} size={20} />
-                                                        ) : (
-                                                            "Post a hiring request"
-                                                        )}
-                                                    </button>
+                                            <div class="col-md-6">
+                                                <div class="form-group app-label mt-2">
+                                                    <label class="text-muted">Skill requirement</label>
+                                                    <div className="form-button">
+                                                        <Select
+                                                            isMulti
+                                                            options={options}
+                                                            value={selectedOptions}
+                                                            onChange={handleChange}
+                                                            className="Select Select--level-high"
+                                                            styles={{
+                                                                control: (provided) => ({
+                                                                    ...provided,
+                                                                    backgroundColor:
+                                                                        "rgba(255, 255, 255, 0.1)",
+                                                                    border: "1px solid #ede8e8",
+                                                                }),
+                                                                singleValue: (provided) => ({
+                                                                    ...provided,
+                                                                    color: "black",
+                                                                }),
+                                                                placeholder: (provided) => ({
+                                                                    ...provided,
+                                                                    color: "#ADB5BD",
+                                                                }),
+                                                                menu: (provided) => ({
+                                                                    ...provided,
+                                                                    backgroundColor: "white",
+                                                                }),
+                                                                option: (provided, state) => ({
+                                                                    ...provided,
+                                                                    color: "black",
+                                                                })
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    {skillError && (
+                                                        <p className="text-danger mt-2">{skillError}</p>
+                                                    )}
                                                 </div>
-                                                {successMessage && (
-                                                    <div className="alert alert-success mt-2" role="alert">
-                                                        {successMessage}
-                                                    </div>
-                                                )}
-
-                                                {/* Hiển thị thông báo lỗi */}
-                                                {errorMessage && (
-                                                    <div className="alert alert-danger mt-2" role="alert">
-                                                        {errorMessage}
-                                                    </div>
-                                                )}
-                                                {/* Modal for Sign Up */}
                                             </div>
-                                        </form>
-                                    </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group app-label mt-2">
+                                                    <label class="text-muted">Hiring request description</label>
+                                                    <Editor
+                                                        class="fix-height"
+                                                        id="description"
+                                                        apiKey="axy85kauuja11vgbfrm96qlmduhgfg6egrjpbjil00dfqpwf"
+                                                        onEditorChange={(newValue) => {
+                                                            setValue(newValue);
+                                                        }}
+                                                        ref={descriptionRef}
+                                                        init={{
+                                                            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                                                            //   plugins:
+                                                            //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
+                                                            // 
+                                                        }}
+                                                    />
+                                                    {descriptionError && (
+                                                        <p className="text-danger mt-2">
+                                                            {descriptionError}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-12 mt-2 d-flex justify-content-end gap-2">
+                                                <button
+                                                    type="button"
+                                                    className=" btn btn-info "
+                                                    style={{ backgroundColor: "#0051ffe0" }}
+                                                    onClick={handleSavePostJob}
+                                                    disabled={loading}
+                                                >
+                                                    {loading ? (
+                                                        <RingLoader color="#fff" loading={true} size={20} />
+                                                    ) : (
+                                                        "Save"
+                                                    )}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary"
+                                                    onClick={handlePostJob}
+                                                    disabled={loading}
+                                                >
+                                                    {loading ? (
+                                                        <RingLoader color="#fff" loading={true} size={20} />
+                                                    ) : (
+                                                        "Post a hiring request"
+                                                    )}
+                                                </button>
+                                            </div>
+                                            {successMessage && (
+                                                <div className="alert alert-success mt-2" role="alert">
+                                                    {successMessage}
+                                                </div>
+                                            )}
+
+                                            {/* Hiển thị thông báo lỗi */}
+                                            {errorMessage && (
+                                                <div className="alert alert-danger mt-2" role="alert">
+                                                    {errorMessage}
+                                                </div>
+                                            )}
+                                            {/* Modal for Sign Up */}
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                        {/* </div> */}
-                        {/* </section > */}
-                    </ModalBody>
-                </Modal>
-            </div>
+                    </div>
+                    {/* </div> */}
+                    {/* </section > */}
+                </ModalBody>
+            </Modal>
+
         </React.Fragment>
     );
 };
