@@ -103,11 +103,12 @@ const removeOutOfWaitingInterview = async (requestId, devIds) => {
   return response;
 };
 
-
 const getDeveloperDetailByDevId = async (devIds) => {
   const serviceUrl =
-    urlConstant.endpoint.developer.getDeveloperDetailByDevId
-      .replace("${developerId}", devIds);
+    urlConstant.endpoint.developer.getDeveloperDetailByDevId.replace(
+      "${developerId}",
+      devIds
+    );
   const response = await axiosLocalHost.normalRequest.get(serviceUrl, {
     devIds,
   });
@@ -201,12 +202,12 @@ const onbardingDeveloper = async (requestId, developerId) => {
 };
 
 const getListDeveloperOnboardByProjectId = async (projectId, status) => {
-  const values = status.map(value => `&Status=${value}`);
+  const values = status.map((value) => `&Status=${value}`);
   const serviceUrl =
     urlConstant.endpoint.developer.getListDeveloperOnboardByProjectId.replace(
       "${projectId}",
       projectId
-    ) + values.join('');;
+    ) + values.join("");
 
   const response = await axiosLocalHost.normalRequest.get(serviceUrl, {
     projectId,
@@ -220,12 +221,18 @@ const updateDeveloperByAdmin = async (developerId, formData) => {
       "${developerId}",
       developerId
     );
+
+  console.log([...formData]);
   const config = {
     header: {
       "Content-Type": "multipart/form-data",
     },
   };
-  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
+  const response = await axiosLocalHost.normalRequest.put(
+    serviceUrl,
+    formData,
+    config
+  );
   return response;
 };
 

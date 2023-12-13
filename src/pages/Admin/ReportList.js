@@ -444,7 +444,7 @@ const ReportList = () => {
           </div>
           <Content>
             <section
-              className="section p-3 "
+              className="section p-3"
               style={{
                 backgroundColor: "#FFFF",
                 borderRadius: "10px",

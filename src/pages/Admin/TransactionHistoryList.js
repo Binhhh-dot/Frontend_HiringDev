@@ -55,7 +55,6 @@ const TransactionHistoryList = () => {
   //------------------------------------------------------------------------
   let [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
   const pageSize = 7;
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -273,69 +272,6 @@ const TransactionHistoryList = () => {
                     <div className="me-lg-6">
                       <h4>Transaction History List</h4>
                       <div className="d-flex justify-content-between">
-                        <Nav
-                          className="profile-content-nav nav-pills border-bottom gap-3 mb-3 "
-                          id="pills-tab"
-                          role="tablist"
-                        >
-                          <NavItem role="presentation">
-                            <NavLink
-                              to="#"
-                              className={classnames("nav-link", {
-                                active: activeTab === "1",
-                              })}
-                              onClick={() => {
-                                tabChange("1");
-                              }}
-                              type="button"
-                            >
-                              All
-                            </NavLink>
-                          </NavItem>
-                          <NavItem role="presentation">
-                            <NavLink
-                              to="#"
-                              className={classnames("nav-link", {
-                                active: activeTab === "2",
-                              })}
-                              onClick={() => {
-                                tabChange("2");
-                              }}
-                              type="button"
-                            >
-                              Created
-                            </NavLink>
-                          </NavItem>
-                          <NavItem role="presentation">
-                            <NavLink
-                              to="#"
-                              className={classnames("nav-link", {
-                                active: activeTab === "3",
-                              })}
-                              onClick={() => {
-                                tabChange("3");
-                              }}
-                              type="button"
-                            >
-                              Success
-                            </NavLink>
-                          </NavItem>
-                          <NavItem role="presentation">
-                            <NavLink
-                              to="#"
-                              className={classnames("nav-link", {
-                                active: activeTab === "4",
-                              })}
-                              onClick={() => {
-                                tabChange("4");
-                              }}
-                              type="button"
-                            >
-                              Failed
-                            </NavLink>
-                          </NavItem>
-                        </Nav>
-
                         <div className="d-flex align-items-center ">
                           <Space>
                             <Search
@@ -583,13 +519,6 @@ const TransactionHistoryList = () => {
                         </Row>
                       </Modal>
 
-                      {/* <CardBody>
-                        <TabContent activeTab={activeTab}>
-                          <TabPane tabId="1"></TabPane>
-                          <TabPane tabId="1"></TabPane>
-                          <TabPane tabId="1"></TabPane>
-                        </TabContent>
-                      </CardBody> */}
                       <div className="mt-3">
                         {transactionHistoryList.map(
                           (transactionHistoryListNew, key) => (

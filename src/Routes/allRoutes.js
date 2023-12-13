@@ -118,6 +118,7 @@ import CompanyDetailPartner from "../pages/Admin/CompanyDetailPartner";
 import ReportList from "../pages/Admin/ReportList";
 import ReportListDetail from "../pages/Admin/ReportListDetail";
 import TransactionHistoryList from "../pages/Admin/TransactionHistoryList";
+import UpdateProfileManager from "../pages/Admin/NavBar/UpdateProfileManager";
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -283,6 +284,7 @@ const authRoutes = [
   { path: "/manageSkill", component: <ManageSkill /> },
   { path: "/manageType", component: <ManageType /> },
   { path: "/dashboard", component: <Dashboard /> },
+  { path: "/profilemanager", component: <UpdateProfileManager /> },
 ];
 
 export { userRoutes, authRoutes };

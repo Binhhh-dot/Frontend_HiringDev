@@ -60,10 +60,7 @@ const getDeveloperByProject = async (projectId, status) => {
   return response;
 };
 
-const updateProject = async (
-  projectId,
-  formData
-) => {
+const updateProject = async (projectId, formData) => {
   const serviceUrl = urlConstant.endpoint.project.updateProject.replace(
     "${projectId}",
     projectId
@@ -73,7 +70,11 @@ const updateProject = async (
       "Content-Type": "multipart/form-data",
     },
   };
-  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
+  const response = await axiosLocalHost.normalRequest.put(
+    serviceUrl,
+    formData,
+    config
+  );
 
   return response;
 };
@@ -93,13 +94,11 @@ const getAllProjectByCompanyIdAndPaging = async (
       .replace("{PageSize}", PageSize)
       .replace("${ProjectTypeId}", ProjectTypeId)
       .replace("${searchKeyString}", inputSearch)
-      .replace("${Status}", status)
-    ;
-  console.log(serviceUrl)
+      .replace("${Status}", status);
+  console.log(serviceUrl);
   const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
-
 
 const updateImage = async (formData, projectId) => {
   const serviceUrl = urlConstant.endpoint.project.updateImage.replace(
@@ -111,12 +110,59 @@ const updateImage = async (formData, projectId) => {
       "Content-Type": "multipart/form-data",
     },
   };
-  console.log(serviceUrl)
-  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
-  console.log(response)
+  console.log(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.put(
+    serviceUrl,
+    formData,
+    config
+  );
+  console.log(response);
   return response;
 };
 
+const getProjectLisPreparingtPaging = async (PageIndex, PageSize) => {
+  const serviceUrl = urlConstant.endpoint.project.getProjectList + "?";
+  const pagingUrl = urlConstant.endpoint.project.getProjectLisPreparingtPaging
+    .replace("${PageIndex}", PageIndex)
+    .replace("${PageSize}", PageSize);
+  const fullUrl = serviceUrl + pagingUrl;
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
+
+  return response;
+};
+
+const getProjectListInprogressPaging = async (PageIndex, PageSize) => {
+  const serviceUrl = urlConstant.endpoint.project.getProjectList + "?";
+  const pagingUrl = urlConstant.endpoint.project.getProjectListInprogressPaging
+    .replace("${PageIndex}", PageIndex)
+    .replace("${PageSize}", PageSize);
+  const fullUrl = serviceUrl + pagingUrl;
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
+
+  return response;
+};
+
+const getProjectListCompletedPaging = async (PageIndex, PageSize) => {
+  const serviceUrl = urlConstant.endpoint.project.getProjectList + "?";
+  const pagingUrl = urlConstant.endpoint.project.getProjectListCompletedPaging
+    .replace("${PageIndex}", PageIndex)
+    .replace("${PageSize}", PageSize);
+  const fullUrl = serviceUrl + pagingUrl;
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
+
+  return response;
+};
+
+const getProjectListCancelPaging = async (PageIndex, PageSize) => {
+  const serviceUrl = urlConstant.endpoint.project.getProjectList + "?";
+  const pagingUrl = urlConstant.endpoint.project.getProjectListCancelPaging
+    .replace("${PageIndex}", PageIndex)
+    .replace("${PageSize}", PageSize);
+  const fullUrl = serviceUrl + pagingUrl;
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
+
+  return response;
+};
 
 export default {
   createProject,
@@ -127,5 +173,9 @@ export default {
   getDeveloperByProject,
   updateProject,
   getAllProjectByCompanyIdAndPaging,
-  updateImage
+  updateImage,
+  getProjectLisPreparingtPaging,
+  getProjectListInprogressPaging,
+  getProjectListCompletedPaging,
+  getProjectListCancelPaging,
 };

@@ -70,6 +70,7 @@ import {
   DropdownItem,
 } from "reactstrap";
 import SiderBarWebAdmin from "./SlideBar/SiderBarWebAdmin";
+import UpdateDeveloperAccountPopup from "./UpdateDeveloperAccountPopup/UpdateDeveloperAccountPopup";
 
 const layout = {
   labelCol: {
@@ -109,9 +110,19 @@ const ListAccountDeveloper = () => {
     setVisibleModal1(true);
   };
 
-  const showModal2 = () => {
+  //----------------------------------------------------------------------------------------
+  const [developerIdAccount, setDeveloperIdAccount] = useState(null);
+
+  const showModal2 = (developerId) => {
+    setDeveloperIdAccount(developerId);
     setVisibleModal2(true);
   };
+
+  const closedModal2 = () => {
+    setVisibleModal2(false);
+  };
+
+  //----------------------------------------------------------------------------------------
   const showModal3 = () => {
     setVisibleModal3(true);
   };
@@ -240,6 +251,7 @@ const ListAccountDeveloper = () => {
           value: skill.skillId.toString(),
           label: skill.skillName,
         }));
+        console.log(formattedSkills);
         setOptions(formattedSkills);
       } catch (error) {
         console.error("Error fetching skills:", error);
@@ -270,6 +282,7 @@ const ListAccountDeveloper = () => {
           value: level.levelId.toString(),
           label: level.levelName,
         }));
+        console.log(formattedLevels);
         setOptions3(formattedLevels);
       } catch (error) {
         console.error("Error fetching levels:", error);
@@ -286,6 +299,7 @@ const ListAccountDeveloper = () => {
             label: employmentType.employmentTypeName,
           })
         );
+        console.log(formattedEmploymentType);
         setOptions6(formattedEmploymentType);
       } catch (error) {
         console.error("Error fetching employment typeName:", error);
@@ -317,13 +331,13 @@ const ListAccountDeveloper = () => {
     }
   };
 
-  const handleOKUpdate = async () => {
-    try {
-      await handleUpdateDev();
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
-  };
+  // const handleOKUpdate = async () => {
+  //   try {
+  //     await handleUpdateDev();
+  //   } catch (error) {
+  //     console.error("Error deleting user:", error);
+  //   }
+  // };
 
   const handleCreateDev = async () => {
     // Kiểm tra xem có userID trong localStorage không
@@ -480,432 +494,24 @@ const ListAccountDeveloper = () => {
     }
   };
 
-  const handleUpdateDev = async () => {
-    // Kiểm tra xem có userID trong localStorage không
-    let check = true;
-    if (!document.getElementById("first-name").value) {
-      setFirstNameError("Please enter a first-name.");
-      check = false;
-    } else {
-      setFirstNameError(null);
-    }
+  // const [userImage3, setUserImage3] = useState(null);
+  // const [userDataDetail, setUserDataDetail] = useState({});
+  // const [userImage, setUserImage] = useState(null);
 
-    if (!document.getElementById("last-name").value) {
-      setLastNameError("Please enter a last-name.");
-      check = false;
-    } else {
-      setLastNameError(null);
-    }
+  // const [avatar, setAvatar] = useState(null);
 
-    if (!document.getElementById("email").value) {
-      setEmailError("Please enter an email");
-      check = false;
-    } else {
-      setEmailError(null);
-    }
+  // const handleChooseAvatar = () => {
+  //   const inputElement = document.getElementById("profile-img-file-input");
+  //   inputElement.click();
+  // };
 
-    if (selectedOptions2.length === 0) {
-      setTypeError("Please select at least one type");
-      check = false;
-    } else {
-      setTypeError(null);
-    }
-
-    if (!selectedOptions3.value) {
-      setLevelError("Please select the level ");
-      check = false;
-    } else {
-      setLevelError(null);
-    }
-
-    if (!selectedOptions6.value) {
-      setEmploymentTypeError("Please select the employment type ");
-      check = false;
-    } else {
-      setEmploymentTypeError(null);
-    }
-
-    if (!selectedOptions7.value) {
-      setGenderError("Please select the gender");
-      check = false;
-    } else {
-      setGenderError(null);
-    }
-
-    // Kiểm tra lỗi cho Skill requirement
-    if (selectedOptions.length === 0) {
-      setSkillError("Please select at least one skill");
-      check = false;
-    } else {
-      setSkillError(null);
-    }
-
-    if (
-      !document.getElementById("avarage-salary").value ||
-      parseInt(document.getElementById("avarage-salary").value, 10) <= 0
-    ) {
-      setAvarageSalaryError("Please enter the avarage salary(greater than 0)");
-      check = false;
-    } else {
-      setAvarageSalaryError(null);
-    }
-
-    if (
-      !document.getElementById("year-of-experience").value ||
-      parseInt(document.getElementById("year-of-experience").value, 10) <= 0
-    ) {
-      setYearOfExperienceError(
-        "Please enter the year of experience(greater than 0)"
-      );
-      check = false;
-    } else {
-      setYearOfExperienceError(null);
-    }
-
-    if (!document.getElementById("phone-number").value) {
-      setPhoneNumberError("Please enter a phone number");
-      check = false;
-    } else {
-      setPhoneNumberError(null);
-    }
-
-    // Kiểm tra lỗi cho Duration
-    if (!document.getElementById("date-of-birth").value) {
-      check = false;
-      setDateOfBirthError("Please enter the date of birth");
-    } else {
-      setDateOfBirthError(null);
-    }
-    if (check) {
-      try {
-        const firstName = document.getElementById("first-name").value;
-        const lastName = document.getElementById("last-name").value;
-        const email = document.getElementById("email").value;
-        const avarageSalary = document.getElementById("avarage-salary").value;
-        const yearOfExperience =
-          document.getElementById("year-of-experience").value;
-        const phoneNumber = document.getElementById("phone-number").value;
-        const dateOfBirth = document.getElementById("date-of-birth").value; // replace with actual value from the type dropdown
-        const levelRequireId = selectedOptions3.value
-          ? selectedOptions3.value
-          : null;
-        const employmentTypeId = selectedOptions5.value
-          ? selectedOptions5.value
-          : null;
-        const genderId = selectedOptions7.value ?? "";
-
-        const skillIds = selectedOptions.map((skill) => skill.value); // replace with actual values from the multi-select
-        const typeRequireId = selectedOptions2.value
-          ? selectedOptions2.value
-          : null; //
-        const formData = new FormData();
-
-        const response = await developerServices.updateDeveloperByAdmin(
-          firstName,
-          lastName,
-          email,
-          phoneNumber,
-          genderId,
-          dateOfBirth,
-          yearOfExperience,
-          avarageSalary,
-          employmentTypeId,
-          levelRequireId,
-          typeRequireId,
-          skillIds,
-
-        );
-
-        console.log(response);
-        message.success({
-          content: "Account Update Successfully",
-          duration: 2,
-          onClose: () => {
-            console.log("Toast closed");
-          },
-          style: {
-            marginTop: "50px",
-            marginRight: "50px",
-          },
-        });
-
-        fetchDeveloperPaging();
-        setVisibleModal1(false);
-      } catch (error) {
-        console.error("Error update dev:", error);
-        message.error({
-          content: "Error update account ",
-          duration: 2,
-          style: {
-            marginTop: "50px",
-            marginRight: "50px",
-          },
-        });
-      }
-    } else {
-    }
-  };
-
-  const [userImage3, setUserImage3] = useState(null);
-  const [userDataDetail, setUserDataDetail] = useState({});
-  const [userImage, setUserImage] = useState(null);
-
-  const [avatar, setAvatar] = useState(null);
-
-  const handleChooseAvatar = () => {
-    const inputElement = document.getElementById("profile-img-file-input");
-    inputElement.click();
-  };
-
-  const handlePreviewAvatar = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      file.preview = URL.createObjectURL(file);
-      setAvatar(file);
-    }
-  };
-
-  // Update
-  const handleEditClick = (developerId) => {
-    fetchUserDetail(developerId);
-    showModal2();
-    setUserId(developerId);
-  };
-
-
-  //const [developerDetail, setdeveloperDetail] = useState({})
-  const fetchUserDetail = async (developerId) => {
-    try {
-      const response = await userSerrvices.getDeveloperById(developerId);
-      developerDetail = response.data.data;
-
-      document.getElementById("first-name-dev").value =
-        response.data.data.firstName;
-      document.getElementById("last-name-dev").value =
-        response.data.data.lastName;
-      document.getElementById("email-dev").value = response.data.data.email;
-      document.getElementById("phone-dev").value =
-        response.data.data.phoneNumber;
-      document.getElementById("password-dev").value =
-        response.data.data.password;
-      document.getElementById("dateOfBirth-dev").value =
-        response.data.data.dateOfBirth;
-      document.getElementById("yearOfExperience-dev").value =
-        response.data.data.yearOfExperience;
-      document.getElementById("averageSalary-dev").value =
-        response.data.data.averageSalary;
-      document.getElementById("codeName-dev").value =
-        response.data.data.codeName;
-      try {
-        const response = await genderServices.getAllGender();
-        const activeGenders = response.data.data.filter(
-          (gender) => gender.statusString === "Active"
-        );
-
-        if (response.data.data) {
-          const requiredGenderNames = response.data.data.genderName;
-
-          const foundGenders = activeGenders.find((gender) =>
-            gender.genderName === requiredGenderNames
-          );
-          if (foundGenders) {
-            const newEmploymentType = {
-              value: foundGenders.genderId.toString(),
-              label: foundGenders.genderName,
-            };
-            setSelectedOptions7(newEmploymentType);
-          }
-
-          // Assuming setSelectedOptions is designed to handle an array
-        }
-        const formattedEmploymentType = activeGenders.map(
-          (gender) => ({
-            value: gender.genderId.toString(),
-            label: gender.genderName,
-          })
-        );
-        setOptions7(formattedEmploymentType);
-
-      } catch (error) {
-        console.error("Error fetching skills:", error);
-      }
-      try {
-        const response = await skillService.getAllSkill();
-        const activeSkills = response.data.data.filter(
-          (skill) => skill.statusString === "Active"
-        );
-
-        if (response.data.data) {
-          const requiredSkillNames = response.data.data.skillIds;
-
-          const foundSkills = activeSkills.filter((skill) =>
-            requiredSkillNames.includes(skill.skillName)
-          );
-
-          // Assuming setSelectedOptions is designed to handle an array
-          setSelectedOptions(
-            foundSkills.map((foundSkill) => ({
-              value: foundSkill.skillId.toString(),
-              label: foundSkill.skillName,
-            }))
-          );
-        }
-
-        const formattedSkills = activeSkills.map((skill) => ({
-          value: skill.skillId.toString(),
-          label: skill.skillName,
-        }));
-        setOptions(formattedSkills);
-      } catch (error) {
-        console.error("Error fetching skills:", error);
-      }
-      try {
-        const response3 = await levelServices.getAllLevel();
-        const activeLevels = response3.data.data.filter(
-          (level) => level.statusString === "Active"
-        );
-        if (response.data.data) {
-          const requiredLevelName = response.data.data.level;
-          const foundLevel = activeLevels.find(
-            (level) => level.levelName === requiredLevelName
-          );
-          if (foundLevel) {
-            const newLevel = {
-              value: foundLevel.levelId.toString(),
-              label: foundLevel.levelName,
-            };
-            setSelectedOptions3(newLevel);
-          }
-        }
-        const formattedLevels = activeLevels.map((level) => ({
-          value: level.levelId.toString(),
-          label: level.levelName,
-        }));
-        setOptions3(formattedLevels);
-      } catch (error) {
-        console.error("Error fetching levels:", error);
-      }
-      try {
-        const response5 = await employmentTypeServices.getAllEmploymentType();
-        const activeEmploymentType = response5.data.data.filter(
-          (employmentType) => employmentType.statusString === "Active"
-        );
-        if (response.data.data) {
-          const requirEdemploymentType = response.data.data.employmentTypeName;
-          const foundEmploymentType = activeEmploymentType.find(
-            (employmentType) =>
-              employmentType.employmentTypeName === requirEdemploymentType
-          );
-          if (foundEmploymentType) {
-            const newEmploymentType = {
-              value: foundEmploymentType.employmentTypeId.toString(),
-              label: foundEmploymentType.employmentTypeName,
-            };
-            setSelectedOptions5(newEmploymentType);
-          }
-        }
-        const formattedEmploymentType = activeEmploymentType.map(
-          (employmentType) => ({
-            value: employmentType.employmentTypeId.toString(),
-            label: employmentType.employmentTypeName,
-          })
-        );
-        setOptions5(formattedEmploymentType);
-      } catch (error) {
-        console.error("Error fetching employment typeName:", error);
-      }
-
-
-      try {
-        const response2 = await typeServices.getAllType();
-        const activeTypes = response2.data.data.filter(
-          (type) => type.statusString === "Active"
-        );
-        if (response.data.data) {
-          const requiredTypeName = response.data.data.types;
-          const foundType = activeTypes.find(
-            (type) => type.typeName === requiredTypeName
-          );
-          if (foundType) {
-            const newType = {
-              value: foundType.typeId.toString(),
-              label: foundType.typeName,
-            };
-            setSelectedOptions2(newType);
-          }
-        }
-        let formattedTypes = activeTypes.map((type) => ({
-          value: type.typeId.toString(),
-          label: type.typeName,
-        }));
-        setOptions2(formattedTypes);
-      } catch (error) {
-        console.error("Error fetching types:", error);
-      }
-
-      if (response.data.data.userImage) {
-        setUserImage3(response.data.data.userImage);
-      } else {
-        setUserImage3("");
-
-      }
-      document.getElementById("summary-dev").value = response.data.data.summary;
-    } catch (error) {
-      console.error("Error loading user common data:", error);
-    }
-
-    fetchGender();
-    // try {
-    //   let result = await genderServices.getAllGender();
-    //   if (developerDetail) {
-    //     const requireGender = developerDetail.genderName;
-    //     const foundGender = result.data.data.find(
-    //       (gender) => gender.genderName == requireGender
-    //     );
-    //     if (foundGender) {
-    //       const newGender = {
-    //         value: foundGender.genderId.toString(),
-    //         label: foundGender.genderName,
-    //       };
-    //       setSelectedOptions7(newGender);
-    //     }
-    //   }
-    //   let formatGender = result.data.data.map((gender) => ({
-    //     value: gender.genderId.toString(),
-    //     label: gender.genderName,
-    //   }));
-    //   setOptions7(formatGender);
-    // } catch (error) {
-    //   console.error("Error loading data gender:", error);
-    // }
-  };
-  //-----------------------------------------------------------------------------------------------------
-
-  const fetchGender = async () => {
-    try {
-      let result = await genderServices.getAllGender();
-      if (developerDetail) {
-        const requireGender = developerDetail.genderName;
-        const foundGender = result.data.data.find(
-          (gender) => gender.genderName == requireGender
-        );
-        if (foundGender) {
-          const newGender = {
-            value: foundGender.genderId.toString(),
-            label: foundGender.genderName,
-          };
-          setSelectedOptions7(newGender);
-        }
-      }
-      let formatGender = result.data.data.map((gender) => ({
-        value: gender.genderId.toString(),
-        label: gender.genderName,
-      }));
-      setOptions7(formatGender);
-    } catch (error) {
-      console.error("Error loading data gender:", error);
-    }
-  };
+  // const handlePreviewAvatar = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     file.preview = URL.createObjectURL(file);
+  //     setAvatar(file);
+  //   }
+  // };
 
   //-----------------------------------------------------------------------------------------------------
 
@@ -1196,8 +802,8 @@ const ListAccountDeveloper = () => {
                             text === "Available"
                               ? "badge text-bg-success"
                               : text === "Selected On Request"
-                                ? "badge text-bg-info"
-                                : "badge bg-warning text-light"
+                              ? "badge text-bg-info"
+                              : "badge bg-warning text-light"
                           }
                         >
                           {text}
@@ -1211,8 +817,8 @@ const ListAccountDeveloper = () => {
                         <Space size="middle">
                           <a
                             onClick={(event) => {
-                              handleEditClick(record.developerId);
-
+                              //handleEditClick(record.developerId);
+                              showModal2(record.developerId);
                               event.stopPropagation();
                             }}
                           >
@@ -1223,7 +829,7 @@ const ListAccountDeveloper = () => {
                             />
                           </a>
                           {record.devStatusString === "Available" ||
-                            record.devStatusString === "On Working" ? (
+                          record.devStatusString === "On Working" ? (
                             <a
                               onClick={(event) => {
                                 handleDeleteClick(record.userId);
@@ -1312,18 +918,16 @@ const ListAccountDeveloper = () => {
                     maxWidth: "50%", // Adjust as needed
                   }}
                 >
-
                   {hRInfo.userImage ? (
                     <div
                       style={{
                         display: "flex",
                         justifyContent: "center",
-                        alignItems: "flex-start",  // Align at the top
+                        alignItems: "flex-start", // Align at the top
                         marginBottom: "10px",
-                        width: "100%",  // Occupy full width
+                        width: "100%", // Occupy full width
                       }}
                     >
-
                       <img
                         src={hRInfo.userImage}
                         style={{
@@ -1387,7 +991,8 @@ const ListAccountDeveloper = () => {
                   }}
                 >
                   <p>
-                    <strong>Year Of Experience:</strong> {hRInfo.yearOfExperience}
+                    <strong>Year Of Experience:</strong>{" "}
+                    {hRInfo.yearOfExperience}
                   </p>
 
                   <p>
@@ -1404,10 +1009,10 @@ const ListAccountDeveloper = () => {
                         hRInfo.devStatusString === "On Working"
                           ? "badge bg-warning text-light"
                           : hRInfo.devStatusString === "Selected On Request"
-                            ? "badge bg-info text-light"
-                            : hRInfo.devStatusString === "Available"
-                              ? "badge bg-success text-light"
-                              : "badge text-bg-danger"
+                          ? "badge bg-info text-light"
+                          : hRInfo.devStatusString === "Available"
+                          ? "badge bg-success text-light"
+                          : "badge text-bg-danger"
                       }
                     >
                       {hRInfo.devStatusString}
@@ -1420,8 +1025,8 @@ const ListAccountDeveloper = () => {
                         hRInfo.userStatusString === "Active"
                           ? "badge  text-bg-success"
                           : hRInfo.userStatusString === "Selected On Request"
-                            ? "badge bg-warning text-light"
-                            : "badge text-bg-danger"
+                          ? "badge bg-warning text-light"
+                          : "badge text-bg-danger"
                       }
                     >
                       {hRInfo.userStatusString}
@@ -1742,168 +1347,12 @@ const ListAccountDeveloper = () => {
           </Modal>
 
           {/* ------------------------------------------------------------------------------------------------- */}
-          <Modal
-            title="Update Account"
-            centered
-            visible={visibleModal2}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            footer={null}
-            width={1000}
-          >
-            <Form>
-              <div className="text-center d-flex justify-content-center mb-4">
-                <div className="mb-2" style={{ width: "90px", height: "90px" }}>
-                  <img
-                    src={avatar ? avatar.preview : img0}
-                    className="rounded-circle img-thumbnail profile-img"
-                    id="profile-img"
-                    alt=""
-                  />
-                  <div className="p-0 rounded-circle profile-photo-edit d-flex justify-content-end">
-                    <label className="profile-photo-edit avatar-xs">
-                      <i
-                        className="uil uil-edit"
-                        onClick={handleChooseAvatar}
-                      ></i>
-                    </label>
-                    <input
-                      type="file"
-                      id="profile-img-file-input"
-                      accept=".jpg, .jpeg, .png"
-                      onChange={handlePreviewAvatar}
-                      style={{ display: "none" }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Form.Item label="First Name" name="firstName">
-                    <Input id="first-name-dev" value="aaaaa" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Last Name" name="lastName">
-                    <Input id="last-name-dev" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Email" name="email">
-                    <Input id="email-dev" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Phone Number" name="number-phone">
-                    <Input id="phone-dev" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Password" name="password">
-                    <Input id="password-dev" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Date Of Birth" name="date-of-birth">
-                    <Input id="dateOfBirth-dev" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    label="Year Of Experience"
-                    name="year-of-experience"
-                  >
-                    <Input id="yearOfExperience-dev" />
-                  </Form.Item>
-                </Col>
-
-                <Col span={12}>
-                  <Form.Item label="Average Salary" name="average-salary">
-                    <Input id="averageSalary-dev" />
-                  </Form.Item>
-                </Col>
-
-                <Col span={12}>
-                  <Form.Item label="Code Name" name="codeName-dev">
-                    <Input id="codeName-dev" />
-                  </Form.Item>
-                </Col>
-
-                <Col span={12}>
-                  <Form.Item label="Summary" name="summary-dev">
-                    <Input id="summary-dev" />
-                  </Form.Item>
-                </Col>
-
-                <Col span={12}>
-                  <Form.Item label="Gender" name="gender-dev">
-                    <Select
-                      options={options7}
-                      value={selectedOptions7}
-                      onChange={handleChange7}
-                      className="Select Select--level-highest"
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col span={12}>
-                  <Form.Item label="Level" name="level-dev">
-                    <Select
-                      id="levels-dev"
-                      options={options3}
-                      value={1}
-                      onChange={handleChange3}
-                      className="Select Select--level-highest"
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col span={12}>
-                  <Form.Item label="Employment Type" name="employmentType-dev">
-                    <Select
-                      options={options6}
-                      value={selectedOptions6}
-                      onChange={handleChange6}
-                      className="Select Select--level-highest"
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col span={12}>
-                  <Form.Item label="Type Dev" name="type-dev">
-                    <Select
-                      id="types-dev"
-                      options={options2}
-                      value={selectedOptions2}
-                      onChange={handleChange2}
-                      className="Select Select--level-highest"
-                      style={{ maxHeight: "2000px", overflowY: "auto" }}
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col span={12}>
-                  <Form.Item label="Skill Dev" name="skill-dev">
-                    <Select
-                      id="skills-dev"
-                      isMulti
-                      options={options}
-                      value={selectedOptions}
-                      onChange={handleChange}
-                      className="Select Select--level-high"
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <div className="text-end">
-                <Button type="primary" onClick={handleOKUpdate}>
-                  Update
-                </Button>
-              </div>
-            </Form>
-          </Modal>
+          <UpdateDeveloperAccountPopup
+            isOpen={visibleModal2}
+            closeModal={closedModal2}
+            developerId={developerIdAccount}
+          ></UpdateDeveloperAccountPopup>
+          {/* ------------------------------------------------------------------------------------------------- */}
         </Layout>
       </Layout>
     </React.Fragment>

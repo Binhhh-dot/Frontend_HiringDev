@@ -13,13 +13,13 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import userSerrvices from "../../../services/user.serrvices";
-import UpdateProfileManagerPopup from "../UpdateProfileManagerPopup/UpdateProfileManagerPopup";
 
 const NavBarWeb = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [name, setName] = useState("");
   const [imgUser, setImgUser] = useState("");
   const [status, setStatus] = useState("");
+  const [roleString, setRoleString] = useState("");
 
   //-------------------------------------------------------------------------
   const userId = localStorage.getItem("userId");
@@ -51,6 +51,7 @@ const NavBarWeb = () => {
         setName(fullName);
         setImgUser(response.data.data.userImage);
         setStatus(response.data.data.statusString);
+        setRoleString(response.data.data.roleString);
       } catch (error) {
         console.error("Error fetching user detail2", error);
       }
@@ -125,7 +126,7 @@ const NavBarWeb = () => {
                   </div>
                   <div className="me-1 d-flex flex-column align-items-center">
                     <span className="fs-18">{name}</span>
-                    <span>{status}</span>
+                    <span>{roleString}</span>
                   </div>
                 </DropdownToggle>
                 <DropdownMenu
@@ -134,8 +135,14 @@ const NavBarWeb = () => {
                   }}
                 >
                   <DropdownItem style={{ padding: "0px" }}>
-                    <div onClick={openPopupProfileUser}>
-                      <div className="dropdown-item">Profile</div>
+                    <div>
+                      {/* onClick={openPopupProfileUser} */}
+                      <Link
+                        to={"/profilemanager"}
+                        className="dropdown-item px-0 p-0"
+                      >
+                        <div className="dropdown-item">Profile</div>
+                      </Link>
                     </div>
                   </DropdownItem>
 
@@ -161,11 +168,11 @@ const NavBarWeb = () => {
         </div>
         {/* ------------------------------------------------------------------------------------- */}
 
-        <UpdateProfileManagerPopup
+        {/* <UpdateProfileManagerPopup
           isModalOpen={showPopupProfileUser}
           closeModal={closePopupProfileUser}
           userId={userId}
-        ></UpdateProfileManagerPopup>
+        ></UpdateProfileManagerPopup> */}
 
         {/* ------------------------------------------------------------------------------------- */}
       </div>
