@@ -360,9 +360,16 @@ const getHiringRequestByProjectId = async (projectId) => {
 };
 
 const getAllHiringRequestByProjectIdAndPaging = async (
-  projectId, pageIndex, pageSize, skillSearch, levelSearch, typeSearch, inputSearch, statusSearch
+  projectId,
+  pageIndex,
+  pageSize,
+  skillSearch,
+  levelSearch,
+  typeSearch,
+  inputSearch,
+  statusSearch
 ) => {
-  const values = skillSearch.map(value => `&SkillIds=${value}`);
+  const values = skillSearch.map((value) => `&SkillIds=${value}`);
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.getAllHiringRequestByProjectIdAndPaging
       .replace("${projectId}", projectId)
@@ -371,13 +378,11 @@ const getAllHiringRequestByProjectIdAndPaging = async (
       .replace("${searchKeyString}", inputSearch)
       .replace("${TypeRequireId}", typeSearch)
       .replace("${LevelRequireId}", levelSearch)
-      .replace("${Status}", statusSearch)
-    + values.join('');
-  console.log(serviceUrl)
+      .replace("${Status}", statusSearch) + values.join("");
+  console.log(serviceUrl);
   const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
-}
-
+};
 
 const closeHiringRequest = async (
   requestId,
@@ -394,24 +399,23 @@ const closeHiringRequest = async (
   return response;
 };
 
-const cloneHiringRequest = async (
-  requestId
-) => {
+const cloneHiringRequest = async (requestId) => {
   const serviceUrl =
-    urlConstant.endpoint.hiringRequest.cloneHiringRequest.replace("${requestId}", requestId);
+    urlConstant.endpoint.hiringRequest.cloneHiringRequest.replace(
+      "${requestId}",
+      requestId
+    );
   const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     requestId,
   });
   return response;
 };
 
-const extendDuration = async (
-  requestId, newDuration
-) => {
-  const serviceUrl =
-    urlConstant.endpoint.hiringRequest.extendDuration;
+const extendDuration = async (requestId, newDuration) => {
+  const serviceUrl = urlConstant.endpoint.hiringRequest.extendDuration;
   const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
-    requestId, newDuration
+    requestId,
+    newDuration,
   });
   return response;
 };
@@ -440,5 +444,5 @@ export default {
   getAllHiringRequestByProjectIdAndPaging,
   closeHiringRequest,
   cloneHiringRequest,
-  extendDuration
+  extendDuration,
 };

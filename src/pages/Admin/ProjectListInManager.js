@@ -46,6 +46,10 @@ const ProjectListInManager = () => {
     }
   }, []);
 
+  //------------------------------------------------------------------------------------------------
+  const [searchInProject, setSearchInProject] = useState("");
+  //------------------------------------------------------------------------------------------------
+
   const [projectList, setProjectList] = useState([]);
   //------------------------------------------------------------------------------------------------
   const [projectListPreparing, setProjectListPreparing] = useState([]);
@@ -82,18 +86,17 @@ const ProjectListInManager = () => {
 
   const fetchProjectListPreparing = async () => {
     let response;
-    let tmp;
+
     try {
-      response = await projectServices.getProjectListPaging(
+      response = await projectServices.getProjectLisPreparingtPaging(
         currentPagePreparing,
         7
       );
       console.log(response.data.data);
-      tmp = response.data.data.filter(
-        (developer) => developer.statusString == "Preparing"
+      setProjectListPreparing(response.data.data);
+      setTotalPagesPreparing(
+        Math.ceil(response.data.paging.total / pageSizePreparing)
       );
-      setProjectListPreparing(tmp);
-      setTotalPagesPreparing(Math.ceil(tmp.length / pageSizePreparing));
     } catch (error) {
       console.error("Error fetching project list preparing", error);
     }
@@ -109,18 +112,18 @@ const ProjectListInManager = () => {
 
   const fetchProjectListInprogress = async () => {
     let response;
-    let tmp;
+
     try {
-      response = await projectServices.getProjectListPaging(
+      response = await projectServices.getProjectListInprogressPaging(
         currentPageInprogress,
         7
       );
       console.log(response.data.data);
-      tmp = response.data.data.filter(
-        (developer) => developer.statusString == "In process"
+
+      setProjectListInprogress(response.data.data);
+      setTotalPagesInprogress(
+        Math.ceil(response.data.paging.total / pageSizeInprogress)
       );
-      setProjectListInprogress(tmp);
-      setTotalPagesInprogress(Math.ceil(tmp.length / pageSizeInprogress));
     } catch (error) {
       console.error("Error fetching project list inprogress", error);
     }
@@ -136,18 +139,18 @@ const ProjectListInManager = () => {
 
   const fetchProjectListComplete = async () => {
     let response;
-    let tmp;
+
     try {
-      response = await projectServices.getProjectListPaging(
+      response = await projectServices.getProjectListCompletedPaging(
         currentPageComplete,
         7
       );
       console.log(response.data.data);
-      tmp = response.data.data.filter(
-        (developer) => developer.statusString == "Completed"
+
+      setProjectListComplete(response.data.data);
+      setTotalPagesComplete(
+        Math.ceil(response.data.paging.total / pageSizeComplete)
       );
-      setProjectListComplete(tmp);
-      setTotalPagesComplete(Math.ceil(tmp.length / pageSizeComplete));
     } catch (error) {
       console.error("Error fetching project list Complete", error);
     }
@@ -163,18 +166,17 @@ const ProjectListInManager = () => {
 
   const fetchProjectListCancel = async () => {
     let response;
-    let tmp;
+
     try {
-      response = await projectServices.getProjectListPaging(
+      response = await projectServices.getProjectListCancelPaging(
         currentPageCancel,
         7
       );
       console.log(response.data.data);
-      tmp = response.data.data.filter(
-        (developer) => developer.statusString == "Cancelled"
+      setProjectListCancel(response.data.data);
+      setTotalPagesCancel(
+        Math.ceil(response.data.paging.total / pageSizeCancel)
       );
-      setProjectListCancel(tmp);
-      setTotalPagesCancel(Math.ceil(tmp.length / pageSizeCancel));
     } catch (error) {
       console.error("Error fetching project list Cancelled", error);
     }

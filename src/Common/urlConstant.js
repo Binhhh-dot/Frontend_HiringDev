@@ -74,7 +74,9 @@ export default {
         "/HiringRequest/ByProject?projectId=${projectId}&PageIndex=${PageIndex}&PageSize=${PageSize}&searchKeyString=${searchKeyString}&TypeRequireId=${TypeRequireId}&LevelRequireId=${LevelRequireId}&Status=${Status}",
       closeHirringRequestStatus: "/HiringRequestStatus/Closed",
       cloneHiringRequest: "/HiringRequest/Clone/${requestId}",
-      extendDuration: "/HiringRequestStatus/ExtendDuration"
+      extendDuration: "/HiringRequestStatus/ExtendDuration",
+
+      //---------------------------------------------------------------
     },
 
     selectingDeveloper: {
@@ -183,6 +185,15 @@ export default {
       getProjectList: "/Project",
       getProjectListPaging: "PageIndex=${PageIndex}&PageSize=${PageSize}",
 
+      getProjectLisPreparingtPaging:
+        "PageIndex=${PageIndex}&PageSize=${PageSize}&Status=1",
+      getProjectListInprogressPaging:
+        "PageIndex=${PageIndex}&PageSize=${PageSize}&Status=2",
+      getProjectListCompletedPaging:
+        "PageIndex=${PageIndex}&PageSize=${PageSize}&Status=3",
+      getProjectListCancelPaging:
+        "PageIndex=${PageIndex}&PageSize=${PageSize}&Status=4",
+
       createProject: "/Project",
       getAllProjectByCompanyId: "/Project/ByCompany/${companyId}",
       getProjectDetailByProjectId: "/Project/${projectId}",
@@ -260,7 +271,8 @@ export default {
     dashboard: {
       getDashboard: "/Dashboard",
       getDashboardProject: "/Dashboard/Project?dateInWeek=${dateInWeek}",
-      getDashboardHiringRequest: "/Dashboard/HiringRequest?dateInWeek=${dateInWeek}",
+      getDashboardHiringRequest:
+        "/Dashboard/HiringRequest?dateInWeek=${dateInWeek}",
       getDashboardRecentHiringRequest: "/Dashboard/RecentHiringRequest",
     },
     report: {

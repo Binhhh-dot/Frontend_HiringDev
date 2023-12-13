@@ -174,10 +174,10 @@ const ListAccountManager = () => {
   }, [hRInfo]);
 
   useEffect(() => {
-    fetchUserDetail(/* pass the userId parameter if available */);
+    fetchUserDetail();
   }, []);
 
-  //Create HR
+  //Create
   const [form] = Form.useForm();
 
   const handleOkCreate = () => {
@@ -237,7 +237,7 @@ const ListAccountManager = () => {
     }
   };
 
-  //Update HR
+  //Update
   const [userDataDetail, setUserDataDetail] = useState({
     userId: "",
     firstName: "",
@@ -613,8 +613,8 @@ const ListAccountManager = () => {
                             text === "Active"
                               ? "badge text-bg-success"
                               : text === "OnTasking"
-                                ? "badge bg-warning text-light"
-                                : "badge text-bg-danger"
+                              ? "badge bg-warning text-light"
+                              : "badge text-bg-danger"
                           }
                         >
                           {text}
@@ -640,7 +640,7 @@ const ListAccountManager = () => {
                             />
                           </a>
                           {record.statusString === "Active" ||
-                            record.statusString === "OnTasking" ? (
+                          record.statusString === "OnTasking" ? (
                             <a
                               onClick={(event) => {
                                 handleDeleteClick(record.userId);
@@ -843,7 +843,7 @@ const ListAccountManager = () => {
               >
                 <Input />
               </Form.Item>
-              <Form.Item
+              {/* <Form.Item
                 name="dateOfBirth"
                 label="Birth"
                 rules={[
@@ -854,7 +854,7 @@ const ListAccountManager = () => {
                 ]}
               >
                 <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
-              </Form.Item>
+              </Form.Item> */}
               {/* Add other form fields here */}
               <Form.Item style={{ textAlign: "center" }}>
                 <Button
@@ -867,6 +867,7 @@ const ListAccountManager = () => {
               </Form.Item>
             </Form>
           </Modal>
+
           <Modal
             title="Update Manager"
             visible={visibleModal2}
@@ -875,10 +876,6 @@ const ListAccountManager = () => {
             footer={null}
           >
             <Form form={form} initialValues={userDataDetail}>
-              {/* <Form.Item label="User Id" name="userId">
-                            <p><Input value={userDataDetail.userId}
-                                onChange={(e) => setUserDataDetail({ ...userDataDetail, userId: e.target.value })} /></p>
-                        </Form.Item> */}
               <Form.Item label="FirstName" name="firstName">
                 <p>
                   <Input
@@ -949,6 +946,7 @@ const ListAccountManager = () => {
                   value={userDataDetail.dateOfBirth}
                   style={{ width: "100%" }}
                   format="YYYY-MM-DD"
+                  //onChange={}
                 />
               </Form.Item>
               <Form.Item label="Status" name="statusString">
@@ -976,13 +974,14 @@ const ListAccountManager = () => {
               </Form.Item>
             </Form>
           </Modal>
-          <Modal
+
+          {/* <Modal
             title="Update Account"
             centered
-            // visible={visibleModal2}
-            // onOk={handleOk}
-            // onCancel={handleCancel}
-            // footer={null}
+            visible={visibleModal2}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            footer={null}
             width={1000}
           >
             <div>
@@ -1129,7 +1128,7 @@ const ListAccountManager = () => {
                 </div>
               </Form>
             </div>
-          </Modal>
+          </Modal> */}
           {/* <Footer
             style={{
               textAlign: "center",

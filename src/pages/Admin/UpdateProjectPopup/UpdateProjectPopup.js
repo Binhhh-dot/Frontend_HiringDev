@@ -106,7 +106,7 @@ const UpdateProjectPopup = (
       toast.success("Update project successfully");
       closeModal();
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Error fetching update project:", error);
       toast.success("Update project fail");
     }
   };
