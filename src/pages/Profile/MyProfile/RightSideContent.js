@@ -18,7 +18,7 @@ import Select from "react-select";
 import classnames from "classnames";
 
 //Images Import
-import userImage2 from "../../../assets/images/user/img-02.jpg";
+import userImage2 from "../../../assets/images/user/img-00.jpg";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import companyServices from "../../../services/company.services";
@@ -49,6 +49,7 @@ const RightSideContent = () => {
   const [phoneNumberError, setPhoneNumberError] = useState(null);
   const [dayOfBirthError, setDayOfBirthError] = useState(null);
   const [imageError, setImageError] = useState(null);
+  const [maxDate, setMaxDate] = useState('');
 
   const tabChange = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -177,10 +178,10 @@ const RightSideContent = () => {
         setLoadingUpdateCompany(false);
 
       } catch (error) {
+        setIsUpdateMode(!isUpdateMode);
         // Handle errors (show an error message or log the error)
         console.error("Error creating company:", error);
-        toast.success("Update company fail")
-
+        toast.error("Update company fail")
         setLoadingUpdateCompany(false);
 
       }
@@ -210,11 +211,11 @@ const RightSideContent = () => {
         setLoadingUpdateCompany(false);
 
       } catch (error) {
+        setIsUpdateMode(!isUpdateMode);
         // Handle errors (show an error message or log the error)
         console.error("Error creating company:", error);
         console.log(error);
-        toast.success("Update company fail")
-
+        toast.error("Update company fail")
         setLoadingUpdateCompany(false);
 
       }
@@ -248,7 +249,7 @@ const RightSideContent = () => {
       setPhoneNumberError("");
     }
     const dateOfBirth = document.getElementById("dayOfBirhTab2").value;
-    if (!phoneNumber) {
+    if (!dateOfBirth) {
       setDayOfBirthError("Enter your date of birth");
       check = false;
     } else {
@@ -308,7 +309,7 @@ const RightSideContent = () => {
         }
       } catch (error) {
         setLoadingUpdateAccount(false);
-        toast.success("Update fail");
+        toast.error("Update account fail");
       }
 
       const file3 = document.getElementById("profile-img-file-input-2")
@@ -377,6 +378,21 @@ const RightSideContent = () => {
     }
   };
 
+  const getMaxDate = () => {
+    const currentDate = new Date(); // Ngày hiện tại
+    const maxDateAllowed = new Date(currentDate.getFullYear() - 16, currentDate.getMonth(), currentDate.getDate());
+    const year = maxDateAllowed.getFullYear();
+    let month = maxDateAllowed.getMonth() + 1;
+    let day = maxDateAllowed.getDate();
+
+    // Đảm bảo month và day có định dạng 2 chữ số
+    month = month < 10 ? `0${month}` : month;
+    day = day < 10 ? `0${day}` : day;
+
+    const formattedMaxDate = `${year}-${month}-${day}`;
+    setMaxDate(formattedMaxDate);
+  };
+
   useEffect(() => {
     const fetchUserDetail = async () => {
       const userId = localStorage.getItem("userId");
@@ -434,6 +450,10 @@ const RightSideContent = () => {
     console.log("companyIdFromLocalStorage")
     console.log(companyIdFromLocalStorage)
     setCompanyIdFromLocalStorage(companyIdFromLocalStorage);
+  }, []);
+
+  useEffect(() => {
+    getMaxDate();
   }, []);
 
   //----------------------------------------------------------------------------
@@ -549,7 +569,7 @@ const RightSideContent = () => {
                   <Col lg={6}>
                     <div className="mb-3">
                       <Label htmlFor="email" className="form-label">
-                        Email
+                        Company Email
                       </Label>
                       <Input
                         type="text"
@@ -719,6 +739,7 @@ const RightSideContent = () => {
                             type="date"
                             className="form-control"
                             id="dayOfBirhTab2"
+                            max={maxDate}
                           />
                           {dayOfBirthError && (
                             <p className="text-danger mt-2">
