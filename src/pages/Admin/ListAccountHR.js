@@ -65,6 +65,9 @@ import {
 } from "reactstrap";
 import SiderBarWebAdmin from "./SlideBar/SiderBarWebAdmin";
 
+import UpdateHRAccountPopup from "../Admin/UpdateUserAccountPopup/UpdateUserAccountPopup";
+
+
 const page = {
   pageSize: 6, // Number of items per page
 };
@@ -103,9 +106,16 @@ const ListAccountHR = () => {
   const showModal1 = () => {
     setVisibleModal1(true);
   };
+  const [userIdAccountHr, setHrIdAccount] = useState(null);
 
-  const showModal2 = () => {
+  const showModal2 = (userId) => {
+    setHrIdAccount(userId);
     setVisibleModal2(true);
+  };
+
+  const closedModal2 = () => {
+    setVisibleModal2(false);
+    fetchHRPaging();
   };
   const showModal3 = () => {
     setVisibleModal3(true);
@@ -180,11 +190,7 @@ const ListAccountHR = () => {
   };
 
   const [userId, setUserId] = useState(null);
-  const handleEditClick = (userId) => {
-    fetchUserDetail(userId);
-    showModal2();
-    setUserId(userId);
-  };
+
 
   const handleDeleteClick = (userId) => {
     showModal4();
@@ -358,72 +364,9 @@ const ListAccountHR = () => {
     }
   };
 
-  const handleOkUpdate = async () => {
-    try {
-      const values = await form.validateFields([
-        "userId",
-        "firstName",
-        "lastName",
-        "email",
-        "password",
-        "phoneNumber",
-        "statusString",
-        "dateOfBirth",
-      ]);
-      await handleUpdate(values, userId);
-      form.resetFields();
-      setVisibleModal2(false);
-    } catch (errorInfo) {
-      console.log("Validation Failed:", errorInfo);
-    }
-  };
 
-  const handleCancelUpdate = () => {
-    form.resetFields();
-    setVisibleModal2(false);
-  };
 
-  const handleUpdate = async (values, userId) => {
-    try {
-      // Prepare formData here based on values
-      const formData = new FormData();
-      formData.append("UserId", userId);
-      formData.append("FirstName", values.firstName);
-      formData.append("LastName", values.lastName);
-      formData.append("Email", values.email);
-      formData.append("Password", values.password);
-      formData.append("PhoneNumber", values.phoneNumber);
-      formData.append("Status", values.statusString);
-      formData.append("DateOfBirth", values.dateOfBirth);
 
-      // Call your update function here
-      const response = await userSerrvices.updateHR(userId, formData);
-
-      // Handle the response as needed
-      console.log("Update response:", response);
-      message.success({
-        content: "Account created successfully",
-        duration: 2,
-        onClose: () => {
-          console.log("Toast closed");
-        },
-        style: {
-          marginTop: "50px",
-          marginRight: "50px",
-        },
-      });
-    } catch (error) {
-      console.error("Update failed:", error);
-      message.error({
-        content: "Error creating account: ",
-        duration: 2,
-        style: {
-          marginTop: "50px",
-          marginRight: "50px",
-        },
-      });
-    }
-  };
   //-------------------------------------------------------------------------
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -664,7 +607,7 @@ const ListAccountHR = () => {
                         <Space size="middle">
                           <a
                             onClick={(event) => {
-                              handleEditClick(record.userId);
+                              showModal2(record.userId);
 
                               event.stopPropagation();
                             }}
@@ -903,269 +846,13 @@ const ListAccountHR = () => {
               </Form.Item>
             </Form>
           </Modal>
-          <Modal
-            title="Update User"
-            visible={visibleModal2}
-            onUpdate={handleOkUpdate}
-            onCancel={handleCancelUpdate}
-            footer={null}
-          >
-            <Form form={form} initialValues={userDataDetail}>
-              {/* <Form.Item label="User Id" name="userId">
-                            <p><Input value={userDataDetail.userId}
-                                onChange={(e) => setUserDataDetail({ ...userDataDetail, userId: e.target.value })} /></p>
-                        </Form.Item> */}
-              <Form.Item label="FirstName" name="firstName">
-                <p>
-                  <Input
-                    value={userDataDetail.firstName}
-                    onChange={(e) =>
-                      setUserDataDetail({
-                        ...userDataDetail,
-                        firstName: e.target.value,
-                      })
-                    }
-                  />
-                </p>
-              </Form.Item>
-              <Form.Item label="LastName" name="lastName">
-                <p>
-                  <Input
-                    value={userDataDetail.lastName}
-                    onChange={(e) =>
-                      setUserDataDetail({
-                        ...userDataDetail,
-                        lastName: e.target.value,
-                      })
-                    }
-                  />
-                </p>
-              </Form.Item>
-              <Form.Item label="Email" name="email">
-                <p>
-                  <Input
-                    value={userDataDetail.email}
-                    onChange={(e) =>
-                      setUserDataDetail({
-                        ...userDataDetail,
-                        email: e.target.value,
-                      })
-                    }
-                  />
-                </p>
-              </Form.Item>
-              <Form.Item label="Password" name="password">
-                <p>
-                  <Input
-                    value={userDataDetail.password}
-                    onChange={(e) =>
-                      setUserDataDetail({
-                        ...userDataDetail,
-                        password: e.target.value,
-                      })
-                    }
-                  />
-                </p>
-              </Form.Item>
-              <Form.Item label="PhoneNumber" name="phoneNumber">
-                <p>
-                  <Input
-                    value={userDataDetail.phoneNumber}
-                    onChange={(e) =>
-                      setUserDataDetail({
-                        ...userDataDetail,
-                        phoneNumber: e.target.value,
-                      })
-                    }
-                  />
-                </p>
-              </Form.Item>
-              <Form.Item name="dateOfBirth" label="Birth Day">
-                <DatePicker
-                  value={userDataDetail.dateOfBirth}
-                  style={{ width: "100%" }}
-                  format="YYYY-MM-DD"
-                />
-              </Form.Item>
-              <Form.Item label="Status" name="statusString">
-                <Select
-                  onChange={(value) =>
-                    setUserDataDetail({
-                      ...userDataDetail,
-                      statusString: value,
-                    })
-                  }
-                >
-                  <Select.Option value="1">Active</Select.Option>
-                  <Select.Option value="0">Inactive</Select.Option>
-                  <Select.Option value="2">OnTasking</Select.Option>
-                </Select>
-              </Form.Item>
-              <Form.Item style={{ textAlign: "center" }}>
-                <Button
-                  type="primary"
-                  onClick={handleOkUpdate}
-                  style={{ backgroundColor: "purple", borderColor: "purple" }}
-                >
-                  Save
-                </Button>
-              </Form.Item>
-            </Form>
-          </Modal>
-          <Modal
-            title="Update Account"
-            centered
-            // visible={visibleModal2}
-            // onOk={handleOk}
-            // onCancel={handleCancel}
-            // footer={null}
-            width={1000}
-          >
-            <div>
-              <Form action="#">
-                <div>
-                  <h5 className="fs-17 fw-semibold mb-3 mb-0">My Company</h5>
-                  <div className="text-center"></div>
-                  <Row>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        First Name
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="first-name"
-                          value={userDataDetail.firstName}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              firstName: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Last Name
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="last-name"
-                          value={userDataDetail.lastName}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              lastName: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
 
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Email
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="address"
-                          value={userDataDetail.email}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              email: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Password
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="password"
-                          value={userDataDetail.password}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              password: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Phone Number
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="number"
-                          value={userDataDetail.phoneNumber}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              phoneNumber: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Birth Day
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="number"
-                          value={userDataDetail.dateOfBirth}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              dateOfBirth: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Role
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="number"
-                          value={userDataDetail.roleString}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              roleString: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Status
-                        <Select value={userDataDetail.statusString}>
-                          <Select.Option value="Active">Active</Select.Option>
-                          <Select.Option value="Inactive">
-                            InActive
-                          </Select.Option>
-                        </Select>
-                      </div>
-                    </Col>
-                  </Row>
-                </div>
-                <div className="mt-4 text-end">
-                  <div className="btn btn-warning">Update</div>
-                </div>
-              </Form>
-            </div>
-          </Modal>
+
+          <UpdateHRAccountPopup
+            isOpen={visibleModal2}
+            closeModal={closedModal2}
+            userId={userIdAccountHr}
+          ></UpdateHRAccountPopup>
           {/* <Footer
             style={{
               textAlign: "center",

@@ -96,6 +96,7 @@ const getHRById = async (id) => {
   return response
 }
 
+
 const updateHR = async (id, formData) => {
   const serviceUrl = urlConstant.endpoint.user.updateHR.replace("${id}", id);
   const config = {
