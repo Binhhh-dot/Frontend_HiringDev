@@ -63,6 +63,7 @@ import {
   DropdownItem,
 } from "reactstrap";
 import SiderBarWebAdmin from "./SlideBar/SiderBarWebAdmin";
+import UpdateHRAccountPopup from "./UpdateUserAccountPopup/UpdateUserAccountPopup";
 
 const page = {
   pageSize: 6, // Number of items per page
@@ -85,8 +86,16 @@ const ListAccountManager = () => {
     setVisibleModal1(true);
   };
 
-  const showModal2 = () => {
+  const [userIdAccountManage, setManagerIdAccount] = useState(null);
+
+  const showModal2 = (userId) => {
+    setManagerIdAccount(userId);
     setVisibleModal2(true);
+  };
+
+  const closedModal2 = () => {
+    setVisibleModal2(false);
+    fetchManagerPaging();
   };
   const showModal3 = () => {
     setVisibleModal3(true);
@@ -613,8 +622,8 @@ const ListAccountManager = () => {
                             text === "Active"
                               ? "badge text-bg-success"
                               : text === "OnTasking"
-                              ? "badge bg-warning text-light"
-                              : "badge text-bg-danger"
+                                ? "badge bg-warning text-light"
+                                : "badge text-bg-danger"
                           }
                         >
                           {text}
@@ -628,7 +637,7 @@ const ListAccountManager = () => {
                         <Space size="middle">
                           <a
                             onClick={(event) => {
-                              handleEditClick(record.userId);
+                              showModal2(record.userId);
 
                               event.stopPropagation();
                             }}
@@ -640,7 +649,7 @@ const ListAccountManager = () => {
                             />
                           </a>
                           {record.statusString === "Active" ||
-                          record.statusString === "OnTasking" ? (
+                            record.statusString === "OnTasking" ? (
                             <a
                               onClick={(event) => {
                                 handleDeleteClick(record.userId);
@@ -867,277 +876,11 @@ const ListAccountManager = () => {
               </Form.Item>
             </Form>
           </Modal>
-
-          <Modal
-            title="Update Manager"
-            visible={visibleModal2}
-            onUpdate={handleOkUpdate}
-            onCancel={handleCancelUpdate}
-            footer={null}
-          >
-            <Form form={form} initialValues={userDataDetail}>
-              <Form.Item label="FirstName" name="firstName">
-                <p>
-                  <Input
-                    value={userDataDetail.firstName}
-                    onChange={(e) =>
-                      setUserDataDetail({
-                        ...userDataDetail,
-                        firstName: e.target.value,
-                      })
-                    }
-                  />
-                </p>
-              </Form.Item>
-              <Form.Item label="LastName" name="lastName">
-                <p>
-                  <Input
-                    value={userDataDetail.lastName}
-                    onChange={(e) =>
-                      setUserDataDetail({
-                        ...userDataDetail,
-                        lastName: e.target.value,
-                      })
-                    }
-                  />
-                </p>
-              </Form.Item>
-              <Form.Item label="Email" name="email">
-                <p>
-                  <Input
-                    value={userDataDetail.email}
-                    onChange={(e) =>
-                      setUserDataDetail({
-                        ...userDataDetail,
-                        email: e.target.value,
-                      })
-                    }
-                  />
-                </p>
-              </Form.Item>
-              <Form.Item label="Password" name="password">
-                <p>
-                  <Input
-                    value={userDataDetail.password}
-                    onChange={(e) =>
-                      setUserDataDetail({
-                        ...userDataDetail,
-                        password: e.target.value,
-                      })
-                    }
-                  />
-                </p>
-              </Form.Item>
-              <Form.Item label="PhoneNumber" name="phoneNumber">
-                <p>
-                  <Input
-                    value={userDataDetail.phoneNumber}
-                    onChange={(e) =>
-                      setUserDataDetail({
-                        ...userDataDetail,
-                        phoneNumber: e.target.value,
-                      })
-                    }
-                  />
-                </p>
-              </Form.Item>
-              <Form.Item name="dateOfBirth" label="Date Of Birth">
-                <Input
-                  value={userDataDetail.dateOfBirth}
-                  style={{ width: "100%" }}
-                  format="YYYY-MM-DD"
-                  //onChange={}
-                />
-              </Form.Item>
-              <Form.Item label="Status" name="statusString">
-                <Select
-                  onChange={(value) =>
-                    setUserDataDetail({
-                      ...userDataDetail,
-                      statusString: value,
-                    })
-                  }
-                >
-                  <Select.Option value="1">Active</Select.Option>
-                  <Select.Option value="0">Inactive</Select.Option>
-                  <Select.Option value="2">OnTasking</Select.Option>
-                </Select>
-              </Form.Item>
-              <Form.Item style={{ textAlign: "center" }}>
-                <Button
-                  type="primary"
-                  onClick={handleOkUpdate}
-                  style={{ backgroundColor: "#1F86EF", borderColor: "#1F86EF" }}
-                >
-                  Save
-                </Button>
-              </Form.Item>
-            </Form>
-          </Modal>
-
-          {/* <Modal
-            title="Update Account"
-            centered
-            visible={visibleModal2}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            footer={null}
-            width={1000}
-          >
-            <div>
-              <Form action="#">
-                <div>
-                  <h5 className="fs-17 fw-semibold mb-3 mb-0">My Company</h5>
-                  <div className="text-center"></div>
-                  <Row>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        First Name
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="first-name"
-                          value={userDataDetail.firstName}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              firstName: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Last Name
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="last-name"
-                          value={userDataDetail.lastName}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              lastName: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Email
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="address"
-                          value={userDataDetail.email}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              email: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Password
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="password"
-                          value={userDataDetail.password}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              password: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Phone Number
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="number"
-                          value={userDataDetail.phoneNumber}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              phoneNumber: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Day Of Birth
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="number"
-                          value={userDataDetail.dateOfBirth}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              dateOfBirth: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Role
-                        <Input
-                          type="text"
-                          className="form-control"
-                          id="number"
-                          value={userDataDetail.roleString}
-                          onChange={(e) =>
-                            setUserDataDetail({
-                              ...userDataDetail,
-                              roleString: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </Col>
-                    <Col lg={6}>
-                      <div className="mb-3">
-                        Status
-                        <Select value={userDataDetail.statusString}>
-                          <Select.Option value="Active">Active</Select.Option>
-                          <Select.Option value="Inactive">
-                            InActive
-                          </Select.Option>
-                        </Select>
-                      </div>
-                    </Col>
-                  </Row>
-                </div>
-                <div className="mt-4 text-end">
-                  <div className="btn btn-warning">Update</div>
-                </div>
-              </Form>
-            </div>
-          </Modal> */}
-          {/* <Footer
-            style={{
-              textAlign: "center",
-            }}
-          >
-            <p className="badge bg-warning text-light">
-              WeHire Design ©2023 Created by HDC
-            </p>
-          </Footer> */}
+          <UpdateHRAccountPopup
+            isOpen={visibleModal2}
+            closeModal={closedModal2}
+            userId={userIdAccountManage}
+          ></UpdateHRAccountPopup>
         </Layout>
       </Layout>
     </React.Fragment>

@@ -120,6 +120,7 @@ const ListAccountDeveloper = () => {
 
   const closedModal2 = () => {
     setVisibleModal2(false);
+    fetchDeveloperPaging();
   };
 
   //----------------------------------------------------------------------------------------
@@ -802,8 +803,8 @@ const ListAccountDeveloper = () => {
                             text === "Available"
                               ? "badge text-bg-success"
                               : text === "Selected On Request"
-                              ? "badge text-bg-info"
-                              : "badge bg-warning text-light"
+                                ? "badge text-bg-info"
+                                : "badge bg-warning text-light"
                           }
                         >
                           {text}
@@ -829,7 +830,7 @@ const ListAccountDeveloper = () => {
                             />
                           </a>
                           {record.devStatusString === "Available" ||
-                          record.devStatusString === "On Working" ? (
+                            record.devStatusString === "On Working" ? (
                             <a
                               onClick={(event) => {
                                 handleDeleteClick(record.userId);
@@ -1009,10 +1010,10 @@ const ListAccountDeveloper = () => {
                         hRInfo.devStatusString === "On Working"
                           ? "badge bg-warning text-light"
                           : hRInfo.devStatusString === "Selected On Request"
-                          ? "badge bg-info text-light"
-                          : hRInfo.devStatusString === "Available"
-                          ? "badge bg-success text-light"
-                          : "badge text-bg-danger"
+                            ? "badge bg-info text-light"
+                            : hRInfo.devStatusString === "Available"
+                              ? "badge bg-success text-light"
+                              : "badge text-bg-danger"
                       }
                     >
                       {hRInfo.devStatusString}
@@ -1025,8 +1026,8 @@ const ListAccountDeveloper = () => {
                         hRInfo.userStatusString === "Active"
                           ? "badge  text-bg-success"
                           : hRInfo.userStatusString === "Selected On Request"
-                          ? "badge bg-warning text-light"
-                          : "badge text-bg-danger"
+                            ? "badge bg-warning text-light"
+                            : "badge text-bg-danger"
                       }
                     >
                       {hRInfo.userStatusString}

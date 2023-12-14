@@ -26,6 +26,8 @@ import {
   BankOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../../../assets/images/we-hire-green.png";
+
 
 const { Sider } = Layout;
 
@@ -131,11 +133,16 @@ const SiderBarWebAdmin = ({ choose }) => {
       width={250}
       style={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}
     >
-      <div className="d-flex mt-3 justify-content-between ms-3 me-3">
+      <div className="d-flex mt-3 justify-content-between ms-3 me-3 align-items-center">
         {showWeHire && (
-          <h2 className="mb-0" id="wehire">
-            WeHire
-          </h2>
+          <div className="mb-0" id="wehire">
+            <img
+              src={logo}
+              alt=""
+              className="logo-light"
+              style={{ objectFit: "cover", width: "170px" }}
+            />
+          </div>
         )}
         {isLeftIcon ? (
           <div
