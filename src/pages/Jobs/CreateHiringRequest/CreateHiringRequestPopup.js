@@ -18,7 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import userSerrvices from "../../../services/user.serrvices";
 
 const CreateHiringRequestPopup = (
-    { isModalOpen, closeModal, requestId },
+    { isModalOpen, closeModal, requestId, maxDate },
     ...props
 ) => {
 
@@ -62,6 +62,7 @@ const CreateHiringRequestPopup = (
     const [companyPhoneNumberFormCreateCompany, setCompanyPhoneNumberFormCreateCompany] = useState(null);
     const [addressFormCreateCompany, setAddressFormCreateCompany] = useState(null);
     const [minDateDuration, setMinDateDuration] = useState('');
+    const [maxDateDuration, setMaxDateDuration] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
     const today = new Date();
     const descriptionRef = useRef(null);
@@ -82,6 +83,8 @@ const CreateHiringRequestPopup = (
         const formattedDate2 = `${year2}-${month2}-${day2}`;
 
         setSelectedDate(formattedDate2)
+
+
     }, []);
 
     const openModal = () => {
@@ -131,25 +134,6 @@ const CreateHiringRequestPopup = (
     const navigate = useNavigate();
 
     const fetchData = async () => {
-        try {
-            // Lấy userId từ localStorage
-            const userId = localStorage.getItem("userId");
-            if (!userId) {
-                openModal();
-            }
-
-
-            const responseUser = userSerrvices.getUserById(userId);
-            const userData = responseUser.data;
-
-            // Lưu companyId vào state và localStorage
-            setCompanyId(userData.data.companyId);
-
-            localStorage.setItem("companyId", userData.data.companyId);
-        } catch (error) {
-            console.error("Error fetching user data:", error);
-        }
-
         try {
             // Lấy userId từ localStorage
             const userId = localStorage.getItem("userId");
@@ -600,6 +584,9 @@ const CreateHiringRequestPopup = (
     };
 
     useEffect(() => {
+        setMaxDateDuration(maxDate)
+        console.log(maxDate)
+        console.log(requestId)
         if (isModalOpen) {
             const timeout = setTimeout(() => {
                 if (descriptionRef.current) {
@@ -714,6 +701,7 @@ const CreateHiringRequestPopup = (
                                                         class="form-control resume"
                                                         placeholder=""
                                                         min={minDateDuration}
+                                                        max={maxDateDuration}
                                                     ></input>
                                                     {durationError && (
                                                         <p className="text-danger mt-2">{durationError}</p>

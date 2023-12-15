@@ -39,9 +39,18 @@ const kickDeveloperInProject = async (projectId, developerId) => {
   return response;
 };
 
+const rejectSelectedDev = async (requestId, developerId) => {
+  const serviceUrl = urlConstant.endpoint.hiredDev.rejectSelectedDev
+    .replace("${requestId}", requestId)
+    .replace("${developerId}", developerId);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl);
+  return response;
+};
+
 export default {
   getSelectedDevByManager,
   sendDevToHRNew,
   kickDeveloperInProject,
   getListDeveloperInRequestByRequestId,
+  rejectSelectedDev
 };

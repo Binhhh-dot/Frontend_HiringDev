@@ -183,6 +183,12 @@ const ClosingProcessProjectInManager = async (projectId) => {
   return response;
 };
 
+const closeProjectByHr = async (projectId) => {
+  const serviceUrl = urlConstant.endpoint.project.closeProjectByHr.replace("${projectId}", projectId);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl);
+  return response;
+};
+
 export default {
   createProject,
   getAllProjectByCompanyId,
@@ -195,6 +201,7 @@ export default {
   updateImage,
   getProjectLisPreparingtPaging,
   getProjectListInprogressPaging,
+  closeProjectByHr,
   getProjectListClosingProcessPaging,
   getProjectListClosedPaging,
   ClosingProcessProjectInManager,

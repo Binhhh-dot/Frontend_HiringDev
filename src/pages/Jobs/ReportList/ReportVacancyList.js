@@ -13,7 +13,30 @@ import { Empty } from 'antd';
 import reportServices from "../../../services/report.services";
 import { Modal as AntdModal } from "antd";
 import img0 from "../../../assets/images/user/img-00.jpg";
+import userImage0 from "../../../assets/images/user/img-00.jpg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faBullhorn,
+    faEllipsisVertical,
+    faX,
+    faPlus,
+    faTimes,
+    faEllipsis,
+    faAngleRight,
+    faAngleLeft,
+    faGear,
+    faCircle,
+    faMobileScreen,
+    faLocationDot
+} from "@fortawesome/free-solid-svg-icons";
+import {
+    faFlag,
+    faCircleXmark,
+    faImage,
+    faEnvelope,
+    faCalendar,
 
+} from "@fortawesome/free-regular-svg-icons";
 
 const ReportVacancyList = (a) => {
     //Apply Now Model
@@ -411,132 +434,132 @@ const ReportVacancyList = (a) => {
                                     </div>
 
                                 </Row>
-                                {/* <Row className="mt-4">
-                <Col lg={12} className="d-flex flex-column gap-2">
-                  {jobListing && (
-                    <>
-                      <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
-                        <CardBody className="p-4 dev-accepted  d-flex flex-column gap-1" style={{ borderRadius: "15px" }}>
-                          <div className="d-flex mb-2 justify-content-between">
-                            <div className="d-flex">
-                              <div
-                                className="flex-shrink-0 position-relative"
-                                onClick={() =>
-                                  openModal(developerState)
-                                }
-                              >
-                                <img
-                                  src={
-                                    developerState.userImg ||
-                                    userImage0
-                                  }
-                                  alt=""
-                                  className="avatar-md rounded"
-                                />
-                                <span
-                                  className={
-                                    developerState.candidateStatusClassName
-                                  }
-                                ></span>
-                              </div>
-                              <div className="ms-3">
-                                <div className="primary-link">
-                                  <h5
-                                    className="fs-17"
-                                    onClick={() =>
-                                      openModal(developerState)
-                                    }
-                                  >
-                                    {developerState.firstName} {developerState.lastName}
-                                  </h5>
-                                </div>
-                                <span
-                                  className={
-                                    developerState.hiredDevStatusString ===
-                                      "Rejected"
-                                      ? "badge bg-danger text-light mb-2"
-                                      : developerState.hiredDevStatusString ===
-                                        "Under Consideration"
-                                        ? "badge bg-warning text-light mb-2"
-                                        : developerState.hiredDevStatusString ===
-                                          "Working"
-                                          ? "badge bg-blue text-light mb-2"
-                                          : developerState.hiredDevStatusString ===
-                                            "Expired"
-                                            ? "badge bg-danger text-light mb-2"
-                                            : developerState.hiredDevStatusString ===
-                                              "Cancelled"
-                                              ? "badge bg-danger text-light mb-2"
-                                              : developerState.hiredDevStatusString ===
-                                                "Waiting Interview"
-                                                ? "badge bg-warning text-light mb-2"
-                                                : developerState.hiredDevStatusString ===
-                                                  "Onboarding"
-                                                  ? "badge bg-primary text-light mb-2"
-                                                  : developerState.hiredDevStatusString ===
-                                                    "Saved"
-                                                    ? "badge bg-info text-light mb-2"
-                                                    : ""
-                                  }
-                                >
-                                  {developerState.hiredDevStatusString}
-                                </span>{" "}
-                              </div>
-                            </div>
-                            <div className="d-flex gap-1">
-                              <div
-                                className="list-inline-item"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="top"
-                                onClick={() => openModal(developerState)}
-                                title="View More"
-                              >
-                                <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
-                                  <i className="mdi mdi-eye"></i>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="row" style={{ alignItems: "center" }}>
-                            <FontAwesomeIcon icon={faEnvelope} className="col-lg-1" style={{ padding: "0px" }} />
-                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
-                              {developerState.email}
-                            </div>
-                          </div >
-                          <div className="row" style={{ alignItems: "center" }}>
-                            <FontAwesomeIcon icon={faMobileScreen} className="col-lg-1" style={{ padding: "0px" }} />
-                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
-                              {developerState.phoneNumber}
-                            </div>
-                          </div >
-                          <div className="row" style={{ alignItems: "center" }}>
-                            <FontAwesomeIcon icon={faLocationDot} className="col-lg-1" style={{ padding: "0px" }} />
-                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
-                              {developerState.employmentTypeName}
-                            </div>
-                          </div >
-                          <div className="row" style={{ alignItems: "center" }}>
-                            <FontAwesomeIcon icon={faFlag} className="col-lg-1" style={{ padding: "0px" }} />
-                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
-                              Start day:
-                              {developerState.startWorkingDate}
-                            </div>
-                          </div >
-                          <div className="row" style={{ alignItems: "center" }}>
-                            <FontAwesomeIcon icon={faCircleXmark} className="col-lg-1" style={{ padding: "0px" }} />
-                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
-                              End day:
-                              {developerState.endWorkingDate}
-                            </div>
-                          </div >
+                                <Row className="mt-4">
+                                    <Col lg={12} className="d-flex flex-column gap-2">
+                                        {selectReportDetail.developerInProject && (
+                                            <>
+                                                <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
+                                                    <CardBody className="p-4 dev-accepted  d-flex flex-column gap-1" style={{ borderRadius: "15px" }}>
+                                                        <div className="d-flex mb-2 justify-content-between">
+                                                            <div className="d-flex">
+                                                                <div
+                                                                    className="flex-shrink-0 position-relative"
+                                                                // onClick={() =>
+                                                                //   openModal(developerState)
+                                                                // }
+                                                                >
+                                                                    <img
+                                                                        src={
+                                                                            selectReportDetail.developerInProject.userImage ||
+                                                                            userImage0
+                                                                        }
+                                                                        alt=""
+                                                                        className="avatar-md rounded"
+                                                                    />
+                                                                    <span
+                                                                        className={
+                                                                            selectReportDetail.developerInProject.candidateStatusClassName
+                                                                        }
+                                                                    ></span>
+                                                                </div>
+                                                                <div className="ms-3">
+                                                                    <div className="primary-link">
+                                                                        <h5
+                                                                            className="fs-17"
+                                                                        // onClick={() =>
+                                                                        //   openModal(developerState)
+                                                                        // }
+                                                                        >
+                                                                            {selectReportDetail.developerInProject.firstName} {selectReportDetail.developerInProject.lastName}
+                                                                        </h5>
+                                                                    </div>
+                                                                    <span
+                                                                        className={
+                                                                            selectReportDetail.developerInProject.hiredDevStatusString ===
+                                                                                "Rejected"
+                                                                                ? "badge bg-danger text-light mb-2"
+                                                                                : selectReportDetail.developerInProject.hiredDevStatusString ===
+                                                                                    "Under Consideration"
+                                                                                    ? "badge bg-warning text-light mb-2"
+                                                                                    : selectReportDetail.developerInProject.hiredDevStatusString ===
+                                                                                        "Working"
+                                                                                        ? "badge bg-blue text-light mb-2"
+                                                                                        : selectReportDetail.developerInProject.hiredDevStatusString ===
+                                                                                            "Expired"
+                                                                                            ? "badge bg-danger text-light mb-2"
+                                                                                            : selectReportDetail.developerInProject.hiredDevStatusString ===
+                                                                                                "Cancelled"
+                                                                                                ? "badge bg-danger text-light mb-2"
+                                                                                                : selectReportDetail.developerInProject.hiredDevStatusString ===
+                                                                                                    "Waiting Interview"
+                                                                                                    ? "badge bg-warning text-light mb-2"
+                                                                                                    : selectReportDetail.developerInProject.hiredDevStatusString ===
+                                                                                                        "Onboarding"
+                                                                                                        ? "badge bg-primary text-light mb-2"
+                                                                                                        : selectReportDetail.developerInProject.hiredDevStatusString ===
+                                                                                                            "Saved"
+                                                                                                            ? "badge bg-info text-light mb-2"
+                                                                                                            : ""
+                                                                        }
+                                                                    >
+                                                                        {selectReportDetail.developerInProject.hiredDevStatusString}
+                                                                    </span>{" "}
+                                                                </div>
+                                                            </div>
+                                                            <div className="d-flex gap-1">
+                                                                <div
+                                                                    className="list-inline-item"
+                                                                    data-bs-toggle="tooltip"
+                                                                    data-bs-placement="top"
+                                                                    // onClick={() => openModal(developerState)}
+                                                                    title="View More"
+                                                                >
+                                                                    <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
+                                                                        <i className="mdi mdi-eye"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="row" style={{ alignItems: "center" }}>
+                                                            <FontAwesomeIcon icon={faEnvelope} className="col-lg-1" style={{ padding: "0px" }} />
+                                                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                                                {selectReportDetail.developerInProject.email}
+                                                            </div>
+                                                        </div >
+                                                        <div className="row" style={{ alignItems: "center" }}>
+                                                            <FontAwesomeIcon icon={faMobileScreen} className="col-lg-1" style={{ padding: "0px" }} />
+                                                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                                                {selectReportDetail.developerInProject.phoneNumber}
+                                                            </div>
+                                                        </div >
+                                                        <div className="row" style={{ alignItems: "center" }}>
+                                                            <FontAwesomeIcon icon={faLocationDot} className="col-lg-1" style={{ padding: "0px" }} />
+                                                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                                                {selectReportDetail.developerInProject.employmentTypeName}
+                                                            </div>
+                                                        </div >
+                                                        <div className="row" style={{ alignItems: "center" }}>
+                                                            <FontAwesomeIcon icon={faFlag} className="col-lg-1" style={{ padding: "0px" }} />
+                                                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                                                Start day:
+                                                                {selectReportDetail.developerInProject.startWorkingDate}
+                                                            </div>
+                                                        </div >
+                                                        <div className="row" style={{ alignItems: "center" }}>
+                                                            <FontAwesomeIcon icon={faCircleXmark} className="col-lg-1" style={{ padding: "0px" }} />
+                                                            <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                                                End day:
+                                                                {selectReportDetail.developerInProject.endWorkingDate}
+                                                            </div>
+                                                        </div >
 
 
-                        </CardBody>
-                      </div>
-                    </>
-                  )}
-                </Col>
-              </Row> */}
+                                                    </CardBody>
+                                                </div>
+                                            </>
+                                        )}
+                                    </Col>
+                                </Row>
                                 {/* ------------------------------------------------------ */}
                             </Col>
                         </Row>

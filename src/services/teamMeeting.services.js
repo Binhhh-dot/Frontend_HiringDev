@@ -9,8 +9,24 @@ const createTeamMeeting = async (interviewId, redirectUrl, authenCode) => {
 
 const deleteTeamMeeting = async (interviewId, redirectUrl, authenCode) => {
     const serviceUrl = urlConstant.endpoint.teamMeeting.deleteTeamMeeting;
-    const response = await axiosLocalHost.normalRequest.delete(serviceUrl, { interviewId, redirectUrl, authenCode })
-    return response
+    const requestData = {
+        interviewId: interviewId,
+        redirectUrl: redirectUrl,
+        authenCode: authenCode
+    };
+    try {
+        const response = await axiosLocalHost.normalRequest.delete(serviceUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: requestData
+        });
+        return response;
+    } catch (error) {
+        // Xử lý lỗi ở đây
+        console.error('Error:', error);
+        throw error;
+    }
 };
 
 const editTeamMeeting = async (interviewId, redirectUrl, authenCode) => {

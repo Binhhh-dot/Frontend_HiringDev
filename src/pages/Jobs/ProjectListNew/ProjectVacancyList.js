@@ -60,8 +60,9 @@ const ProjectVacancyList = (a) => {
     const liststatuses = [
         { label: 'All', value: 0 },
         { label: 'Preparing', value: 1 },
-        { label: 'InProcess', value: 2 },
-        { label: 'Closed', value: 3 },
+        { label: 'In Process', value: 2 },
+        { label: 'Closing Process', value: 3 },
+        { label: 'Closed', value: 4 },
     ];
     let [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -144,6 +145,7 @@ const ProjectVacancyList = (a) => {
     };
 
     useEffect(() => {
+        setCurrentPage(1);
         fetchJobVacancies();
     }, [statuses]);
 
@@ -161,6 +163,7 @@ const ProjectVacancyList = (a) => {
     }, [currentPage]);
 
     useEffect(() => {
+        setCurrentPage(1);
         fetchJobVacancies();
     }, [skill]);
 
@@ -309,7 +312,11 @@ const ProjectVacancyList = (a) => {
                                                                     ? "badge bg-warning text-light fs-12"
                                                                     : jobVacancyListDetails.statusString === "In process"
                                                                         ? "badge bg-blue text-light fs-12"
-                                                                        : ""
+                                                                        : jobVacancyListDetails.statusString === "Closed"
+                                                                            ? "badge bg-teal text-light fs-12"
+                                                                            : jobVacancyListDetails.statusString === "Closing process"
+                                                                                ? "badge bg-teal text-light fs-12"
+                                                                                : ""
                                                             }
                                                         >
                                                             {jobVacancyListDetails.statusString}

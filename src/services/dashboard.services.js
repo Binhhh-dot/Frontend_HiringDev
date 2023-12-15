@@ -26,9 +26,16 @@ const getDashboardProject = async (dateInWeek) => {
     return response
 }
 
+const getDashboardProjectByProjectId = async (projectId) => {
+    const serviceUrl = urlConstant.endpoint.dashboard.getDashboardProjectByProjectId.replace("${projectId}", projectId);
+    const response = await axiosLocalHost.normalRequest.get(serviceUrl)
+    return response
+}
+
 export default {
     getDashboard,
     getDashboardRecentHiringRequest,
     getDashboardHiringRequest,
-    getDashboardProject
+    getDashboardProject,
+    getDashboardProjectByProjectId
 }
