@@ -23,6 +23,7 @@ import {
 } from "reactstrap";
 import img0 from "../../assets/images/user/img-00.jpg";
 import reportServices from "../../services/report.services";
+import NavBarWeb from "./NavBar/NavBarWeb";
 const { Header, Footer, Content } = Layout;
 
 const ReportList = () => {
@@ -346,7 +347,7 @@ const ReportList = () => {
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWeb choose={"menu-key/16"}></SiderBarWeb>
         <Layout>
-          <div
+          {/* <div
             style={{
               backgroundColor: "#FFFF",
               height: "70px",
@@ -441,7 +442,9 @@ const ReportList = () => {
                 </Dropdown>
               </div>
             </div>
-          </div>
+          </div> */}
+          <NavBarWeb></NavBarWeb>
+
           <Content>
             <section
               className="section p-3"

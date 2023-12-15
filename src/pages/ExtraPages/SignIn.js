@@ -80,7 +80,14 @@ const SignIn = () => {
             console.log(token)
             sendDeviceToken(token);
           });
-        } else {
+        } else if (role === "Admin") {
+          navigate("/dashboard")
+          requestPermission((token) => {
+            console.log(token)
+            sendDeviceToken(token);
+          });
+        }
+        else {
           if (userData.data.companyId != null) {
             localStorage.setItem('companyId', userData.data.companyId);
             setLoadingSignIn(false);

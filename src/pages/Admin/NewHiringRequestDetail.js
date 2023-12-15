@@ -41,6 +41,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import NavBarWeb from "./NavBar/NavBarWeb";
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
@@ -57,7 +58,7 @@ const NewHiringRequestDetail = () => {
         <SiderBarWeb choose={"menu-key/10"}></SiderBarWeb>
 
         <Layout>
-          <div
+          {/* <div
             style={{
               backgroundColor: "#FFFF",
               height: "70px",
@@ -152,7 +153,8 @@ const NewHiringRequestDetail = () => {
                 </Dropdown>
               </div>
             </div>
-          </div>
+          </div> */}
+          <NavBarWeb></NavBarWeb>
 
           <Content>
             {/* ----------------------------------------------------------------------------- */}

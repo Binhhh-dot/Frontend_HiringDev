@@ -316,8 +316,6 @@ const JobDetailsDescription = () => {
     setIsPopupConfirmOpen(true);
   };
   const handleConfirm = () => {
-    // thuc hien chuc nang cua nut send o day
-    //fetchsendHiringRequestToDevMatching();
     fetchSendDevToHRNew();
     setIsPopupConfirmOpen(false);
     setSelectedDev([]);
@@ -333,12 +331,6 @@ const JobDetailsDescription = () => {
     return fullNameMathcing?.firstName + " " + fullNameMathcing?.lastName;
   };
 
-  // const getDevNameAccepted = (id) => {
-  //   const fullNameAccepted = devHasBeenSent.find(
-  //     (dev) => dev.developerId === id
-  //   );
-  //   return fullNameAccepted?.firstName + " " + fullNameAccepted?.lastName;
-  // };
   /////////////////////////////////////////////////////////////////////////////
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -353,7 +345,6 @@ const JobDetailsDescription = () => {
   };
 
   //----------------------------------------------------------------------------------------
-  //const [cancelReason, setCancelReason] = useState("");
 
   const [cancelReasonAfter, setCancelReasonAfter] = useState("");
 
@@ -805,10 +796,10 @@ const JobDetailsDescription = () => {
                                 <span>
                                   {selectedDev.map((developer, key) => (
                                     <span key={key}>
-                                      {getDevNameMatching(developer)}? This
-                                      action can not be undone.
+                                      {getDevNameMatching(developer)},
                                     </span>
-                                  ))}
+                                  ))}{" "}
+                                  ? This action can not be undone.
                                 </span>
                               </h6>
                             </div>

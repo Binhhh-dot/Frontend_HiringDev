@@ -96,6 +96,7 @@ const getHRById = async (id) => {
   return response
 }
 
+
 const updateHR = async (id, formData) => {
   const serviceUrl = urlConstant.endpoint.user.updateHR.replace("${id}", id);
   const config = {
@@ -147,7 +148,7 @@ const getDeveloperById = async (devId) => {
 }
 
 const deleteDeveloper = async (userId) => {
-  const serviceUrl = urlConstant.endpoint.user.deleteDeveloper.replace("${userId}", userId);
+  const serviceUrl = urlConstant.endpoint.user.deleteStaff.replace("${userId}", userId);
   const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
 
   return response

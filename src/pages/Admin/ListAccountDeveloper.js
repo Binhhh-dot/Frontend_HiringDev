@@ -69,8 +69,11 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import { toast } from 'react-toastify';
+
 import SiderBarWebAdmin from "./SlideBar/SiderBarWebAdmin";
 import UpdateDeveloperAccountPopup from "./UpdateDeveloperAccountPopup/UpdateDeveloperAccountPopup";
+import NavBarWebAdmin from "./NavBar/NavBarWebAdmin";
 
 const layout = {
   labelCol: {
@@ -96,6 +99,7 @@ const { Column, ColumnGroup } = Table;
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
 
+
 const ListAccountDeveloper = () => {
   let developerDetail;
 
@@ -120,6 +124,7 @@ const ListAccountDeveloper = () => {
 
   const closedModal2 = () => {
     setVisibleModal2(false);
+    fetchDeveloperPaging();
   };
 
   //----------------------------------------------------------------------------------------
@@ -465,30 +470,13 @@ const ListAccountDeveloper = () => {
           skillIds
         );
         console.log(response);
-        message.success({
-          content: "Account Created Successfully",
-          duration: 2,
-          onClose: () => {
-            console.log("Toast closed");
-          },
-          style: {
-            marginTop: "50px",
-            marginRight: "50px",
-          },
-        });
-
+        toast.success("Create account successfully!")
         fetchDeveloperPaging();
         setVisibleModal1(false);
       } catch (error) {
         console.error("Error create dev:", error);
-        message.error({
-          content: "Error creating account ",
-          duration: 2,
-          style: {
-            marginTop: "50px",
-            marginRight: "50px",
-          },
-        });
+        toast.error("Create account fail!")
+
       }
     } else {
     }
@@ -546,27 +534,12 @@ const ListAccountDeveloper = () => {
   const handleDeleteConfirm = async (userId) => {
     try {
       await userSerrvices.deleteDeveloper(userId);
-      message.success({
-        content: "Account deleted successfully",
-        duration: 2,
-        onClose: () => {
-          console.log("Toast closed");
-        },
-        style: {
-          marginTop: "50px",
-          marginRight: "50px",
-        },
-      });
+      toast.success("Account deleted successfully!")
+
     } catch (error) {
       console.error("Update failed:", error);
-      message.error({
-        content: "Error Deleting account ",
-        duration: 2,
-        style: {
-          marginTop: "50px",
-          marginRight: "50px",
-        },
-      });
+      toast.error("Account deleted fails")
+
     }
   };
 
@@ -587,108 +560,17 @@ const ListAccountDeveloper = () => {
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
+
+  const [switchStatusMap, setSwitchStatusMap] = useState({});
+
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWebAdmin choose={"menu-key/5"}></SiderBarWebAdmin>
         {/* <SiderBarWebAdmin choose={"menu-key/5"}></SiderBarWebAdmin> */}
         <Layout>
-          <div
-            style={{
-              backgroundColor: "#FFFF",
-              height: "70px",
-              display: "flex",
-              alignItems: "center",
-              borderRadius: "7px",
-              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-              marginLeft: "30px",
-              marginRight: "30px",
-              marginBottom: "0px",
-            }}
-            className="mt-4 justify-content-end"
-          >
-            <div
-              className="d-flex gap-4 align-items-center"
-              style={{ height: "inherit" }}
-            >
-              <Space>
-                <Badge dot>
-                  <i
-                    className="uil uil-bell"
-                    style={{ color: "#8F78DF", fontSize: "20px" }}
-                  ></i>
-                </Badge>
-              </Space>
-              <Space>
-                <Badge dot>
-                  <i
-                    className="uil uil-envelope-open"
-                    style={{ color: "#8F78DF", fontSize: "20px" }}
-                  ></i>
-                </Badge>
-              </Space>
 
-              <div
-                className="p-2  d-flex gap-3 align-items-center"
-                style={{
-                  height: "inherit",
-                  backgroundColor: "#6546D2",
-                  color: "white",
-                  borderRadius: "10px",
-                }}
-              >
-                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
-                  <DropdownToggle
-                    className="p-2 d-flex gap-3 align-items-center"
-                    style={{
-                      height: "inherit",
-                      backgroundColor: "#6546D2",
-                      color: "white",
-
-                      cursor: "pointer",
-                      border: "0px",
-                    }}
-                  >
-                    <div>
-                      <img
-                        src={img0}
-                        className="ms-1"
-                        style={{
-                          borderRadius: "10px",
-                          height: "50px",
-                        }}
-                      />
-                    </div>
-                    <div className="me-1 d-flex flex-column align-items-center">
-                      <span className="fs-18">Nik jone</span>
-                      <span>Available</span>
-                    </div>
-                  </DropdownToggle>
-                  <DropdownMenu
-                    style={{
-                      marginLeft: "-25px",
-                    }}
-                  >
-                    <DropdownItem style={{ padding: "0px" }}>
-                      <div>
-                        <Link to="#" className="dropdown-item">
-                          Setting
-                        </Link>
-                      </div>
-                    </DropdownItem>
-
-                    <DropdownItem style={{ padding: "0px" }}>
-                      <div>
-                        <Link to="/signout" className="dropdown-item">
-                          Logout
-                        </Link>
-                      </div>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
-            </div>
-          </div>
+          <NavBarWebAdmin></NavBarWebAdmin>
 
           <div
             style={{
@@ -802,8 +684,8 @@ const ListAccountDeveloper = () => {
                             text === "Available"
                               ? "badge text-bg-success"
                               : text === "Selected On Request"
-                              ? "badge text-bg-info"
-                              : "badge bg-warning text-light"
+                                ? "badge text-bg-info"
+                                : "badge bg-warning text-light"
                           }
                         >
                           {text}
@@ -828,21 +710,18 @@ const ListAccountDeveloper = () => {
                               icon={faPenToSquare}
                             />
                           </a>
-                          {record.devStatusString === "Available" ||
-                          record.devStatusString === "On Working" ? (
-                            <a
-                              onClick={(event) => {
-                                handleDeleteClick(record.userId);
-                                event.stopPropagation();
-                              }}
-                            >
-                              <FontAwesomeIcon
-                                style={{ color: "#6d73f6" }}
-                                size="xl"
-                                icon={faTrashCan}
-                              />
-                            </a>
-                          ) : null}
+                          <Switch
+                            checked={record.statusString === 'Active' && (switchStatusMap[record.userId] || true)}
+                            onChange={(checked, event) => {
+                              event.stopPropagation();
+
+                              handleDeleteClick(record.userId);
+                              setSwitchStatusMap((prevMap) => ({ ...prevMap, [record.userId]: checked }));
+                            }}
+
+                            size="small" // Set size to "small" for iOS-like appearance
+                            style={{ backgroundColor: record.userStatus === 'Active' ? '#4CD964' : '#D1D1D6', borderColor: record.userStatus === 'Active' ? '#4CD964' : '#D1D1D6' }}
+                          />
                         </Space>
                       )}
                     />
@@ -860,14 +739,14 @@ const ListAccountDeveloper = () => {
                       className="badge text-bg-secondary"
                       onClick={handleCancel}
                     >
-                      Cancel
+                      No
                     </Button>,
                     <Button
                       key="confirm"
                       className="badge text-bg-danger"
                       onClick={handleOkDelete}
                     >
-                      Confirm Delete
+                      Yes
                     </Button>,
                   ]}
                 >
@@ -880,7 +759,7 @@ const ListAccountDeveloper = () => {
                     }}
                   />
                   <p style={{ textAlign: "center", fontWeight: "bold" }}>
-                    Are you sure you want to delete your account?
+                    Are you sure you want to change your account status?
                   </p>
                 </Modal>
               </div>
@@ -1009,10 +888,10 @@ const ListAccountDeveloper = () => {
                         hRInfo.devStatusString === "On Working"
                           ? "badge bg-warning text-light"
                           : hRInfo.devStatusString === "Selected On Request"
-                          ? "badge bg-info text-light"
-                          : hRInfo.devStatusString === "Available"
-                          ? "badge bg-success text-light"
-                          : "badge text-bg-danger"
+                            ? "badge bg-info text-light"
+                            : hRInfo.devStatusString === "Available"
+                              ? "badge bg-success text-light"
+                              : "badge text-bg-danger"
                       }
                     >
                       {hRInfo.devStatusString}
@@ -1025,8 +904,8 @@ const ListAccountDeveloper = () => {
                         hRInfo.userStatusString === "Active"
                           ? "badge  text-bg-success"
                           : hRInfo.userStatusString === "Selected On Request"
-                          ? "badge bg-warning text-light"
-                          : "badge text-bg-danger"
+                            ? "badge bg-warning text-light"
+                            : "badge text-bg-danger"
                       }
                     >
                       {hRInfo.userStatusString}

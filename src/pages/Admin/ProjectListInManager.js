@@ -27,6 +27,9 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import { Empty } from "antd";
+import NavBarWeb from "./NavBar/NavBarWeb";
+
 const { Header, Footer, Content } = Layout;
 
 const ProjectListInManager = () => {
@@ -54,8 +57,11 @@ const ProjectListInManager = () => {
   //------------------------------------------------------------------------------------------------
   const [projectListPreparing, setProjectListPreparing] = useState([]);
   const [projectListInprogress, setProjectListInprogress] = useState([]);
-  const [projectListComplete, setProjectListComplete] = useState([]);
-  const [projectListCancel, setProjectListCancel] = useState([]);
+  //const [projectListComplete, setProjectListComplete] = useState([]);
+  const [projectListClosed, setProjectListClosed] = useState([]);
+  const [projectListClosingProcess, setProjectListClosingProcess] = useState(
+    []
+  );
 
   //------------------------------------------------------------------------------------------------
   let [currentPage, setCurrentPage] = useState(1);
@@ -130,26 +136,26 @@ const ProjectListInManager = () => {
   };
 
   //------------------------------------------------------------------------------------------------
-  let [currentPageComplete, setCurrentPageComplete] = useState(1);
-  const [totalPagesComplete, setTotalPagesComplete] = useState(1);
-  const pageSizeComplete = 7;
-  const handlePageClickComplete = (page) => {
-    setCurrentPageComplete(page);
+  let [currentPageClosingProcess, setCurrentPageClosingProcess] = useState(1);
+  const [totalPagesClosingProcess, setTotalPagesClosingProcess] = useState(1);
+  const pageSizeClosingProcess = 7;
+  const handlePageClickClosingProcess = (page) => {
+    setCurrentPageClosingProcess(page);
   };
 
-  const fetchProjectListComplete = async () => {
+  const fetchProjectListClosingProcess = async () => {
     let response;
 
     try {
-      response = await projectServices.getProjectListCompletedPaging(
-        currentPageComplete,
+      response = await projectServices.getProjectListClosingProcessPaging(
+        currentPageClosingProcess,
         7
       );
       console.log(response.data.data);
 
-      setProjectListComplete(response.data.data);
-      setTotalPagesComplete(
-        Math.ceil(response.data.paging.total / pageSizeComplete)
+      setProjectListClosingProcess(response.data.data);
+      setTotalPagesClosingProcess(
+        Math.ceil(response.data.paging.total / pageSizeClosingProcess)
       );
     } catch (error) {
       console.error("Error fetching project list Complete", error);
@@ -157,25 +163,25 @@ const ProjectListInManager = () => {
   };
 
   //------------------------------------------------------------------------------------------------
-  let [currentPageCancel, setCurrentPageCancel] = useState(1);
-  const [totalPagesCancel, setTotalPagesCancel] = useState(1);
-  const pageSizeCancel = 7;
-  const handlePageClickCancel = (page) => {
-    setCurrentPageCancel(page);
+  let [currentPageClosed, setCurrentPageClosed] = useState(1);
+  const [totalPagesClosed, setTotalPagesClosed] = useState(1);
+  const pageSizeClosed = 7;
+  const handlePageClickClosed = (page) => {
+    setCurrentPageClosed(page);
   };
 
-  const fetchProjectListCancel = async () => {
+  const fetchProjectListClosed = async () => {
     let response;
 
     try {
-      response = await projectServices.getProjectListCancelPaging(
-        currentPageCancel,
+      response = await projectServices.getProjectListClosedPaging(
+        currentPageClosed,
         7
       );
       console.log(response.data.data);
-      setProjectListCancel(response.data.data);
-      setTotalPagesCancel(
-        Math.ceil(response.data.paging.total / pageSizeCancel)
+      setProjectListClosed(response.data.data);
+      setTotalPagesClosed(
+        Math.ceil(response.data.paging.total / pageSizeClosed)
       );
     } catch (error) {
       console.error("Error fetching project list Cancelled", error);
@@ -314,17 +320,20 @@ const ProjectListInManager = () => {
     }
   };
   //------------------------------------------------------------------------------------------------
-  const renderPageNumbersComplete = () => {
+  const renderPageNumbersClosingProcess = () => {
     const pageNumbers = [];
     const maxPageButtons = 4;
     let startPage = Math.max(
       1,
-      currentPageComplete - Math.floor(maxPageButtons / 2)
+      currentPageClosingProcess - Math.floor(maxPageButtons / 2)
     );
-    let endPage = Math.min(totalPagesComplete, startPage + maxPageButtons - 1);
+    let endPage = Math.min(
+      totalPagesClosingProcess,
+      startPage + maxPageButtons - 1
+    );
     if (
-      totalPagesComplete > maxPageButtons &&
-      currentPageComplete <= Math.floor(maxPageButtons / 2) + 1
+      totalPagesClosingProcess > maxPageButtons &&
+      currentPageClosingProcess <= Math.floor(maxPageButtons / 2) + 1
     ) {
       endPage = maxPageButtons;
     }
@@ -332,12 +341,14 @@ const ProjectListInManager = () => {
       pageNumbers.push(
         <li
           key={i}
-          className={`page-item ${i === currentPageComplete ? "active" : ""}`}
+          className={`page-item ${
+            i === currentPageClosingProcess ? "active" : ""
+          }`}
         >
           <Link
             className="page-link"
             to="#"
-            onClick={() => handlePageClickComplete(i)}
+            onClick={() => handlePageClickClosingProcess(i)}
           >
             {i}
           </Link>
@@ -347,29 +358,29 @@ const ProjectListInManager = () => {
     return pageNumbers;
   };
 
-  const handleNextPageComplete = () => {
-    if (currentPageComplete < totalPagesComplete) {
-      setCurrentPageComplete(currentPageComplete + 1);
+  const handleNextPageClosingProcess = () => {
+    if (currentPageClosingProcess < totalPagesClosingProcess) {
+      setCurrentPageClosingProcess(currentPageClosingProcess + 1);
     }
   };
 
-  const handlePrevPageComplete = () => {
-    if (currentPageComplete > 1) {
-      setCurrentPageComplete(currentPageComplete - 1);
+  const handlePrevPageClosingProcess = () => {
+    if (currentPageClosingProcess > 1) {
+      setCurrentPageClosingProcess(currentPageClosingProcess - 1);
     }
   };
   //------------------------------------------------------------------------------------------------
-  const renderPageNumbersCancel = () => {
+  const renderPageNumbersClosed = () => {
     const pageNumbers = [];
     const maxPageButtons = 4;
     let startPage = Math.max(
       1,
-      currentPageCancel - Math.floor(maxPageButtons / 2)
+      currentPageClosed - Math.floor(maxPageButtons / 2)
     );
-    let endPage = Math.min(totalPagesCancel, startPage + maxPageButtons - 1);
+    let endPage = Math.min(totalPagesClosed, startPage + maxPageButtons - 1);
     if (
-      totalPagesCancel > maxPageButtons &&
-      currentPageCancel <= Math.floor(maxPageButtons / 2) + 1
+      totalPagesClosed > maxPageButtons &&
+      currentPageClosed <= Math.floor(maxPageButtons / 2) + 1
     ) {
       endPage = maxPageButtons;
     }
@@ -377,12 +388,12 @@ const ProjectListInManager = () => {
       pageNumbers.push(
         <li
           key={i}
-          className={`page-item ${i === currentPageCancel ? "active" : ""}`}
+          className={`page-item ${i === currentPageClosed ? "active" : ""}`}
         >
           <Link
             className="page-link"
             to="#"
-            onClick={() => handlePageClickCancel(i)}
+            onClick={() => handlePageClickClosed(i)}
           >
             {i}
           </Link>
@@ -392,15 +403,15 @@ const ProjectListInManager = () => {
     return pageNumbers;
   };
 
-  const handleNextPageCancel = () => {
-    if (currentPageCancel < totalPagesCancel) {
-      setCurrentPageCancel(currentPageCancel + 1);
+  const handleNextPageClosed = () => {
+    if (currentPageClosed < totalPagesClosed) {
+      setCurrentPageClosed(currentPageClosed + 1);
     }
   };
 
-  const handlePrevPageCancel = () => {
-    if (currentPageCancel > 1) {
-      setCurrentPageCancel(currentPageCancel - 1);
+  const handlePrevPageClosed = () => {
+    if (currentPageClosed > 1) {
+      setCurrentPageClosed(currentPageClosed - 1);
     }
   };
 
@@ -428,12 +439,12 @@ const ProjectListInManager = () => {
   }, [currentPageInprogress]);
 
   useEffect(() => {
-    fetchProjectListComplete();
-  }, [currentPageComplete]);
+    fetchProjectListClosingProcess();
+  }, [currentPageClosingProcess]);
 
   useEffect(() => {
-    fetchProjectListCancel();
-  }, [currentPageCancel]);
+    fetchProjectListClosed();
+  }, [currentPageClosed]);
   //------------------------------------------------------------------------------------------------
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -446,7 +457,7 @@ const ProjectListInManager = () => {
         <SiderBarWeb choose={"menu-key/12"}></SiderBarWeb>
 
         <Layout>
-          <div
+          {/* <div
             style={{
               backgroundColor: "#FFFF",
               height: "70px",
@@ -541,7 +552,8 @@ const ProjectListInManager = () => {
                 </Dropdown>
               </div>
             </div>
-          </div>
+          </div> */}
+          <NavBarWeb></NavBarWeb>
 
           <Content>
             <section
@@ -618,7 +630,7 @@ const ProjectListInManager = () => {
                                 }}
                                 type="button"
                               >
-                                Completed
+                                Closing Process
                               </NavLink>
                             </NavItem>
                             <NavItem role="presentation">
@@ -632,7 +644,7 @@ const ProjectListInManager = () => {
                                 }}
                                 type="button"
                               >
-                                Cancel
+                                Closed
                               </NavLink>
                             </NavItem>
                           </Nav>
@@ -652,847 +664,937 @@ const ProjectListInManager = () => {
                       <CardBody className="px-0">
                         <TabContent activeTab={activeTab}>
                           <TabPane tabId="1">
-                            <div>
-                              {projectList.map((projectListDetail, key) => (
-                                <div
-                                  key={key}
-                                  style={{
-                                    boxShadow:
-                                      "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                  }}
-                                  className={
-                                    "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                                  }
-                                >
-                                  <div className="p-2">
-                                    <Row className="align-items-center">
-                                      <Col md={2}>
-                                        <div>
-                                          <Link to="#">
-                                            <img
-                                              style={{
-                                                width: "80px",
-                                                height: "80px",
-                                              }}
-                                              src={
-                                                projectListDetail.companyImage
-                                              }
-                                              alt=""
-                                              className="img-fluid rounded-3 img-avt-hiring-request"
-                                            />
-                                          </Link>
-                                        </div>
-                                      </Col>
+                            {projectList.length === 0 ? (
+                              <div>
+                                <Empty />
+                              </div>
+                            ) : (
+                              <div>
+                                <div>
+                                  {projectList.map((projectListDetail, key) => (
+                                    <div
+                                      key={key}
+                                      style={{
+                                        boxShadow:
+                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                      }}
+                                      className={
+                                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                                      }
+                                    >
+                                      <div className="p-2">
+                                        <Row className="align-items-center">
+                                          <Col md={2}>
+                                            <div>
+                                              <Link to="#">
+                                                <img
+                                                  style={{
+                                                    width: "80px",
+                                                    height: "80px",
+                                                  }}
+                                                  src={
+                                                    projectListDetail.companyImage
+                                                  }
+                                                  alt=""
+                                                  className="img-fluid rounded-3 img-avt-hiring-request"
+                                                />
+                                              </Link>
+                                            </div>
+                                          </Col>
 
-                                      <Col md={2}>
-                                        <div>
-                                          <h5 className="fs-18 mb-0">
-                                            <Link
-                                              to="/projectdetail"
-                                              className="text-dark"
-                                              state={{
-                                                projectId:
-                                                  projectListDetail.projectId,
-                                                companyId:
-                                                  projectListDetail.companyId,
-                                              }}
-                                            >
-                                              {projectListDetail.projectName}
-                                            </Link>
-                                          </h5>
-                                          <p className="text-muted fs-14 mb-0">
-                                            {projectListDetail.projectCode}
-                                          </p>
-                                        </div>
-                                      </Col>
+                                          <Col md={2}>
+                                            <div>
+                                              <h5 className="fs-18 mb-0">
+                                                <Link
+                                                  to="/projectdetail"
+                                                  className="text-dark"
+                                                  state={{
+                                                    projectId:
+                                                      projectListDetail.projectId,
+                                                    companyId:
+                                                      projectListDetail.companyId,
+                                                  }}
+                                                >
+                                                  {
+                                                    projectListDetail.projectName
+                                                  }
+                                                </Link>
+                                              </h5>
+                                              <p className="text-muted fs-14 mb-0">
+                                                {projectListDetail.projectCode}
+                                              </p>
+                                            </div>
+                                          </Col>
 
-                                      <Col md={1}>
-                                        <div className="d-flex align-items-center mb-0">
-                                          <div className="flex-shrink-0">
-                                            <i
-                                              className="uil uil-user-check text-primary me-1"
-                                              style={{ fontSize: "17px" }}
-                                            ></i>
-                                          </div>
-                                          <p className="text-muted mb-0">
-                                            {projectListDetail.numberOfDev}
-                                          </p>
-                                        </div>
-                                      </Col>
+                                          <Col md={1}>
+                                            <div className="d-flex align-items-center mb-0">
+                                              <div className="flex-shrink-0">
+                                                <i
+                                                  className="uil uil-user-check text-primary me-1"
+                                                  style={{ fontSize: "17px" }}
+                                                ></i>
+                                              </div>
+                                              <p className="text-muted mb-0">
+                                                {projectListDetail.numberOfDev}
+                                              </p>
+                                            </div>
+                                          </Col>
 
-                                      <Col md={3}>
-                                        <div className="d-flex mb-0 align-items-center">
-                                          <div className="flex-shrink-0">
-                                            <i
-                                              className="uil uil-clock-three text-primary me-1"
-                                              style={{ fontSize: "17px" }}
-                                            ></i>
-                                          </div>
-                                          <p className="text-muted mb-0">
-                                            {" "}
-                                            {projectListDetail.startDate} -{" "}
-                                            {projectListDetail.endDate}
-                                          </p>
-                                        </div>
-                                      </Col>
+                                          <Col md={3}>
+                                            <div className="d-flex mb-0 align-items-center">
+                                              <div className="flex-shrink-0">
+                                                <i
+                                                  className="uil uil-clock-three text-primary me-1"
+                                                  style={{ fontSize: "17px" }}
+                                                ></i>
+                                              </div>
+                                              <p className="text-muted mb-0">
+                                                {" "}
+                                                {
+                                                  projectListDetail.startDate
+                                                } - {projectListDetail.endDate}
+                                              </p>
+                                            </div>
+                                          </Col>
 
-                                      <Col md={2}>
-                                        <div>
-                                          <span>
-                                            {projectListDetail.postedTime}
-                                          </span>
-                                        </div>
-                                      </Col>
+                                          <Col md={2}>
+                                            <div>
+                                              <span>
+                                                {projectListDetail.postedTime}
+                                              </span>
+                                            </div>
+                                          </Col>
 
-                                      <Col
-                                        md={2}
-                                        className="d-flex justify-content-around"
-                                      >
-                                        <div className="d-flex align-items-center">
-                                          <span
-                                            className={
-                                              projectListDetail.statusString ===
-                                              "Preparing"
-                                                ? "badge bg-warning text-light fs-12"
-                                                : projectListDetail.statusString ===
-                                                  "cancelled"
-                                                ? "badge bg-danger text-light fs-12"
-                                                : projectListDetail.statusString ===
-                                                  "In process"
-                                                ? "badge bg-blue text-light fs-12"
-                                                : projectListDetail.statusString ===
-                                                  "completed"
-                                                ? "badge bg-success text-light fs-12"
-                                                : ""
-                                            }
+                                          <Col
+                                            md={2}
+                                            className="d-flex justify-content-around"
                                           >
-                                            {projectListDetail.statusString}
-                                          </span>
-                                        </div>
-                                      </Col>
-                                    </Row>
-                                  </div>
+                                            <div className="d-flex align-items-center">
+                                              <span
+                                                className={
+                                                  projectListDetail.statusString ===
+                                                  "Preparing"
+                                                    ? "badge bg-warning text-light fs-12"
+                                                    : projectListDetail.statusString ===
+                                                      "Closed"
+                                                    ? "badge bg-danger text-light fs-12"
+                                                    : projectListDetail.statusString ===
+                                                      "In process"
+                                                    ? "badge bg-blue text-light fs-12"
+                                                    : projectListDetail.statusString ===
+                                                      "Closing process"
+                                                    ? "badge bg-purple text-light fs-12"
+                                                    : ""
+                                                }
+                                              >
+                                                {projectListDetail.statusString}
+                                              </span>
+                                            </div>
+                                          </Col>
+                                        </Row>
+                                      </div>
+                                    </div>
+                                  ))}
                                 </div>
-                              ))}
-                            </div>
-                            {/* phan trang */}
-                            <Row>
-                              <Col lg={12} className="mt-4 pt-2">
-                                <nav aria-label="Page navigation example">
-                                  <div className="pagination job-pagination mb-0 justify-content-center">
-                                    <li
-                                      className={`page-item ${
-                                        currentPage === 1 ? "disabled" : ""
-                                      }`}
-                                    >
-                                      <Link
-                                        className="page-link"
-                                        to="#"
-                                        tabIndex="-1"
-                                        onClick={handlePrevPage}
-                                      >
-                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                      </Link>
-                                    </li>
-                                    {renderPageNumbers()}
-                                    <li
-                                      className={`page-item ${
-                                        currentPage === totalPages
-                                          ? "disabled"
-                                          : ""
-                                      }`}
-                                    >
-                                      <Link
-                                        className="page-link"
-                                        to="#"
-                                        onClick={handleNextPage}
-                                      >
-                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                      </Link>
-                                    </li>
-                                  </div>
-                                </nav>
-                              </Col>
-                            </Row>
+                                {/* phan trang */}
+                                <Row>
+                                  <Col lg={12} className="mt-4 pt-2">
+                                    <nav aria-label="Page navigation example">
+                                      <div className="pagination job-pagination mb-0 justify-content-center">
+                                        <li
+                                          className={`page-item ${
+                                            currentPage === 1 ? "disabled" : ""
+                                          }`}
+                                        >
+                                          <Link
+                                            className="page-link"
+                                            to="#"
+                                            tabIndex="-1"
+                                            onClick={handlePrevPage}
+                                          >
+                                            <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                          </Link>
+                                        </li>
+                                        {renderPageNumbers()}
+                                        <li
+                                          className={`page-item ${
+                                            currentPage === totalPages
+                                              ? "disabled"
+                                              : ""
+                                          }`}
+                                        >
+                                          <Link
+                                            className="page-link"
+                                            to="#"
+                                            onClick={handleNextPage}
+                                          >
+                                            <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                          </Link>
+                                        </li>
+                                      </div>
+                                    </nav>
+                                  </Col>
+                                </Row>
+                              </div>
+                            )}
                           </TabPane>
                           <TabPane tabId="2">
-                            <div>
-                              {projectListPreparing.map(
-                                (projectListDetail, key) => (
-                                  <div
-                                    key={key}
-                                    style={{
-                                      boxShadow:
-                                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                    }}
-                                    className={
-                                      "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                                    }
-                                  >
-                                    <div className="p-2">
-                                      <Row className="align-items-center">
-                                        <Col md={2}>
-                                          <div>
-                                            <Link to="#">
-                                              <img
-                                                style={{
-                                                  width: "80px",
-                                                  height: "80px",
-                                                }}
-                                                src={
-                                                  projectListDetail.companyImage
-                                                }
-                                                alt=""
-                                                className="img-fluid rounded-3 img-avt-hiring-request"
-                                              />
-                                            </Link>
-                                          </div>
-                                        </Col>
+                            {projectListPreparing.length === 0 ? (
+                              <div>
+                                <Empty />
+                              </div>
+                            ) : (
+                              <div>
+                                <div>
+                                  {projectListPreparing.map(
+                                    (projectListDetail, key) => (
+                                      <div
+                                        key={key}
+                                        style={{
+                                          boxShadow:
+                                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                        }}
+                                        className={
+                                          "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                                        }
+                                      >
+                                        <div className="p-2">
+                                          <Row className="align-items-center">
+                                            <Col md={2}>
+                                              <div>
+                                                <Link to="#">
+                                                  <img
+                                                    style={{
+                                                      width: "80px",
+                                                      height: "80px",
+                                                    }}
+                                                    src={
+                                                      projectListDetail.companyImage
+                                                    }
+                                                    alt=""
+                                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                                  />
+                                                </Link>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={2}>
-                                          <div>
-                                            <h5 className="fs-18 mb-0">
-                                              <Link
-                                                to="/projectdetail"
-                                                className="text-dark"
-                                                state={{
-                                                  projectId:
-                                                    projectListDetail.projectId,
-                                                  companyId:
-                                                    projectListDetail.companyId,
-                                                }}
-                                              >
-                                                {projectListDetail.projectName}
-                                              </Link>
-                                            </h5>
-                                            <p className="text-muted fs-14 mb-0">
-                                              {projectListDetail.projectCode}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={2}>
+                                              <div>
+                                                <h5 className="fs-18 mb-0">
+                                                  <Link
+                                                    to="/projectdetail"
+                                                    className="text-dark"
+                                                    state={{
+                                                      projectId:
+                                                        projectListDetail.projectId,
+                                                      companyId:
+                                                        projectListDetail.companyId,
+                                                    }}
+                                                  >
+                                                    {
+                                                      projectListDetail.projectName
+                                                    }
+                                                  </Link>
+                                                </h5>
+                                                <p className="text-muted fs-14 mb-0">
+                                                  {
+                                                    projectListDetail.projectCode
+                                                  }
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={1}>
-                                          <div className="d-flex align-items-center mb-0">
-                                            <div className="flex-shrink-0">
-                                              <i
-                                                className="uil uil-user-check text-primary me-1"
-                                                style={{ fontSize: "17px" }}
-                                              ></i>
-                                            </div>
-                                            <p className="text-muted mb-0">
-                                              {projectListDetail.numberOfDev}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={1}>
+                                              <div className="d-flex align-items-center mb-0">
+                                                <div className="flex-shrink-0">
+                                                  <i
+                                                    className="uil uil-user-check text-primary me-1"
+                                                    style={{ fontSize: "17px" }}
+                                                  ></i>
+                                                </div>
+                                                <p className="text-muted mb-0">
+                                                  {
+                                                    projectListDetail.numberOfDev
+                                                  }
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={3}>
-                                          <div className="d-flex mb-0 align-items-center">
-                                            <div className="flex-shrink-0">
-                                              <i
-                                                className="uil uil-clock-three text-primary me-1"
-                                                style={{ fontSize: "17px" }}
-                                              ></i>
-                                            </div>
-                                            <p className="text-muted mb-0">
-                                              {" "}
-                                              {
-                                                projectListDetail.startDate
-                                              } - {projectListDetail.endDate}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={3}>
+                                              <div className="d-flex mb-0 align-items-center">
+                                                <div className="flex-shrink-0">
+                                                  <i
+                                                    className="uil uil-clock-three text-primary me-1"
+                                                    style={{ fontSize: "17px" }}
+                                                  ></i>
+                                                </div>
+                                                <p className="text-muted mb-0">
+                                                  {" "}
+                                                  {
+                                                    projectListDetail.startDate
+                                                  }{" "}
+                                                  - {projectListDetail.endDate}
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={2}>
-                                          <div>
-                                            <span>
-                                              {projectListDetail.postedTime}
-                                            </span>
-                                          </div>
-                                        </Col>
+                                            <Col md={2}>
+                                              <div>
+                                                <span>
+                                                  {projectListDetail.postedTime}
+                                                </span>
+                                              </div>
+                                            </Col>
 
-                                        <Col
-                                          md={2}
-                                          className="d-flex justify-content-around"
-                                        >
-                                          <div className="d-flex align-items-center">
-                                            <span
-                                              className={
-                                                projectListDetail.statusString ===
-                                                "Preparing"
-                                                  ? "badge bg-warning text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "cancelled"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "In process"
-                                                  ? "badge bg-blue text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "completed"
-                                                  ? "badge bg-primary text-light fs-12"
-                                                  : ""
-                                              }
+                                            <Col
+                                              md={2}
+                                              className="d-flex justify-content-around"
                                             >
-                                              {projectListDetail.statusString}
-                                            </span>
-                                          </div>
-                                        </Col>
-                                      </Row>
-                                    </div>
-                                  </div>
-                                )
-                              )}
-                            </div>
-                            {/* phan trang */}
-                            <Row>
-                              <Col lg={12} className="mt-4 pt-2">
-                                <nav aria-label="Page navigation example">
-                                  <div className="pagination job-pagination mb-0 justify-content-center">
-                                    <li
-                                      className={`page-item ${
-                                        currentPagePreparing === 1
-                                          ? "disabled"
-                                          : ""
-                                      }`}
-                                    >
-                                      <Link
-                                        className="page-link"
-                                        to="#"
-                                        tabIndex="-1"
-                                        onClick={handlePrevPagePreparing}
-                                      >
-                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                      </Link>
-                                    </li>
-                                    {renderPageNumbersPreparing()}
-                                    <li
-                                      className={`page-item ${
-                                        currentPagePreparing ===
-                                        totalPagesPreparing
-                                          ? "disabled"
-                                          : ""
-                                      }`}
-                                    >
-                                      <Link
-                                        className="page-link"
-                                        to="#"
-                                        onClick={handleNextPagePreparing}
-                                      >
-                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                      </Link>
-                                    </li>
-                                  </div>
-                                </nav>
-                              </Col>
-                            </Row>
+                                              <div className="d-flex align-items-center">
+                                                <span
+                                                  className={
+                                                    projectListDetail.statusString ===
+                                                    "Preparing"
+                                                      ? "badge bg-warning text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "Closed"
+                                                      ? "badge bg-danger text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "In process"
+                                                      ? "badge bg-blue text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "Completed"
+                                                      ? "badge bg-primary text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "Closing Process"
+                                                      ? "badge bg-purple text-light fs-12"
+                                                      : ""
+                                                  }
+                                                >
+                                                  {
+                                                    projectListDetail.statusString
+                                                  }
+                                                </span>
+                                              </div>
+                                            </Col>
+                                          </Row>
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                                {/* phan trang */}
+                                <Row>
+                                  <Col lg={12} className="mt-4 pt-2">
+                                    <nav aria-label="Page navigation example">
+                                      <div className="pagination job-pagination mb-0 justify-content-center">
+                                        <li
+                                          className={`page-item ${
+                                            currentPagePreparing === 1
+                                              ? "disabled"
+                                              : ""
+                                          }`}
+                                        >
+                                          <Link
+                                            className="page-link"
+                                            to="#"
+                                            tabIndex="-1"
+                                            onClick={handlePrevPagePreparing}
+                                          >
+                                            <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                          </Link>
+                                        </li>
+                                        {renderPageNumbersPreparing()}
+                                        <li
+                                          className={`page-item ${
+                                            currentPagePreparing ===
+                                            totalPagesPreparing
+                                              ? "disabled"
+                                              : ""
+                                          }`}
+                                        >
+                                          <Link
+                                            className="page-link"
+                                            to="#"
+                                            onClick={handleNextPagePreparing}
+                                          >
+                                            <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                          </Link>
+                                        </li>
+                                      </div>
+                                    </nav>
+                                  </Col>
+                                </Row>
+                              </div>
+                            )}
                           </TabPane>
                           <TabPane tabId="3">
-                            <div>
-                              {projectListInprogress.map(
-                                (projectListDetail, key) => (
-                                  <div
-                                    key={key}
-                                    style={{
-                                      boxShadow:
-                                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                    }}
-                                    className={
-                                      "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                                    }
-                                  >
-                                    <div className="p-2">
-                                      <Row className="align-items-center">
-                                        <Col md={2}>
-                                          <div>
-                                            <Link to="#">
-                                              <img
-                                                style={{
-                                                  width: "80px",
-                                                  height: "80px",
-                                                }}
-                                                src={
-                                                  projectListDetail.companyImage
-                                                }
-                                                alt=""
-                                                className="img-fluid rounded-3 img-avt-hiring-request"
-                                              />
-                                            </Link>
-                                          </div>
-                                        </Col>
+                            {projectListInprogress.length === 0 ? (
+                              <div>
+                                <Empty />
+                              </div>
+                            ) : (
+                              <div>
+                                <div>
+                                  {projectListInprogress.map(
+                                    (projectListDetail, key) => (
+                                      <div
+                                        key={key}
+                                        style={{
+                                          boxShadow:
+                                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                        }}
+                                        className={
+                                          "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                                        }
+                                      >
+                                        <div className="p-2">
+                                          <Row className="align-items-center">
+                                            <Col md={2}>
+                                              <div>
+                                                <Link to="#">
+                                                  <img
+                                                    style={{
+                                                      width: "80px",
+                                                      height: "80px",
+                                                    }}
+                                                    src={
+                                                      projectListDetail.companyImage
+                                                    }
+                                                    alt=""
+                                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                                  />
+                                                </Link>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={2}>
-                                          <div>
-                                            <h5 className="fs-18 mb-0">
-                                              <Link
-                                                to="/projectdetail"
-                                                className="text-dark"
-                                                state={{
-                                                  projectId:
-                                                    projectListDetail.projectId,
-                                                  companyId:
-                                                    projectListDetail.companyId,
-                                                }}
-                                              >
-                                                {projectListDetail.projectName}
-                                              </Link>
-                                            </h5>
-                                            <p className="text-muted fs-14 mb-0">
-                                              {projectListDetail.projectCode}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={2}>
+                                              <div>
+                                                <h5 className="fs-18 mb-0">
+                                                  <Link
+                                                    to="/projectdetail"
+                                                    className="text-dark"
+                                                    state={{
+                                                      projectId:
+                                                        projectListDetail.projectId,
+                                                      companyId:
+                                                        projectListDetail.companyId,
+                                                    }}
+                                                  >
+                                                    {
+                                                      projectListDetail.projectName
+                                                    }
+                                                  </Link>
+                                                </h5>
+                                                <p className="text-muted fs-14 mb-0">
+                                                  {
+                                                    projectListDetail.projectCode
+                                                  }
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={1}>
-                                          <div className="d-flex align-items-center mb-0">
-                                            <div className="flex-shrink-0">
-                                              <i
-                                                className="uil uil-user-check text-primary me-1"
-                                                style={{ fontSize: "17px" }}
-                                              ></i>
-                                            </div>
-                                            <p className="text-muted mb-0">
-                                              {projectListDetail.numberOfDev}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={1}>
+                                              <div className="d-flex align-items-center mb-0">
+                                                <div className="flex-shrink-0">
+                                                  <i
+                                                    className="uil uil-user-check text-primary me-1"
+                                                    style={{ fontSize: "17px" }}
+                                                  ></i>
+                                                </div>
+                                                <p className="text-muted mb-0">
+                                                  {
+                                                    projectListDetail.numberOfDev
+                                                  }
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={3}>
-                                          <div className="d-flex mb-0 align-items-center">
-                                            <div className="flex-shrink-0">
-                                              <i
-                                                className="uil uil-clock-three text-primary me-1"
-                                                style={{ fontSize: "17px" }}
-                                              ></i>
-                                            </div>
-                                            <p className="text-muted mb-0">
-                                              {" "}
-                                              {
-                                                projectListDetail.startDate
-                                              } - {projectListDetail.endDate}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={3}>
+                                              <div className="d-flex mb-0 align-items-center">
+                                                <div className="flex-shrink-0">
+                                                  <i
+                                                    className="uil uil-clock-three text-primary me-1"
+                                                    style={{ fontSize: "17px" }}
+                                                  ></i>
+                                                </div>
+                                                <p className="text-muted mb-0">
+                                                  {" "}
+                                                  {
+                                                    projectListDetail.startDate
+                                                  }{" "}
+                                                  - {projectListDetail.endDate}
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={2}>
-                                          <div>
-                                            <span>
-                                              {projectListDetail.postedTime}
-                                            </span>
-                                          </div>
-                                        </Col>
+                                            <Col md={2}>
+                                              <div>
+                                                <span>
+                                                  {projectListDetail.postedTime}
+                                                </span>
+                                              </div>
+                                            </Col>
 
-                                        <Col
-                                          md={2}
-                                          className="d-flex justify-content-around"
-                                        >
-                                          <div className="d-flex align-items-center">
-                                            <span
-                                              className={
-                                                projectListDetail.statusString ===
-                                                "Preparing"
-                                                  ? "badge bg-warning text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "cancelled"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "In process"
-                                                  ? "badge bg-blue text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "completed"
-                                                  ? "badge bg-primary text-light fs-12"
-                                                  : ""
-                                              }
+                                            <Col
+                                              md={2}
+                                              className="d-flex justify-content-around"
                                             >
-                                              {projectListDetail.statusString}
-                                            </span>
-                                          </div>
-                                        </Col>
-                                      </Row>
-                                    </div>
-                                  </div>
-                                )
-                              )}
-                            </div>
-                            {/* phan trang */}
-                            <Row>
-                              <Col lg={12} className="mt-4 pt-2">
-                                <nav aria-label="Page navigation example">
-                                  <div className="pagination job-pagination mb-0 justify-content-center">
-                                    <li
-                                      className={`page-item ${
-                                        currentPageInprogress === 1
-                                          ? "disabled"
-                                          : ""
-                                      }`}
-                                    >
-                                      <Link
-                                        className="page-link"
-                                        to="#"
-                                        tabIndex="-1"
-                                        onClick={handlePrevPageInprogress}
-                                      >
-                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                      </Link>
-                                    </li>
-                                    {renderPageNumbersInprogress()}
-                                    <li
-                                      className={`page-item ${
-                                        currentPageInprogress ===
-                                        totalPagesInprogress
-                                          ? "disabled"
-                                          : ""
-                                      }`}
-                                    >
-                                      <Link
-                                        className="page-link"
-                                        to="#"
-                                        onClick={handleNextPageInprogress}
-                                      >
-                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                      </Link>
-                                    </li>
-                                  </div>
-                                </nav>
-                              </Col>
-                            </Row>
+                                              <div className="d-flex align-items-center">
+                                                <span
+                                                  className={
+                                                    projectListDetail.statusString ===
+                                                    "Preparing"
+                                                      ? "badge bg-warning text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "cancelled"
+                                                      ? "badge bg-danger text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "In process"
+                                                      ? "badge bg-blue text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "completed"
+                                                      ? "badge bg-primary text-light fs-12"
+                                                      : ""
+                                                  }
+                                                >
+                                                  {
+                                                    projectListDetail.statusString
+                                                  }
+                                                </span>
+                                              </div>
+                                            </Col>
+                                          </Row>
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                                {/* phan trang */}
+                                <Row>
+                                  <Col lg={12} className="mt-4 pt-2">
+                                    <nav aria-label="Page navigation example">
+                                      <div className="pagination job-pagination mb-0 justify-content-center">
+                                        <li
+                                          className={`page-item ${
+                                            currentPageInprogress === 1
+                                              ? "disabled"
+                                              : ""
+                                          }`}
+                                        >
+                                          <Link
+                                            className="page-link"
+                                            to="#"
+                                            tabIndex="-1"
+                                            onClick={handlePrevPageInprogress}
+                                          >
+                                            <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                          </Link>
+                                        </li>
+                                        {renderPageNumbersInprogress()}
+                                        <li
+                                          className={`page-item ${
+                                            currentPageInprogress ===
+                                            totalPagesInprogress
+                                              ? "disabled"
+                                              : ""
+                                          }`}
+                                        >
+                                          <Link
+                                            className="page-link"
+                                            to="#"
+                                            onClick={handleNextPageInprogress}
+                                          >
+                                            <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                          </Link>
+                                        </li>
+                                      </div>
+                                    </nav>
+                                  </Col>
+                                </Row>
+                              </div>
+                            )}
                           </TabPane>
                           <TabPane tabId="4">
-                            <div>
-                              {projectListComplete.map(
-                                (projectListDetail, key) => (
-                                  <div
-                                    key={key}
-                                    style={{
-                                      boxShadow:
-                                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                    }}
-                                    className={
-                                      "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                                    }
-                                  >
-                                    <div className="p-2">
-                                      <Row className="align-items-center">
-                                        <Col md={2}>
-                                          <div>
-                                            <Link to="#">
-                                              <img
-                                                style={{
-                                                  width: "80px",
-                                                  height: "80px",
-                                                }}
-                                                src={
-                                                  projectListDetail.companyImage
-                                                }
-                                                alt=""
-                                                className="img-fluid rounded-3 img-avt-hiring-request"
-                                              />
-                                            </Link>
-                                          </div>
-                                        </Col>
+                            {projectListClosingProcess.length === 0 ? (
+                              <div>
+                                <Empty />
+                              </div>
+                            ) : (
+                              <div>
+                                <div>
+                                  {projectListClosingProcess.map(
+                                    (projectListDetail, key) => (
+                                      <div
+                                        key={key}
+                                        style={{
+                                          boxShadow:
+                                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                        }}
+                                        className={
+                                          "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                                        }
+                                      >
+                                        <div className="p-2">
+                                          <Row className="align-items-center">
+                                            <Col md={2}>
+                                              <div>
+                                                <Link to="#">
+                                                  <img
+                                                    style={{
+                                                      width: "80px",
+                                                      height: "80px",
+                                                    }}
+                                                    src={
+                                                      projectListDetail.companyImage
+                                                    }
+                                                    alt=""
+                                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                                  />
+                                                </Link>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={2}>
-                                          <div>
-                                            <h5 className="fs-18 mb-0">
-                                              <Link
-                                                to="/projectdetail"
-                                                className="text-dark"
-                                                state={{
-                                                  projectId:
-                                                    projectListDetail.projectId,
-                                                  companyId:
-                                                    projectListDetail.companyId,
-                                                }}
-                                              >
-                                                {projectListDetail.projectName}
-                                              </Link>
-                                            </h5>
-                                            <p className="text-muted fs-14 mb-0">
-                                              {projectListDetail.projectCode}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={2}>
+                                              <div>
+                                                <h5 className="fs-18 mb-0">
+                                                  <Link
+                                                    to="/projectdetail"
+                                                    className="text-dark"
+                                                    state={{
+                                                      projectId:
+                                                        projectListDetail.projectId,
+                                                      companyId:
+                                                        projectListDetail.companyId,
+                                                    }}
+                                                  >
+                                                    {
+                                                      projectListDetail.projectName
+                                                    }
+                                                  </Link>
+                                                </h5>
+                                                <p className="text-muted fs-14 mb-0">
+                                                  {
+                                                    projectListDetail.projectCode
+                                                  }
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={1}>
-                                          <div className="d-flex align-items-center mb-0">
-                                            <div className="flex-shrink-0">
-                                              <i
-                                                className="uil uil-user-check text-primary me-1"
-                                                style={{ fontSize: "17px" }}
-                                              ></i>
-                                            </div>
-                                            <p className="text-muted mb-0">
-                                              {projectListDetail.numberOfDev}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={1}>
+                                              <div className="d-flex align-items-center mb-0">
+                                                <div className="flex-shrink-0">
+                                                  <i
+                                                    className="uil uil-user-check text-primary me-1"
+                                                    style={{ fontSize: "17px" }}
+                                                  ></i>
+                                                </div>
+                                                <p className="text-muted mb-0">
+                                                  {
+                                                    projectListDetail.numberOfDev
+                                                  }
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={3}>
-                                          <div className="d-flex mb-0 align-items-center">
-                                            <div className="flex-shrink-0">
-                                              <i
-                                                className="uil uil-clock-three text-primary me-1"
-                                                style={{ fontSize: "17px" }}
-                                              ></i>
-                                            </div>
-                                            <p className="text-muted mb-0">
-                                              {" "}
-                                              {
-                                                projectListDetail.startDate
-                                              } - {projectListDetail.endDate}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={3}>
+                                              <div className="d-flex mb-0 align-items-center">
+                                                <div className="flex-shrink-0">
+                                                  <i
+                                                    className="uil uil-clock-three text-primary me-1"
+                                                    style={{ fontSize: "17px" }}
+                                                  ></i>
+                                                </div>
+                                                <p className="text-muted mb-0">
+                                                  {" "}
+                                                  {
+                                                    projectListDetail.startDate
+                                                  }{" "}
+                                                  - {projectListDetail.endDate}
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={2}>
-                                          <div>
-                                            <span>
-                                              {projectListDetail.postedTime}
-                                            </span>
-                                          </div>
-                                        </Col>
+                                            <Col md={2}>
+                                              <div>
+                                                <span>
+                                                  {projectListDetail.postedTime}
+                                                </span>
+                                              </div>
+                                            </Col>
 
-                                        <Col
-                                          md={2}
-                                          className="d-flex justify-content-around"
-                                        >
-                                          <div className="d-flex align-items-center">
-                                            <span
-                                              className={
-                                                projectListDetail.statusString ===
-                                                "Preparing"
-                                                  ? "badge bg-warning text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "cancelled"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "In process"
-                                                  ? "badge bg-blue text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "completed"
-                                                  ? "badge bg-primary text-light fs-12"
-                                                  : ""
-                                              }
+                                            <Col
+                                              md={2}
+                                              className="d-flex justify-content-around"
                                             >
-                                              {projectListDetail.statusString}
-                                            </span>
-                                          </div>
-                                        </Col>
-                                      </Row>
-                                    </div>
-                                  </div>
-                                )
-                              )}
-                            </div>
-                            {/* phan trang */}
-                            <Row>
-                              <Col lg={12} className="mt-4 pt-2">
-                                <nav aria-label="Page navigation example">
-                                  <div className="pagination job-pagination mb-0 justify-content-center">
-                                    <li
-                                      className={`page-item ${
-                                        currentPageComplete === 1
-                                          ? "disabled"
-                                          : ""
-                                      }`}
-                                    >
-                                      <Link
-                                        className="page-link"
-                                        to="#"
-                                        tabIndex="-1"
-                                        onClick={handlePrevPageComplete}
-                                      >
-                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                      </Link>
-                                    </li>
-                                    {renderPageNumbersComplete()}
-                                    <li
-                                      className={`page-item ${
-                                        currentPageComplete ===
-                                        totalPagesComplete
-                                          ? "disabled"
-                                          : ""
-                                      }`}
-                                    >
-                                      <Link
-                                        className="page-link"
-                                        to="#"
-                                        onClick={handleNextPageComplete}
-                                      >
-                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                      </Link>
-                                    </li>
-                                  </div>
-                                </nav>
-                              </Col>
-                            </Row>
+                                              <div className="d-flex align-items-center">
+                                                <span
+                                                  className={
+                                                    projectListDetail.statusString ===
+                                                    "Preparing"
+                                                      ? "badge bg-warning text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "Closed"
+                                                      ? "badge bg-danger text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "In process"
+                                                      ? "badge bg-blue text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "completed"
+                                                      ? "badge bg-primary text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "Closing process"
+                                                      ? "badge bg-purple text-light fs-12"
+                                                      : ""
+                                                  }
+                                                >
+                                                  {
+                                                    projectListDetail.statusString
+                                                  }
+                                                </span>
+                                              </div>
+                                            </Col>
+                                          </Row>
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                                {/* phan trang */}
+                                <Row>
+                                  <Col lg={12} className="mt-4 pt-2">
+                                    <nav aria-label="Page navigation example">
+                                      <div className="pagination job-pagination mb-0 justify-content-center">
+                                        <li
+                                          className={`page-item ${
+                                            currentPageClosingProcess === 1
+                                              ? "disabled"
+                                              : ""
+                                          }`}
+                                        >
+                                          <Link
+                                            className="page-link"
+                                            to="#"
+                                            tabIndex="-1"
+                                            onClick={
+                                              handlePrevPageClosingProcess
+                                            }
+                                          >
+                                            <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                          </Link>
+                                        </li>
+                                        {renderPageNumbersClosingProcess()}
+                                        <li
+                                          className={`page-item ${
+                                            currentPageClosingProcess ===
+                                            totalPagesClosingProcess
+                                              ? "disabled"
+                                              : ""
+                                          }`}
+                                        >
+                                          <Link
+                                            className="page-link"
+                                            to="#"
+                                            onClick={
+                                              handleNextPageClosingProcess
+                                            }
+                                          >
+                                            <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                          </Link>
+                                        </li>
+                                      </div>
+                                    </nav>
+                                  </Col>
+                                </Row>
+                              </div>
+                            )}
                           </TabPane>
                           <TabPane tabId="5">
-                            <div>
-                              {projectListCancel.map(
-                                (projectListDetail, key) => (
-                                  <div
-                                    key={key}
-                                    style={{
-                                      boxShadow:
-                                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                    }}
-                                    className={
-                                      "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                                    }
-                                  >
-                                    <div className="p-2">
-                                      <Row className="align-items-center">
-                                        <Col md={2}>
-                                          <div>
-                                            <Link to="#">
-                                              <img
-                                                style={{
-                                                  width: "80px",
-                                                  height: "80px",
-                                                }}
-                                                src={
-                                                  projectListDetail.companyImage
-                                                }
-                                                alt=""
-                                                className="img-fluid rounded-3 img-avt-hiring-request"
-                                              />
-                                            </Link>
-                                          </div>
-                                        </Col>
+                            {projectListClosed.length === 0 ? (
+                              <div>
+                                <Empty />
+                              </div>
+                            ) : (
+                              <div>
+                                <div>
+                                  {projectListClosed.map(
+                                    (projectListDetail, key) => (
+                                      <div
+                                        key={key}
+                                        style={{
+                                          boxShadow:
+                                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                        }}
+                                        className={
+                                          "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                                        }
+                                      >
+                                        <div className="p-2">
+                                          <Row className="align-items-center">
+                                            <Col md={2}>
+                                              <div>
+                                                <Link to="#">
+                                                  <img
+                                                    style={{
+                                                      width: "80px",
+                                                      height: "80px",
+                                                    }}
+                                                    src={
+                                                      projectListDetail.companyImage
+                                                    }
+                                                    alt=""
+                                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                                  />
+                                                </Link>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={2}>
-                                          <div>
-                                            <h5 className="fs-18 mb-0">
-                                              <Link
-                                                to="/projectdetail"
-                                                className="text-dark"
-                                                state={{
-                                                  projectId:
-                                                    projectListDetail.projectId,
-                                                  companyId:
-                                                    projectListDetail.companyId,
-                                                }}
-                                              >
-                                                {projectListDetail.projectName}
-                                              </Link>
-                                            </h5>
-                                            <p className="text-muted fs-14 mb-0">
-                                              {projectListDetail.projectCode}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={2}>
+                                              <div>
+                                                <h5 className="fs-18 mb-0">
+                                                  <Link
+                                                    to="/projectdetail"
+                                                    className="text-dark"
+                                                    state={{
+                                                      projectId:
+                                                        projectListDetail.projectId,
+                                                      companyId:
+                                                        projectListDetail.companyId,
+                                                    }}
+                                                  >
+                                                    {
+                                                      projectListDetail.projectName
+                                                    }
+                                                  </Link>
+                                                </h5>
+                                                <p className="text-muted fs-14 mb-0">
+                                                  {
+                                                    projectListDetail.projectCode
+                                                  }
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={1}>
-                                          <div className="d-flex align-items-center mb-0">
-                                            <div className="flex-shrink-0">
-                                              <i
-                                                className="uil uil-user-check text-primary me-1"
-                                                style={{ fontSize: "17px" }}
-                                              ></i>
-                                            </div>
-                                            <p className="text-muted mb-0">
-                                              {projectListDetail.numberOfDev}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={1}>
+                                              <div className="d-flex align-items-center mb-0">
+                                                <div className="flex-shrink-0">
+                                                  <i
+                                                    className="uil uil-user-check text-primary me-1"
+                                                    style={{ fontSize: "17px" }}
+                                                  ></i>
+                                                </div>
+                                                <p className="text-muted mb-0">
+                                                  {
+                                                    projectListDetail.numberOfDev
+                                                  }
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={3}>
-                                          <div className="d-flex mb-0 align-items-center">
-                                            <div className="flex-shrink-0">
-                                              <i
-                                                className="uil uil-clock-three text-primary me-1"
-                                                style={{ fontSize: "17px" }}
-                                              ></i>
-                                            </div>
-                                            <p className="text-muted mb-0">
-                                              {" "}
-                                              {
-                                                projectListDetail.startDate
-                                              } - {projectListDetail.endDate}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={3}>
+                                              <div className="d-flex mb-0 align-items-center">
+                                                <div className="flex-shrink-0">
+                                                  <i
+                                                    className="uil uil-clock-three text-primary me-1"
+                                                    style={{ fontSize: "17px" }}
+                                                  ></i>
+                                                </div>
+                                                <p className="text-muted mb-0">
+                                                  {" "}
+                                                  {
+                                                    projectListDetail.startDate
+                                                  }{" "}
+                                                  - {projectListDetail.endDate}
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={2}>
-                                          <div>
-                                            <span>
-                                              {projectListDetail.postedTime}
-                                            </span>
-                                          </div>
-                                        </Col>
+                                            <Col md={2}>
+                                              <div>
+                                                <span>
+                                                  {projectListDetail.postedTime}
+                                                </span>
+                                              </div>
+                                            </Col>
 
-                                        <Col
-                                          md={2}
-                                          className="d-flex justify-content-around"
-                                        >
-                                          <div className="d-flex align-items-center">
-                                            <span
-                                              className={
-                                                projectListDetail.statusString ===
-                                                "Preparing"
-                                                  ? "badge bg-warning text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "cancelled"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "In process"
-                                                  ? "badge bg-blue text-light fs-12"
-                                                  : projectListDetail.statusString ===
-                                                    "completed"
-                                                  ? "badge bg-primary text-light fs-12"
-                                                  : ""
-                                              }
+                                            <Col
+                                              md={2}
+                                              className="d-flex justify-content-around"
                                             >
-                                              {projectListDetail.statusString}
-                                            </span>
-                                          </div>
-                                        </Col>
-                                      </Row>
-                                    </div>
-                                  </div>
-                                )
-                              )}
-                            </div>
-                            {/* phan trang */}
-                            <Row>
-                              <Col lg={12} className="mt-4 pt-2">
-                                <nav aria-label="Page navigation example">
-                                  <div className="pagination job-pagination mb-0 justify-content-center">
-                                    <li
-                                      className={`page-item ${
-                                        currentPageCancel === 1
-                                          ? "disabled"
-                                          : ""
-                                      }`}
-                                    >
-                                      <Link
-                                        className="page-link"
-                                        to="#"
-                                        tabIndex="-1"
-                                        onClick={handlePrevPageCancel}
-                                      >
-                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                      </Link>
-                                    </li>
-                                    {renderPageNumbersCancel()}
-                                    <li
-                                      className={`page-item ${
-                                        currentPageCancel === totalPagesCancel
-                                          ? "disabled"
-                                          : ""
-                                      }`}
-                                    >
-                                      <Link
-                                        className="page-link"
-                                        to="#"
-                                        onClick={handleNextPageCancel}
-                                      >
-                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                      </Link>
-                                    </li>
-                                  </div>
-                                </nav>
-                              </Col>
-                            </Row>
+                                              <div className="d-flex align-items-center">
+                                                <span
+                                                  className={
+                                                    projectListDetail.statusString ===
+                                                    "Preparing"
+                                                      ? "badge bg-warning text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "Closed"
+                                                      ? "badge bg-danger text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "In process"
+                                                      ? "badge bg-blue text-light fs-12"
+                                                      : projectListDetail.statusString ===
+                                                        "completed"
+                                                      ? "badge bg-primary text-light fs-12"
+                                                      : ""
+                                                  }
+                                                >
+                                                  {
+                                                    projectListDetail.statusString
+                                                  }
+                                                </span>
+                                              </div>
+                                            </Col>
+                                          </Row>
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                                {/* phan trang */}
+                                <Row>
+                                  <Col lg={12} className="mt-4 pt-2">
+                                    <nav aria-label="Page navigation example">
+                                      <div className="pagination job-pagination mb-0 justify-content-center">
+                                        <li
+                                          className={`page-item ${
+                                            currentPageClosed === 1
+                                              ? "disabled"
+                                              : ""
+                                          }`}
+                                        >
+                                          <Link
+                                            className="page-link"
+                                            to="#"
+                                            tabIndex="-1"
+                                            onClick={handlePrevPageClosed}
+                                          >
+                                            <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                          </Link>
+                                        </li>
+                                        {renderPageNumbersClosed()}
+                                        <li
+                                          className={`page-item ${
+                                            currentPageClosed ===
+                                            totalPagesClosed
+                                              ? "disabled"
+                                              : ""
+                                          }`}
+                                        >
+                                          <Link
+                                            className="page-link"
+                                            to="#"
+                                            onClick={handleNextPageClosed}
+                                          >
+                                            <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                          </Link>
+                                        </li>
+                                      </div>
+                                    </nav>
+                                  </Col>
+                                </Row>
+                              </div>
+                            )}
                           </TabPane>
                         </TabContent>
                       </CardBody>

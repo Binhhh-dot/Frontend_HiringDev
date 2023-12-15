@@ -14,6 +14,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import NavBarWeb from "./NavBar/NavBarWeb";
 const { Header, Footer, Content } = Layout;
 
 const CompanyListPartner = () => {
@@ -138,7 +139,7 @@ const CompanyListPartner = () => {
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWeb choose={"menu-key/15"}></SiderBarWeb>
         <Layout>
-          <div
+          {/* <div
             style={{
               backgroundColor: "#FFFF",
               height: "70px",
@@ -233,7 +234,8 @@ const CompanyListPartner = () => {
                 </Dropdown>
               </div>
             </div>
-          </div>
+          </div> */}
+          <NavBarWeb></NavBarWeb>
 
           <Content>
             <section
