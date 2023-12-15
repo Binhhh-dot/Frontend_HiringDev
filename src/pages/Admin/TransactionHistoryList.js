@@ -25,6 +25,9 @@ import {
 import transactionHistoryServices from "../../services/transactionHistory.services";
 import payServices from "../../services/pay.services";
 import classnames from "classnames";
+
+import NavBarWeb from "./NavBar/NavBarWeb";
+
 const { Header, Footer, Content } = Layout;
 
 const TransactionHistoryList = () => {
@@ -160,7 +163,7 @@ const TransactionHistoryList = () => {
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWeb choose={"menu-key/17"}></SiderBarWeb>
         <Layout>
-          <div
+          {/* <div
             style={{
               backgroundColor: "#FFFF",
               height: "70px",
@@ -255,7 +258,9 @@ const TransactionHistoryList = () => {
                 </Dropdown>
               </div>
             </div>
-          </div>
+          </div> */}
+          <NavBarWeb></NavBarWeb>
+
           <Content>
             <section
               className="section p-3"
@@ -272,6 +277,7 @@ const TransactionHistoryList = () => {
                     <div className="me-lg-6">
                       <h4>Transaction History List</h4>
                       <div className="d-flex justify-content-between">
+                        <div></div>
                         <div className="d-flex align-items-center ">
                           <Space>
                             <Search

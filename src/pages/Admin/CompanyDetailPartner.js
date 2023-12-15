@@ -19,6 +19,7 @@ import {
 } from "reactstrap";
 import img0 from "../../assets/images/user/img-00.jpg";
 import CompanyDetailPartnerDescription from "./CompanyDetailPartnerDescription";
+import NavBarWeb from "./NavBar/NavBarWeb";
 const { Header, Footer, Sider, Content } = Layout;
 
 const CompanyDetailPartner = () => {
@@ -32,7 +33,7 @@ const CompanyDetailPartner = () => {
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWeb choose={"menu-key/15"}></SiderBarWeb>
         <Layout>
-          <div
+          {/* <div
             style={{
               backgroundColor: "#FFFF",
               height: "70px",
@@ -127,7 +128,9 @@ const CompanyDetailPartner = () => {
                 </Dropdown>
               </div>
             </div>
-          </div>
+          </div> */}
+
+          <NavBarWeb></NavBarWeb>
           <Content>
             <section className="section " style={{ paddingTop: "14px" }}>
               <Container

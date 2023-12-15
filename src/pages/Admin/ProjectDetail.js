@@ -39,88 +39,12 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import NavBarWeb from "./NavBar/NavBarWeb";
 
 const { Header, Footer, Content } = Layout;
 const { Search } = Input;
-// const items = [
-//   {
-//     label: "Dashboard",
-//     key: "menu-key/1",
-//     icon: <HomeOutlined />,
-//     className: "option-1",
-//   },
-//   {
-//     label: "Option 2",
-//     key: "menu-key/2",
-//     icon: <DesktopOutlined />,
-//     className: "option-2",
-//   },
-//   {
-//     label: "User",
-//     key: "menu-key/sub-menu-key",
-//     icon: <UserOutlined />,
-//     children: [
-//       { label: "Tom", key: "menu-key/sub-menu-key/3" },
-//       { label: "Bill", key: "menu-key/sub-menu-key/4" },
-//       { label: "Alex", key: "menu-key/sub-menu-key/5" },
-//     ],
-//     className: "option-2",
-//   },
-//   {
-//     label: "Team",
-//     key: "menu-key/sub-menu-key2",
-//     icon: <TeamOutlined />,
-//     children: [
-//       { label: "Team 1", key: "menu-key/sub-menu-key2/6" },
-//       { label: "Team 2", key: "menu-key/sub-menu-key2/8" },
-//     ],
-//   },
-//   {
-//     label: "Files",
-//     key: "menu-key/9",
-//     icon: <FileOutlined />,
-//     className: "files",
-//   },
-//   {
-//     label: "Hiring Request",
-//     key: "menu-key/10",
-//     icon: <SnippetsOutlined />,
-//     className: "hiringRequest",
-//   },
-//   {
-//     label: "Interview",
-//     key: "menu-key/11",
-//     icon: <SolutionOutlined />,
-//     className: "interview",
-//   },
-
-//   {
-//     label: "Project",
-//     key: "menu-key/12",
-//     icon: <CodeOutlined />,
-//     className: "project",
-//   },
-// ];
 
 const ProjectDetail = () => {
-  // const [collapsed, setCollapsed] = useState(false);
-  // const [selectedKeys, setSelectedKeys] = useState(["menu-key/10"]); // Định nghĩa selectedKeys
-  // const [isLeftIcon, setIsLeftIcon] = useState(true);
-  // const [showWeHire, setShowWeHire] = useState(true);
-
-  // const toggleSidebar = () => {
-  //   setCollapsed(!collapsed);
-  //   setIsLeftIcon(!isLeftIcon); // Cập nhật biến trạng thái khi toggleSidebar
-  //   setShowWeHire(!showWeHire);
-  // };
-
-  // const handleMenuClick = (item) => {
-  //   setSelectedKeys([item.key]);
-  // };
-
-  // const handleSubMenuClick = (item) => {
-  //   setSelectedKeys([item.key]);
-  // };
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -132,7 +56,7 @@ const ProjectDetail = () => {
         <SiderBarWeb choose={"menu-key/12"}></SiderBarWeb>
 
         <Layout>
-          <div
+          {/* <div
             style={{
               backgroundColor: "#FFFF",
               height: "70px",
@@ -227,7 +151,8 @@ const ProjectDetail = () => {
                 </Dropdown>
               </div>
             </div>
-          </div>
+          </div> */}
+          <NavBarWeb></NavBarWeb>
 
           <Content>
             <section className="section " style={{ paddingTop: "14px" }}>
@@ -251,7 +176,7 @@ const ProjectDetail = () => {
               </Container>
             </section>
           </Content>
-          <Footer>Footer</Footer>
+          {/* <Footer>Footer</Footer> */}
         </Layout>
       </Layout>
     </React.Fragment>

@@ -51,6 +51,8 @@ import { result } from "lodash";
 import hireddevServices from "../../services/hireddev.services";
 import UpdateProjectPopup from "./UpdateProjectPopup/UpdateProjectPopup";
 import { Editor } from "@tinymce/tinymce-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 dayjs.extend(customParseFormat);
 
@@ -60,6 +62,9 @@ const ProjectDetailDescription = () => {
   const { state } = useLocation();
   const [value, setValue] = useState("");
   const [allowedMonthsList, setAllowedMonthsList] = useState([]);
+  //--------------------------------------------------------------------------------
+  const [closedProjectButtonVisible, setClosedProjectButtonVisible] =
+    useState(false);
   //--------------------------------------------------------------------------------
   const [projectDetail, setProjectDetail] = useState([]);
   const [devInProject, setDevInProject] = useState([]);
@@ -149,8 +154,11 @@ const ProjectDetailDescription = () => {
       setCurrentEndDate(convertDay(response.data.data.endDate));
 
       setCurrentDescription(response.data.data.description);
-
-      // -----------
+      //---------------------------------------------------------
+      if (response.data.data.statusString == "Closing process") {
+        setClosedProjectButtonVisible(true);
+      }
+      // --------------------------------------------------------
       function convertToDateObject(dateString) {
         const [day, month, year] = dateString.split("-").map(Number);
         return new Date(year, month - 1, day); // month - 1 because months are zero-indexed in JavaScript
@@ -413,6 +421,22 @@ const ProjectDetailDescription = () => {
     setModalKickDevInProject(false);
   };
   //------------------------------------------------------------------------------------------
+  const ClosingProcess = async () => {
+    let response;
+    try {
+      response = projectServices.ClosingProcessProjectInManager(
+        state.projectId
+      );
+      console.log(response);
+      fetchGetProjectDetailByProjectId();
+      toast.success("Closing process project successfully");
+    } catch (error) {
+      console.error("Error clossing process project", error);
+      toast.error("Closing process project successfully");
+    }
+  };
+
+  //------------------------------------------------------------------------------------------
   useEffect(() => {
     fetchGetProjectDetailByProjectId();
     fetchGetDeveloperByProject();
@@ -449,7 +473,21 @@ const ProjectDetailDescription = () => {
                   <div className="d-flex align-items-center gap-2">
                     <h3 className="mb-0">{projectDetail.projectName}</h3>
 
-                    <span className={"badge bg-blue text-light fs-12"}>
+                    <span
+                      className={
+                        projectDetail.statusString === "Preparing"
+                          ? "badge bg-warning text-light fs-12"
+                          : projectDetail.statusString === "Closed"
+                          ? "badge bg-danger text-light fs-12"
+                          : projectDetail.statusString === "In process"
+                          ? "badge bg-blue text-light fs-12"
+                          : projectDetail.statusString === "Completed"
+                          ? "badge bg-success text-light fs-12"
+                          : projectDetail.statusString === "Closing Process"
+                          ? "badge bg-purple text-light fs-12"
+                          : ""
+                      }
+                    >
                       {projectDetail.statusString}
                     </span>
                   </div>
@@ -469,6 +507,11 @@ const ProjectDetailDescription = () => {
                         <Dropdown.Item onClick={() => openModalUpdateProject()}>
                           Update Project
                         </Dropdown.Item>
+                        {closedProjectButtonVisible && (
+                          <Dropdown.Item onClick={ClosingProcess}>
+                            Closed Project
+                          </Dropdown.Item>
+                        )}
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
@@ -701,7 +744,7 @@ const ProjectDetailDescription = () => {
                               </ul>
                             </Col>
                             <Col
-                              lg={1}
+                              lg={2}
                               className="d-flex gap-1 justify-content-center"
                             >
                               <i className="uil uil-keyboard"></i>
@@ -710,7 +753,7 @@ const ProjectDetailDescription = () => {
                               </p>
                             </Col>
                             <Col
-                              lg={3}
+                              lg={2}
                               className="d-flex justify-content-center"
                             >
                               <p className="mb-0 badge bg-blue text-light fs-13 ">
@@ -972,18 +1015,18 @@ const ProjectDetailDescription = () => {
                                             <span
                                               className={
                                                 listPeriod.statusString ===
-                                                  "Created"
+                                                "Created"
                                                   ? "badge bg-blue text-light fs-12"
                                                   : listPeriod.statusString ===
                                                     "cancelled"
-                                                    ? "badge bg-danger text-light fs-12"
-                                                    : listPeriod.statusString ===
-                                                      "Inprogress"
-                                                      ? "badge bg-primary text-light fs-12"
-                                                      : listPeriod.statusString ===
-                                                        "completed"
-                                                        ? "badge bg-primary text-light fs-12"
-                                                        : ""
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : listPeriod.statusString ===
+                                                    "Inprogress"
+                                                  ? "badge bg-primary text-light fs-12"
+                                                  : listPeriod.statusString ===
+                                                    "completed"
+                                                  ? "badge bg-primary text-light fs-12"
+                                                  : ""
                                               }
                                             >
                                               {listPeriod.statusString}

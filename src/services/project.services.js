@@ -46,10 +46,12 @@ const getProjectDetailByProjectId = async (projectId) => {
   return response;
 };
 
-const getDeveloperByProject = async (projectId, status) => {
-  const serviceUrl = urlConstant.endpoint.project.getDeveloperByProject
-    .replace("${projectId}", projectId)
-    .replace("${status}", status);
+const getDeveloperByProject = async (ProjectId) => {
+  const serviceUrl = urlConstant.endpoint.project.getDeveloperByProject.replace(
+    "${ProjectId}",
+    ProjectId
+  );
+
   const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
@@ -136,9 +138,21 @@ const getProjectListInprogressPaging = async (PageIndex, PageSize) => {
   return response;
 };
 
-const getProjectListCompletedPaging = async (PageIndex, PageSize) => {
+const getProjectListClosingProcessPaging = async (PageIndex, PageSize) => {
   const serviceUrl = urlConstant.endpoint.project.getProjectList + "?";
-  const pagingUrl = urlConstant.endpoint.project.getProjectListCompletedPaging
+  const pagingUrl =
+    urlConstant.endpoint.project.getProjectListClosingProcessPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const fullUrl = serviceUrl + pagingUrl;
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
+
+  return response;
+};
+
+const getProjectListClosedPaging = async (PageIndex, PageSize) => {
+  const serviceUrl = urlConstant.endpoint.project.getProjectList + "?";
+  const pagingUrl = urlConstant.endpoint.project.getProjectListClosedPaging
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
@@ -147,14 +161,12 @@ const getProjectListCompletedPaging = async (PageIndex, PageSize) => {
   return response;
 };
 
-const getProjectListCancelPaging = async (PageIndex, PageSize) => {
-  const serviceUrl = urlConstant.endpoint.project.getProjectList + "?";
-  const pagingUrl = urlConstant.endpoint.project.getProjectListCancelPaging
-    .replace("${PageIndex}", PageIndex)
-    .replace("${PageSize}", PageSize);
-  const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost.normalRequest.get(fullUrl);
-
+const ClosingProcessProjectInManager = async (projectId) => {
+  const serviceUrl = urlConstant.endpoint.project.closingProcessProject.replace(
+    "${projectId}",
+    projectId
+  );
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -170,6 +182,7 @@ export default {
   updateImage,
   getProjectLisPreparingtPaging,
   getProjectListInprogressPaging,
-  getProjectListCompletedPaging,
-  getProjectListCancelPaging,
+  getProjectListClosingProcessPaging,
+  getProjectListClosedPaging,
+  ClosingProcessProjectInManager,
 };

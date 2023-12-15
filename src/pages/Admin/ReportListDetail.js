@@ -23,6 +23,7 @@ import {
 
 import ReportDetailDescription from "./ReportDetailDescription";
 import RightSideReportContent from "./RightSideReportContent";
+import NavBarWeb from "./NavBar/NavBarWeb";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -38,7 +39,7 @@ const ReportListDetail = () => {
         <SiderBarWeb choose={"menu-key/16"}></SiderBarWeb>
 
         <Layout>
-          <div
+          {/* <div
             style={{
               backgroundColor: "#FFFF",
               height: "70px",
@@ -133,7 +134,8 @@ const ReportListDetail = () => {
                 </Dropdown>
               </div>
             </div>
-          </div>
+          </div> */}
+          <NavBarWeb></NavBarWeb>
 
           <Content>
             <section className="section " style={{ paddingTop: "14px" }}>

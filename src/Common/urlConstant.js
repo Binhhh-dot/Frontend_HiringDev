@@ -189,19 +189,21 @@ export default {
         "PageIndex=${PageIndex}&PageSize=${PageSize}&Status=1",
       getProjectListInprogressPaging:
         "PageIndex=${PageIndex}&PageSize=${PageSize}&Status=2",
-      getProjectListCompletedPaging:
+      getProjectListClosingProcessPaging:
         "PageIndex=${PageIndex}&PageSize=${PageSize}&Status=3",
-      getProjectListCancelPaging:
+      getProjectListClosedPaging:
         "PageIndex=${PageIndex}&PageSize=${PageSize}&Status=4",
 
       createProject: "/Project",
       getAllProjectByCompanyId: "/Project/ByCompany/${companyId}",
       getProjectDetailByProjectId: "/Project/${projectId}",
-      getDeveloperByProject: "/Developer/ByProject?ProjectId=${ProjectId}",
+      getDeveloperByProject:
+        "/Developer/ByProject?ProjectId=${ProjectId}&Status=8&Status=9&Status=10&Status=11",
       updateProject: "/Project/${projectId}",
       getAllProjectByCompanyIdAndPaging:
         "/Project/ByCompany/${companyId}?PageIndex={PageIndex}&PageSize={PageSize}&searchKeyString=${searchKeyString}&ProjectTypeId=${ProjectTypeId}&Status=${Status}",
       updateImage: "/Project/UpdateImage/${projectId}",
+      closingProcessProject: "/Project/CloseByManager/${projectId}",
     },
     contract: {
       getContract: "/Contract",
