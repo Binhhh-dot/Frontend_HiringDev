@@ -483,7 +483,7 @@ const ProjectDetailDescription = () => {
                           ? "badge bg-blue text-light fs-12"
                           : projectDetail.statusString === "Completed"
                           ? "badge bg-success text-light fs-12"
-                          : projectDetail.statusString === "Closing Process"
+                          : projectDetail.statusString === "Closing process"
                           ? "badge bg-purple text-light fs-12"
                           : ""
                       }

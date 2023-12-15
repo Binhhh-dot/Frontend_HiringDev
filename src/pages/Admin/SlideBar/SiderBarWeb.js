@@ -43,64 +43,64 @@ const SiderBarWeb = ({ choose }) => {
   };
 
   const items = [
-    {
-      label: "Dashboard",
-      key: "menu-key/1",
-      icon: <HomeOutlined />,
-      className: "option-1",
-      link: "/dashboard",
-    },
-    {
-      label: "User",
-      key: "menu-key/sub-menu-key",
-      icon: <UserOutlined />,
-      children: [
-        {
-          label: "Manager",
-          key: "menu-key/sub-menu-key/3",
-          link: "/listAccountManager",
-        },
-        {
-          label: "Staff",
-          key: "menu-key/sub-menu-key/4",
-          link: "/listAccountStaff",
-        },
-        {
-          label: "Human Resource",
-          key: "menu-key/sub-menu-key/5",
-          link: "/listAccountHR",
-        },
-        {
-          label: "Developer",
-          key: "menu-key/sub-menu-key/6",
-          link: "/listAccountDeveloper",
-        },
-      ],
-      className: "option-2",
-    },
-    {
-      label: "Manage Information",
-      key: "menu-key1/sub-menu-key1",
-      icon: <SolutionOutlined />,
-      children: [
-        {
-          label: "Level",
-          key: "menu-key1/sub-menu-key1/1",
-          link: "/manageLevel",
-        },
-        {
-          label: "Skill",
-          key: "menu-key1/sub-menu-key1/2",
-          link: "/manageSkill",
-        },
-        {
-          label: "Type",
-          key: "menu-key1/sub-menu-key1/3",
-          link: "/manageType",
-        },
-      ],
-      className: "option-3",
-    },
+    // {
+    //   label: "Dashboard",
+    //   key: "menu-key/1",
+    //   icon: <HomeOutlined />,
+    //   className: "option-1",
+    //   link: "/dashboard",
+    // },
+    // {
+    //   label: "User",
+    //   key: "menu-key/sub-menu-key",
+    //   icon: <UserOutlined />,
+    //   children: [
+    //     {
+    //       label: "Manager",
+    //       key: "menu-key/sub-menu-key/3",
+    //       link: "/listAccountManager",
+    //     },
+    //     {
+    //       label: "Staff",
+    //       key: "menu-key/sub-menu-key/4",
+    //       link: "/listAccountStaff",
+    //     },
+    //     {
+    //       label: "Human Resource",
+    //       key: "menu-key/sub-menu-key/5",
+    //       link: "/listAccountHR",
+    //     },
+    //     {
+    //       label: "Developer",
+    //       key: "menu-key/sub-menu-key/6",
+    //       link: "/listAccountDeveloper",
+    //     },
+    //   ],
+    //   className: "option-2",
+    // },
+    // {
+    //   label: "Manage Information",
+    //   key: "menu-key1/sub-menu-key1",
+    //   icon: <SolutionOutlined />,
+    //   children: [
+    //     {
+    //       label: "Level",
+    //       key: "menu-key1/sub-menu-key1/1",
+    //       link: "/manageLevel",
+    //     },
+    //     {
+    //       label: "Skill",
+    //       key: "menu-key1/sub-menu-key1/2",
+    //       link: "/manageSkill",
+    //     },
+    //     {
+    //       label: "Type",
+    //       key: "menu-key1/sub-menu-key1/3",
+    //       link: "/manageType",
+    //     },
+    //   ],
+    //   className: "option-3",
+    // },
 
     {
       label: "Project",
