@@ -44,7 +44,7 @@ const SignIn = () => {
     setLoadingSignIn(true);
     let userId;
     let role;
-    let expiration;
+    let refreshTokenExp;
     let accessToken;
     let refreshToken;
     let accessTokenExp;
@@ -56,7 +56,7 @@ const SignIn = () => {
         // Extract user ID from the decoded token
         userId = response.data.data.userId;
         role = response.data.data.role;
-        expiration = response.data.data.expiration;
+        refreshTokenExp = response.data.data.refreshTokenExp;
         accessToken = response.data.data.accessToken;
         refreshToken = response.data.data.refreshToken;
         accessTokenExp = response.data.data.accessTokenExp;
@@ -64,7 +64,7 @@ const SignIn = () => {
           // Save user ID to local storage
           localStorage.setItem("userId", userId);
           localStorage.setItem("role", role)
-          localStorage.setItem("expiration", expiration)
+          localStorage.setItem("refreshTokenExp ", refreshTokenExp)
           localStorage.setItem("accessToken", accessToken)
           localStorage.setItem("refreshToken", refreshToken)
           localStorage.setItem("accessTokenExp", accessTokenExp)
@@ -80,7 +80,14 @@ const SignIn = () => {
             console.log(token)
             sendDeviceToken(token);
           });
-        } else {
+        } else if (role === "Admin") {
+          navigate("/dashboard")
+          requestPermission((token) => {
+            console.log(token)
+            sendDeviceToken(token);
+          });
+        }
+        else {
           if (userData.data.companyId != null) {
             localStorage.setItem('companyId', userData.data.companyId);
             setLoadingSignIn(false);
@@ -225,11 +232,6 @@ const SignIn = () => {
                                 </div>
                                 <div className="mb-4">
                                   <div className="form-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id="flexCheckDefault"
-                                    />
                                     <Link
                                       to="/resetpassword"
                                       className="float-end text-white"

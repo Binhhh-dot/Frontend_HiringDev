@@ -208,7 +208,7 @@ const SignUp = () => {
                                     onInvalid={(e) => e.target.setCustomValidity("Please enter your password")}
                                   />
                                 </div>
-                                <div className="mb-4">
+                                {/* <div className="mb-4">
                                   <div className="form-check">
                                     <Input
                                       className="form-check-input"
@@ -228,7 +228,7 @@ const SignUp = () => {
                                       </Link>
                                     </label>
                                   </div>
-                                </div>
+                                </div> */}
                                 <div className="text-center">
                                   {error && <p className="text-danger mt-2">{error}</p>}
                                   <button

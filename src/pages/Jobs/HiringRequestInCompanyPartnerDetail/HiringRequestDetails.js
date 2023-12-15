@@ -1248,11 +1248,15 @@ const HiringRequestDetails = () => {
       <section class="section">
 
         <div class="row justify-content-center " style={{ margin: "0px" }}>
-          {/* <div className="col-lg-11" style={{ paddingLeft: "0px", paddingRight: "12px" }}>
-            <div className=" alert alert-danger mt-2" role="alert">
-              bi huy roi
-            </div>
-          </div> */}
+          {hiringRequestDetail.rejectionReason && (
+            <>
+              <div className="col-lg-11" style={{ paddingLeft: "0px", paddingRight: "12px" }}>
+                <div className=" alert alert-danger mt-2" role="alert">
+                  {hiringRequestDetail.rejectionReason}
+                </div>
+              </div>
+            </>
+          )}
           <div class="col-lg-8 " style={{ padding: "0px" }}>
             <Card className="job-detail overflow-hidden" style={{ minHeight: "807px" }}>
               <div>

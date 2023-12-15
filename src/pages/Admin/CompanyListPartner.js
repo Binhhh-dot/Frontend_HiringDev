@@ -138,7 +138,6 @@ const CompanyListPartner = () => {
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWeb choose={"menu-key/15"}></SiderBarWeb>
-
         <Layout>
           {/* <div
             style={{
@@ -543,30 +542,30 @@ const CompanyListPartner = () => {
                                     <span
                                       className={
                                         listCompanyNew.statusString ===
-                                        "Waiting Approval"
+                                          "Waiting Approval"
                                           ? "badge bg-warning text-light fs-12"
                                           : listCompanyNew.statusString ===
                                             "In Progress"
-                                          ? "badge bg-blue text-light fs-12"
-                                          : listCompanyNew.statusString ===
-                                            "Rejected"
-                                          ? "badge bg-danger text-light fs-12"
-                                          : listCompanyNew.statusString ===
-                                            "Expired"
-                                          ? "badge bg-danger text-light fs-12"
-                                          : listCompanyNew.statusString ===
-                                            "Cancelled"
-                                          ? "badge bg-danger text-light fs-12"
-                                          : listCompanyNew.statusString ===
-                                            "Finished"
-                                          ? "badge bg-primary text-light fs-12"
-                                          : listCompanyNew.statusString ===
-                                            "Completed"
-                                          ? "badge bg-primary text-light fs-12"
-                                          : listCompanyNew.statusString ===
-                                            "Active"
-                                          ? "badge bg-info text-light fs-12"
-                                          : ""
+                                            ? "badge bg-blue text-light fs-12"
+                                            : listCompanyNew.statusString ===
+                                              "Rejected"
+                                              ? "badge bg-danger text-light fs-12"
+                                              : listCompanyNew.statusString ===
+                                                "Expired"
+                                                ? "badge bg-danger text-light fs-12"
+                                                : listCompanyNew.statusString ===
+                                                  "Cancelled"
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : listCompanyNew.statusString ===
+                                                    "Finished"
+                                                    ? "badge bg-primary text-light fs-12"
+                                                    : listCompanyNew.statusString ===
+                                                      "Completed"
+                                                      ? "badge bg-primary text-light fs-12"
+                                                      : listCompanyNew.statusString ===
+                                                        "Active"
+                                                        ? "badge bg-info text-light fs-12"
+                                                        : ""
                                       }
                                     >
                                       {listCompanyNew.statusString}
@@ -586,9 +585,8 @@ const CompanyListPartner = () => {
                           <nav aria-label="Page navigation example">
                             <div className="pagination job-pagination mb-0 justify-content-center">
                               <li
-                                className={`page-item ${
-                                  currentPage === 1 ? "disabled" : ""
-                                }`}
+                                className={`page-item ${currentPage === 1 ? "disabled" : ""
+                                  }`}
                               >
                                 <Link
                                   className="page-link"
@@ -601,9 +599,8 @@ const CompanyListPartner = () => {
                               </li>
                               {renderPageNumbers()}
                               <li
-                                className={`page-item ${
-                                  currentPage === totalPages ? "disabled" : ""
-                                }`}
+                                className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                  }`}
                               >
                                 <Link
                                   className="page-link"

@@ -36,7 +36,7 @@ import userImage2 from "../../assets/images/user/img-02.jpg";
 import jobImage4 from "../../assets/images/featured-job/img-04.png";
 import userImage1 from "../../assets/images/user/img-01.jpg";
 import jobImage from "../../assets/images/featured-job/img-01.png";
-import profileImage from "../../assets/images/profile.jpg";
+import profileImage from "../../assets/images/user/img-00.jpg";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import userSerrvices from "../../services/user.serrvices";
