@@ -22,10 +22,18 @@ import { Badge, Space, Layout, Menu, Input, Modal } from "antd";
 import Select from "react-select";
 import img0 from "../../assets/images/user/img-00.jpg";
 import axios from "axios";
+import UpdateCompanyPopup from "./UpdateCompanyPopup.js/UpdateCompanyPopup";
 
 const CompanyDetailPartnerDescription = () => {
-  const [showPopupProfileCompany, setShowPopupProfileCompany] = useState(false);
-  const handleOKProfileCompany = () => {};
+  const [showPopupUpdateCompany, setShowPopupUpdateCompany] = useState(false);
+  const openPopupUpdateCompany = () => {
+    setShowPopupUpdateCompany(true);
+  };
+  const closePopupUpdateCompany = () => {
+    setShowPopupUpdateCompany(false);
+    fetchCompanyDetail();
+  };
+
   //-----------------------------------------------------------------------------------------
   const { state } = useLocation();
   const [companyDetail, setcompanyDetail] = useState([]);
@@ -41,78 +49,6 @@ const CompanyDetailPartnerDescription = () => {
       console.error("Error fetching company partner detail description", error);
     }
   };
-
-  //----------------------------------------------------------------------------------------
-  // let companyUpdateDetail;
-  // const [avatar, setAvatar] = useState();
-  // const [countries, setCountries] = useState([]);
-  // const [selectedCountry, setSelectedCountry] = useState(null);
-  // const [companyCreated, setCompanyCreated] = useState(false);
-  // const [companyImageUpdate, setCompanyImageUpdate] = useState(null);
-  // const [isUpdateMode, setIsUpdateMode] = useState(false);
-
-  // useEffect(() => {
-  //   return () => avatar && URL.revokeObjectURL(avatar.preview);
-  // }, [avatar]);
-
-  // useEffect(() => {
-  //   const fetchCompanyDetailUpdate = async () => {
-  //     const userId = localStorage.getItem("userId");
-  //     if (state.companyId) {
-  //       setCompanyCreated(true);
-  //       try {
-  //         const response = await companyServices.getCompanyByCompanyId(
-  //           state.companyId
-  //         );
-  //         companyUpdateDetail = response;
-  //         document.getElementById("company-name").value =
-  //           response.data.data.companyName;
-  //         document.getElementById("email-address").value =
-  //           response.data.data.companyEmail;
-  //         document.getElementById("address").value = response.data.data.address;
-  //         document.getElementById("number").value =
-  //           response.data.data.phoneNumber;
-
-  //         const fileDev = response.data.data.companyImage;
-  //         setCompanyImageUpdate(fileDev);
-  //       } catch (error) {
-  //         console.error("Error get detail update company:", error);
-  //       }
-  //     } else {
-  //       setCompanyImageUpdate(img0);
-  //     }
-
-  //     axios
-  //       .get(
-  //         "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4"
-  //       )
-  //       .then((response) => {
-  //         const data = response.data;
-  //         const formattedCountries = data.map((country) => ({
-  //           value: country.name.common,
-  //           label: country.name.common,
-  //         }));
-  //         setCountries(formattedCountries);
-  //         if (companyUpdateDetail) {
-  //           const selected = formattedCountries.find(
-  //             (country) =>
-  //               country.value === companyUpdateDetail.data.data.country
-  //           );
-  //           if (selected) {
-  //             const company = {
-  //               value: selected.value,
-  //               label: selected.label,
-  //             };
-  //             setSelectedCountry(company);
-  //           }
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching data", error);
-  //       });
-  //   };
-  //   fetchCompanyDetailUpdate();
-  // }, [isUpdateMode]);
 
   //----------------------------------------------------------------------------------------
 
@@ -164,11 +100,7 @@ const CompanyDetailPartnerDescription = () => {
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     {/* Nội dung của dropdown ở đây */}
-                    <Dropdown.Item
-                      onClick={() => {
-                        setShowPopupProfileCompany(true);
-                      }}
-                    >
+                    <Dropdown.Item onClick={() => openPopupUpdateCompany()}>
                       Update Company
                     </Dropdown.Item>
                   </Dropdown.Menu>
@@ -177,113 +109,11 @@ const CompanyDetailPartnerDescription = () => {
             </Row>
           </div>
 
-          {/* ---------------------------------------------------------------------------------- */}
-          {/* Modal */}
-          {/* <Modal
-            centered
-            open={showPopupProfileCompany}
-            onOk={() => handleOKProfileCompany()}
-            onCancel={() => setShowPopupProfileCompany(false)}
-            width={800}
-            okType="default"
-            okButtonProps={{
-              style: {
-                background: "#6546D2",
-                borderColor: "#6546D2",
-                color: "white",
-              },
-            }}
-          >
-            <Form action="#">
-              <div>
-                <h5 className="fs-17 fw-semibold mb-3 mb-0">Update Company</h5>
-                <div className="text-center">
-                  <div className="mb-4 profile-user">
-                    {avatar ? (
-                      <img
-                        src={avatar.preview}
-                        className="rounded-circle img-thumbnail profile-img"
-                        id="profile-img"
-                        alt=""
-                      />
-                    ) : (
-                      <img
-                        src={companyImageUpdate}
-                        className="rounded-circle img-thumbnail profile-img"
-                        id="profile-img-2"
-                        alt=""
-                      />
-                    )}
-                    <div className="p-0 rounded-circle profile-photo-edit">
-                      <label className="profile-photo-edit avatar-xs">
-                        <i className="uil uil-edit"></i>
-                      </label>
-                      <input
-                        type="file"
-                        id="profile-img-file-input"
-                        style={{ display: "none" }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <Row>
-                  <Col lg={12}>
-                    <div className="mb-3">
-                      <label htmlFor="firstName" className="form-label">
-                        Company Name
-                      </label>
-                      <Input
-                        type="text"
-                        className="form-control"
-                        id="company-name"
-                      />
-                    </div>
-                  </Col>
-                  <Col lg={6}>
-                    <div className="mb-3">
-                      <Label class="text-muted">Country</Label>
-                      <div style={{ paddingBottom: "10px" }}>
-                        <Select />
-                      </div>
-                    </div>
-                  </Col>
-
-                  <Col lg={6}>
-                    <div className="mb-3">
-                      <Label htmlFor="email" className="form-label">
-                        Address
-                      </Label>
-                      <Input
-                        type="text"
-                        className="form-control"
-                        id="address"
-                      />
-                    </div>
-                  </Col>
-                  <Col lg={6}>
-                    <div className="mb-3">
-                      <Label htmlFor="email" className="form-label">
-                        Email
-                      </Label>
-                      <Input
-                        type="text"
-                        className="form-control"
-                        id="email-address"
-                      />
-                    </div>
-                  </Col>
-                  <Col lg={6}>
-                    <div className="mb-3">
-                      <Label htmlFor="email" className="form-label">
-                        Company Phone Number
-                      </Label>
-                      <Input type="text" className="form-control" id="number" />
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-            </Form>
-          </Modal> */}
+          <UpdateCompanyPopup
+            isModalOpen={showPopupUpdateCompany}
+            closeModal={closePopupUpdateCompany}
+            companyId={state.companyId}
+          ></UpdateCompanyPopup>
 
           {/* ---------------------------------------------------------------------------------- */}
 
@@ -356,7 +186,10 @@ const CompanyDetailPartnerDescription = () => {
               />
             </div>
           </div> */}
-          <div>DESCRIPTION</div>
+          <div className="mt-3">
+            <h5>ABOUT COMPANY</h5>
+            <p>{companyDetail.aboutCompany}</p>
+          </div>
         </CardBody>
       </Card>
     </React.Fragment>

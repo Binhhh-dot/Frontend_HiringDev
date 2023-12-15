@@ -28,15 +28,15 @@ const NavBarWeb = () => {
     setDropdownOpen(!dropdownOpen);
   };
   //------------------------------------------------------------------------
-  const [showPopupProfileUser, setShowPopupProfileUser] = useState(false);
+  // const [showPopupProfileUser, setShowPopupProfileUser] = useState(false);
 
-  const openPopupProfileUser = () => {
-    setShowPopupProfileUser(true);
-  };
+  // const openPopupProfileUser = () => {
+  //   setShowPopupProfileUser(true);
+  // };
 
-  const closePopupProfileUser = () => {
-    setShowPopupProfileUser(false);
-  };
+  // const closePopupProfileUser = () => {
+  //   setShowPopupProfileUser(false);
+  // };
 
   //-------------------------------------------------------------------------
   const fetchGetUserDetail2 = async () => {

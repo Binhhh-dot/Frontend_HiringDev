@@ -38,6 +38,8 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import NavBarWeb from "./NavBar/NavBarWeb";
+
 const { Header, Footer, Content } = Layout;
 
 const NewListInterviewInfo = () => {
@@ -576,7 +578,7 @@ const NewListInterviewInfo = () => {
         <SiderBarWeb choose={"menu-key/11"}></SiderBarWeb>
 
         <Layout>
-          <div
+          {/* <div
             style={{
               backgroundColor: "#FFFF",
               height: "70px",
@@ -671,7 +673,8 @@ const NewListInterviewInfo = () => {
                 </Dropdown>
               </div>
             </div>
-          </div>
+          </div> */}
+          <NavBarWeb></NavBarWeb>
 
           <Content>
             <section
@@ -2167,6 +2170,9 @@ const NewListInterviewInfo = () => {
                                                   : newInterviewListInManagerDetail.statusString ===
                                                     "Completed"
                                                   ? "badge bg-success text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Cancelled"
+                                                  ? "badge bg-secondary text-light fs-12"
                                                   : ""
                                               }
                                             >
