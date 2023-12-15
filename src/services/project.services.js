@@ -17,12 +17,25 @@ const getProjectListPaging = async (PageIndex, PageSize) => {
   return response;
 };
 
-const createProject = async (companyId, projectName, projectTypeId, status, startDate, endDate, description) => {
+const createProject = async (
+  companyId,
+  projectName,
+  projectTypeId,
+  status,
+  startDate,
+  endDate,
+  description
+) => {
   const serviceUrl = urlConstant.endpoint.project.createProject;
-  const response = await axiosLocalHost.normalRequest.post(
-    serviceUrl,
-    { companyId, projectName, projectTypeId, status, startDate, endDate, description }
-  );
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
+    companyId,
+    projectName,
+    projectTypeId,
+    status,
+    startDate,
+    endDate,
+    description,
+  });
   return response;
 };
 
@@ -166,7 +179,7 @@ const ClosingProcessProjectInManager = async (projectId) => {
     "${projectId}",
     projectId
   );
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl);
   return response;
 };
 
