@@ -62,8 +62,11 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import { toast } from 'react-toastify';
+
 import SiderBarWebAdmin from "./SlideBar/SiderBarWebAdmin";
 import UpdateHRAccountPopup from "./UpdateUserAccountPopup/UpdateUserAccountPopup";
+import NavBarWebAdmin from "./NavBar/NavBarWebAdmin";
 
 const page = {
   pageSize: 6, // Number of items per page
@@ -312,27 +315,12 @@ const ListAccountStaff = () => {
       let data = response.data;
 
       console.log("Save posted successfully:", data);
-      message.success({
-        content: "Account created successfully",
-        duration: 2,
-        onClose: () => {
-          console.log("Toast closed");
-        },
-        style: {
-          marginTop: "50px",
-          marginRight: "50px",
-        },
-      });
+      toast.success("Create account successfully!")
+
     } catch (error) {
       console.error("Error posting job:", error);
-      message.error({
-        content: "Error creating account: ",
-        duration: 2,
-        style: {
-          marginTop: "50px",
-          marginRight: "50px",
-        },
-      });
+      toast.error("Create account fail!")
+
     }
   };
 
@@ -385,27 +373,12 @@ const ListAccountStaff = () => {
   const handleDeleteConfirm = async (userId) => {
     try {
       await userSerrvices.deleteHR(userId);
-      message.success({
-        content: "Account deleted successfully",
-        duration: 2,
-        onClose: () => {
-          console.log("Toast closed");
-        },
-        style: {
-          marginTop: "50px",
-          marginRight: "50px",
-        },
-      });
+      toast.success("Deleted account successfully!")
+
     } catch (error) {
       console.error("Update failed:", error);
-      message.error({
-        content: "Error Deleting account ",
-        duration: 2,
-        style: {
-          marginTop: "50px",
-          marginRight: "50px",
-        },
-      });
+      toast.error("Create account fail!")
+
     }
   };
 
@@ -421,74 +394,11 @@ const ListAccountStaff = () => {
     }
   };
 
-  const handleOkUpdate = async () => {
-    try {
-      const values = await form.validateFields([
-        "userId",
-        "firstName",
-        "lastName",
-        "email",
-        "password",
-        "phoneNumber",
-        "statusString",
-        "dateOfBirth",
-      ]);
-      await handleUpdate(values, userId);
-      form.resetFields();
-      setVisibleModal2(false);
-    } catch (errorInfo) {
-      console.log("Validation Failed:", errorInfo);
-    }
-  };
 
-  const handleCancelUpdate = () => {
-    form.resetFields();
-    setVisibleModal2(false);
-  };
 
-  const handleUpdate = async (values, userId) => {
-    try {
-      // Prepare formData here based on values
-      const formData = new FormData();
-      formData.append("UserId", userId);
-      formData.append("FirstName", values.firstName);
-      formData.append("LastName", values.lastName);
-      formData.append("Email", values.email);
-      formData.append("Password", values.password);
-      formData.append("PhoneNumber", values.phoneNumber);
-      formData.append("Status", values.statusString);
-      formData.append("DateOfBirth", values.dateOfBirth);
-
-      // Call your update function here
-      const response = await userSerrvices.updateStaff(userId, formData);
-
-      // Handle the response as needed
-      console.log("Update response:", response);
-      message.success({
-        content: "Account created successfully",
-        duration: 2,
-        onClose: () => {
-          console.log("Toast closed");
-        },
-        style: {
-          marginTop: "50px",
-          marginRight: "50px",
-        },
-      });
-    } catch (error) {
-      console.error("Update failed:", error);
-      message.error({
-        content: "Error creating account: ",
-        duration: 2,
-        style: {
-          marginTop: "50px",
-          marginRight: "50px",
-        },
-      });
-    }
-  };
   //-------------------------------------------------------------------------------
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [switchStatusMap, setSwitchStatusMap] = useState({});
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -498,102 +408,7 @@ const ListAccountStaff = () => {
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWebAdmin choose={"menu-key/3"}></SiderBarWebAdmin>
         <Layout>
-          <div
-            style={{
-              backgroundColor: "#FFFF",
-              height: "70px",
-              display: "flex",
-              alignItems: "center",
-              borderRadius: "7px",
-              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-              marginLeft: "30px",
-              marginRight: "30px",
-              marginBottom: "0px",
-            }}
-            className="mt-4 justify-content-end"
-          >
-            <div
-              className="d-flex gap-4 align-items-center"
-              style={{ height: "inherit" }}
-            >
-              <Space>
-                <Badge dot>
-                  <i
-                    className="uil uil-bell"
-                    style={{ color: "#8F78DF", fontSize: "20px" }}
-                  ></i>
-                </Badge>
-              </Space>
-              <Space>
-                <Badge dot>
-                  <i
-                    className="uil uil-envelope-open"
-                    style={{ color: "#8F78DF", fontSize: "20px" }}
-                  ></i>
-                </Badge>
-              </Space>
-
-              <div
-                className="p-2  d-flex gap-3 align-items-center"
-                style={{
-                  height: "inherit",
-                  backgroundColor: "#6546D2",
-                  color: "white",
-                  borderRadius: "10px",
-                }}
-              >
-                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
-                  <DropdownToggle
-                    className="p-2 d-flex gap-3 align-items-center"
-                    style={{
-                      height: "inherit",
-                      backgroundColor: "#6546D2",
-                      color: "white",
-
-                      cursor: "pointer",
-                      border: "0px",
-                    }}
-                  >
-                    <div>
-                      <img
-                        src={img0}
-                        className="ms-1"
-                        style={{
-                          borderRadius: "10px",
-                          height: "50px",
-                        }}
-                      />
-                    </div>
-                    <div className="me-1 d-flex flex-column align-items-center">
-                      <span className="fs-18">Nik jone</span>
-                      <span>Available</span>
-                    </div>
-                  </DropdownToggle>
-                  <DropdownMenu
-                    style={{
-                      marginLeft: "-25px",
-                    }}
-                  >
-                    <DropdownItem style={{ padding: "0px" }}>
-                      <div>
-                        <Link to="#" className="dropdown-item">
-                          Setting
-                        </Link>
-                      </div>
-                    </DropdownItem>
-
-                    <DropdownItem style={{ padding: "0px" }}>
-                      <div>
-                        <Link to="/signout" className="dropdown-item">
-                          Logout
-                        </Link>
-                      </div>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
-            </div>
-          </div>
+          <NavBarWebAdmin></NavBarWebAdmin>
 
           <div
             style={{
@@ -738,21 +553,18 @@ const ListAccountStaff = () => {
                               icon={faPenToSquare}
                             />
                           </a>
-                          {record.statusString === "Active" ||
-                            record.statusString === "OnTasking" ? (
-                            <a
-                              onClick={(event) => {
-                                handleDeleteClick(record.userId);
-                                event.stopPropagation();
-                              }}
-                            >
-                              <FontAwesomeIcon
-                                style={{ color: "#6d73f6" }}
-                                size="xl"
-                                icon={faTrashCan}
-                              />
-                            </a>
-                          ) : null}
+                          <Switch
+                            checked={record.statusString === 'Active' && (switchStatusMap[record.userId] || true)}
+                            onChange={(checked, event) => {
+                              event.stopPropagation();
+
+                              handleDeleteClick(record.userId);
+                              setSwitchStatusMap((prevMap) => ({ ...prevMap, [record.userId]: checked }));
+                            }}
+
+                            size="small" // Set size to "small" for iOS-like appearance
+                            style={{ backgroundColor: record.statusString === 'Active' ? '#4CD964' : '#D1D1D6', borderColor: record.statusString === 'Active' ? '#4CD964' : '#D1D1D6' }}
+                          />
                         </Space>
                       )}
                     />
@@ -772,14 +584,14 @@ const ListAccountStaff = () => {
                 className="badge text-bg-secondary"
                 onClick={handleCancel}
               >
-                Cancel
+                No
               </Button>,
               <Button
                 key="confirm"
                 className="badge text-bg-danger"
                 onClick={handleOkDelete}
               >
-                Confirm Delete
+                Yes
               </Button>,
             ]}
           >
@@ -792,7 +604,7 @@ const ListAccountStaff = () => {
               }}
             />
             <p style={{ textAlign: "center", fontWeight: "bold" }}>
-              Are you sure you want to delete your account?
+              Are you sure you want to change your account status?
             </p>
           </Modal>
 
