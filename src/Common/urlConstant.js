@@ -202,6 +202,7 @@ export default {
       getAllProjectByCompanyIdAndPaging:
         "/Project/ByCompany/${companyId}?PageIndex={PageIndex}&PageSize={PageSize}&searchKeyString=${searchKeyString}&ProjectTypeId=${ProjectTypeId}&Status=${Status}",
       updateImage: "/Project/UpdateImage/${projectId}",
+      closeProjectByHr: "/Project/CloseByHR/${projectId}",
     },
     contract: {
       getContract: "/Contract",
@@ -266,6 +267,7 @@ export default {
       sendDevToHRNew: "/HiredDeveloper/SendDevToHR",
       kickDevInProject:
         "/HiredDeveloper/TerminateFromProject?projectId=${projectId}&developerId=${developerId}",
+      rejectSelectedDev: "/HiredDeveloper/RejectDev?requestId=${requestId}&developerId=${developerId}"
     },
 
     dashboard: {
@@ -274,6 +276,7 @@ export default {
       getDashboardHiringRequest:
         "/Dashboard/HiringRequest?dateInWeek=${dateInWeek}",
       getDashboardRecentHiringRequest: "/Dashboard/RecentHiringRequest",
+      getDashboardProjectByProjectId: "/Dashboard/ByProject/${projectId}",
     },
     report: {
       getReportType: "/ReportType",

@@ -20,6 +20,8 @@ import {
   Collapse,
   Form
 } from "reactstrap";
+import { Pie, Column, Bar } from '@ant-design/charts';
+
 import { Await, Link, Navigate, useLocation } from "react-router-dom";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -96,6 +98,8 @@ import skillService from "../../../services/skill.service";
 import typeService from "../../../services/type.service";
 import levelService from "../../../services/level.service";
 import { Input as InputAntd } from 'antd';
+import dashboardServices from '../../../services/dashboard.services';
+
 dayjs.extend(customParseFormat);
 
 const ProjectDetailDesciption = () => {
@@ -195,6 +199,7 @@ const ProjectDetailDesciption = () => {
   const [avatar, setAvatar] = useState();
 
   const [selectedRange, setSelectedRange] = useState([]);
+  const [isCloseProject, setIsCloseProject] = useState(false);
 
   const setRangeCalendar = () => {
     const startDate = listStartDay[currentMonthIndex];
@@ -392,6 +397,9 @@ const ProjectDetailDesciption = () => {
     }
   ]
 
+  const isAnyDeveloperWorking = developerOnboardList.some(dev => dev.hiredDevStatusString === "Working");
+
+
   const profileItems5 = [
     {
       key: "1",
@@ -414,11 +422,13 @@ const ProjectDetailDesciption = () => {
             AntdModal.confirm({
               title: 'Confirm close project',
               content: (<div>
-                <p>Are you sure to clost this project ?</p>
-                <p>All activities in the hiring request of this job position will stop</p>
+                <p>Are you sure to close this project ?</p>
+                <p>All activities in the project will close</p>
+                {isAnyDeveloperWorking ? <p>There are developers still working on this project</p> : null}
               </div>),
               onOk() {
                 // Action when the user clicks OK
+                closeProject();
                 console.log('Confirmed!');
               },
               onCancel() {
@@ -486,8 +496,12 @@ const ProjectDetailDesciption = () => {
   };
 
   const openModalCreateHiringrequest = (hiringRequestId) => {
-    setSelectedHiringRequestInfo(hiringRequestId);
-    setIsModalCreateOpen(true);
+    if (hiringRequestDetail.statusString == "Closed" || hiringRequestDetail.statusString == "Closing process") {
+      toast.info("Cannot create hiring request when project closed")
+    } else {
+      setSelectedHiringRequestInfo(hiringRequestId);
+      setIsModalCreateOpen(true);
+    }
   };
 
   const closeModal = () => {
@@ -500,6 +514,20 @@ const ProjectDetailDesciption = () => {
     const projectId = queryParams.get("Id");
     setSelectedProjectInfo(projectId);
     setIsModalUpdateProjectOpen(true);
+  };
+
+  const closeProject = async () => {
+    setLoading(true);
+    const queryParams = new URLSearchParams(location.search);
+    const projectId = queryParams.get("Id");
+    try {
+      const response = await projectServices.closeProjectByHr(projectId);
+      console.log(response);
+      setIsCloseProject(!isCloseProject);
+      toast.success("Close project sucessfully")
+    } catch (error) {
+      toast.error("Close project fail")
+    }
   };
 
   const closeModalUpdateProject = () => {
@@ -927,7 +955,6 @@ const ProjectDetailDesciption = () => {
             clearInterval(intervalId);
           } else {
             console.log("Cửa sổ đang mở");
-            // Thực hiện hành động nếu cửa sổ vẫn đang mở (nếu cần)
           }
         }
         const intervalId = setInterval(checkPopupStatus, 1000);
@@ -1293,6 +1320,14 @@ const ProjectDetailDesciption = () => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
+  useEffect(() => {
+    setLoading(true);
+    fetchData();
+    fetchProjectDetails();
+    fetchListDeveloperOnboard();
+    fetchJobVacancies();
+    setLoading(false);
+  }, [isCloseProject]);
 
 
   const openHiringRequestDetail = (requestId, statusString) => {
@@ -1388,7 +1423,7 @@ const ProjectDetailDesciption = () => {
 
       const date = new Date(currentMonthData);
       const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-25` + "T08:47:13.849Z";
-
+      console.log(formattedDate)
       const response = await payPeriodServices.createNewPayPeriod(projectId, formattedDate);
       console.log(response)
       toast.success("Create pay period successfully")
@@ -1416,7 +1451,7 @@ const ProjectDetailDesciption = () => {
     } catch (error) {
       console.log("import")
       console.log(error)
-      toast.error(error.response.data.message)
+      // toast.error(error.response.data.message)
       setLoadingImportExel(false);
     }
   };
@@ -1494,6 +1529,172 @@ const ProjectDetailDesciption = () => {
   };
 
 
+  const [hRInfo, setHrInfo] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const queryParams = new URLSearchParams(location.search);
+      const projectId = queryParams.get("Id");
+      const response = await dashboardServices.getDashboardProjectByProjectId(projectId);
+      setHrInfo(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching hiring request detail overview:", error);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+
+    fetchData();
+  }, []);
+
+
+  // Modal
+
+  const pieChartData = hRInfo?.developerDashboard || {};
+  const pieChart2Data = hRInfo?.hiringRequestDashboard || {};
+
+  const totalValue = pieChartData.totalHiredDeveloper + pieChartData.totalWorkingDeveloper + pieChartData.totalTerminatedDeveloper + pieChartData.totalCompletedDeveloper;
+  const totalValue2 = pieChart2Data.totalHiringRequest + pieChart2Data.totalWaitingApproval + pieChart2Data.totalInProcess + pieChart2Data.totalRejected + pieChart2Data.totalCompleted + pieChart2Data.totalClosed + pieChart2Data.totalExpired;
+
+  const pieConfig = {
+    width: 300,  // Điều chỉnh chiều rộng của biểu đồ
+    height: 300, // Điều chỉnh chiều cao của biểu đồ
+    appendPadding: 10,
+    data: [
+      { type: 'WorkingDeveloper', value: pieChartData.totalWorkingDeveloper || 0 },
+      { type: 'TerminatedDeveloper', value: pieChartData.totalTerminatedDeveloper || 0 },
+      { type: 'CompletedDeveloper', value: pieChartData.totalCompletedDeveloper || 0 },
+
+    ],
+    angleField: 'value',
+    colorField: 'type',
+    radius: 0.8,
+    innerRadius: 0.7,
+    statistic: null,
+    annotations: [
+      {
+        type: 'text',
+        position: ['50%', '50%'],
+        content: `${pieChartData.totalHiredDeveloper}`,
+        style: {
+          fontSize: 35,
+          textAlign: 'center',
+          fontWeight: 'bold',
+        },
+      },
+      {
+        type: 'text',
+        position: ['50%', '58%'], // Adjust the position as needed
+        content: 'developer',
+        style: {
+          fontSize: 18,
+          textAlign: 'center',
+          opacity: 0.7,
+        },
+      },
+    ],
+
+
+    legend: {
+      layout: 'vertical',
+      position: 'right',
+      itemName: {
+        formatter: (text, item) => {
+          const type = item.value;
+          const count = pieChartData[`total${type}`] || 0;
+          return `${type}: ${count}`;
+        },
+        style: {
+          fontSize: 14,
+        },
+      },
+    },
+    interactions: [
+      {
+        type: 'element-custom', // Replace with the actual interaction type for your library
+        cfg: {
+          start: [
+            { trigger: 'element:mouseenter', action: 'element:hover' },
+            { trigger: 'element:mouseleave', action: 'element:unhover' },
+          ],
+        },
+      },
+    ],
+    color: ['#FF8C00', '#8FBC8F', '#008B8B'],
+
+  };
+
+  const pieConfig2 = {
+    width: 300,  // Điều chỉnh chiều rộng của biểu đồ
+    height: 300, // Điều chỉnh chiều cao của biểu đồ
+    appendPadding: 10,
+    data: [
+      { type: 'Saved', value: pieChart2Data.totalSaved || 0 },
+      { type: 'WaitingApproval', value: pieChart2Data.totalWaitingApproval || 0 },
+      { type: 'InProcess', value: pieChart2Data.totalInProcess || 0 },
+      { type: 'Rejected', value: pieChart2Data.totalRejected || 0 },
+      { type: 'Completed', value: pieChart2Data.totalCompleted || 0 },
+      { type: 'Closed', value: pieChart2Data.totalClosed || 0 },
+      { type: 'Expired', value: pieChart2Data.totalExpired || 0 },
+    ],
+    angleField: 'value',
+    colorField: 'type',
+    radius: 0.8,
+    innerRadius: 0.7,
+    statistic: null,
+    annotations: [
+      {
+        type: 'text',
+        position: ['50%', '50%'],
+        content: `${pieChart2Data.totalHiringRequest}`,
+        style: {
+          fontSize: 35,
+          textAlign: 'center',
+          fontWeight: 'bold',
+        },
+      },
+      {
+        type: 'text',
+        position: ['50%', '58%'], // Adjust the position as needed
+        content: ' hiring request',
+        style: {
+          fontSize: 18,
+          textAlign: 'center',
+          opacity: 0.7,
+        },
+      },
+    ],
+
+
+    legend: {
+      layout: 'vertical',
+      position: 'right',
+      itemName: {
+        formatter: (text, item) => {
+          const type = item.value;
+          const count = pieChart2Data[`total${type}`] || 0;
+          return `${type}: ${count}`;
+        },
+        style: {
+          fontSize: 14,
+        },
+      },
+    },
+    interactions: [
+      {
+        type: 'element-custom', // Replace with the actual interaction type for your library
+        cfg: {
+          start: [
+            { trigger: 'element:mouseenter', action: 'element:hover' },
+            { trigger: 'element:mouseleave', action: 'element:unhover' },
+          ],
+        },
+      },
+    ],
+    color: ['#FF8C00', '#8FBC8F', '#008B8B', '#008080', '#FA8072', '#322B2F', '#CC0A67'],
+
+  };
 
   return (
     <React.Fragment>
@@ -1564,11 +1765,11 @@ const ProjectDetailDesciption = () => {
                                       "In process"
                                       ? "badge bg-blue text-light "
                                       : hiringRequestDetail.statusString ===
-                                        "Expired"
-                                        ? "badge bg-danger text-light "
+                                        "Closed"
+                                        ? "badge bg-teal text-light "
                                         : hiringRequestDetail.statusString ===
-                                          "Cancelled"
-                                          ? "badge bg-danger text-light "
+                                          "Closing process"
+                                          ? "badge bg-teal text-light "
                                           : hiringRequestDetail.statusString ===
                                             "Finished"
                                             ? "badge bg-primary text-light "
@@ -1722,7 +1923,39 @@ const ProjectDetailDesciption = () => {
                 <CardBody className="p-4" style={{ backgroundColor: "#fafafa", overflowX: "auto" }} >
                   <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
-                      <div className="">
+                      <div className="row">
+                        <div className="col-xl-6 col-lg-5 col-md-12 col-sm-12 col-12">
+                          <div className="card">
+                            <h5 className="card-header">Account by role</h5>
+                            <div className="card-body-dashboard">
+                              <div>
+                                <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '10px' }}>
+                                  <div style={{ width: '100%' }}>
+                                    <Pie {...pieConfig} />
+                                  </div>
+                                  {/* You can add more charts or components as needed */}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-xl-6 col-lg-5 col-md-12 col-sm-12 col-12">
+                          <div className="card">
+                            <h5 className="card-header">Account by role</h5>
+                            <div className="card-body-dashboard">
+                              <div>
+                                <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '10px' }}>
+                                  <div style={{ width: '100%' }}>
+                                    <Pie {...pieConfig2} />
+                                  </div>
+                                  {/* You can add more charts or components as needed */}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-4">
                         <p
                           className=""
                           dangerouslySetInnerHTML={{
@@ -1823,15 +2056,20 @@ const ProjectDetailDesciption = () => {
                                             <i className="mdi mdi-eye"></i>
                                           </div>
                                         </div>
-                                        <DropdownAntd trigger={['click']}
-                                          onClick={() =>
-                                            setIdDeveloperReport(candidategridDetailsNew)
-                                          }
-                                          menu={{ items: profileItems4 }}>
-                                          <FontAwesomeIcon icon={faEllipsisVertical}
-                                            style={{ fontSize: "24px", color: 'gray', cursor: "pointer" }}
-                                          />
-                                        </DropdownAntd>
+                                        {hiringRequestDetail.statusString != "Closed" && hiringRequestDetail.statusString != "Closing process" && (
+                                          <>
+                                            <DropdownAntd trigger={['click']}
+                                              onClick={() =>
+                                                setIdDeveloperReport(candidategridDetailsNew)
+                                              }
+                                              menu={{ items: profileItems4 }}>
+                                              <FontAwesomeIcon icon={faEllipsisVertical}
+                                                style={{ fontSize: "24px", color: 'gray', cursor: "pointer" }}
+                                              />
+                                            </DropdownAntd>
+                                          </>
+                                        )}
+
                                       </div>
                                     </div>
                                     <div className="row" style={{ alignItems: "center" }}>
@@ -2710,13 +2948,17 @@ const ProjectDetailDesciption = () => {
                       <CreateHiringRequestPopup
                         isModalOpen={isModalCreateOpen}
                         closeModal={closeModalCreateHiringRequest}
-                        requestId={selectedHiringRequestInfo}>
+                        requestId={selectedHiringRequestInfo}
+                        maxDate={hiringRequestDetail.endDate}
+                      >
+
                       </CreateHiringRequestPopup>
 
                       <UpdateProjectPopup
                         isModalOpen={isModalUpdateProjectOpen}
                         closeModal={closeModalUpdateProject}
                         projectId={selectedProjectInfo}>
+
                       </UpdateProjectPopup>
 
                       <div>

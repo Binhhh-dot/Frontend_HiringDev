@@ -181,15 +181,35 @@ const HiringRequestDetails = () => {
 
   const profileItems2 = [
     {
-      key: "1",
       label: (
         <div
-          onClick={() => cancelInterview()}
           style={{ width: "100px" }}
+          onClick={() => {
+            AntdModal.confirm({
+              title: 'Confirm cancel interview',
+              content: 'Are you sure to cancel this interview?',
+              onOk() {
+                // Action when the user clicks OK
+                console.log('Confirmed!');
+                openWindowCancelInterview(selectInterviewDetail.interviewId);
+              },
+              onCancel() {
+                // Action when the user cancels
+                console.log('Cancelled!');
+              },
+              footer: (_, { OkBtn, CancelBtn }) => (
+                <>
+                  <CancelBtn />
+                  <OkBtn />
+                </>
+              ),
+            });
+          }}
         >
           Cancel
         </div>
       ),
+      key: '1',
     },
   ]
 
@@ -205,9 +225,15 @@ const HiringRequestDetails = () => {
               content: (
                 <div style={{ paddingRight: "20px" }}>
                   <p>Please provide a reason for closing this hiring request:</p>
-                  <Input
-                    type="text"
+                  <input
+                    type="textarea"
                     id="reasonCloseHiringRequest"
+                  />
+                  <Input
+                    type="textarea"
+                    className="form-control"
+                    id="description"
+                    style={{ height: 100 }}
                   />
                 </div>
               ),
@@ -277,8 +303,10 @@ const HiringRequestDetails = () => {
                 <div style={{ paddingRight: "20px" }}>
                   <p>Please provide a reason for closing this hiring request:</p>
                   <Input
-                    type="text"
+                    type="textarea"
+                    className="form-control"
                     id="reasonCloseHiringRequest"
+                    style={{ height: 100 }}
                   />
                 </div>
               ),
@@ -690,13 +718,13 @@ const HiringRequestDetails = () => {
           const responseCreateMeeting = await teamMeetingServices.createTeamMeeting(interviewId, redirectUrl, authenCode)
           console.log(responseCreateMeeting)
           console.log("tao meet thanh cong")
+          toast.success('Create successfully!');
         } catch (error) {
           console.log("tao meet ko thanh cong")
           console.log("error:", error)
         }
       }
       setLoadListDeveloper(!loadListDeveloper);
-      toast.success('Create successfully!');
       setModalCreateInterview(false);
       setAuthencodeOld(authenCode);
       setLoading(false);
@@ -718,21 +746,25 @@ const HiringRequestDetails = () => {
       console.log(redirectUrl);
       console.log(authenCodeCancel);
       const responseCancelMeeting = await teamMeetingServices.deleteTeamMeeting(interviewId, redirectUrl, authenCodeCancel)
+      console.log("responseCancelMeeting")
       console.log(responseCancelMeeting)
-      if (responseCancelMeeting.data.code == 200) {
+      if (responseCancelMeeting.status == 200) {
         try {
           const response = await interviewServices.cancelInterview(interviewId);
           console.log(response)
+          toast.success('Cancel successfully!');
         } catch (error) {
           console.log("error:", error)
         }
       }
+      setModalCreateInterview(false);
+      setShowPopup(false);
+      exitPopup();
       setLoadListDeveloper(!loadListDeveloper);
-      toast.success('Cancel successfully!');
       setAuthenCodeCancelOld(authenCodeCancel);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching job vacancies:", error);
+      console.error("Error delete metting", error);
       setLoading(false);
     }
   };
@@ -740,40 +772,59 @@ const HiringRequestDetails = () => {
   const handleUpdateInterview = async () => {
     console.log("chui do dc day ")
     setLoading(true);
+    const interviewId = interviewIdUpdate;
+    let interviewSave;
     try {
-      const interviewId = interviewIdUpdate;
-      let responseCancelMeeting;
-      try {
-        const redirectUrl = customUrl.redirectUrlCreateMeetting;
-        console.log(interviewId);
-        console.log(redirectUrl);
-        console.log(authenCodeUpdate);
-        const responseCancelMeeting = await teamMeetingServices.editTeamMeeting(interviewId, redirectUrl, authenCodeUpdate)
-        console.log(responseCancelMeeting)
-      } catch (error) {
-        console.log("error:", error)
-      }
-      if (responseCancelMeeting.data.code == 200) {
+      interviewSave = await interviewServices.getDetailInterviewByInterviewId(interviewId);
+      console.log(interviewSave.data.data);
+      const title = document.getElementById("interview-title-popup").value;
+      const description = document.getElementById("description-title-popup").value;
+      const dateOfInterview = document.getElementById("date-of-interview-popup").value;
+      const startDate = document.getElementById("start-time-popup").value + ":00";
+      const endDate = document.getElementById("end-time-popup").value + ":00";
+      const response = await interviewServices.updateInterview(interviewId, title, description, dateOfInterview, startDate, endDate);
+      console.log("api update :")
+      console.log(response);
+      if (response?.status === 200) {
         try {
-          const title = document.getElementById("interview-title-popup").value;
-          const description = document.getElementById("description-title-popup").value;
-          const dateOfInterview = document.getElementById("date-of-interview-popup").value;
-          const startDate = document.getElementById("start-time-popup").value + ":00";
-          const endDate = document.getElementById("end-time-popup").value + ":00";
-          const response = await interviewServices.updateInterview(interviewId, title, description, dateOfInterview, startDate, endDate);
-          console.log("api update :")
-          console.log(response);
+          const redirectUrl = customUrl.redirectUrlCreateMeetting;
+          console.log(interviewId);
+          console.log(redirectUrl);
+          console.log(authenCodeUpdate);
+          const response = await teamMeetingServices.editTeamMeeting(interviewId, redirectUrl, authenCodeUpdate);
+          console.log(response)
+          setIsUpdateInterview(!isUpdateInterview);
+          setLoadListDeveloper(!loadListDeveloper);
+          setShowPopup(false);
+          exitPopup();
+          toast.success('Update interview successfully!');
+          setAuthenCodeUpdateOld(authenCodeUpdate);
+          setModalCreateInterview(false);
+          setLoading(false);
         } catch (error) {
-          console.error("Error completedInterview:", error);
+          console.log("error meeting:", error)
+          const titleSave = interviewSave.data.data.title;
+          const descriptionSave = interviewSave.data.data.description;
+          const dateOfInterviewSave = interviewSave.data.data.dateOfInterview.split('-').reverse().join('-');
+          const startDateSave = interviewSave.data.data.startTime + ":00";
+          const endDateSave = interviewSave.data.data.endTime + ":00";
+          const response = await interviewServices.updateInterview(interviewId, titleSave, descriptionSave, dateOfInterviewSave, startDateSave, endDateSave);
+          console.log("update lai cai bi sua :")
+          console.log(response);
+          toast.success('Update interview fail, please check your account microsoft!');
+          setIsUpdateInterview(!isUpdateInterview);
+          setLoadListDeveloper(!loadListDeveloper);
+          setAuthenCodeUpdateOld(authenCodeUpdate);
+          setModalCreateInterview(false);
+          setShowPopup(false);
+          exitPopup();
+          setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
-      setIsUpdateInterview(!isUpdateInterview);
-      setLoadListDeveloper(!loadListDeveloper);
-      toast.success('Update successfully!');
-      setAuthenCodeUpdateOld(authenCodeUpdate);
-      setLoading(false);
     } catch (error) {
-      console.error("Error fetching job vacancies:", error);
+      console.error("Error completedInterview:", error);
       setLoading(false);
     }
   };
@@ -781,6 +832,7 @@ const HiringRequestDetails = () => {
   useEffect(() => {
     if (authenCode == authenCodeOld) {
       console.log("lap lai")
+      setLoading(false);
     } else {
       handleInterviewCreation();
     }
@@ -789,6 +841,7 @@ const HiringRequestDetails = () => {
   useEffect(() => {
     if (authenCodeCancel == authenCodeCancelOld) {
       console.log("lap lai")
+      setLoading(false);
     } else {
       handleCancelInterview();
     }
@@ -797,6 +850,7 @@ const HiringRequestDetails = () => {
   useEffect(() => {
     if (authenCodeUpdate == authenCodeUpdateOld) {
       console.log("lap lai")
+      setLoading(false);
     } else {
       handleUpdateInterview();
     }
@@ -889,21 +943,15 @@ const HiringRequestDetails = () => {
       const queryParams = new URLSearchParams(location.search);
       const requestId = queryParams.get("Id");
       // Gọi API để reject interview
-      const response = await developerServices.rejectSelectedDev(requestId, id);
+      const response = await hireddevServices.rejectSelectedDev(requestId, id);
+      fetchJobVacancies();
+      fetchListInterview();
       setIsListLoading(true);
       // Xử lý kết quả nếu cần thiết
-      fetchJobVacancies();
       // Cập nhật giao diện hoặc thực hiện các hành động khác sau khi reject thành công
       // Ví dụ: Ẩn nút hoặc cập nhật trạng thái
       setIsListLoading(false);
-      setLoadingReject((prevLoading) => ({
-        ...prevLoading,
-        [id]: false,
-      }));
-      setLoadingInterview((prevLoading) => ({
-        ...prevLoading,
-        [id]: false,
-      }));
+      toast.success("Reject developer sucessfully")
     } catch (error) {
       // Xử lý lỗi nếu có
       console.error("Error rejecting interview:", error);
@@ -916,6 +964,7 @@ const HiringRequestDetails = () => {
         ...prevLoading,
         [id]: false,
       }));
+      toast.success("Reject developer fail")
     }
     // Simulate an asynchronous action, e.g., making an API request
 
@@ -1039,68 +1088,122 @@ const HiringRequestDetails = () => {
     let checkCreateInterview = false;
     let code;
     if (check) {
+      setLoading(true);
       const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=800, height=800, top=100, left=600';
       const urlCreateInterview = customUrl.urlCreateInterview;
       const popupWindow = window.open(urlCreateInterview, "popupWindow", windowFeatures);
+
+
+
 
       // Lắng nghe các thông điệp từ cửa sổ popup
       window.addEventListener('message', (event) => {
         code = event.data;
         // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
         if (code) {
+          setLoading(true);
           checkCreateInterview = true;
           popupWindow.close();
           console.log(event.data)
           setAuthencode(event.data)
         }
       });
-      setLoading(true);
+
+      function checkPopupStatus() {
+        if (popupWindow && popupWindow.closed) {
+          console.log("Cửa sổ đã đóng");
+          if (!checkCreateInterview) {
+            setLoading(false);
+          }
+          clearInterval(intervalId);
+        } else {
+          console.log("Cửa sổ đang mở");
+        }
+      }
+      const intervalId = setInterval(checkPopupStatus, 1000);
+
     }
-    setLoading(false);
   };
 
 
   const openWindowCancelInterview = async (interviewId) => {
+    setLoading(true);
     const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=800, height=800, top=100, left=600';
 
     const urlCreateInterview = customUrl.urlCreateInterview;
     const popupWindow = window.open(urlCreateInterview, "popupWindow", windowFeatures);
 
     let code;
+    let checkCreateInterview = false;
 
-    // Lắng nghe các thông điệp từ cửa sổ popup
     window.addEventListener('message', (event) => {
       code = event.data;
       // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
       if (code) {
+        checkCreateInterview = true;
         popupWindow.close();
+        setLoading(true);
         console.log(event.data)
         setAuthenCodeCancel(event.data)
         setInterviewIdCancel(interviewId)
       }
     });
 
+    function checkPopupStatus() {
+      if (popupWindow && popupWindow.closed) {
+        console.log("Cửa sổ đã đóng");
+        clearInterval(intervalId);
+        if (!checkCreateInterview) {
+          setLoading(false);
+        }
+      } else {
+        console.log("Cửa sổ đang mở");
+      }
+    }
+    const intervalId = setInterval(checkPopupStatus, 1000);
+
+    // Lắng nghe các thông điệp từ cửa sổ popup
+
   };
 
   const openWindowUpdateInterview = async (interviewId) => {
+    setLoading(true)
     const windowFeatures = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=800, height=800, top=100, left=600';
 
     const urlCreateInterview = customUrl.urlCreateInterview;
     const popupWindow = window.open(urlCreateInterview, "popupWindow", windowFeatures);
 
     let code;
+    let checkCreateInterview = false;
 
-    // Lắng nghe các thông điệp từ cửa sổ popup
     window.addEventListener('message', (event) => {
       code = event.data;
       // Kiểm tra nếu nhận được thông điệp "Signout", đóng cửa sổ popup
       if (code) {
+        checkCreateInterview = true;
+        setShowPopup(false);
+        exitPopup();
         popupWindow.close();
-        console.log(event.data)
+        console.log(event.data);
         setAuthenCodeUpdate(event.data)
         setInterviewIdUpdate(interviewId)
+        setLoading(true);
       }
     });
+    function checkPopupStatus() {
+      if (popupWindow && popupWindow.closed) {
+        console.log("Cửa sổ đã đóng");
+        clearInterval(intervalId);
+        if (!checkCreateInterview) {
+          setLoading(false)
+        }
+      } else {
+        console.log("Cửa sổ đang mở");
+      }
+    }
+    const intervalId = setInterval(checkPopupStatus, 1000);
+
+    // Lắng nghe các thông điệp từ cửa sổ popup
     // setLoading(true);
   };
 
@@ -1617,17 +1720,22 @@ const HiringRequestDetails = () => {
                   {selectInterviewDetail.statusString !== 'Completed' && (
                     <>
                       {selectInterviewDetail.statusString === 'Waiting Approval' ? (
+                        <DropdownAntd trigger={['click']} menu={{ items: profileItems }}>
+                          <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                            <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
+                          </a>
+                        </DropdownAntd>
+                      ) : (
+                        null
+                      )}
+                      {selectInterviewDetail.statusString === 'Approval' ? (
                         <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }}>
                           <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
                             <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
                           </a>
                         </DropdownAntd>
                       ) : (
-                        <DropdownAntd trigger={['click']} menu={{ items: profileItems }}>
-                          <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
-                            <FontAwesomeIcon icon={faGear} size="xl" color="#909191" />
-                          </a>
-                        </DropdownAntd>
+                        null
                       )}
                     </>
                   )}
@@ -2311,6 +2419,7 @@ const HiringRequestDetails = () => {
                                           candidategridDetailsNew.id
                                         )
                                       }
+                                      disabled={loadingInterview[candidategridDetailsNew.id] || loadingReject[candidategridDetailsNew.id]}
                                     >
                                       <>
                                         Interview {candidategridDetailsNew.interviewRound > 0 ? `Round ${candidategridDetailsNew.interviewRound + 1}` : ''}

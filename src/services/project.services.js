@@ -158,6 +158,12 @@ const getProjectListCancelPaging = async (PageIndex, PageSize) => {
   return response;
 };
 
+const closeProjectByHr = async (projectId) => {
+  const serviceUrl = urlConstant.endpoint.project.closeProjectByHr.replace("${projectId}", projectId);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl);
+  return response;
+};
+
 export default {
   createProject,
   getAllProjectByCompanyId,
@@ -172,4 +178,5 @@ export default {
   getProjectListInprogressPaging,
   getProjectListCompletedPaging,
   getProjectListCancelPaging,
+  closeProjectByHr
 };

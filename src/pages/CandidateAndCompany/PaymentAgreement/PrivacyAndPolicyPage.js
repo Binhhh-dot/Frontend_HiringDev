@@ -26,6 +26,7 @@ const PrivacyAndPolicyPage = () => {
   const [companyPreview, setCompanyPreview] = useState(false);
   const [minDate, setMinDate] = useState();
   const [minDateEndDay, setMinDateEndDay] = useState();
+  const [maxDateEndDay, setMaxDateEndDay] = useState();
   const [maxDate, setMaxDate] = useState();
   const [loading, setLoading] = useState(false);
   const today = new Date();
@@ -52,9 +53,7 @@ const PrivacyAndPolicyPage = () => {
       document.getElementById("position").value = preContractData.legalRepresentationPosition;
 
       const today = new Date();
-      const minDateEndDate = new Date();
-      today.setDate(today.getDate() + 10);
-      minDateEndDate.setDate(minDateEndDate.getDate() + 40);
+      today.setDate(today.getDate() + 8);
 
       const year = today.getFullYear();
       const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -62,14 +61,29 @@ const PrivacyAndPolicyPage = () => {
 
       const formattedDate = `${year}-${month}-${day}`;
 
-      const year2 = minDateEndDate.getFullYear();
-      const month2 = String(minDateEndDate.getMonth() + 1).padStart(2, '0');
-      const day2 = String(minDateEndDate.getDate()).padStart(2, '0');
-
-      const formattedDate2 = `${year2}-${month2}-${day2}`;
-
       setMinDate(formattedDate);
-      setMinDateEndDay(formattedDate2);
+
+      const parts = preContractData.toDate.split('/');
+      const day1 = parts[0];
+      const month1 = parts[1];
+      const year1 = parts[2];
+      const formattedDate2 = `${year1}-${month1}-${day1}`;
+      setMaxDate(formattedDate2)
+      setMaxDateEndDay(formattedDate2)
+      console.log("formattedDate2")
+      console.log(formattedDate2)
+
+
+      const today2 = new Date();
+      today2.setDate(today2.getDate() + 38);
+
+      const year3 = today2.getFullYear();
+      const month3 = String(today2.getMonth() + 1).padStart(2, '0');
+      const day3 = String(today2.getDate()).padStart(2, '0');
+
+      const formattedDate3 = `${year3}-${month3}-${day3}`;
+
+      setMinDateEndDay(formattedDate3);
 
       setLegalPreview(document.getElementById("legalRepresentative").value);
       setPositionPreview(document.getElementById("position").value);
@@ -339,6 +353,7 @@ const PrivacyAndPolicyPage = () => {
                       id="endDate"
                       placeholder="Enter end date of the laborers"
                       min={minDateEndDay}
+                      max={maxDateEndDay}
                       onChange={setMinDateByJs}
 
                     />

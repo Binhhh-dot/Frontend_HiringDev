@@ -165,7 +165,7 @@ const NavBar = (props) => {
       url = "/contractListHr";
       console.log(url)
     }
-    if (page == "Project") {
+    if (page == "Project ") {
       url = "/projectdetailhr?Id=" + routeId;
       console.log(url)
     }
@@ -180,7 +180,7 @@ const NavBar = (props) => {
     } catch (error) {
       console.log(error);
     }
-    navigate(url, { replace: true }); // Sử dụng replace: true để tải lại trang
+    navigate(url, { replace: true });
     setNotification(false);
     window.location.reload()
   };
