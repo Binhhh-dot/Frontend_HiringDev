@@ -138,7 +138,7 @@ const NavBarWebAdmin = () => {
                                         <div>
                                             {/* onClick={openPopupProfileUser} */}
                                             <Link
-                                                to={"/profileadmin"}
+                                                to={"/profilemanager"}
                                                 className="dropdown-item px-0 p-0"
                                             >
                                                 <div className="dropdown-item">Profile</div>

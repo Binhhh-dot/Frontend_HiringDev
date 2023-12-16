@@ -17,8 +17,8 @@ import userSerrvices from "../../../services/user.serrvices";
 import { HashLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import img0 from "../../../assets/images/user/img-00.jpg";
-import NavBarWeb from "./NavBarWeb";
-import SiderBarWeb from "../SlideBar/SiderBarWeb";
+import NavBarWebAdmin from "./NavBarWebAdmin";
+import SiderBarWebAdmin from "../SlideBar/SiderBarWebAdmin";
 //---------------------------------------------------------
 
 //---------------------------------------------------------
@@ -112,7 +112,7 @@ const UpdateProfileAdmin = () => {
             console.log(formData);
             try {
                 // Make API request
-                const response = await userSerrvices.updateUser(formData, userId);
+                const response = await userSerrvices.updateAdmin(formData, userId);
                 console.log(response);
                 // Handle the response (you can show a success message or redirect to another page)
                 toast.success("Update successfully");
@@ -128,7 +128,7 @@ const UpdateProfileAdmin = () => {
                 }
             } catch (error) {
                 setLoadingUpdateAccount(false);
-                toast.success("Update fail");
+                toast.error("Update fail");
             }
 
             setLoadingUpdateAccount(false);
@@ -199,10 +199,10 @@ const UpdateProfileAdmin = () => {
     return (
         <React.Fragment>
             <Layout style={{ minHeight: "100vh" }}>
-                <SiderBarWeb choose={"menu-key/100"}></SiderBarWeb>
+                <SiderBarWebAdmin choose={"menu-key/100"}></SiderBarWebAdmin>
 
                 <Layout>
-                    <NavBarWeb></NavBarWeb>
+                    <NavBarWebAdmin></NavBarWebAdmin>
 
                     <Content>
                         <section
