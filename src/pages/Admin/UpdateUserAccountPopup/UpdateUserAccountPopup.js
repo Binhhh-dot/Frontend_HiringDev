@@ -187,7 +187,7 @@ const UpdateHRAccountPopup = (
         const PhoneNumber = document.getElementById("phone-number").value;
         const Password = document.getElementById("password").value;
         const DateOfBirth = document.getElementById("date-of-birth").value;
-        const Status = selectedOptions2 ? selectedOptions2.value : null;
+        //   const Status = selectedOptions2 ? selectedOptions2.value : null;
 
         if (check) {
             try {
@@ -199,7 +199,7 @@ const UpdateHRAccountPopup = (
                 formData.append("PhoneNumber", PhoneNumber);
                 formData.append("Password", Password);
                 formData.append("DateOfBirth", DateOfBirth);
-                formData.append("Status", Status);
+                //     formData.append("Status", Status);
                 formData.append("File", file || null);
                 const response = await userSerrvices.updateHR(
                     userId,
@@ -455,7 +455,7 @@ const UpdateHRAccountPopup = (
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            {/* <div class="row">
                                                 <div class="col-md-6">
                                                     <label class="text-muted">Status:</label>
                                                     <div className="form-button">
@@ -476,7 +476,7 @@ const UpdateHRAccountPopup = (
                                                     )}
 
                                                 </div>
-                                            </div>
+                                            </div> */}
 
                                             <div class="col-lg-12 mt-2 d-flex justify-content-end">
                                                 <button

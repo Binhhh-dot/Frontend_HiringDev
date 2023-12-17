@@ -174,6 +174,21 @@ const updateManager = async (id, formData) => {
     .sendAuthorizedRequest(serviceUrl, 'PUT', formData, config);
   return response
 }
+
+const updateAdmin = async (formData, userId) => {
+  const serviceUrl = urlConstant.endpoint.user.updateUser.replace(
+    "${userId}",
+    userId
+  );
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
+
+  return response;
+};
 const createManager = async (
   firstName,
   lastName,
@@ -275,4 +290,5 @@ export default {
   updateStaff,
   getListDeveloper,
   deleteDeveloper,
+  updateAdmin,
 };
