@@ -409,9 +409,10 @@ const ListAccountStaff = () => {
         <SiderBarWebAdmin choose={"menu-key/3"}></SiderBarWebAdmin>
         <Layout>
           <NavBarWebAdmin></NavBarWebAdmin>
+
           <div
             style={{
-              padding: "10px 5px 0px 5px",
+              padding: "0px 30px 0px 50px",
               background: "white",
               margin: "30px",
               borderRadius: "12px",
@@ -419,18 +420,14 @@ const ListAccountStaff = () => {
             }}
           >
             <Content>
-              <h1
+              <Breadcrumb
                 style={{
-                  padding: "5px 0px 0px 0px",
-                  margin: "0px 0px 0px 20px",
-                  color: "black",
-                  fontSize: "20px",
-                  fontWeight: "bold"
+                  margin: "13px 0",
                 }}
               >
-                MANAGE STAFF
-              </h1>
-
+                <Breadcrumb.Item>Management</Breadcrumb.Item>
+                <Breadcrumb.Item>Staff List</Breadcrumb.Item>
+              </Breadcrumb>
               <a
                 className="me-1 d-flex flex-column align-items-end"
                 onClick={showModal1}
@@ -439,8 +436,8 @@ const ListAccountStaff = () => {
               </a>
               <div
                 style={{
-                  padding: 25,
-                  minHeight: 400,
+                  padding: 10,
+                  minHeight: 360,
                 }}
               >
                 <div style={{ height: "600px", overflow: "auto" }}>

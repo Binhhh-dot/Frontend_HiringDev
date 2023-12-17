@@ -6,8 +6,7 @@ import dashboardServices from '../../../services/dashboard.services';
 import '../Dashboard/dashboard.css'
 import SiderBarWeb from "../SlideBar/SiderBarWeb";
 import { Table, Space, Modal, Button, Form, message, Input, Select, Layout, Badge, Switch, Breadcrumb } from 'antd';
-import { BarChartOutlined, BarcodeOutlined, LeftOutlined, ProjectOutlined, RightOutlined, UserOutlined, UsergroupAddOutlined } from '@ant-design/icons';
-
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 import {
     Dropdown,
@@ -21,8 +20,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SiderBarWebAdmin from "../SlideBar/SiderBarWebAdmin";
 import NavBarWebAdmin from "../NavBar/NavBarWebAdmin";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboardCheck, faFileCircleCheck, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 
 const { Content } = Layout;
 
@@ -352,7 +349,7 @@ const Dashboard = () => {
                             <div className="row">
                                 <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                     <div className="page-header">
-                                        <h2>DASHBOARD</h2>
+                                        <h2 className="pageheader-title">Dashboard </h2>
                                     </div>
                                 </div>
                             </div>
@@ -362,17 +359,10 @@ const Dashboard = () => {
                                         <div className="card border-3 border-top border-top-primary">
                                             <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total Project</h5>
-                                                <div className="metric-value d-inline-block" style={{ marginRight: '110px' }}>
+                                                <div className="metric-value d-inline-block">
                                                     {hRInfo && (
                                                         <h1>{hRInfo.totalProject}</h1>
                                                     )}
-                                                </div>
-                                                <div class="metric-label d-inline-block float-right text-success font-weight-bold">
-                                                    <FontAwesomeIcon
-                                                        style={{ color: "#6d73f6" }}
-                                                        size="2xl"
-                                                        icon={faFileCircleCheck}
-                                                    />
                                                 </div>
                                             </div>
                                         </div>
@@ -381,17 +371,10 @@ const Dashboard = () => {
                                         <div className="card border-3 border-top border-top-primary">
                                             <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total Hiring Request</h5>
-                                                <div className="metric-value d-inline-block" style={{ marginRight: '110px' }}>
+                                                <div className="metric-value d-inline-block">
                                                     {hRInfo && (
                                                         <h1>{hRInfo.totalHiringRequest}</h1>
                                                     )}
-                                                </div>
-                                                <div class="metric-label d-inline-block float-right text-success font-weight-bold">
-                                                    <FontAwesomeIcon
-                                                        style={{ color: "#6d73f6" }}
-                                                        size="2xl"
-                                                        icon={faClipboardCheck}
-                                                    />
                                                 </div>
                                             </div>
                                         </div>
@@ -400,17 +383,10 @@ const Dashboard = () => {
                                         <div className="card border-3 border-top border-top-primary">
                                             <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total User</h5>
-                                                <div className="metric-value d-inline-block" style={{ marginRight: '110px' }}>
+                                                <div className="metric-value d-inline-block">
                                                     {hRInfo && (
                                                         <h1>{hRInfo.accountDashboard.totalUser}</h1>
                                                     )}
-                                                </div>
-                                                <div class="metric-label d-inline-block float-right text-success font-weight-bold">
-                                                    <FontAwesomeIcon
-                                                        style={{ color: "#6d73f6" }}
-                                                        size="2xl"
-                                                        icon={faUserGroup}
-                                                    />
                                                 </div>
                                             </div>
                                         </div>

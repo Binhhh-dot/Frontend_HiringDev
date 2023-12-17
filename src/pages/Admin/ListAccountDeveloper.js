@@ -91,7 +91,7 @@ const tailLayout = {
 };
 
 const page = {
-  pageSize: 9, // Number of items per page
+  pageSize: 10, // Number of items per page
 };
 
 const { Column, ColumnGroup } = Table;
@@ -574,7 +574,7 @@ const ListAccountDeveloper = () => {
 
           <div
             style={{
-              padding: "10px 5px 0px 5px",
+              padding: "0px 5px 0px 5px",
               background: "white",
               margin: "30px",
               borderRadius: "12px",
@@ -582,18 +582,14 @@ const ListAccountDeveloper = () => {
             }}
           >
             <Content>
-              <h1
+              <Breadcrumb
                 style={{
-                  padding: "5px 0px 0px 0px",
-                  margin: "0px 0px 0px 20px",
-                  color: "black",
-                  fontSize: "20px",
-                  fontWeight: "bold"
+                  margin: "16px 0",
                 }}
               >
-                MANAGE DEVELOPER
-              </h1>
-
+                <Breadcrumb.Item>Management</Breadcrumb.Item>
+                <Breadcrumb.Item>Developer List</Breadcrumb.Item>
+              </Breadcrumb>
               <a
                 className="me-1 d-flex flex-column align-items-end"
                 onClick={showModal1}
@@ -602,7 +598,7 @@ const ListAccountDeveloper = () => {
               </a>
               <div
                 style={{
-                  padding: 25,
+                  padding: 10,
                   minHeight: 400,
                 }}
               >
