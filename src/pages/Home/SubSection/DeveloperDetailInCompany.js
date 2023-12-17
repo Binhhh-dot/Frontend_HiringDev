@@ -55,7 +55,7 @@ const DeveloperDetailInCompanyPopup = (
                             className="avatar-lg rounded-circle"
                           />
                           <h6 className="fs-18 mb-0 mt-4">
-                            {developerInfo.codeName}
+                            {developerInfo.firstName} {developerInfo.lastName}
                           </h6>
                         </div>
                       </CardBody>
@@ -64,6 +64,16 @@ const DeveloperDetailInCompanyPopup = (
                           Profile Overview
                         </h6>
                         <ul className="list-unstyled mb-0">
+                          <li>
+                            <div className="d-flex">
+                              <label className="text-dark">Code name</label>
+                              <div>
+                                <p className="text-muted mb-0">
+                                  {developerInfo.codeName}
+                                </p>
+                              </div>
+                            </div>
+                          </li>
                           <li>
                             <div className="d-flex">
                               <label className="text-dark">Gender</label>

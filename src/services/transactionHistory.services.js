@@ -6,7 +6,7 @@ const getTransactionHistory = async (PageIndex, PageSize) => {
     urlConstant.endpoint.transactionHistory.getTransactionHistory
       .replace("${PageIndex}", PageIndex)
       .replace("${PageSize}", PageSize);
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
   return response;
 };
 
@@ -14,7 +14,7 @@ const getAllTransactionHistory = async () => {
   const serviceUrl =
     urlConstant.endpoint.transactionHistory.getAllTransactionHistory;
 
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
   return response;
 };
 
@@ -35,7 +35,7 @@ const getTransactionByCompanyIdAndPaging = async (
       .replace("${Status}", Status)
       .replace("${Amount}", Amount);
   console.log(serviceUrl)
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
   return response;
 };
 
