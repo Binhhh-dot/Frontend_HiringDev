@@ -26,6 +26,8 @@ import {
   DropdownItem,
 } from "reactstrap";
 import NavBarWeb from "./NavBar/NavBarWeb";
+import { Empty } from "antd";
+
 const { Header, Footer, Content } = Layout;
 
 const ContractList = () => {
@@ -57,6 +59,10 @@ const ContractList = () => {
   const [contractListPending, setContractListPending] = useState([]);
   const [contractListSigned, setContractListSigned] = useState([]);
   const [contractListFailed, setContractListFailed] = useState([]);
+  const [contractListTerminated, setContractListTerminated] = useState([]);
+  const [contractListEndOfContract, setContractListEndOfContract] = useState(
+    []
+  );
 
   //------------------------------------------------------------------------
   let [currentPage, setCurrentPage] = useState(1);
@@ -88,18 +94,18 @@ const ContractList = () => {
 
   const fetchGetContractListPending = async () => {
     let response;
-    let tmp;
+
     try {
-      response = await contractServices.getContractAndPaging(
+      response = await contractServices.getContractPendingPaging(
         currentPagePending,
         7
       );
       console.log(response.data.data);
-      tmp = response.data.data.filter(
-        (developer) => developer.statusString == "Pending"
+
+      setContractListPending(response.data.data);
+      setTotalPagesPending(
+        Math.ceil(response.data.paging.total / pageSizePending)
       );
-      setContractListPending(tmp);
-      setTotalPagesPending(Math.ceil(tmp.length / pageSizePending));
     } catch (error) {
       console.error("Error fetching contract pending list :", error);
     }
@@ -115,18 +121,18 @@ const ContractList = () => {
 
   const fetchGetContractListSigned = async () => {
     let response;
-    let tmp;
+
     try {
-      response = await contractServices.getContractAndPaging(
+      response = await contractServices.getContractSignedPaging(
         currentPageSigned,
         7
       );
       console.log(response.data.data);
-      tmp = response.data.data.filter(
-        (developer) => developer.statusString == "Signed"
+
+      setContractListSigned(response.data.data);
+      setTotalPagesSigned(
+        Math.ceil(response.data.paging.total / pageSizeSigned)
       );
-      setContractListSigned(tmp);
-      setTotalPagesSigned(Math.ceil(tmp.length / pageSizeSigned));
     } catch (error) {
       console.error("Error fetching conttract sign list :", error);
     }
@@ -142,24 +148,78 @@ const ContractList = () => {
 
   const fetchGetContractListFailed = async () => {
     let response;
-    let tmp;
+
     try {
-      response = await contractServices.getContractAndPaging(
+      response = await contractServices.getContractFailedPaging(
         currentPageFailed,
         7
       );
       console.log(response.data.data);
-      tmp = response.data.data.filter(
-        (developer) => developer.statusString == "Failed"
+
+      setContractListFailed(response.data.data);
+      setTotalPagesFailed(
+        Math.ceil(response.data.paging.total / pageSizeFailed)
       );
-      setContractListFailed(tmp);
-      setTotalPagesFailed(Math.ceil(tmp.length / pageSizeFailed));
     } catch (error) {
       console.error("Error fetching conttract sign list :", error);
     }
   };
 
   //------------------------------------------------------------------------
+  let [currentPageTerminated, setCurrentPageTerminated] = useState(1);
+  const [totalPagesTerminated, setTotalPagesTerminated] = useState(1);
+  const pageSizeTerminated = 7;
+
+  const handlePageClickTerminated = (page) => {
+    setCurrentPageTerminated(page);
+  };
+
+  const fetchGetContractListTerminated = async () => {
+    let response;
+
+    try {
+      response = await contractServices.getContractTerminatedPaging(
+        currentPageTerminated,
+        7
+      );
+      console.log(response.data.data);
+
+      setContractListTerminated(response.data.data);
+      setTotalPagesTerminated(
+        Math.ceil(response.data.paging.total / pageSizeTerminated)
+      );
+    } catch (error) {
+      console.error("Error fetching conttract terminated list :", error);
+    }
+  };
+
+  //------------------------------------------------------------------------
+  let [currentPageEndOfContract, setCurrentPageEndOfContract] = useState(1);
+  const [totalPagesEndOfContract, setTotalPagesEndOfContract] = useState(1);
+  const pageSizeEndOfContract = 7;
+
+  const handlePageClickEndOfContract = (page) => {
+    setCurrentPageEndOfContract(page);
+  };
+
+  const fetchGetContractListEndOfContract = async () => {
+    let response;
+
+    try {
+      response = await contractServices.getContractEndOfContractPaging(
+        currentPageEndOfContract,
+        7
+      );
+      console.log(response.data.data);
+
+      setContractListEndOfContract(response.data.data);
+      setTotalPagesEndOfContract(
+        Math.ceil(response.data.paging.total / pageSizeEndOfContract)
+      );
+    } catch (error) {
+      console.error("Error fetching conttract End Of Contract list :", error);
+    }
+  };
 
   //------------------------------------------------------------------------
   const renderPageNumbers = () => {
@@ -335,6 +395,104 @@ const ContractList = () => {
     }
   };
   //------------------------------------------------------------------------
+  const renderPageNumbersTerminated = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(
+      1,
+      currentPageTerminated - Math.floor(maxPageButtons / 2)
+    );
+    let endPage = Math.min(
+      totalPagesTerminated,
+      startPage + maxPageButtons - 1
+    );
+    if (
+      totalPagesTerminated > maxPageButtons &&
+      currentPageTerminated <= Math.floor(maxPageButtons / 2) + 1
+    ) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${i === currentPageTerminated ? "active" : ""}`}
+        >
+          <Link
+            className="page-link"
+            to="#"
+            onClick={() => handlePageClickTerminated(i)}
+          >
+            {i}
+          </Link>
+        </li>
+      );
+    }
+    return pageNumbers;
+  };
+
+  const handleNextPageTerminated = () => {
+    if (currentPageTerminated < totalPagesTerminated) {
+      setCurrentPageTerminated(currentPageTerminated + 1);
+    }
+  };
+
+  const handlePrevPageTerminated = () => {
+    if (currentPageTerminated > 1) {
+      setCurrentPageTerminated(currentPageTerminated - 1);
+    }
+  };
+  //------------------------------------------------------------------------
+  const renderPageNumbersEndOfContract = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 4;
+    let startPage = Math.max(
+      1,
+      currentPageEndOfContract - Math.floor(maxPageButtons / 2)
+    );
+    let endPage = Math.min(
+      totalPagesEndOfContract,
+      startPage + maxPageButtons - 1
+    );
+    if (
+      totalPagesEndOfContract > maxPageButtons &&
+      currentPageEndOfContract <= Math.floor(maxPageButtons / 2) + 1
+    ) {
+      endPage = maxPageButtons;
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${
+            i === currentPageEndOfContract ? "active" : ""
+          }`}
+        >
+          <Link
+            className="page-link"
+            to="#"
+            onClick={() => handlePageClickEndOfContract(i)}
+          >
+            {i}
+          </Link>
+        </li>
+      );
+    }
+    return pageNumbers;
+  };
+
+  const handleNextPageEndOfContract = () => {
+    if (currentPageEndOfContract < totalPagesEndOfContract) {
+      setCurrentPageEndOfContract(currentPageEndOfContract + 1);
+    }
+  };
+
+  const handlePrevPageEndOfContract = () => {
+    if (currentPageEndOfContract > 1) {
+      setCurrentPageEndOfContract(currentPageEndOfContract - 1);
+    }
+  };
+  //------------------------------------------------------------------------
   //Search
   const { Search } = Input;
   const onSearch = (value, _e, info) => console.log(info?.source, value);
@@ -355,6 +513,15 @@ const ContractList = () => {
   useEffect(() => {
     fetchGetContractListFailed();
   }, [currentPageFailed]);
+
+  useEffect(() => {
+    fetchGetContractListTerminated();
+  }, [currentPageTerminated]);
+
+  useEffect(() => {
+    fetchGetContractListEndOfContract();
+  }, [currentPageEndOfContract]);
+
   //------------------------------------------------------------------------
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -593,731 +760,1227 @@ const ContractList = () => {
                           <CardBody className="px-0">
                             <TabContent activeTab={activeTab}>
                               <TabPane tabId="1">
-                                {contractListAll.map(
-                                  (contractListAllNew, key) => (
-                                    <div
-                                      key={key}
-                                      className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                                      style={{
-                                        boxShadow:
-                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                      }}
-                                    >
-                                      <CardBody className="p-2">
-                                        <Row className="align-items-center ">
-                                          <Col md={1}>
-                                            <div className="d-flex justify-content-center">
-                                              <i
-                                                className="uil uil-file-plus-alt"
-                                                style={{ fontSize: "50px" }}
-                                              ></i>
-                                            </div>
-                                          </Col>
+                                {contractListAll.length === 0 ? (
+                                  <div>
+                                    <Empty />
+                                  </div>
+                                ) : (
+                                  <div>
+                                    {contractListAll.map(
+                                      (contractListAllNew, key) => (
+                                        <div
+                                          key={key}
+                                          className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                          style={{
+                                            boxShadow:
+                                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                          }}
+                                        >
+                                          <CardBody className="p-2">
+                                            <Row className="align-items-center ">
+                                              <Col md={1}>
+                                                <div className="d-flex justify-content-center">
+                                                  <i
+                                                    className="uil uil-file-plus-alt"
+                                                    style={{ fontSize: "50px" }}
+                                                  ></i>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={3}>
-                                            <div>
-                                              <h5 className="fs-18 mb-0">
-                                                <Link
-                                                  to="/contractdetail"
-                                                  className="text-dark"
-                                                  state={{
-                                                    contractId:
-                                                      contractListAllNew.contractId,
-                                                  }}
-                                                >
-                                                  {
-                                                    contractListAllNew.contractCode
-                                                  }
-                                                </Link>
-                                              </h5>
-                                              <p className="text-muted fs-14 mb-0">
-                                                {
-                                                  contractListAllNew.companyPartnerName
-                                                }
-                                              </p>
-                                            </div>
-                                          </Col>
+                                              <Col md={3}>
+                                                <div>
+                                                  <h5 className="fs-18 mb-0">
+                                                    <Link
+                                                      to="/contractdetail"
+                                                      className="text-dark"
+                                                      state={{
+                                                        contractId:
+                                                          contractListAllNew.contractId,
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.contractCode
+                                                      }
+                                                    </Link>
+                                                  </h5>
+                                                  <p className="text-muted fs-14 mb-0">
+                                                    {
+                                                      contractListAllNew.companyPartnerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={2}>
-                                            <div className="d-flex flex-column gap-1 justify-content-center">
-                                              <div>
-                                                <p className="text-muted mb-0 fs-13">
-                                                  Create at
-                                                </p>
-                                                <p
-                                                  className="mb-0 fs-17"
-                                                  style={{ fontWeight: "600" }}
-                                                >
-                                                  {contractListAllNew.createdAt}
-                                                </p>
-                                              </div>
-                                              <div>
-                                                <p className="text-muted mb-0 fs-13">
-                                                  Human resource
-                                                </p>
-                                                <p
-                                                  className="mb-0 fs-17"
-                                                  style={{ fontWeight: "600" }}
-                                                >
-                                                  {
-                                                    contractListAllNew.humanResourceName
-                                                  }
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </Col>
+                                              <Col md={2}>
+                                                <div className="d-flex flex-column gap-1 justify-content-center">
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-13">
+                                                      Create at
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.createdAt
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-13">
+                                                      Human resource
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.humanResourceName
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={2}>
-                                            <div className="d-flex mb-0 align-items-center">
-                                              <div className="flex-shrink-0">
-                                                <i
-                                                  className="uil uil-user-check text-primary me-1"
-                                                  style={{ fontSize: "19px" }}
-                                                ></i>
-                                              </div>
-                                              <p className="text-muted mb-0">
-                                                {
-                                                  contractListAllNew.developerName
-                                                }
-                                              </p>
-                                            </div>
-                                          </Col>
+                                              <Col md={2}>
+                                                <div className="d-flex mb-0 align-items-center">
+                                                  <div className="flex-shrink-0">
+                                                    <i
+                                                      className="uil uil-user-check text-primary me-1"
+                                                      style={{
+                                                        fontSize: "19px",
+                                                      }}
+                                                    ></i>
+                                                  </div>
+                                                  <p className="text-muted mb-0">
+                                                    {
+                                                      contractListAllNew.developerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col
-                                            md={2}
-                                            className="d-flex justify-content-center"
-                                          >
-                                            <div>
-                                              <p className="text-muted mb-0 fs-13">
-                                                Date signed
-                                              </p>
-                                              <p
-                                                className="mb-0 fs-17"
-                                                style={{ fontWeight: "600" }}
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
                                               >
-                                                {contractListAllNew.dateSigned}
-                                              </p>
-                                            </div>
-                                          </Col>
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-13">
+                                                    Date signed
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {
+                                                      contractListAllNew.dateSigned
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col
-                                            md={2}
-                                            className="d-flex justify-content-center"
-                                          >
-                                            <div className="d-flex align-items-center">
-                                              <span
-                                                className={
-                                                  contractListAllNew.statusString ===
-                                                  "Pending"
-                                                    ? "badge bg-warning text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Signed"
-                                                    ? "badge bg-success text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Failed"
-                                                    ? "badge bg-danger text-light fs-12"
-                                                    : ""
-                                                }
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
                                               >
-                                                {
-                                                  contractListAllNew.statusString
-                                                }
-                                              </span>
-                                            </div>
-                                          </Col>
-                                        </Row>
-                                      </CardBody>
-                                    </div>
-                                  )
+                                                <div className="d-flex align-items-center">
+                                                  <span
+                                                    className={
+                                                      contractListAllNew.statusString ===
+                                                      "Pending"
+                                                        ? "badge bg-warning text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Signed"
+                                                        ? "badge bg-success text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Failed"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : ""
+                                                    }
+                                                  >
+                                                    {
+                                                      contractListAllNew.statusString
+                                                    }
+                                                  </span>
+                                                </div>
+                                              </Col>
+                                            </Row>
+                                          </CardBody>
+                                        </div>
+                                      )
+                                    )}
+
+                                    {/* phan trang */}
+                                    <Row>
+                                      <Col lg={12} className="mt-4 pt-2">
+                                        <nav aria-label="Page navigation example">
+                                          <div className="pagination job-pagination mb-0 justify-content-center">
+                                            <li
+                                              className={`page-item ${
+                                                currentPage === 1
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                tabIndex="-1"
+                                                onClick={handlePrevPage}
+                                              >
+                                                <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                              </Link>
+                                            </li>
+                                            {renderPageNumbers()}
+                                            <li
+                                              className={`page-item ${
+                                                currentPage === totalPages
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                onClick={handleNextPage}
+                                              >
+                                                <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                              </Link>
+                                            </li>
+                                          </div>
+                                        </nav>
+                                      </Col>
+                                    </Row>
+                                  </div>
                                 )}
-
-                                {/* phan trang */}
-                                <Row>
-                                  <Col lg={12} className="mt-4 pt-2">
-                                    <nav aria-label="Page navigation example">
-                                      <div className="pagination job-pagination mb-0 justify-content-center">
-                                        <li
-                                          className={`page-item ${
-                                            currentPage === 1 ? "disabled" : ""
-                                          }`}
-                                        >
-                                          <Link
-                                            className="page-link"
-                                            to="#"
-                                            tabIndex="-1"
-                                            onClick={handlePrevPage}
-                                          >
-                                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                          </Link>
-                                        </li>
-                                        {renderPageNumbers()}
-                                        <li
-                                          className={`page-item ${
-                                            currentPage === totalPages
-                                              ? "disabled"
-                                              : ""
-                                          }`}
-                                        >
-                                          <Link
-                                            className="page-link"
-                                            to="#"
-                                            onClick={handleNextPage}
-                                          >
-                                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                          </Link>
-                                        </li>
-                                      </div>
-                                    </nav>
-                                  </Col>
-                                </Row>
                               </TabPane>
                               <TabPane tabId="2">
-                                {contractListPending.map(
-                                  (contractListAllNew, key) => (
-                                    <div
-                                      key={key}
-                                      className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                                      style={{
-                                        boxShadow:
-                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                      }}
-                                    >
-                                      <CardBody className="p-2">
-                                        <Row className="align-items-center ">
-                                          <Col md={1}>
-                                            <div className="d-flex justify-content-center">
-                                              <i
-                                                className="uil uil-file-plus-alt"
-                                                style={{ fontSize: "50px" }}
-                                              ></i>
-                                            </div>
-                                          </Col>
+                                {contractListPending.length === 0 ? (
+                                  <div>
+                                    <Empty />
+                                  </div>
+                                ) : (
+                                  <div>
+                                    {contractListPending.map(
+                                      (contractListAllNew, key) => (
+                                        <div
+                                          key={key}
+                                          className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                          style={{
+                                            boxShadow:
+                                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                          }}
+                                        >
+                                          <CardBody className="p-2">
+                                            <Row className="align-items-center ">
+                                              <Col md={1}>
+                                                <div className="d-flex justify-content-center">
+                                                  <i
+                                                    className="uil uil-file-plus-alt"
+                                                    style={{ fontSize: "50px" }}
+                                                  ></i>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={3}>
-                                            <div>
-                                              <h5 className="fs-18 mb-0">
-                                                <Link
-                                                  to="/contractdetail"
-                                                  className="text-dark"
-                                                  state={{
-                                                    contractId:
-                                                      contractListAllNew.contractId,
-                                                  }}
-                                                >
-                                                  {
-                                                    contractListAllNew.contractCode
-                                                  }
-                                                </Link>
-                                              </h5>
-                                              <p className="text-muted fs-14 mb-0">
-                                                {
-                                                  contractListAllNew.companyPartnerName
-                                                }
-                                              </p>
-                                            </div>
-                                          </Col>
+                                              <Col md={3}>
+                                                <div>
+                                                  <h5 className="fs-18 mb-0">
+                                                    <Link
+                                                      to="/contractdetail"
+                                                      className="text-dark"
+                                                      state={{
+                                                        contractId:
+                                                          contractListAllNew.contractId,
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.contractCode
+                                                      }
+                                                    </Link>
+                                                  </h5>
+                                                  <p className="text-muted fs-14 mb-0">
+                                                    {
+                                                      contractListAllNew.companyPartnerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={2}>
-                                            <div className="d-flex flex-column gap-1 justify-content-center">
-                                              <div>
-                                                <p className="text-muted mb-0 fs-11">
-                                                  Create at
-                                                </p>
-                                                <p
-                                                  className="mb-0 fs-17"
-                                                  style={{ fontWeight: "600" }}
-                                                >
-                                                  {contractListAllNew.createdAt}
-                                                </p>
-                                              </div>
-                                              <div>
-                                                <p className="text-muted mb-0 fs-11">
-                                                  Human resource
-                                                </p>
-                                                <p
-                                                  className="mb-0 fs-17"
-                                                  style={{ fontWeight: "600" }}
-                                                >
-                                                  {
-                                                    contractListAllNew.humanResourceName
-                                                  }
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </Col>
+                                              <Col md={2}>
+                                                <div className="d-flex flex-column gap-1 justify-content-center">
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-11">
+                                                      Create at
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.createdAt
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-11">
+                                                      Human resource
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.humanResourceName
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={2}>
-                                            <div className="d-flex mb-0 align-items-center">
-                                              <div className="flex-shrink-0">
-                                                <i
-                                                  className="uil uil-user-check text-primary me-1"
-                                                  style={{ fontSize: "19px" }}
-                                                ></i>
-                                              </div>
-                                              <p className="text-muted mb-0">
-                                                {
-                                                  contractListAllNew.developerName
-                                                }
-                                              </p>
-                                            </div>
-                                          </Col>
+                                              <Col md={2}>
+                                                <div className="d-flex mb-0 align-items-center">
+                                                  <div className="flex-shrink-0">
+                                                    <i
+                                                      className="uil uil-user-check text-primary me-1"
+                                                      style={{
+                                                        fontSize: "19px",
+                                                      }}
+                                                    ></i>
+                                                  </div>
+                                                  <p className="text-muted mb-0">
+                                                    {
+                                                      contractListAllNew.developerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col
-                                            md={2}
-                                            className="d-flex justify-content-center"
-                                          >
-                                            <div>
-                                              <p className="text-muted mb-0 fs-11">
-                                                Date signed
-                                              </p>
-                                              <p
-                                                className="mb-0 fs-17"
-                                                style={{ fontWeight: "600" }}
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
                                               >
-                                                {contractListAllNew.dateSigned}
-                                              </p>
-                                            </div>
-                                          </Col>
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-11">
+                                                    Date signed
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {
+                                                      contractListAllNew.dateSigned
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col
-                                            md={2}
-                                            className="d-flex justify-content-center"
-                                          >
-                                            <div className="d-flex align-items-center">
-                                              <span
-                                                className={
-                                                  contractListAllNew.statusString ===
-                                                  "Pending"
-                                                    ? "badge bg-warning text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Signed"
-                                                    ? "badge bg-success text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Failed"
-                                                    ? "badge bg-danger text-light fs-12"
-                                                    : ""
-                                                }
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
                                               >
-                                                {
-                                                  contractListAllNew.statusString
-                                                }
-                                              </span>
-                                            </div>
-                                          </Col>
-                                        </Row>
-                                      </CardBody>
-                                    </div>
-                                  )
+                                                <div className="d-flex align-items-center">
+                                                  <span
+                                                    className={
+                                                      contractListAllNew.statusString ===
+                                                      "Pending"
+                                                        ? "badge bg-warning text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Signed"
+                                                        ? "badge bg-success text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Failed"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : ""
+                                                    }
+                                                  >
+                                                    {
+                                                      contractListAllNew.statusString
+                                                    }
+                                                  </span>
+                                                </div>
+                                              </Col>
+                                            </Row>
+                                          </CardBody>
+                                        </div>
+                                      )
+                                    )}
+
+                                    {/* phan trang */}
+                                    <Row>
+                                      <Col lg={12} className="mt-4 pt-2">
+                                        <nav aria-label="Page navigation example">
+                                          <div className="pagination job-pagination mb-0 justify-content-center">
+                                            <li
+                                              className={`page-item ${
+                                                currentPagePending === 1
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                tabIndex="-1"
+                                                onClick={handlePrevPagePending}
+                                              >
+                                                <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                              </Link>
+                                            </li>
+                                            {renderPageNumbersPending()}
+                                            <li
+                                              className={`page-item ${
+                                                currentPagePending ===
+                                                totalPagesPending
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                onClick={handleNextPagePending}
+                                              >
+                                                <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                              </Link>
+                                            </li>
+                                          </div>
+                                        </nav>
+                                      </Col>
+                                    </Row>
+                                  </div>
                                 )}
-
-                                {/* phan trang */}
-                                <Row>
-                                  <Col lg={12} className="mt-4 pt-2">
-                                    <nav aria-label="Page navigation example">
-                                      <div className="pagination job-pagination mb-0 justify-content-center">
-                                        <li
-                                          className={`page-item ${
-                                            currentPagePending === 1
-                                              ? "disabled"
-                                              : ""
-                                          }`}
-                                        >
-                                          <Link
-                                            className="page-link"
-                                            to="#"
-                                            tabIndex="-1"
-                                            onClick={handlePrevPagePending}
-                                          >
-                                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                          </Link>
-                                        </li>
-                                        {renderPageNumbersPending()}
-                                        <li
-                                          className={`page-item ${
-                                            currentPagePending ===
-                                            totalPagesPending
-                                              ? "disabled"
-                                              : ""
-                                          }`}
-                                        >
-                                          <Link
-                                            className="page-link"
-                                            to="#"
-                                            onClick={handleNextPagePending}
-                                          >
-                                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                          </Link>
-                                        </li>
-                                      </div>
-                                    </nav>
-                                  </Col>
-                                </Row>
                               </TabPane>
                               <TabPane tabId="3">
-                                {contractListSigned.map(
-                                  (contractListAllNew, key) => (
-                                    <div
-                                      key={key}
-                                      className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                                      style={{
-                                        boxShadow:
-                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                      }}
-                                    >
-                                      <CardBody className="p-2">
-                                        <Row className="align-items-center ">
-                                          <Col md={1}>
-                                            <div>
-                                              <div className="d-flex justify-content-center">
-                                                <i
-                                                  className="uil uil-file-plus-alt"
-                                                  style={{ fontSize: "50px" }}
-                                                ></i>
-                                              </div>
-                                            </div>
-                                          </Col>
+                                {contractListSigned.length === 0 ? (
+                                  <div>
+                                    <Empty />
+                                  </div>
+                                ) : (
+                                  <div>
+                                    {contractListSigned.map(
+                                      (contractListAllNew, key) => (
+                                        <div
+                                          key={key}
+                                          className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                          style={{
+                                            boxShadow:
+                                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                          }}
+                                        >
+                                          <CardBody className="p-2">
+                                            <Row className="align-items-center ">
+                                              <Col md={1}>
+                                                <div>
+                                                  <div className="d-flex justify-content-center">
+                                                    <i
+                                                      className="uil uil-file-plus-alt"
+                                                      style={{
+                                                        fontSize: "50px",
+                                                      }}
+                                                    ></i>
+                                                  </div>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={3}>
-                                            <div>
-                                              <h5 className="fs-18 mb-0">
-                                                <Link
-                                                  to="/contractdetail"
-                                                  className="text-dark"
-                                                  state={{
-                                                    contractId:
-                                                      contractListAllNew.contractId,
-                                                  }}
-                                                >
-                                                  {
-                                                    contractListAllNew.contractCode
-                                                  }
-                                                </Link>
-                                              </h5>
-                                              <p className="text-muted fs-14 mb-0">
-                                                {
-                                                  contractListAllNew.companyPartnerName
-                                                }
-                                              </p>
-                                            </div>
-                                          </Col>
+                                              <Col md={3}>
+                                                <div>
+                                                  <h5 className="fs-18 mb-0">
+                                                    <Link
+                                                      to="/contractdetail"
+                                                      className="text-dark"
+                                                      state={{
+                                                        contractId:
+                                                          contractListAllNew.contractId,
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.contractCode
+                                                      }
+                                                    </Link>
+                                                  </h5>
+                                                  <p className="text-muted fs-14 mb-0">
+                                                    {
+                                                      contractListAllNew.companyPartnerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={2}>
-                                            <div className="d-flex flex-column gap-1 justify-content-center">
-                                              <div>
-                                                <p className="text-muted mb-0 fs-11">
-                                                  Create at
-                                                </p>
-                                                <p
-                                                  className="mb-0 fs-17"
-                                                  style={{ fontWeight: "600" }}
-                                                >
-                                                  {contractListAllNew.createdAt}
-                                                </p>
-                                              </div>
-                                              <div>
-                                                <p className="text-muted mb-0 fs-11">
-                                                  Human resource
-                                                </p>
-                                                <p
-                                                  className="mb-0 fs-17"
-                                                  style={{ fontWeight: "600" }}
-                                                >
-                                                  {
-                                                    contractListAllNew.humanResourceName
-                                                  }
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </Col>
+                                              <Col md={2}>
+                                                <div className="d-flex flex-column gap-1 justify-content-center">
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-11">
+                                                      Create at
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.createdAt
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-11">
+                                                      Human resource
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.humanResourceName
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={2}>
-                                            <div className="d-flex mb-0 align-items-center">
-                                              <div className="flex-shrink-0">
-                                                <i
-                                                  className="uil uil-user-check text-primary me-1"
-                                                  style={{ fontSize: "19px" }}
-                                                ></i>
-                                              </div>
-                                              <p className="text-muted mb-0">
-                                                {
-                                                  contractListAllNew.developerName
-                                                }
-                                              </p>
-                                            </div>
-                                          </Col>
+                                              <Col md={2}>
+                                                <div className="d-flex mb-0 align-items-center">
+                                                  <div className="flex-shrink-0">
+                                                    <i
+                                                      className="uil uil-user-check text-primary me-1"
+                                                      style={{
+                                                        fontSize: "19px",
+                                                      }}
+                                                    ></i>
+                                                  </div>
+                                                  <p className="text-muted mb-0">
+                                                    {
+                                                      contractListAllNew.developerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col
-                                            md={2}
-                                            className="d-flex justify-content-center"
-                                          >
-                                            <div>
-                                              <p className="text-muted mb-0 fs-11">
-                                                Date signed
-                                              </p>
-                                              <p
-                                                className="mb-0 fs-17"
-                                                style={{ fontWeight: "600" }}
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
                                               >
-                                                {contractListAllNew.dateSigned}
-                                              </p>
-                                            </div>
-                                          </Col>
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-11">
+                                                    Date signed
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {
+                                                      contractListAllNew.dateSigned
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col
-                                            md={2}
-                                            className="d-flex justify-content-center"
-                                          >
-                                            <div className="d-flex align-items-center">
-                                              <span
-                                                className={
-                                                  contractListAllNew.statusString ===
-                                                  "Pending"
-                                                    ? "badge bg-warning text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Signed"
-                                                    ? "badge bg-success text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Failed"
-                                                    ? "badge bg-danger text-light fs-12"
-                                                    : ""
-                                                }
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
                                               >
-                                                {
-                                                  contractListAllNew.statusString
-                                                }
-                                              </span>
-                                            </div>
-                                          </Col>
-                                        </Row>
-                                      </CardBody>
-                                    </div>
-                                  )
+                                                <div className="d-flex align-items-center">
+                                                  <span
+                                                    className={
+                                                      contractListAllNew.statusString ===
+                                                      "Pending"
+                                                        ? "badge bg-warning text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Signed"
+                                                        ? "badge bg-success text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Failed"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : ""
+                                                    }
+                                                  >
+                                                    {
+                                                      contractListAllNew.statusString
+                                                    }
+                                                  </span>
+                                                </div>
+                                              </Col>
+                                            </Row>
+                                          </CardBody>
+                                        </div>
+                                      )
+                                    )}
+
+                                    {/* phan trang */}
+                                    <Row>
+                                      <Col lg={12} className="mt-4 pt-2">
+                                        <nav aria-label="Page navigation example">
+                                          <div className="pagination job-pagination mb-0 justify-content-center">
+                                            <li
+                                              className={`page-item ${
+                                                currentPageSigned === 1
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                tabIndex="-1"
+                                                onClick={handlePrevPageSigned}
+                                              >
+                                                <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                              </Link>
+                                            </li>
+                                            {renderPageNumbersSigned()}
+                                            <li
+                                              className={`page-item ${
+                                                currentPageSigned ===
+                                                totalPagesSigned
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                onClick={handleNextPageSigned}
+                                              >
+                                                <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                              </Link>
+                                            </li>
+                                          </div>
+                                        </nav>
+                                      </Col>
+                                    </Row>
+                                  </div>
                                 )}
-
-                                {/* phan trang */}
-                                <Row>
-                                  <Col lg={12} className="mt-4 pt-2">
-                                    <nav aria-label="Page navigation example">
-                                      <div className="pagination job-pagination mb-0 justify-content-center">
-                                        <li
-                                          className={`page-item ${
-                                            currentPageSigned === 1
-                                              ? "disabled"
-                                              : ""
-                                          }`}
-                                        >
-                                          <Link
-                                            className="page-link"
-                                            to="#"
-                                            tabIndex="-1"
-                                            onClick={handlePrevPageSigned}
-                                          >
-                                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                          </Link>
-                                        </li>
-                                        {renderPageNumbersSigned()}
-                                        <li
-                                          className={`page-item ${
-                                            currentPageSigned ===
-                                            totalPagesSigned
-                                              ? "disabled"
-                                              : ""
-                                          }`}
-                                        >
-                                          <Link
-                                            className="page-link"
-                                            to="#"
-                                            onClick={handleNextPageSigned}
-                                          >
-                                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                          </Link>
-                                        </li>
-                                      </div>
-                                    </nav>
-                                  </Col>
-                                </Row>
                               </TabPane>
                               <TabPane tabId="4">
-                                {contractListFailed.map(
-                                  (contractListAllNew, key) => (
-                                    <div
-                                      key={key}
-                                      className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                                      style={{
-                                        boxShadow:
-                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                      }}
-                                    >
-                                      <CardBody className="p-2">
-                                        <Row className="align-items-center ">
-                                          <Col md={1}>
-                                            <div className="d-flex justify-content-center">
-                                              <i
-                                                className="uil uil-file-plus-alt"
-                                                style={{ fontSize: "50px" }}
-                                              ></i>
-                                            </div>
-                                          </Col>
+                                {contractListFailed.length === 0 ? (
+                                  <div>
+                                    <Empty />
+                                  </div>
+                                ) : (
+                                  <div>
+                                    {contractListFailed.map(
+                                      (contractListAllNew, key) => (
+                                        <div
+                                          key={key}
+                                          className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                          style={{
+                                            boxShadow:
+                                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                          }}
+                                        >
+                                          <CardBody className="p-2">
+                                            <Row className="align-items-center ">
+                                              <Col md={1}>
+                                                <div className="d-flex justify-content-center">
+                                                  <i
+                                                    className="uil uil-file-plus-alt"
+                                                    style={{ fontSize: "50px" }}
+                                                  ></i>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={3}>
-                                            <div>
-                                              <h5 className="fs-18 mb-0">
-                                                <Link
-                                                  to="/contractdetail"
-                                                  className="text-dark"
-                                                  state={{
-                                                    contractId:
-                                                      contractListAllNew.contractId,
-                                                  }}
-                                                >
-                                                  {
-                                                    contractListAllNew.contractCode
-                                                  }
-                                                </Link>
-                                              </h5>
-                                              <p className="text-muted fs-14 mb-0">
-                                                {
-                                                  contractListAllNew.companyPartnerName
-                                                }
-                                              </p>
-                                            </div>
-                                          </Col>
+                                              <Col md={3}>
+                                                <div>
+                                                  <h5 className="fs-18 mb-0">
+                                                    <Link
+                                                      to="/contractdetail"
+                                                      className="text-dark"
+                                                      state={{
+                                                        contractId:
+                                                          contractListAllNew.contractId,
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.contractCode
+                                                      }
+                                                    </Link>
+                                                  </h5>
+                                                  <p className="text-muted fs-14 mb-0">
+                                                    {
+                                                      contractListAllNew.companyPartnerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={2}>
-                                            <div className="d-flex flex-column gap-1 justify-content-center">
-                                              <div>
-                                                <p className="text-muted mb-0 fs-11">
-                                                  Create at
-                                                </p>
-                                                <p
-                                                  className="mb-0 fs-17"
-                                                  style={{ fontWeight: "600" }}
-                                                >
-                                                  {contractListAllNew.createdAt}
-                                                </p>
-                                              </div>
-                                              <div>
-                                                <p className="text-muted mb-0 fs-11">
-                                                  Human resource
-                                                </p>
-                                                <p
-                                                  className="mb-0 fs-17"
-                                                  style={{ fontWeight: "600" }}
-                                                >
-                                                  {
-                                                    contractListAllNew.humanResourceName
-                                                  }
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </Col>
+                                              <Col md={2}>
+                                                <div className="d-flex flex-column gap-1 justify-content-center">
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-11">
+                                                      Create at
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.createdAt
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-11">
+                                                      Human resource
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.humanResourceName
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </Col>
 
-                                          <Col md={2}>
-                                            <div className="d-flex mb-0 align-items-center">
-                                              <div className="flex-shrink-0">
-                                                <i
-                                                  className="uil uil-user-check text-primary me-1"
-                                                  style={{ fontSize: "19px" }}
-                                                ></i>
-                                              </div>
-                                              <p className="text-muted mb-0">
-                                                {
-                                                  contractListAllNew.developerName
-                                                }
-                                              </p>
-                                            </div>
-                                          </Col>
+                                              <Col md={2}>
+                                                <div className="d-flex mb-0 align-items-center">
+                                                  <div className="flex-shrink-0">
+                                                    <i
+                                                      className="uil uil-user-check text-primary me-1"
+                                                      style={{
+                                                        fontSize: "19px",
+                                                      }}
+                                                    ></i>
+                                                  </div>
+                                                  <p className="text-muted mb-0">
+                                                    {
+                                                      contractListAllNew.developerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col
-                                            md={2}
-                                            className="d-flex justify-content-center"
-                                          >
-                                            <div>
-                                              <p className="text-muted mb-0 fs-11">
-                                                Date signed
-                                              </p>
-                                              <p
-                                                className="mb-0 fs-17"
-                                                style={{ fontWeight: "600" }}
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
                                               >
-                                                {contractListAllNew.dateSigned}
-                                              </p>
-                                            </div>
-                                          </Col>
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-11">
+                                                    Date signed
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {
+                                                      contractListAllNew.dateSigned
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
 
-                                          <Col
-                                            md={2}
-                                            className="d-flex justify-content-center"
-                                          >
-                                            <div className="d-flex align-items-center">
-                                              <span
-                                                className={
-                                                  contractListAllNew.statusString ===
-                                                  "Pending"
-                                                    ? "badge bg-warning text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Signed"
-                                                    ? "badge bg-success text-light fs-12"
-                                                    : contractListAllNew.statusString ===
-                                                      "Failed"
-                                                    ? "badge bg-danger text-light fs-12"
-                                                    : ""
-                                                }
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
                                               >
-                                                {
-                                                  contractListAllNew.statusString
-                                                }
-                                              </span>
-                                            </div>
-                                          </Col>
-                                        </Row>
-                                      </CardBody>
-                                    </div>
-                                  )
+                                                <div className="d-flex align-items-center">
+                                                  <span
+                                                    className={
+                                                      contractListAllNew.statusString ===
+                                                      "Pending"
+                                                        ? "badge bg-warning text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Signed"
+                                                        ? "badge bg-success text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Failed"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : ""
+                                                    }
+                                                  >
+                                                    {
+                                                      contractListAllNew.statusString
+                                                    }
+                                                  </span>
+                                                </div>
+                                              </Col>
+                                            </Row>
+                                          </CardBody>
+                                        </div>
+                                      )
+                                    )}
+
+                                    {/* phan trang */}
+                                    <Row>
+                                      <Col lg={12} className="mt-4 pt-2">
+                                        <nav aria-label="Page navigation example">
+                                          <div className="pagination job-pagination mb-0 justify-content-center">
+                                            <li
+                                              className={`page-item ${
+                                                currentPageFailed === 1
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                tabIndex="-1"
+                                                onClick={handlePrevPageFailed}
+                                              >
+                                                <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                              </Link>
+                                            </li>
+                                            {renderPageNumbersFailed()}
+                                            <li
+                                              className={`page-item ${
+                                                currentPageFailed ===
+                                                totalPagesFailed
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                onClick={handleNextPageFailed}
+                                              >
+                                                <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                              </Link>
+                                            </li>
+                                          </div>
+                                        </nav>
+                                      </Col>
+                                    </Row>
+                                  </div>
                                 )}
+                              </TabPane>
+                              <TabPane tabId="5">
+                                {contractListTerminated.length === 0 ? (
+                                  <div>
+                                    <Empty />
+                                  </div>
+                                ) : (
+                                  <div>
+                                    {contractListTerminated.map(
+                                      (contractListAllNew, key) => (
+                                        <div
+                                          key={key}
+                                          className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                          style={{
+                                            boxShadow:
+                                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                          }}
+                                        >
+                                          <CardBody className="p-2">
+                                            <Row className="align-items-center ">
+                                              <Col md={1}>
+                                                <div className="d-flex justify-content-center">
+                                                  <i
+                                                    className="uil uil-file-plus-alt"
+                                                    style={{ fontSize: "50px" }}
+                                                  ></i>
+                                                </div>
+                                              </Col>
 
-                                {/* phan trang */}
-                                <Row>
-                                  <Col lg={12} className="mt-4 pt-2">
-                                    <nav aria-label="Page navigation example">
-                                      <div className="pagination job-pagination mb-0 justify-content-center">
-                                        <li
-                                          className={`page-item ${
-                                            currentPageFailed === 1
-                                              ? "disabled"
-                                              : ""
-                                          }`}
+                                              <Col md={3}>
+                                                <div>
+                                                  <h5 className="fs-18 mb-0">
+                                                    <Link
+                                                      to="/contractdetail"
+                                                      className="text-dark"
+                                                      state={{
+                                                        contractId:
+                                                          contractListAllNew.contractId,
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.contractCode
+                                                      }
+                                                    </Link>
+                                                  </h5>
+                                                  <p className="text-muted fs-14 mb-0">
+                                                    {
+                                                      contractListAllNew.companyPartnerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
+
+                                              <Col md={2}>
+                                                <div className="d-flex flex-column gap-1 justify-content-center">
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-11">
+                                                      Create at
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.createdAt
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-11">
+                                                      Human resource
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.humanResourceName
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </Col>
+
+                                              <Col md={2}>
+                                                <div className="d-flex mb-0 align-items-center">
+                                                  <div className="flex-shrink-0">
+                                                    <i
+                                                      className="uil uil-user-check text-primary me-1"
+                                                      style={{
+                                                        fontSize: "19px",
+                                                      }}
+                                                    ></i>
+                                                  </div>
+                                                  <p className="text-muted mb-0">
+                                                    {
+                                                      contractListAllNew.developerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
+
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
+                                              >
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-11">
+                                                    Date signed
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {
+                                                      contractListAllNew.dateSigned
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
+
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
+                                              >
+                                                <div className="d-flex align-items-center">
+                                                  <span
+                                                    className={
+                                                      contractListAllNew.statusString ===
+                                                      "Pending"
+                                                        ? "badge bg-warning text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Signed"
+                                                        ? "badge bg-success text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Failed"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : ""
+                                                    }
+                                                  >
+                                                    {
+                                                      contractListAllNew.statusString
+                                                    }
+                                                  </span>
+                                                </div>
+                                              </Col>
+                                            </Row>
+                                          </CardBody>
+                                        </div>
+                                      )
+                                    )}
+
+                                    {/* phan trang */}
+                                    <Row>
+                                      <Col lg={12} className="mt-4 pt-2">
+                                        <nav aria-label="Page navigation example">
+                                          <div className="pagination job-pagination mb-0 justify-content-center">
+                                            <li
+                                              className={`page-item ${
+                                                currentPageTerminated === 1
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                tabIndex="-1"
+                                                onClick={
+                                                  handlePrevPageTerminated
+                                                }
+                                              >
+                                                <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                              </Link>
+                                            </li>
+                                            {renderPageNumbersTerminated()}
+                                            <li
+                                              className={`page-item ${
+                                                currentPageTerminated ===
+                                                totalPagesTerminated
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                onClick={
+                                                  handleNextPageTerminated
+                                                }
+                                              >
+                                                <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                              </Link>
+                                            </li>
+                                          </div>
+                                        </nav>
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                )}
+                              </TabPane>
+                              <TabPane tabId="6">
+                                {contractListEndOfContract.length === 0 ? (
+                                  <div>
+                                    <Empty />
+                                  </div>
+                                ) : (
+                                  <div>
+                                    {contractListEndOfContract.map(
+                                      (contractListAllNew, key) => (
+                                        <div
+                                          key={key}
+                                          className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                          style={{
+                                            boxShadow:
+                                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                          }}
                                         >
-                                          <Link
-                                            className="page-link"
-                                            to="#"
-                                            tabIndex="-1"
-                                            onClick={handlePrevPageFailed}
-                                          >
-                                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                          </Link>
-                                        </li>
-                                        {renderPageNumbersFailed()}
-                                        <li
-                                          className={`page-item ${
-                                            currentPageFailed ===
-                                            totalPagesFailed
-                                              ? "disabled"
-                                              : ""
-                                          }`}
-                                        >
-                                          <Link
-                                            className="page-link"
-                                            to="#"
-                                            onClick={handleNextPageFailed}
-                                          >
-                                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                          </Link>
-                                        </li>
-                                      </div>
-                                    </nav>
-                                  </Col>
-                                </Row>
+                                          <CardBody className="p-2">
+                                            <Row className="align-items-center ">
+                                              <Col md={1}>
+                                                <div className="d-flex justify-content-center">
+                                                  <i
+                                                    className="uil uil-file-plus-alt"
+                                                    style={{ fontSize: "50px" }}
+                                                  ></i>
+                                                </div>
+                                              </Col>
+
+                                              <Col md={3}>
+                                                <div>
+                                                  <h5 className="fs-18 mb-0">
+                                                    <Link
+                                                      to="/contractdetail"
+                                                      className="text-dark"
+                                                      state={{
+                                                        contractId:
+                                                          contractListAllNew.contractId,
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.contractCode
+                                                      }
+                                                    </Link>
+                                                  </h5>
+                                                  <p className="text-muted fs-14 mb-0">
+                                                    {
+                                                      contractListAllNew.companyPartnerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
+
+                                              <Col md={2}>
+                                                <div className="d-flex flex-column gap-1 justify-content-center">
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-11">
+                                                      Create at
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.createdAt
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                  <div>
+                                                    <p className="text-muted mb-0 fs-11">
+                                                      Human resource
+                                                    </p>
+                                                    <p
+                                                      className="mb-0 fs-17"
+                                                      style={{
+                                                        fontWeight: "600",
+                                                      }}
+                                                    >
+                                                      {
+                                                        contractListAllNew.humanResourceName
+                                                      }
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </Col>
+
+                                              <Col md={2}>
+                                                <div className="d-flex mb-0 align-items-center">
+                                                  <div className="flex-shrink-0">
+                                                    <i
+                                                      className="uil uil-user-check text-primary me-1"
+                                                      style={{
+                                                        fontSize: "19px",
+                                                      }}
+                                                    ></i>
+                                                  </div>
+                                                  <p className="text-muted mb-0">
+                                                    {
+                                                      contractListAllNew.developerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
+
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
+                                              >
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-11">
+                                                    Date signed
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {
+                                                      contractListAllNew.dateSigned
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </Col>
+
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center"
+                                              >
+                                                <div className="d-flex align-items-center">
+                                                  <span
+                                                    className={
+                                                      contractListAllNew.statusString ===
+                                                      "Pending"
+                                                        ? "badge bg-warning text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Signed"
+                                                        ? "badge bg-success text-light fs-12"
+                                                        : contractListAllNew.statusString ===
+                                                          "Failed"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : ""
+                                                    }
+                                                  >
+                                                    {
+                                                      contractListAllNew.statusString
+                                                    }
+                                                  </span>
+                                                </div>
+                                              </Col>
+                                            </Row>
+                                          </CardBody>
+                                        </div>
+                                      )
+                                    )}
+
+                                    {/* phan trang */}
+                                    <Row>
+                                      <Col lg={12} className="mt-4 pt-2">
+                                        <nav aria-label="Page navigation example">
+                                          <div className="pagination job-pagination mb-0 justify-content-center">
+                                            <li
+                                              className={`page-item ${
+                                                currentPageEndOfContract === 1
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                tabIndex="-1"
+                                                onClick={
+                                                  handlePrevPageEndOfContract
+                                                }
+                                              >
+                                                <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                              </Link>
+                                            </li>
+                                            {renderPageNumbersEndOfContract()}
+                                            <li
+                                              className={`page-item ${
+                                                currentPageEndOfContract ===
+                                                totalPagesEndOfContract
+                                                  ? "disabled"
+                                                  : ""
+                                              }`}
+                                            >
+                                              <Link
+                                                className="page-link"
+                                                to="#"
+                                                onClick={
+                                                  handleNextPageEndOfContract
+                                                }
+                                              >
+                                                <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                              </Link>
+                                            </li>
+                                          </div>
+                                        </nav>
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                )}
                               </TabPane>
                             </TabContent>
                           </CardBody>

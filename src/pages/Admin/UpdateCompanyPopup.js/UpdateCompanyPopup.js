@@ -30,66 +30,72 @@ const UpdateCompanyPopup = (
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [loadingUpdateCompany, setLoadingUpdateCompany] = useState(false);
   //------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
   let companyDetail = null;
   useEffect(() => {
-    const fetchCompanyDetail = async () => {
-      if (companyId) {
-        try {
-          const response = await companyServices.getCompanyByCompanyId(
-            companyId
-          );
-
-          console.log(response);
-          companyDetail = response;
-
-          document.getElementById("company-name").value =
-            response.data.data.companyName;
-          document.getElementById("email-address").value =
-            response.data.data.companyEmail;
-          document.getElementById("address").value = response.data.data.address;
-          document.getElementById("number").value =
-            response.data.data.phoneNumber;
-
-          const fileDev = response.data.data.companyImage;
-          setUserImage(fileDev);
-        } catch (error) {
-          console.error("Error fetching company detail:", error);
-          console.log(error.response.data);
-        }
-      } else {
-        setUserImage(img0);
-      }
-
-      //--------------------------------------------------------------------------
-      axios
-        .get(
-          "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4"
-        )
-        .then((response) => {
-          const data = response.data;
-          const formattedCountries = data.map((country) => ({
-            value: country.name.common,
-            label: country.name.common,
-          }));
-          setCountries(formattedCountries);
-          if (companyDetail) {
-            const selected = formattedCountries.find(
-              (country) => country.value === companyDetail.data.data.country
+    if (isModalOpen) {
+      const fetchCompanyDetail = async () => {
+        if (companyId) {
+          try {
+            const response = await companyServices.getCompanyByCompanyId(
+              companyId
             );
-            if (selected) {
-              const company = {
-                value: selected.value,
-                label: selected.label,
-              };
-              setSelectedCountry(company);
-            }
+
+            console.log(response);
+            console.log(companyId);
+
+            companyDetail = response;
+
+            document.getElementById("company-name").value =
+              response.data.data.companyName;
+            document.getElementById("email-address").value =
+              response.data.data.companyEmail;
+            document.getElementById("address").value =
+              response.data.data.address;
+            document.getElementById("number").value =
+              response.data.data.phoneNumber;
+
+            const fileDev = response.data.data.companyImage;
+            setUserImage(fileDev);
+          } catch (error) {
+            console.error("Error fetching company detail:", error);
+            console.log(error.response.data);
           }
-        })
-        .catch((error) => {
-          console.error("Error fetching country data", error);
-        });
-    };
-    fetchCompanyDetail();
+        } else {
+          setUserImage(img0);
+        }
+
+        //--------------------------------------------------------------------------
+        axios
+          .get(
+            "https://restcountries.com/v3.1/all?fields=name&fbclid=IwAR2NFDKzrPsdQyN2Wfc6KNsyrDkMBakGFkvYe-urrPH33yawZDSIbIoxjX4"
+          )
+          .then((response) => {
+            const data = response.data;
+            const formattedCountries = data.map((country) => ({
+              value: country.name.common,
+              label: country.name.common,
+            }));
+            setCountries(formattedCountries);
+            if (companyDetail) {
+              const selected = formattedCountries.find(
+                (country) => country.value === companyDetail.data.data.country
+              );
+              if (selected) {
+                const company = {
+                  value: selected.value,
+                  label: selected.label,
+                };
+                setSelectedCountry(company);
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching country data", error);
+          });
+      };
+      fetchCompanyDetail();
+    }
   }, [isModalOpen]);
 
   //------------------------------------------------------------------------------------------------

@@ -216,6 +216,7 @@ const JobDetailsDescription = () => {
       console.log("request id: " + state.hiringRequestId);
       console.log("danh sach dev matching");
       console.log(response.data.data);
+
       return response;
     } catch (error) {
       console.error("Error fetching developer matching:", error);

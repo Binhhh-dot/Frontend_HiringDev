@@ -420,6 +420,69 @@ const extendDuration = async (requestId, newDuration) => {
   return response;
 };
 
+const getHiringRequestWaitingApprovalPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestWaitingApprovalPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
+const getHiringRequestInProgressPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestInProgressPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
+const getHiringRequestRejectedPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestRejectedPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
+const getHiringRequestExpiredPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestExpiredPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
+const getHiringRequestCancelledPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestCancelledPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
+const getHiringRequestClosedPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestClosedPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
+const getHiringRequestCompletedPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestCompletedPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
 export default {
   createHiringRequest,
   getAllHiringRequest,
@@ -445,4 +508,11 @@ export default {
   closeHiringRequest,
   cloneHiringRequest,
   extendDuration,
+  getHiringRequestWaitingApprovalPaging,
+  getHiringRequestInProgressPaging,
+  getHiringRequestRejectedPaging,
+  getHiringRequestExpiredPaging,
+  getHiringRequestCancelledPaging,
+  getHiringRequestClosedPaging,
+  getHiringRequestCompletedPaging,
 };

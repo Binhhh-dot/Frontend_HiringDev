@@ -11,15 +11,27 @@ const getReportList = async (PageIndex, PageSize) => {
 
 const getReportType = async () => {
   const serviceUrl = urlConstant.endpoint.report.getReportType;
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl)
-  return response
-}
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
 
-const createReport = async (developerId, projectId, reportTypeId, reportTitle, reportContent) => {
+const createReport = async (
+  developerId,
+  projectId,
+  reportTypeId,
+  reportTitle,
+  reportContent
+) => {
   const serviceUrl = urlConstant.endpoint.report.createReport;
-  const response = await axiosLocalHost.normalRequest.post(serviceUrl, { developerId, projectId, reportTypeId, reportTitle, reportContent })
-  return response
-}
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
+    developerId,
+    projectId,
+    reportTypeId,
+    reportTitle,
+    reportContent,
+  });
+  return response;
+};
 
 const getReportById = async (reportId) => {
   const serviceUrl = urlConstant.endpoint.report.getReportById.replace(
@@ -49,14 +61,45 @@ const handleConfirmReport = async (reportId) => {
   return response;
 };
 
-const getReportListByCompanyIdAndPaging = async (companyId, PageIndex, PageSize, searchKeyString, status) => {
-  const serviceUrl = urlConstant.endpoint.report.getReportListByCompanyIdAndPaging
-    .replace("${companyId}", companyId)
+const getReportListByCompanyIdAndPaging = async (
+  companyId,
+  PageIndex,
+  PageSize,
+  searchKeyString,
+  status
+) => {
+  const serviceUrl =
+    urlConstant.endpoint.report.getReportListByCompanyIdAndPaging
+      .replace("${companyId}", companyId)
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize)
+      .replace("${Status}", status)
+      .replace("${searchKeyString}", searchKeyString);
+  console.log(serviceUrl);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
+const getReportListPendingPaging = async (PageIndex, PageSize) => {
+  const serviceUrl = urlConstant.endpoint.report.getReportListPendingPaging
     .replace("${PageIndex}", PageIndex)
-    .replace("${PageSize}", PageSize)
-    .replace("${Status}", status)
-    .replace("${searchKeyString}", searchKeyString);
-  console.log(serviceUrl)
+    .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
+const getReportListProcessingPaging = async (PageIndex, PageSize) => {
+  const serviceUrl = urlConstant.endpoint.report.getReportListProcessingPaging
+    .replace("${PageIndex}", PageIndex)
+    .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  return response;
+};
+
+const getReportListDonePaging = async (PageIndex, PageSize) => {
+  const serviceUrl = urlConstant.endpoint.report.getReportListDonePaging
+    .replace("${PageIndex}", PageIndex)
+    .replace("${PageSize}", PageSize);
   const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
@@ -68,5 +111,8 @@ export default {
   handleConfirmReport,
   getReportType,
   createReport,
-  getReportListByCompanyIdAndPaging
+  getReportListByCompanyIdAndPaging,
+  getReportListPendingPaging,
+  getReportListProcessingPaging,
+  getReportListDonePaging,
 };

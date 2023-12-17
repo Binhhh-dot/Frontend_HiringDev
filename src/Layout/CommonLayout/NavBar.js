@@ -12,7 +12,6 @@ import {
   DropdownMenu,
 } from "reactstrap";
 
-
 import { Link, Redirect, useNavigate } from "react-router-dom";
 import classname from "classnames";
 import withRouter from "../../components/withRouter";
@@ -28,7 +27,7 @@ import {
   faAngleLeft,
   faGear,
   faCircle,
-  faMobileScreen
+  faMobileScreen,
 } from "@fortawesome/free-solid-svg-icons";
 import darkLogo from "../../assets/images/logo-dark.png";
 import lightLogo from "../../assets/images/logo-light.png";
@@ -37,8 +36,8 @@ import jobImage4 from "../../assets/images/featured-job/img-04.png";
 import userImage1 from "../../assets/images/user/img-01.jpg";
 import jobImage from "../../assets/images/featured-job/img-01.png";
 import profileImage from "../../assets/images/user/img-00.jpg";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import userSerrvices from "../../services/user.serrvices";
 import { onMessageListener } from "../../utils/firebase";
 import notificationServices from "../../services/notification.services";
@@ -54,9 +53,9 @@ const NavBar = (props) => {
   const navStyle = userId ? { marginTop: "0px" } : {};
   //Notification Dropdown
   const [notification, setNotification] = useState(false);
-  const [notificationFb, setNotificationFb] = useState(false)
-  const [listNotification, setListNotification] = useState([])
-  const [countNotification, setCountNotification] = useState(false)
+  const [notificationFb, setNotificationFb] = useState(false);
+  const [listNotification, setListNotification] = useState([]);
+  const [countNotification, setCountNotification] = useState(false);
   //user Profile Dropdown
   const [userProfile, setUserProfile] = useState(false);
   const dropDownuserprofile = () => setUserProfile((prevState) => !prevState);
@@ -68,8 +67,7 @@ const NavBar = (props) => {
   const [imgUser, setImgUser] = useState(null);
   const navigate = useNavigate();
   const [shouldRedirect, setShouldRedirect] = useState(false);
-  const [route, setRoute] = useState('');
-
+  const [route, setRoute] = useState("");
 
   useEffect(() => {
     window.addEventListener("scroll", scrollNavigation, true);
@@ -141,13 +139,13 @@ const NavBar = (props) => {
     if (userId) {
       try {
         const response = await notificationServices.unNewNotification(userId);
-        console.log(response)
+        console.log(response);
         setCountNotification(0);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu người dùng:", error);
       }
     }
-  }
+  };
 
   const handleNoti = async (jobVacancyListDetails) => {
     const page = jobVacancyListDetails.notificationTypeName;
@@ -155,34 +153,37 @@ const NavBar = (props) => {
     var url;
     if (page == "Hiring Request") {
       url = "/hiringrequestlistincompanypartnerdetail?Id=" + routeId;
-      console.log(url)
+      console.log(url);
     }
     if (page == "Interview") {
       url = "/hiringrequestlistincompanypartnerdetail?Id=" + routeId;
-      console.log(url)
+      console.log(url);
     }
     if (page == "Contract") {
       url = "/contractListHr";
-      console.log(url)
+      console.log(url);
     }
     if (page == "Project") {
       url = "/projectdetailhr?Id=" + routeId;
-      console.log(url)
+      console.log(url);
     }
     if (page == "Payment") {
       url = "/payment?Id=" + routeId;
-      console.log(url)
+      console.log(url);
     }
     const userId = localStorage.getItem("userId");
     try {
-      const respone = await notificationServices.readNotification(jobVacancyListDetails.notificationId, userId);
+      const respone = await notificationServices.readNotification(
+        jobVacancyListDetails.notificationId,
+        userId
+      );
       console.log(respone);
     } catch (error) {
       console.log(error);
     }
     navigate(url, { replace: true }); // Sử dụng replace: true để tải lại trang
     setNotification(false);
-    window.location.reload()
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -235,50 +236,52 @@ const NavBar = (props) => {
   const fetchListNotification = async () => {
     try {
       const userId = localStorage.getItem("userId");
-      const respone = await notificationServices.getListNotificationByUserId(userId);
-      console.log(respone)
-      setListNotification(respone.data.data)
+      const respone = await notificationServices.getListNotificationByUserId(
+        userId
+      );
+      console.log(respone);
+      setListNotification(respone.data.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const fetchCountNotification = async () => {
     try {
       const userId = localStorage.getItem("userId");
-      const respone = await notificationServices.getCountNotificationByUserId(userId);
-      console.log(respone)
-      setCountNotification(respone.data.data)
+      const respone = await notificationServices.getCountNotificationByUserId(
+        userId
+      );
+      console.log(respone);
+      setCountNotification(respone.data.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchListNotification();
     fetchCountNotification();
-  }, [])
-
+  }, []);
 
   useEffect(() => {
-    console.log("navbar")
+    console.log("navbar");
     fetchListNotification();
     fetchCountNotification();
-  }, [notificationFb])
+  }, [notificationFb]);
 
-
-
-
-  onMessageListener().then((payload) => {
-    // Xử lý thông báo ở đây
-    console.log('Received message from Firebase:', payload);
-    setNotificationFb(!notificationFb)
-  }).catch((error) => {
-    console.error('Error listening to messages:', error);
-  });
+  onMessageListener()
+    .then((payload) => {
+      // Xử lý thông báo ở đây
+      console.log("Received message from Firebase:", payload);
+      setNotificationFb(!notificationFb);
+    })
+    .catch((error) => {
+      console.error("Error listening to messages:", error);
+    });
 
   return (
-    <React.Fragment >
+    <React.Fragment>
       <nav
         className={"navbar navbar-expand-lg fixed-top sticky p-0 " + navClass}
         style={navStyle}
@@ -345,7 +348,7 @@ const NavBar = (props) => {
                 <NavLink
                   id="jobsdropdown"
                   role="button"
-                // onClick={() => setCompany(!company)}
+                  // onClick={() => setCompany(!company)}
                 >
                   Company <div className="arrow-down"></div>
                 </NavLink>
@@ -386,7 +389,7 @@ const NavBar = (props) => {
                 </ul>
               </NavItem>
 
-              {(role === "HR") && (
+              {role === "HR" && (
                 <>
                   <li className="nav-item dropdown dropdown-hover">
                     <Link
@@ -407,13 +410,8 @@ const NavBar = (props) => {
                         {role === "HR" && (
                           <>
                             <Col lg={6}>
-                              <span className="dropdown-header">
-                                another
-                              </span>
-                              <Link
-                                className="dropdown-item"
-                                to="/reportList"
-                              >
+                              <span className="dropdown-header">another</span>
+                              <Link className="dropdown-item" to="/reportList">
                                 Report List
                               </Link>
                               <Link
@@ -430,13 +428,8 @@ const NavBar = (props) => {
                               </Link>
                             </Col>
                             <Col lg={6}>
-                              <span className="dropdown-header">
-                                Project
-                              </span>
-                              <Link
-                                className="dropdown-item"
-                                to="/projectlist"
-                              >
+                              <span className="dropdown-header">Project</span>
+                              <Link className="dropdown-item" to="/projectlist">
                                 Project List
                               </Link>
                               <Link
@@ -513,14 +506,11 @@ const NavBar = (props) => {
                               >
                                 List Interview
                               </Link>
-
                             </Col>
                             <Col lg={4}>
                               <span className="dropdown-header">
                                 Hiring Request
                               </span>
-
-
                             </Col>
                           </>
                         )}
@@ -529,7 +519,6 @@ const NavBar = (props) => {
                   </li>
                 </>
               )}
-
 
               <NavItem>
                 <Link className="nav-link" to="/contact">
@@ -556,7 +545,9 @@ const NavBar = (props) => {
                   <i className="mdi mdi-bell fs-22"></i>
                   {countNotification != 0 && (
                     <>
-                      <div className="count position-absolute">{countNotification}</div>
+                      <div className="count position-absolute">
+                        {countNotification}
+                      </div>
                     </>
                   )}
                 </DropdownToggle>
@@ -590,19 +581,31 @@ const NavBar = (props) => {
                             <p className="mb-0 fs-12 ">
                               {jobVacancyListDetails.isRead != true ? (
                                 <>
-                                  <i style={{ color: "green" }} className="mdi mdi-clock-outline"></i>{" "}
-                                  <span style={{ color: "green" }}> {jobVacancyListDetails.createdTime}</span>
+                                  <i
+                                    style={{ color: "green" }}
+                                    className="mdi mdi-clock-outline"
+                                  ></i>{" "}
+                                  <span style={{ color: "green" }}>
+                                    {" "}
+                                    {jobVacancyListDetails.createdTime}
+                                  </span>
                                 </>
                               ) : (
                                 <>
                                   <i className="mdi mdi-clock-outline"></i>{" "}
-                                  <span> {jobVacancyListDetails.createdTime}</span>
+                                  <span>
+                                    {" "}
+                                    {jobVacancyListDetails.createdTime}
+                                  </span>
                                 </>
                               )}
                             </p>
                           </div>
                           {jobVacancyListDetails.isRead != true && (
-                            <FontAwesomeIcon icon={faCircle} style={{ fontSize: "10px", color: "green" }} />
+                            <FontAwesomeIcon
+                              icon={faCircle}
+                              style={{ fontSize: "10px", color: "green" }}
+                            />
                           )}
                         </div>
                       </div>
@@ -616,6 +619,7 @@ const NavBar = (props) => {
                   </div>
                 </DropdownMenu>
               </Dropdown>
+
               <Dropdown
                 onClick={() => setUserProfile(!userProfile)}
                 isOpen={userProfile}
@@ -662,7 +666,11 @@ const NavBar = (props) => {
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/signout" onClick={signout}>
+                    <Link
+                      className="dropdown-item"
+                      to="/signout"
+                      onClick={signout}
+                    >
                       Logout
                     </Link>
                   </li>

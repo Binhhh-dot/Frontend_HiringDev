@@ -176,16 +176,6 @@ const CompanyDetailPartnerDescription = () => {
             </Row>
           </div>
 
-          {/* <div className="mt-4">
-            <div className="job-detail-desc">
-              <p
-                className=""
-                dangerouslySetInnerHTML={{
-                  __html: "hiringRequestDetail.jobDescription",
-                }}
-              />
-            </div>
-          </div> */}
           <div className="mt-3">
             <h5>ABOUT COMPANY</h5>
             <p>{companyDetail.aboutCompany}</p>

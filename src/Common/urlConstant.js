@@ -76,6 +76,21 @@ export default {
       cloneHiringRequest: "/HiringRequest/Clone/${requestId}",
       extendDuration: "/HiringRequestStatus/ExtendDuration",
 
+      getHiringRequestWaitingApprovalPaging:
+        "/HiringRequest?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=1",
+      getHiringRequestInProgressPaging:
+        "/HiringRequest?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=2",
+      getHiringRequestRejectedPaging:
+        "/HiringRequest?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=3",
+      getHiringRequestExpiredPaging:
+        "/HiringRequest?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=4",
+      getHiringRequestCancelledPaging:
+        "/HiringRequest?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=5",
+      getHiringRequestClosedPaging:
+        "/HiringRequest?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=6",
+      getHiringRequestCompletedPaging:
+        "/HiringRequest?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=7",
+
       //---------------------------------------------------------------
     },
 
@@ -138,6 +153,17 @@ export default {
       completeInterview: "/Interview/Finish?interviewId=${interviewId}",
       updateInterview: "/Interview/${interviewId}",
       cancelInterview: "/Interview/Cancel/${interviewId}",
+
+      getInterviewWaitingApprovalPaging:
+        "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=1",
+      getInterviewApprovalPaging:
+        "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=2",
+      getInterviewRejectedPaging:
+        "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=3",
+      getInterviewCompletePaging:
+        "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=4",
+      getInterviewCancelledPaging:
+        "/Interview/ByManager?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=5",
     },
     assignTask: {
       createAssignTask: "/AssignTask",
@@ -215,6 +241,17 @@ export default {
       confirmContract: "/Contract/ConfirmSigned?contractId=${contractId}",
       getListContractByCompanyIdAndPaging:
         "/Contract/ByCompany?companyId=${companyId}&PageIndex=${PageIndex}&PageSize=${PageSize}&ContractCode=${ContractCode}&Status=${Status}",
+
+      getContractPendingPaging:
+        "/Contract?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=1",
+      getContractSignedPaging:
+        "/Contract?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=2",
+      getContractFailedPaging:
+        "/Contract?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=3",
+      getContractTerminatedPaging:
+        "/Contract?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=4",
+      getContractEndOfContractPaging:
+        "/Contract?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=5",
     },
     pay: {
       getPayPeriod: "/PayPeriod/${projectId}?inputDate=${inputDate}",
@@ -286,6 +323,13 @@ export default {
       handleConfirmReport: "/Report/Confirm/${reportId}",
       getReportListByCompanyIdAndPaging:
         "/Report/ByCompany/${companyId}?PageIndex=${PageIndex}&PageSize=${PageSize}&ReportTitle=${searchKeyString}&Status=${Status}",
+
+      getReportListPendingPaging:
+        "/Report?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=1",
+      getReportListProcessingPaging:
+        "/Report?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=2",
+      getReportListDonePaging:
+        "/Report?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=3",
     },
     transactionHistory: {
       getTransactionHistory:
@@ -303,6 +347,7 @@ export default {
       unNewNotification: "/Notification/UnNew?userId=${userId}",
       deleteUserDevice: "/UserDevice/${userDeviceId}",
       getUserDeviceId: "/UserDevice/User/${userId}",
+      getListNotificationByManager: "/Notification/ByManager",
     },
   },
 };

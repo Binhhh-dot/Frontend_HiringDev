@@ -13,14 +13,27 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import userSerrvices from "../../../services/user.serrvices";
+import notificationServices from "../../../services/notification.services";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { onMessageListener } from "../../../utils/firebase";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const NavBarWeb = () => {
+  const location = useLocation();
+  //const history = useHistory();
+  const navigate = useNavigate();
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [name, setName] = useState("");
   const [imgUser, setImgUser] = useState("");
   const [status, setStatus] = useState("");
   const [roleString, setRoleString] = useState("");
-
+  //-------------------------------------------------------------------------
+  const [notification, setNotification] = useState(false);
+  const [notificationVisible, setNotificationVisible] = useState(false);
+  const [listNotification, setListNotification] = useState([]);
+  const [countNotification, setCountNotification] = useState(false);
   //-------------------------------------------------------------------------
   const userId = localStorage.getItem("userId");
   //-------------------------------------------------------------------------
@@ -57,11 +70,111 @@ const NavBarWeb = () => {
       }
     }
   };
+  //--------------------------------------------------------------------------
+  const dropDownnotification = async () => {
+    setNotification((prevState) => !prevState);
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      try {
+        const response = await notificationServices.unNewNotification(userId);
+        console.log(response);
+        setCountNotification(0);
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu người dùng:", error);
+      }
+    }
+  };
+  //--------------------------------------------------------------------------
+  const fetchGetListNotificationByManager = async () => {
+    let response;
+    try {
+      response = await notificationServices.getListNotificationByManager();
+      console.log(response.data.data);
+      setListNotification(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  //--------------------------------------------------------------------------
+  const fetchCountNotification = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const respone = await notificationServices.getCountNotificationByUserId(
+        userId
+      );
+      console.log(respone.data.data);
+      setCountNotification(respone.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  //--------------------------------------------------------------------------
+
+  // const determineUrl = (notificationTypeName, routeId) => {
+  //   switch (notificationTypeName) {
+  //     case "Project":
+  //       return `/projectdetail/`;
+
+  //     case "Report":
+  //       return `/listreportinmanagerdetail`;
+
+  //     case "Hiring Request":
+  //       return `/newhiringrequestdetail`;
+
+  //     default:
+  //       return "/";
+  //   }
+  // };
+
+  //--------------------------------------------------------------------------
+  const handleNoti = async (jobVacancyListDetails) => {
+    const { notificationTypeName, routeId } = jobVacancyListDetails;
+    //const url = determineUrl(notificationTypeName);
+
+    const userId = localStorage.getItem("userId");
+
+    try {
+      const response = await notificationServices.readNotification(
+        jobVacancyListDetails.notificationId,
+        userId
+      );
+
+      console.log(response);
+    } catch (error) {
+      console.error("Error reading to notification:", error);
+    }
+
+    //navigate(url, { replace: true }); // Sử dụng replace: true để tải lại trang
+    setNotification(false);
+    //window.location.reload();
+  };
+  //--------------------------------------------------------------------------
+  onMessageListener()
+    .then((payload) => {
+      // Xử lý thông báo ở đây
+      console.log("Received message from Firebase:", payload);
+      setNotificationVisible(!notificationVisible);
+    })
+    .catch((error) => {
+      console.error("Error listening to messages:", error);
+    });
+
+  //--------------------------------------------------------------------------
 
   useEffect(() => {
     fetchGetUserDetail2();
   }, []);
-  //------------------------------------------------------------------------
+  //--------------------------------------------------------------------------
+  useEffect(() => {
+    fetchGetListNotificationByManager();
+    fetchCountNotification();
+  }, []);
+  //--------------------------------------------------------------------------
+  useEffect(() => {
+    fetchGetListNotificationByManager();
+    fetchCountNotification();
+  }, [notificationVisible]);
+  //--------------------------------------------------------------------------
   return (
     <React.Fragment>
       <div>
@@ -84,11 +197,93 @@ const NavBarWeb = () => {
             style={{ height: "inherit" }}
           >
             <Space>
-              <Badge dot>
-                <i
-                  className="uil uil-bell"
-                  style={{ color: "#8F78DF", fontSize: "20px" }}
-                ></i>
+              <Badge>
+                <Dropdown isOpen={notification} toggle={dropDownnotification}>
+                  <DropdownToggle
+                    className="header-item noti-icon position-relative"
+                    id="notification"
+                    type="button"
+                    tag="div"
+                  >
+                    <i className="mdi mdi-bell fs-22"></i>
+                    {countNotification != 0 && (
+                      <>
+                        <div className="count position-absolute">
+                          {countNotification}
+                        </div>
+                      </>
+                    )}
+                  </DropdownToggle>
+                  <DropdownMenu
+                    className="dropdown-menu-md dropdown-menu-end p-0"
+                    aria-labelledby="notification"
+                    end
+                  >
+                    <div className="notification-header border-bottom bg-light">
+                      <h6 className="mb-1"> Notification </h6>
+                      <p className="text-muted fs-13 mb-0">
+                        You have {countNotification} unread Notification
+                      </p>
+                    </div>
+
+                    <div className="notification-wrapper dropdown-scroll">
+                      {listNotification.map((jobVacancyListDetails, key) => (
+                        <div
+                          key={key}
+                          className="text-dark notification-item d-block active"
+                          onClick={() => handleNoti(jobVacancyListDetails)}
+                        >
+                          <div className="d-flex align-items-center gap-2">
+                            <div className="flex-shrink-0 me-3">
+                              <div className="avatar-xs bg-primary text-white rounded-circle text-center">
+                                <i className="uil uil-megaphone"></i>
+                              </div>
+                            </div>
+                            <div className="flex-grow-1">
+                              <p className="mt-0 mb-1 fs-14">
+                                {jobVacancyListDetails.content}
+                              </p>
+                              <p className="mb-0 fs-12 ">
+                                {jobVacancyListDetails.isRead != true ? (
+                                  <>
+                                    <i
+                                      style={{ color: "#92969B" }}
+                                      className="mdi mdi-clock-outline"
+                                    ></i>{" "}
+                                    <span style={{ color: "#92969B" }}>
+                                      {" "}
+                                      {jobVacancyListDetails.createdTime}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <i className="mdi mdi-clock-outline"></i>{" "}
+                                    <span>
+                                      {" "}
+                                      {jobVacancyListDetails.createdTime}
+                                    </span>
+                                  </>
+                                )}
+                              </p>
+                            </div>
+                            {jobVacancyListDetails.isRead != true && (
+                              <FontAwesomeIcon
+                                icon={faCircle}
+                                style={{ fontSize: "10px", color: "green" }}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="notification-footer border-top text-center">
+                      <Link className="primary-link fs-13" to="#">
+                        <i className="mdi mdi-arrow-right-circle me-1"></i>{" "}
+                        <span>View More..</span>
+                      </Link>
+                    </div>
+                  </DropdownMenu>
+                </Dropdown>
               </Badge>
             </Space>
 

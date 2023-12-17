@@ -103,138 +103,42 @@ const CompanyListPartner = () => {
   }, [currentPage]);
 
   //--------------------------------------------------------------------------------
-  const [showPopup, setShowPopup] = useState(false);
+  //const [showPopup, setShowPopup] = useState(false);
 
   //--------------------------------------------------------------------------------
-  const midleSelect = (id) => {
-    fetchGetCompanyByCompanyId(id);
-    setShowPopup(true);
-  };
+  // const midleSelect = (id) => {
+  //   fetchGetCompanyByCompanyId(id);
+  //   setShowPopup(true);
+  // };
   //--------------------------------------------------------------------------------
   //Search
   const { Search } = Input;
   const onSearch = (value, _e, info) => console.log(info?.source, value);
   //--------------------------------------------------------------------------------
-  const [selectCompanyDetail, setSelectcompanyDetail] = useState({});
+  //const [selectCompanyDetail, setSelectcompanyDetail] = useState({});
 
-  const fetchGetCompanyByCompanyId = async (id) => {
-    let response;
-    try {
-      response = await companyServices.getCompanyByCompanyId(id);
-      console.log("Company Detail");
-      console.log(response.data.data);
-      setSelectcompanyDetail(response.data.data);
-    } catch (error) {
-      console.error("Error fetching company by id:", error);
-    }
-  };
+  // const fetchGetCompanyByCompanyId = async (id) => {
+  //   let response;
+  //   try {
+  //     response = await companyServices.getCompanyByCompanyId(id);
+  //     console.log("Company Detail");
+  //     console.log(response.data.data);
+  //     setSelectcompanyDetail(response.data.data);
+  //   } catch (error) {
+  //     console.error("Error fetching company by id:", error);
+  //   }
+  // };
   //--------------------------------------------------------------------------------
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  // const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
+  // const toggleDropdown = () => {
+  //   setDropdownOpen(!dropdownOpen);
+  // };
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWeb choose={"menu-key/15"}></SiderBarWeb>
         <Layout>
-          {/* <div
-            style={{
-              backgroundColor: "#FFFF",
-              height: "70px",
-              display: "flex",
-              alignItems: "center",
-              borderRadius: "7px",
-              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-              marginLeft: "30px",
-              marginRight: "30px",
-              marginBottom: "0px",
-            }}
-            className="mt-4 justify-content-end"
-          >
-            <div
-              className="d-flex gap-4 align-items-center"
-              style={{ height: "inherit" }}
-            >
-              <Space>
-                <Badge dot>
-                  <i
-                    className="uil uil-bell"
-                    style={{ color: "#8F78DF", fontSize: "20px" }}
-                  ></i>
-                </Badge>
-              </Space>
-              <Space>
-                <Badge dot>
-                  <i
-                    className="uil uil-envelope-open"
-                    style={{ color: "#8F78DF", fontSize: "20px" }}
-                  ></i>
-                </Badge>
-              </Space>
-
-              <div
-                className="p-2  d-flex gap-3 align-items-center"
-                style={{
-                  height: "inherit",
-                  backgroundColor: "#6546D2",
-                  color: "white",
-                  borderRadius: "10px",
-                }}
-              >
-                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
-                  <DropdownToggle
-                    className="p-2 d-flex gap-3 align-items-center"
-                    style={{
-                      height: "inherit",
-                      backgroundColor: "#6546D2",
-                      color: "white",
-
-                      cursor: "pointer",
-                      border: "0px",
-                    }}
-                  >
-                    <div>
-                      <img
-                        src={img0}
-                        className="ms-1"
-                        style={{
-                          borderRadius: "10px",
-                          height: "50px",
-                        }}
-                      />
-                    </div>
-                    <div className="me-1 d-flex flex-column align-items-center">
-                      <span className="fs-18">Nik jone</span>
-                      <span>Available</span>
-                    </div>
-                  </DropdownToggle>
-                  <DropdownMenu
-                    style={{
-                      marginLeft: "-25px",
-                    }}
-                  >
-                    <DropdownItem style={{ padding: "0px" }}>
-                      <div>
-                        <Link to="#" className="dropdown-item">
-                          Setting
-                        </Link>
-                      </div>
-                    </DropdownItem>
-
-                    <DropdownItem style={{ padding: "0px" }}>
-                      <div>
-                        <Link to="/signout" className="dropdown-item">
-                          Logout
-                        </Link>
-                      </div>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
-            </div>
-          </div> */}
           <NavBarWeb></NavBarWeb>
 
           <Content>
@@ -268,7 +172,7 @@ const CompanyListPartner = () => {
                       </div>
                       {/* ---------------------------------------------------------------- */}
 
-                      <Modal
+                      {/* <Modal
                         centered
                         open={showPopup}
                         onOk={() => setShowPopup(false)}
@@ -437,7 +341,7 @@ const CompanyListPartner = () => {
                             </Col>
                           </Row>
                         </div>
-                      </Modal>
+                      </Modal> */}
 
                       {/* ---------------------------------------------------------------- */}
 
@@ -542,30 +446,30 @@ const CompanyListPartner = () => {
                                     <span
                                       className={
                                         listCompanyNew.statusString ===
-                                          "Waiting Approval"
+                                        "Waiting Approval"
                                           ? "badge bg-warning text-light fs-12"
                                           : listCompanyNew.statusString ===
                                             "In Progress"
-                                            ? "badge bg-blue text-light fs-12"
-                                            : listCompanyNew.statusString ===
-                                              "Rejected"
-                                              ? "badge bg-danger text-light fs-12"
-                                              : listCompanyNew.statusString ===
-                                                "Expired"
-                                                ? "badge bg-danger text-light fs-12"
-                                                : listCompanyNew.statusString ===
-                                                  "Cancelled"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : listCompanyNew.statusString ===
-                                                    "Finished"
-                                                    ? "badge bg-primary text-light fs-12"
-                                                    : listCompanyNew.statusString ===
-                                                      "Completed"
-                                                      ? "badge bg-primary text-light fs-12"
-                                                      : listCompanyNew.statusString ===
-                                                        "Active"
-                                                        ? "badge bg-info text-light fs-12"
-                                                        : ""
+                                          ? "badge bg-blue text-light fs-12"
+                                          : listCompanyNew.statusString ===
+                                            "Rejected"
+                                          ? "badge bg-danger text-light fs-12"
+                                          : listCompanyNew.statusString ===
+                                            "Expired"
+                                          ? "badge bg-danger text-light fs-12"
+                                          : listCompanyNew.statusString ===
+                                            "Cancelled"
+                                          ? "badge bg-danger text-light fs-12"
+                                          : listCompanyNew.statusString ===
+                                            "Finished"
+                                          ? "badge bg-primary text-light fs-12"
+                                          : listCompanyNew.statusString ===
+                                            "Completed"
+                                          ? "badge bg-primary text-light fs-12"
+                                          : listCompanyNew.statusString ===
+                                            "Active"
+                                          ? "badge bg-info text-light fs-12"
+                                          : ""
                                       }
                                     >
                                       {listCompanyNew.statusString}
@@ -585,8 +489,9 @@ const CompanyListPartner = () => {
                           <nav aria-label="Page navigation example">
                             <div className="pagination job-pagination mb-0 justify-content-center">
                               <li
-                                className={`page-item ${currentPage === 1 ? "disabled" : ""
-                                  }`}
+                                className={`page-item ${
+                                  currentPage === 1 ? "disabled" : ""
+                                }`}
                               >
                                 <Link
                                   className="page-link"
@@ -599,8 +504,9 @@ const CompanyListPartner = () => {
                               </li>
                               {renderPageNumbers()}
                               <li
-                                className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                                  }`}
+                                className={`page-item ${
+                                  currentPage === totalPages ? "disabled" : ""
+                                }`}
                               >
                                 <Link
                                   className="page-link"
