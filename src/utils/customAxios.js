@@ -8,7 +8,7 @@ const axiosClient = axios.create({
     baseURL: url.base,
 });
 
-const sendAuthorizedRequest = async (url, method, data = null, config = {}) => {
+const sendAuthorizedRequest = async (url, method, data = null) => {
     let accessToken = localStorage.getItem('accessToken');
     const headers = {};
 
@@ -26,7 +26,7 @@ const sendAuthorizedRequest = async (url, method, data = null, config = {}) => {
         const response = await axiosClient({
             method,
             url,
-            headers: { ...headers, ...config.headers },
+            headers,
             data,
         });
         return response;

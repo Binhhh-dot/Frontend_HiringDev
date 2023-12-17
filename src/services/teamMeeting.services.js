@@ -3,7 +3,7 @@ import axiosLocalHost from "../utils/customAxios";
 
 const createTeamMeeting = async (interviewId, redirectUrl, authenCode) => {
     const serviceUrl = urlConstant.endpoint.teamMeeting.createTeamMeeting;
-    const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'POST', { interviewId, redirectUrl, authenCode });
+    const response = await axiosLocalHost.normalRequest.post(serviceUrl, { interviewId, redirectUrl, authenCode })
     return response
 }
 
@@ -14,14 +14,13 @@ const deleteTeamMeeting = async (interviewId, redirectUrl, authenCode) => {
         redirectUrl: redirectUrl,
         authenCode: authenCode
     };
-    const config = {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    };
     try {
-        const response = await axiosLocalHost
-            .sendAuthorizedRequest(serviceUrl, 'DELETE', requestData, config);
+        const response = await axiosLocalHost.normalRequest.delete(serviceUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: requestData
+        });
         return response;
     } catch (error) {
         // Xử lý lỗi ở đây
@@ -32,7 +31,7 @@ const deleteTeamMeeting = async (interviewId, redirectUrl, authenCode) => {
 
 const editTeamMeeting = async (interviewId, redirectUrl, authenCode) => {
     const serviceUrl = urlConstant.endpoint.teamMeeting.updateTeamMeeting;
-    const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'PUT', { interviewId, redirectUrl, authenCode });
+    const response = await axiosLocalHost.normalRequest.put(serviceUrl, { interviewId, redirectUrl, authenCode })
     return response
 }
 

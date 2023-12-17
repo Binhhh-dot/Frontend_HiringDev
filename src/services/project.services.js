@@ -3,7 +3,7 @@ import axiosLocalHost from "../utils/customAxios";
 
 const getProjectList = async () => {
   const serviceUrl = urlConstant.endpoint.project.getProjectList;
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -13,7 +13,7 @@ const getProjectListPaging = async (PageIndex, PageSize) => {
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost.normalRequest.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -27,7 +27,7 @@ const createProject = async (
   description
 ) => {
   const serviceUrl = urlConstant.endpoint.project.createProject;
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'POST', {
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
     companyId,
     projectName,
     projectTypeId,
@@ -35,8 +35,7 @@ const createProject = async (
     startDate,
     endDate,
     description,
-  })
-    ;
+  });
   return response;
 };
 
@@ -46,7 +45,7 @@ const getAllProjectByCompanyId = async (companyId) => {
       "${companyId}",
       companyId
     );
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -56,7 +55,7 @@ const getProjectDetailByProjectId = async (projectId) => {
       "${projectId}",
       projectId
     );
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -66,7 +65,7 @@ const getDeveloperByProject = async (ProjectId) => {
     ProjectId
   );
 
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -80,9 +79,11 @@ const updateProject = async (projectId, formData) => {
       "Content-Type": "multipart/form-data",
     },
   };
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', formData, config)
-    ;
+  const response = await axiosLocalHost.normalRequest.put(
+    serviceUrl,
+    formData,
+    config
+  );
 
   return response;
 };
@@ -104,7 +105,7 @@ const getAllProjectByCompanyIdAndPaging = async (
       .replace("${searchKeyString}", inputSearch)
       .replace("${Status}", status);
   console.log(serviceUrl);
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -119,9 +120,11 @@ const updateImage = async (formData, projectId) => {
     },
   };
   console.log(serviceUrl);
-  const response = await axiosLocalHost.normalRequest
-    .sendAuthorizedRequest(serviceUrl, 'PUT', formData, config)
-    ;
+  const response = await axiosLocalHost.normalRequest.put(
+    serviceUrl,
+    formData,
+    config
+  );
   console.log(response);
   return response;
 };
@@ -132,7 +135,7 @@ const getProjectLisPreparingtPaging = async (PageIndex, PageSize) => {
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
 
   return response;
 };
@@ -143,7 +146,7 @@ const getProjectListInprogressPaging = async (PageIndex, PageSize) => {
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
 
   return response;
 };
@@ -155,7 +158,7 @@ const getProjectListClosingProcessPaging = async (PageIndex, PageSize) => {
       .replace("${PageIndex}", PageIndex)
       .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
 
   return response;
 };
@@ -166,7 +169,7 @@ const getProjectListClosedPaging = async (PageIndex, PageSize) => {
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
 
   return response;
 };
@@ -176,13 +179,13 @@ const ClosingProcessProjectInManager = async (projectId) => {
     "${projectId}",
     projectId
   );
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'PUT');
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl);
   return response;
 };
 
 const closeProjectByHr = async (projectId) => {
   const serviceUrl = urlConstant.endpoint.project.closeProjectByHr.replace("${projectId}", projectId);
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'PUT');
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl);
   return response;
 };
 

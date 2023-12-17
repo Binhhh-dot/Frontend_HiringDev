@@ -662,11 +662,6 @@ const NavBar = (props) => {
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/companydetails">
-                      Profile Company
-                    </Link>
-                  </li>
-                  <li>
                     <Link className="dropdown-item" to="/signout" onClick={signout}>
                       Logout
                     </Link>

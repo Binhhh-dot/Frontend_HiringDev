@@ -1451,9 +1451,7 @@ const ProjectDetailDesciption = () => {
     } catch (error) {
       console.log("import")
       console.log(error)
-      if (error.response.data.message) {
-        toast.error(error.response.data.message)
-      }
+      // toast.error(error.response.data.message)
       setLoadingImportExel(false);
     }
   };
@@ -1555,6 +1553,9 @@ const ProjectDetailDesciption = () => {
 
   const pieChartData = hRInfo?.developerDashboard || {};
   const pieChart2Data = hRInfo?.hiringRequestDashboard || {};
+
+  const totalValue = pieChartData.totalHiredDeveloper + pieChartData.totalWorkingDeveloper + pieChartData.totalTerminatedDeveloper + pieChartData.totalCompletedDeveloper;
+  const totalValue2 = pieChart2Data.totalHiringRequest + pieChart2Data.totalWaitingApproval + pieChart2Data.totalInProcess + pieChart2Data.totalRejected + pieChart2Data.totalCompleted + pieChart2Data.totalClosed + pieChart2Data.totalExpired;
 
   const pieConfig = {
     width: 300,  // Điều chỉnh chiều rộng của biểu đồ
@@ -1925,7 +1926,7 @@ const ProjectDetailDesciption = () => {
                       <div className="row">
                         <div className="col-xl-6 col-lg-5 col-md-12 col-sm-12 col-12">
                           <div className="card">
-                            <h5 className="card-header">Developer</h5>
+                            <h5 className="card-header">Account by role</h5>
                             <div className="card-body-dashboard">
                               <div>
                                 <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '10px' }}>
@@ -1940,7 +1941,7 @@ const ProjectDetailDesciption = () => {
                         </div>
                         <div className="col-xl-6 col-lg-5 col-md-12 col-sm-12 col-12">
                           <div className="card">
-                            <h5 className="card-header">Hiring request</h5>
+                            <h5 className="card-header">Account by role</h5>
                             <div className="card-body-dashboard">
                               <div>
                                 <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '10px' }}>

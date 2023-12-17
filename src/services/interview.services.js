@@ -11,16 +11,15 @@ const createAnInterview = async (
   endTime
 ) => {
   const serviceUrl = urlConstant.endpoint.interview.createAnInterview;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'POST', {
-      requestId,
-      developerId,
-      title,
-      description,
-      dateOfInterview,
-      startTime,
-      endTime,
-    });
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
+    requestId,
+    developerId,
+    title,
+    description,
+    dateOfInterview,
+    startTime,
+    endTime,
+  });
   return response;
 };
 
@@ -30,8 +29,9 @@ const getListInterviewByRequestId = async (requestId) => {
       "${requestId}",
       requestId
     );
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET', requestId);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl, {
+    requestId,
+  });
   return response;
 };
 
@@ -41,8 +41,7 @@ const getAllInterviewByHRAndPaging = async (companyId, requestId, pageSize, page
     .replace("${PageSize}", pageSize)
     .replace("${PageIndex}", pageIndex)
     .replace("${requestId}", requestId);
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -58,8 +57,7 @@ const getAllInterviewByHRAndRequestIdAndPaging = async (
       .replace("${PageSize}", pageSize)
       .replace("${PageIndex}", pageIndex)
       .replace("${requestId}", requestId);
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -70,8 +68,7 @@ const getDetailInterviewByInterviewId = async (
     urlConstant.endpoint.interview.getDetailInterviewByInterviewId
       .replace("${InterviewId}", interviewId)
 
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET', interviewId);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl, interviewId);
   return response;
 };
 
@@ -81,8 +78,7 @@ const getAllInterviewByManagerAndPaging = async (pageIndex, pageSize) => {
       .replace("${PageIndex}", pageIndex)
       .replace("${PageSize}", pageSize);
 
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -90,19 +86,19 @@ const approvalByManager = async (interviewId) => {
   const isApproved = true;
   const rejectionReason = "Accpect";
   const serviceUrl = urlConstant.endpoint.interview.approvalByManager;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
-      interviewId,
-      isApproved,
-      rejectionReason,
-    });
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    interviewId,
+    isApproved,
+    rejectionReason,
+  });
   return response;
 };
 
 const completedInterview = async (interviewId) => {
   const serviceUrl = urlConstant.endpoint.interview.completeInterview.replace("${interviewId}", interviewId);
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', interviewId);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    interviewId
+  });
   return response;
 }
 
@@ -115,15 +111,14 @@ const updateInterview = async (
   endTime
 ) => {
   const serviceUrl = urlConstant.endpoint.interview.updateInterview.replace("${interviewId}", interviewId);
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
-      interviewId,
-      title,
-      description,
-      dateOfInterview,
-      startTime,
-      endTime,
-    });
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    interviewId,
+    title,
+    description,
+    dateOfInterview,
+    startTime,
+    endTime,
+  });
   return response;
 };
 
@@ -131,8 +126,9 @@ const cancelInterview = async (
   interviewId
 ) => {
   const serviceUrl = urlConstant.endpoint.interview.cancelInterview.replace("${interviewId}", interviewId);
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', interviewId);
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    interviewId
+  });
   return response;
 };
 

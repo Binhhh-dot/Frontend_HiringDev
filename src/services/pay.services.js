@@ -5,8 +5,7 @@ const getPayPeriod = async (projectId, inputDate) => {
   const serviceUrl = urlConstant.endpoint.pay.getPayPeriod
     .replace("${projectId}", projectId)
     .replace("${inputDate}", inputDate);
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -15,8 +14,7 @@ const getPaySlip = async (payPeriodId) => {
     "${payPeriodId}",
     payPeriodId
   );
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -30,8 +28,7 @@ const getPaySlipAndPaging = async (payPeriodId, PageIndex, PageSize) => {
     .replace("${PageSize}", PageSize);
 
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -40,8 +37,7 @@ const getWorklog = async (paySlipId) => {
     "${paySlipId}",
     paySlipId
   );
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 

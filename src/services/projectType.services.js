@@ -6,13 +6,13 @@ const getAllType = async () => {
     "${status}",
     "1"
   );
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
 const getAllProjectType = async () => {
   const serviceUrl = urlConstant.endpoint.projectType.getAllProjectType;
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 

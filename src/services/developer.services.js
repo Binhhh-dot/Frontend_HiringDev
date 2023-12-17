@@ -1,4 +1,3 @@
-import { config } from "dotenv";
 import urlConstant from "../Common/urlConstant";
 import axiosLocalHost from "../utils/customAxios";
 
@@ -8,7 +7,7 @@ const GetAllSelectedDevByHR = async (hiringRequestId) => {
       "${hiringRequestId}",
       hiringRequestId
     );
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -24,11 +23,10 @@ const GetAllSelectedDevByHR = async (hiringRequestId) => {
 
 const sendDevToHR = async (requestId, developerIds) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.sendDevToHR;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
-      requestId,
-      developerIds,
-    });
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    requestId,
+    developerIds,
+  });
   return response;
 };
 
@@ -44,23 +42,21 @@ const sendDevToHR = async (requestId, developerIds) => {
 
 const approvalInterviewByHR = async (requestId, developerId, isApproved) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.approvalByHR;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
-      requestId,
-      developerId,
-      isApproved,
-    });
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    requestId,
+    developerId,
+    isApproved,
+  });
   return response;
 };
 
 const approvalOnboardingByHR = async (requestId, developerId, isApproved) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.onboarnding;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
-      requestId,
-      developerId,
-      isApproved,
-    });
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    requestId,
+    developerId,
+    isApproved,
+  });
   return response;
 };
 
@@ -69,7 +65,7 @@ const getListDevWaitingInterview = async (requestId, PageSize, PageIndex) => {
     .replace("${requestId}", requestId)
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -77,23 +73,21 @@ const rejectSelectedDev = async (requestId, developerId) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.rejectSelectedDev
     .replace("${requestId}", requestId)
     .replace("${developerId}", developerId);
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
-      requestId,
-      developerId,
-    });
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    requestId,
+    developerId,
+  });
   return response;
 };
 
 const appectDevToInterview = async (requestId, interviewId, devIds) => {
   const serviceUrl =
     urlConstant.endpoint.selectingDeveloper.accpectDevToInterview;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
-      requestId,
-      interviewId,
-      devIds,
-    });
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    requestId,
+    interviewId,
+    devIds,
+  });
   return response;
 };
 
@@ -102,11 +96,10 @@ const removeOutOfWaitingInterview = async (requestId, devIds) => {
     urlConstant.endpoint.selectingDeveloper.removeOutOfWaitingInterview
       .replace("${requestId}", requestId)
       .replace("${developerId}", devIds);
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
-      requestId,
-      devIds,
-    });
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    requestId,
+    devIds,
+  });
   return response;
 };
 
@@ -116,8 +109,9 @@ const getDeveloperDetailByDevId = async (devIds) => {
       "${developerId}",
       devIds
     );
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET', devIds);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl, {
+    devIds,
+  });
   return response;
 };
 
@@ -136,27 +130,26 @@ const CreateDeveloperAccount = async (
   skills
 ) => {
   const serviceUrl = urlConstant.endpoint.developer.createDeveloper;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'POST', {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      genderId,
-      dateOfBirth,
-      yearOfExperience,
-      averageSalary,
-      employmentTypeId,
-      levelId,
-      types,
-      skills,
-    });
+  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    genderId,
+    dateOfBirth,
+    yearOfExperience,
+    averageSalary,
+    employmentTypeId,
+    levelId,
+    types,
+    skills,
+  });
   return response;
 };
 
 const getDeveloperUnofficial = async () => {
   const serviceUrl = urlConstant.endpoint.developer.getDeveloperUnofficial;
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -167,7 +160,7 @@ const getDeveloperUnofficialPaging = async (currentPage, PageSize) => {
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(fullUrl);
   return response;
 };
 
@@ -179,12 +172,11 @@ const changeStatusDevUnofficialInTaskDetailForStaff = async (
   const serviceUrl =
     urlConstant.endpoint.developer
       .changeStatusDevUnofficialInTaskDetailForStaff;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
-      developerId,
-      taskId,
-      isApproved,
-    });
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    developerId,
+    taskId,
+    isApproved,
+  });
   return response;
 };
 
@@ -202,11 +194,10 @@ const onbardingDeveloper = async (requestId, developerId) => {
   const serviceUrl = urlConstant.endpoint.selectingDeveloper.onboardDeveloper
     .replace("${requestId}", requestId)
     .replace("${developerId}", developerId);
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
-      requestId,
-      developerId,
-    });
+  const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
+    requestId,
+    developerId,
+  });
   return response;
 };
 
@@ -218,8 +209,9 @@ const getListDeveloperOnboardByProjectId = async (projectId, status) => {
       projectId
     ) + values.join("");
 
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET', projectId);
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl, {
+    projectId,
+  });
   return response;
 };
 
@@ -236,8 +228,11 @@ const updateDeveloperByAdmin = async (developerId, formData) => {
       "Content-Type": "multipart/form-data",
     },
   };
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', formData, config);
+  const response = await axiosLocalHost.normalRequest.put(
+    serviceUrl,
+    formData,
+    config
+  );
   return response;
 };
 
@@ -248,8 +243,7 @@ const getDeveloperMatchingInManager = async (requestId) => {
       requestId
     );
 
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
@@ -258,7 +252,7 @@ const getDeveloperByDevId = async (devId) => {
     "${devId}",
     devId
   );
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
   return response;
 };
 
