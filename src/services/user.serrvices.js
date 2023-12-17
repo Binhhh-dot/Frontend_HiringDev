@@ -6,7 +6,7 @@ const getUserById = async (userId) => {
     "${userId}",
     userId
   );
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
   return response;
 };
 
@@ -20,8 +20,8 @@ const updateUser = async (formData, userId) => {
       "Content-Type": "multipart/form-data",
     },
   };
-  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config);
-
+  const response = await axiosLocalHost
+    .sendAuthorizedRequest(serviceUrl, 'PUT', formData, config);
   return response;
 };
 
@@ -35,7 +35,7 @@ const updateUser = async (formData, userId) => {
 
 const getStaff = async () => {
   const serviceUrl = urlConstant.endpoint.user.getStaff;
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
   return response;
 };
 
@@ -45,44 +45,44 @@ const getStaffPaging = async (PageIndex, PageSize) => {
     .replace("${PageIndex}", PageIndex)
     .replace("${PageSize}", PageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost.normalRequest.get(fullUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
   console.log(fullUrl);
   return response;
 };
 
 const getStaff2 = async (PageIndex, pageSize) => {
   const serviceUrl = `/User/Staff?PageIndex=${PageIndex}&PageSize=${pageSize}`;
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
   return response;
 };
 
 
 const getListManager = async () => {
   const serviceUrl = urlConstant.endpoint.user.getListManager;
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
   return response;
 }
 
 const getListStaff = async () => {
   const serviceUrl = urlConstant.endpoint.user.getListStaff;
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
   return response;
 }
 
 const getListHR = async () => {
   const serviceUrl = urlConstant.endpoint.user.getListHR;
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
   return response;
 }
 const getListDeveloper = async () => {
   const serviceUrl = urlConstant.endpoint.user.getListDeveloper;
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
   return response;
 }
 
 const getStaffById = async (id) => {
   const serviceUrl = urlConstant.endpoint.user.getStaffById.replace("${id}", id);
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl)
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
 
   return response
 }
@@ -91,7 +91,7 @@ const getStaffById = async (id) => {
 
 const getHRById = async (id) => {
   const serviceUrl = urlConstant.endpoint.user.getHRById.replace("${id}", id);
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl)
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
 
   return response
 }
@@ -104,14 +104,14 @@ const updateHR = async (id, formData) => {
       'Content-Type': 'multipart/form-data',
     },
   }
-  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config)
-
+  const response = await axiosLocalHost
+    .sendAuthorizedRequest(serviceUrl, 'PUT', formData, config);
   return response
 }
 
 const deleteHR = async (userId) => {
   const serviceUrl = urlConstant.endpoint.user.deleteHR.replace("${userId}", userId);
-  const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'DELETE');
 
   return response
 }
@@ -127,29 +127,30 @@ const createHR = async (
 
 ) => {
   const serviceUrl = urlConstant.endpoint.user.createHR;
-  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
-    firstName,
-    lastName,
-    email,
-    password,
-    phoneNumber,
-    dateOfBirth,
-    roleId,
-  });
+  const response = await axiosLocalHost
+    .sendAuthorizedRequest(serviceUrl, 'POST', {
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      dateOfBirth,
+      roleId,
+    });
   return response;
 };
 
 //Devloper
 const getDeveloperById = async (devId) => {
   const serviceUrl = urlConstant.endpoint.user.getDeveloperById.replace("${devId}", devId);
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl)
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
 
   return response
 }
 
 const deleteDeveloper = async (userId) => {
   const serviceUrl = urlConstant.endpoint.user.deleteStaff.replace("${userId}", userId);
-  const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'DELETE');
 
   return response
 }
@@ -157,7 +158,7 @@ const deleteDeveloper = async (userId) => {
 //Manager
 const getManagerById = async (id) => {
   const serviceUrl = urlConstant.endpoint.user.getManagerById.replace("${id}", id);
-  const response = await axiosLocalHost.normalRequest.get(serviceUrl)
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
 
   return response
 }
@@ -169,8 +170,8 @@ const updateManager = async (id, formData) => {
       'Content-Type': 'multipart/form-data',
     },
   }
-  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config)
-
+  const response = await axiosLocalHost
+    .sendAuthorizedRequest(serviceUrl, 'PUT', formData, config);
   return response
 }
 
@@ -199,21 +200,22 @@ const createManager = async (
 
 ) => {
   const serviceUrl = urlConstant.endpoint.user.createManager;
-  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
-    firstName,
-    lastName,
-    email,
-    password,
-    phoneNumber,
-    dateOfBirth,
-    roleId,
-  });
+  const response = await axiosLocalHost
+    .sendAuthorizedRequest(serviceUrl, 'POST', {
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      dateOfBirth,
+      roleId,
+    });
   return response;
 };
 
 const deleteManager = async (userId) => {
   const serviceUrl = urlConstant.endpoint.user.deleteManager.replace("${userId}", userId);
-  const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
+  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'DELETE');
 
   return response
 }
@@ -227,7 +229,8 @@ const updateStaff = async (id, formData) => {
       'Content-Type': 'multipart/form-data',
     },
   }
-  const response = await axiosLocalHost.normalRequest.put(serviceUrl, formData, config)
+  const response = await axiosLocalHost
+    .sendAuthorizedRequest(serviceUrl, 'PUT', formData, config);
 
   return response
 }
@@ -243,21 +246,23 @@ const createStaff = async (
 
 ) => {
   const serviceUrl = urlConstant.endpoint.user.createManager;
-  const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
-    firstName,
-    lastName,
-    email,
-    password,
-    phoneNumber,
-    dateOfBirth,
-    roleId,
-  });
+  const response = await axiosLocalHost
+    .sendAuthorizedRequest(serviceUrl, 'POST', {
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      dateOfBirth,
+      roleId,
+    });
   return response;
 };
 
 const deleteStaff = async (userId) => {
   const serviceUrl = urlConstant.endpoint.user.deleteManager.replace("${userId}", userId);
-  const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
+  const response = await axiosLocalHost
+    .sendAuthorizedRequest(serviceUrl, 'DELTE');
   return response
 }
 

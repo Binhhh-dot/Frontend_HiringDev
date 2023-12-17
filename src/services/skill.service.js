@@ -3,7 +3,7 @@ import axiosLocalHost from "../utils/customAxios"
 
 const getAllSkill = async () => {
     const serviceUrl = urlConstant.endpoint.skill.getAll;
-    const response = await axiosLocalHost.normalRequest.get(serviceUrl)
+    const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
     return response
 }
 
@@ -12,10 +12,8 @@ const createSkill = async (
     skillDescription,
 ) => {
     const serviceUrl = urlConstant.endpoint.skill.postSkill;
-    const response = await axiosLocalHost.normalRequest.post(serviceUrl, {
-        skillName,
-        skillDescription,
-    });
+    const response = await axiosLocalHost
+        .sendAuthorizedRequest(serviceUrl, 'POST', { skillName, skillDescription });
     return response;
 };
 
@@ -27,17 +25,18 @@ const updateSkill = async (
 ) => {
     const serviceUrl =
         urlConstant.endpoint.skill.editSkill;
-    const response = await axiosLocalHost.normalRequest.put(serviceUrl, {
-        skillId,
-        skillName,
-        skillDescription,
-        status,
-    });
+    const response = await axiosLocalHost
+        .sendAuthorizedRequest(serviceUrl, 'PUT', {
+            skillId,
+            skillName,
+            skillDescription,
+            status,
+        });
     return response;
 };
 const deleteSkill = async (skillId) => {
     const serviceUrl = urlConstant.endpoint.skill.deleteSkill.replace("${skillId}", skillId);
-    const response = await axiosLocalHost.normalRequest.delete(serviceUrl)
+    const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'DELETE');
     return response
 }
 
