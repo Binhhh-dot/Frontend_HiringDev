@@ -4,13 +4,15 @@ import axiosLocalHost from "../utils/customAxios";
 
 const createJobPosition = async (projectId, positionName) => {
     const serviceUrl = urlConstant.endpoint.jobPosition.createJobPosition;
-    const response = await axiosLocalHost.normalRequest.post(serviceUrl, { projectId, positionName })
+    const response = await axiosLocalHost
+        .sendAuthorizedRequest(serviceUrl, 'POST', { projectId, positionName });
     return response
 }
 
 const getJobPostionByProjectId = async (projectId) => {
     const serviceUrl = urlConstant.endpoint.jobPosition.getJobPositionByProjectId.replace("${projectId}", projectId);
-    const response = await axiosLocalHost.normalRequest.get(serviceUrl, projectId)
+    const response = await axiosLocalHost
+        .sendAuthorizedRequest(serviceUrl, 'GET', projectId);
     return response
 }
 

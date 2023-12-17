@@ -3,7 +3,7 @@ import axiosLocalHost from "../utils/customAxios";
 
 const getAllScheduleType = async () => {
     const serviceUrl = urlConstant.endpoint.scheduleType.getAll;
-    const response = await axiosLocalHost.normalRequest.get(serviceUrl)
+    const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
     return response
 }
 
