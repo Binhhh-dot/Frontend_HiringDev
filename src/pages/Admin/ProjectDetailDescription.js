@@ -96,110 +96,6 @@ const ProjectDetailDescription = () => {
   const [listWorklog, setListWorklog] = useState([]);
 
 
-  const [payRollDetail, setPayRollDetail] = useState([]);
-  const [payPeriodDetail, setPayPeriodDetail] = useState(null);
-  const [loadingSaveWorkLog, setLoadingSaveWorkLog] = useState(false);
-  const [workLogIdOnClick, setWorkLogIdOnClick] = useState(0);
-  const [listEndDay, setListEndDay] = useState([]);
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(null);
-  const [loadListWorkLog, setLoadListWorkLog] = useState(false);
-  const [isCompleteEditWorkLog, setIsCompleteEditWorkLog] = useState(true);
-  const [editableRowId, setEditableRowId] = useState(null);
-  const [loadingSavePaySlip, setLoadingSavePaySlip] = useState(false);
-  const [payslipIdOnClick, setPayslipIdOnClick] = useState(0);
-  const [ediPaySlipRowId, setEdiPaySlipRowId] = useState(null);
-  const [listStartDay, setListStartDay] = useState([]);
-  const [loadPayPeriod, setLoadPayPeriod] = useState(false);
-  const [workLoglist, setWorkLoglist] = useState([]);
-  const [valuesStatus, setValuesStatus] = useState({});
-  const [keyPayRoll, setKeyPayRoll] = useState(null);
-  const [keyWorkLog, setKeyWorkLog] = useState(null);
-  const [isEditWorkLog, setIsEditWorkLog] = useState(false);
-  const [isCancelEditWorkLog, setIsCancelEditWorkLog] = useState();
-  const [selectedRange, setSelectedRange] = useState([]);
-  const [keyPayslip, setKeyPayslip] = useState(null);
-  const [startTimeWorkLogSave, setStartTimeWorkLogSave] = useState(false);
-  const [endTimeWorkLogSave, setEndTimeWorkLogSave] = useState(false);
-  const [statusWorkLogSave, setStatusWorkLogSave] = useState();
-  const [totalOTPayslipSave, setTotalOTPayslipSave] = useState(false);
-  const [isEditPayslip, setIsEditPayslip] = useState(false);
-  const [isCancelEditPayslip, setIsCancelEditPayslip] = useState(false);
-  const [hiringRequestDetail, setHiringRequestDetail] = useState([]);
-  const [minDateDuration, setMinDateDuration] = useState();
-  const [listMonth, setListMonth] = useState([]);
-  const [isHavePayment, setIsHavePaymemt] = useState(false);
-  const [loadingCreateNew, setLoadingCreateNew] = useState(false);
-
-
-  function formatDate(date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because it's zero-indexed
-    const year = date.getFullYear();
-    return `${day}.${month}.${year}`;
-  }
-
-  const optionsStatus = [
-    { label: 'Normally', value: 0 },
-    { label: 'Paid leave', value: 1 },
-    { label: 'Unpaid leave', value: 2 },
-  ];
-
-  const handleChangeStatus = (selected) => {
-    console.log(selected)
-    const key = '' + keyPayRoll + keyWorkLog;
-    setValuesStatus(prevState => ({
-      ...prevState,
-      [key]: selected
-    }));
-  };
-
-  const setKeyAndIdWorkLog = (workLogId, key) => {
-    setWorkLogIdOnClick(workLogId)
-    setKeyWorkLog(key)
-  };
-
-  const cancelUpdateWorkLog = () => {
-    setIsEditWorkLog(!isEditWorkLog);
-    setIsCancelEditWorkLog(true);
-  };
-
-  const saveUpdateWorkLog = () => {
-    setIsEditWorkLog(!isEditWorkLog);
-    setIsCancelEditWorkLog(false);
-  };
-
-  const onUpdateWorkLog = () => {
-    setIsCompleteEditWorkLog(false);
-    const foundLog = workLoglist.find(log => log.workLogId === workLogIdOnClick);
-    setStartTimeWorkLogSave(foundLog.timeIn);
-    setEndTimeWorkLogSave(foundLog.timeOut);
-    console.log("foundLog.isPaidLeave");
-    console.log(foundLog.isPaidLeave);
-    setStatusWorkLogSave(foundLog.isPaidLeave);
-    setEditableRowId(workLogIdOnClick);
-  };
-
-  const onUpdatePaySlip = () => {
-    const foundLog = payRollDetail.find(log => log.paySlipId === payslipIdOnClick);
-    setTotalOTPayslipSave(foundLog.totalOvertimeHours)
-    setEdiPaySlipRowId(payslipIdOnClick);
-  };
-
-  const profileItems2 = [
-    {
-      key: "1",
-      label: (
-        <div
-          style={{ width: "100px" }}
-          onClick={() => onUpdateWorkLog()}
-        >
-          Edit
-        </div>
-      ),
-    },
-  ]
-
-
 
   //------------------------------------------------
   const [selectProjectId, setSelectProjectId] = useState(null);
@@ -230,20 +126,6 @@ const ProjectDetailDescription = () => {
   //   }
   // };
 
-  //-------------------------------------------------------------------------------
-  const [showCollapse, setShowCollapse] = useState(
-    Array(devInProject.length).fill(false)
-  );
-
-  // Hàm toggleCollapse
-  const toggleCollapse = (index, paySlipId) => {
-    const newShowCollapse = [...showCollapse];
-    newShowCollapse[index] = !newShowCollapse[index];
-    setShowCollapse(newShowCollapse);
-    fetchGetWorklog(paySlipId);
-  };
-
-  //--------------------------------------------------------------------------------
 
   const fetchGetProjectDetailByProjectId = async () => {
     let response;
@@ -568,6 +450,59 @@ const ProjectDetailDescription = () => {
   }, [defaultClickDay]);
 
   //--------------------------------------------------------------------------------
+  const [loadPayPeriod, setLoadPayPeriod] = useState(false);
+  const [payPeriodDetail, setPayPeriodDetail] = useState();
+  const [payRollDetail, setPayRollDetail] = useState([]);
+  const [workLoglist, setWorkLoglist] = useState([]);
+  const [listMonth, setListMonth] = useState([]);
+  const [listStartDay, setListStartDay] = useState([]);
+  const [listEndDay, setListEndDay] = useState([]);
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(null);
+  const [workLogIdOnClick, setWorkLogIdOnClick] = useState(0);
+  const [payslipIdOnClick, setPayslipIdOnClick] = useState(0);
+  const [countSetTime, setCountSetTime] = useState(0);
+  const [isEditWorkLog, setIsEditWorkLog] = useState(false);
+  const [isCompleteEditWorkLog, setIsCompleteEditWorkLog] = useState(true);
+  const [loadListWorkLog, setLoadListWorkLog] = useState(false);
+  const [paySlipIdLoad, setPaySlipIdLoad] = useState(null);
+  const [isEditPayslip, setIsEditPayslip] = useState(false);
+  const [isCancelEditWorkLog, setIsCancelEditWorkLog] = useState();
+  const [isCancelEditPayslip, setIsCancelEditPayslip] = useState(false);
+  const [startTimeWorkLogSave, setStartTimeWorkLogSave] = useState(false);
+  const [endTimeWorkLogSave, setEndTimeWorkLogSave] = useState(false);
+  const [statusWorkLogSave, setStatusWorkLogSave] = useState();
+  const [totalOTPayslipSave, setTotalOTPayslipSave] = useState(false);
+  const [editableRowId, setEditableRowId] = useState(null);
+  const [ediPaySlipRowId, setEdiPaySlipRowId] = useState(null);
+  const [loadingSavePaySlip, setLoadingSavePaySlip] = useState(false);
+  const [loadingSaveWorkLog, setLoadingSaveWorkLog] = useState(false);
+  const [loadingCreateNew, setLoadingCreateNew] = useState(false);
+  const [keyPayRoll, setKeyPayRoll] = useState(null);
+  const [keyWorkLog, setKeyWorkLog] = useState(null);
+  const [keyPayslip, setKeyPayslip] = useState(null);
+  const [isHavePayment, setIsHavePaymemt] = useState(false);
+  const [valuesStatus, setValuesStatus] = useState({});
+
+  const optionsStatus = [
+    { label: 'Normally', value: 0 },
+    { label: 'Paid leave', value: 1 },
+    { label: 'Unpaid leave', value: 2 },
+  ];
+
+
+  const profileItems2 = [
+    {
+      key: "1",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => onUpdateWorkLog()}
+        >
+          Edit
+        </div>
+      ),
+    },
+  ]
 
 
   const profileItems3 = [
@@ -584,133 +519,54 @@ const ProjectDetailDescription = () => {
     },
   ]
 
-  const setRangeCalendar = () => {
-    const startDate = listStartDay[currentMonthIndex];
-    let startDateRange;
-    if (startDate) {
-      let startDateParts = startDate.split(".");
-      let newStartDate = startDateParts[2] + "-" + startDateParts[1] + "-" + startDateParts[0];
-      startDateRange = new Date(newStartDate);
-    }
-    let endDateRange;
-    const endDate = listEndDay[currentMonthIndex];
-    if (endDate) {
-      let endDateParts = endDate.split(".");
-      let newEndDate = endDateParts[2] + "-" + endDateParts[1] + "-" + endDateParts[0];
-      endDateRange = new Date(newEndDate);
-    }
-    console.log("startDateRange")
-    console.log(startDate)
-    console.log("endDateRange")
-    console.log(endDate)
-    setSelectedRange([startDateRange, endDateRange])
-  }
+  const [showCollapse, setShowCollapse] = useState(Array(payRollDetail.length).fill(false));
 
-  const fetchDetailPayPeriod = async (newDate) => {
-    let response;
-    console.log("ham nay bi goi lai")
-    console.log(newDate)
-    try {
-      const queryParams = new URLSearchParams(location.search);
-      const projectId = queryParams.get("Id");
-      console.log(projectId)
-      response = await payPeriodServices.getPayPeriodDetailByProjectIdAndDate(projectId, newDate);
-      console.log(response)
-      setPayPeriodDetail(response.data.data);
-      if (response.data.code === 200) {
-        console.log("cho nay ms bi goi lai");
-        console.log(response.data.data.payPeriodId);
-        const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
-        console.log("response2")
-        console.log(response2)
-        if (response.data.code == 200) {
-          setPayRollDetail(response2.data.data);
-          response2.data.data.forEach((payRollDetailNew, key2) => {
-            const temp = "totalOT" + key2;
-            console.log(temp)
-            const element = document.getElementById(temp);
-            if (element) {
-              console.log("co")
-              console.log(payRollDetailNew.totalOvertimeHours)
-              element.value = payRollDetailNew.totalOvertimeHours;
-            }
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching job vacancies:", error);
-      console.log("payperiod loi")
-      setPayPeriodDetail(null);
-      setPayRollDetail([]);
-    }
-  }
-
-  const updatedWorkLog = async (timeIn, timeOut, isPaid) => {
-    let response;
-    setLoadingSaveWorkLog(true)
-    try {
-      console.log(workLogIdOnClick)
-      console.log(timeIn)
-      console.log(timeOut)
-      response = await workLogServices.updateWorkLog(workLogIdOnClick, timeIn, timeOut, isPaid);
-      console.log("worklog21312312312")
-      console.log(response.data.data)
-      const temp = "hourInDay" + response.data.data.workLogId;
-      // const temp2 = "totalhourspayroll" + response.data.data.payPeriodId;
-      document.getElementById(temp).innerHTML = "Hours in day: " + response.data.data.hourWorkInDay;
-      // document.getElementById(temp2).innerHTML = response.data.data.totalAmount;
-      const temp2 = listEndDay[currentMonthIndex];
-      if (temp2) {
-        const parts = temp2.split('.');
-        const newDate = `${parts[2]}-${parts[1]}-25`;
-        fetchDetailPayPeriod(newDate)
-      }
-      toast.success("Update worklog successfully")
-      setLoadListWorkLog(!loadListWorkLog);
-      setIsCompleteEditWorkLog(true);
-      setLoadingSaveWorkLog(false)
-      setEditableRowId(null);
-    } catch (error) {
-      setIsCompleteEditWorkLog(false);
-      setLoadingSaveWorkLog(false)
-      console.error("Error fetching job vacancies:", error);
-      toast.error("Update worklog fail")
-    }
+  const toggleCollapse = (key2, paySlipId) => {
+    setKeyPayRoll(key2);
+    const newShowCollapse = [...showCollapse];
+    newShowCollapse[key2] = !newShowCollapse[key2];
+    setShowCollapse(newShowCollapse);
+    setPaySlipIdLoad(paySlipId)
+    fetchWorklog(paySlipId);
   };
-  const updatedPayslip = async (totalOT) => {
-    let response;
-    setLoadingSavePaySlip(true)
-    try {
-      console.log(payslipIdOnClick)
-      console.log(totalOT)
-      response = await paySlipServices.updateTotalOTPayslip(payslipIdOnClick, totalOT);
-      console.log(response.data.data)
 
-
-      const temp2 = listEndDay[currentMonthIndex];
-      if (temp2) {
-        const parts = temp2.split('.');
-        const newDate = `${parts[2]}-${parts[1]}-25`;
-        fetchDetailPayPeriod(newDate)
-      }
-      toast.success("Update payslip successfully")
-      setEdiPaySlipRowId(null);
-      setLoadingSavePaySlip(false)
-    } catch (error) {
-      console.error("Error fetching job vacancies:", error);
-      toast.error("Update payslip fail")
-
-      setLoadingSavePaySlip(false)
-    }
+  const setKeyAndIdWorkLog = (workLogId, key) => {
+    setWorkLogIdOnClick(workLogId)
+    setKeyWorkLog(key)
   };
+
+  const setPayRollEdit = (payrollId, key) => {
+    setPayslipIdOnClick(payrollId)
+    setKeyPayslip(key)
+
+  };
+
+  const handleChangeStatus = (selected) => {
+    console.log(selected)
+    const key = '' + keyPayRoll + keyWorkLog;
+    setValuesStatus(prevState => ({
+      ...prevState,
+      [key]: selected
+    }));
+  };
+
+
+
+  function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because it's zero-indexed
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  }
 
   const fetchProjectDetails = async () => {
     let response;
+    // const saveData = localStorage.getItem("myData");
+
     try {
       const projectId = state.projectId;
       response = await projectServices.getProjectDetailByProjectId(projectId);
       console.log(response.data.data);
-      setHiringRequestDetail(response.data.data);
       function convertToDateObject(dateString) {
         const [day, month, year] = dateString.split('-').map(Number);
         return new Date(year, month - 1, day); // month - 1 because months are zero-indexed in JavaScript
@@ -736,7 +592,7 @@ const ProjectDetailDescription = () => {
         const formattedSevenDaysBeforeMinDate = currentDate.toISOString().split('T')[0];
 
 
-        setMinDateDuration(formattedSevenDaysBeforeMinDate);
+
 
 
         const monthsArray = [];
@@ -809,6 +665,180 @@ const ProjectDetailDescription = () => {
     }
   };
 
+
+  const fetchWorklog = async (paySlipId) => {
+    let response;
+    try {
+      response = await workLogServices.getWorkLogByPaySlipId(paySlipId);
+      setWorkLoglist(response.data.data);
+      console.log("worklog")
+      console.log(response.data.data)
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
+
+  const updatedWorkLog = async (timeIn, timeOut, isPaid) => {
+    let response;
+    setLoadingSaveWorkLog(true)
+    try {
+      console.log(workLogIdOnClick)
+      console.log(timeIn)
+      console.log(timeOut)
+      response = await workLogServices.updateWorkLog(workLogIdOnClick, timeIn, timeOut, isPaid);
+      console.log("worklog21312312312")
+      console.log(response.data.data)
+      const temp = "hourInDay" + response.data.data.workLogId;
+      // const temp2 = "totalhourspayroll" + response.data.data.payPeriodId;
+      document.getElementById(temp).innerHTML = "Hours in day: " + response.data.data.hourWorkInDay;
+      // document.getElementById(temp2).innerHTML = response.data.data.totalAmount;
+      const temp2 = listEndDay[currentMonthIndex];
+      if (temp2) {
+        const parts = temp2.split('.');
+        const newDate = `${parts[2]}-${parts[1]}-25`;
+        fetchDetailPayPeriod(newDate)
+      }
+      toast.success("Update worklog successfully")
+      setLoadListWorkLog(!loadListWorkLog);
+      setIsCompleteEditWorkLog(true);
+      setLoadingSaveWorkLog(false)
+      setEditableRowId(null);
+    } catch (error) {
+      setIsCompleteEditWorkLog(false);
+      setLoadingSaveWorkLog(false)
+      console.error("Error fetching job vacancies:", error);
+      toast.error("Update worklog fail")
+    }
+  };
+
+  const updatedPayslip = async (totalOT) => {
+    let response;
+    setLoadingSavePaySlip(true)
+    try {
+      console.log(payslipIdOnClick)
+      console.log(totalOT)
+      response = await paySlipServices.updateTotalOTPayslip(payslipIdOnClick, totalOT);
+      console.log(response.data.data)
+
+
+      const temp2 = listEndDay[currentMonthIndex];
+      if (temp2) {
+        const parts = temp2.split('.');
+        const newDate = `${parts[2]}-${parts[1]}-25`;
+        fetchDetailPayPeriod(newDate)
+      }
+      toast.success("Update payslip successfully")
+      setEdiPaySlipRowId(null);
+      setLoadingSavePaySlip(false)
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      toast.error("Update payslip fail")
+
+      setLoadingSavePaySlip(false)
+    }
+  };
+
+  const fetchDetailPayPeriod = async (newDate) => {
+    let response;
+    console.log("ham nay bi goi lai")
+    console.log(newDate)
+    try {
+      const projectId = state.projectId;
+      console.log(projectId)
+      response = await payPeriodServices.getPayPeriodDetailByProjectIdAndDate(projectId, newDate);
+      console.log(response)
+      setPayPeriodDetail(response.data.data);
+      if (response.data.code === 200) {
+        console.log("cho nay ms bi goi lai");
+        console.log(response.data.data.payPeriodId);
+        const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
+        console.log("response2")
+        console.log(response2)
+        if (response.data.code == 200) {
+          setPayRollDetail(response2.data.data);
+          response2.data.data.forEach((payRollDetailNew, key2) => {
+            const temp = "totalOT" + key2;
+            console.log(temp)
+            const element = document.getElementById(temp);
+            if (element) {
+              console.log("co")
+              console.log(payRollDetailNew.totalOvertimeHours)
+              element.value = payRollDetailNew.totalOvertimeHours;
+            }
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      console.log("payperiod loi")
+      setPayPeriodDetail(null);
+      setPayRollDetail([]);
+    }
+  }
+
+
+  useEffect(() => {
+    console.log(payRollDetail)
+  }, [payRollDetail]);
+
+  useEffect(() => {
+    // if (countSetTime) {
+    console.log("thaydoi")
+    console.log(keyPayRoll)
+    var count = 0;
+    workLoglist.map((log) => {
+      const temp2 = "endTimeWorkLog" + keyPayRoll + count;
+      document.getElementById(temp2).value = log.timeIn;
+      const temp = "endTimeWorkLog2" + keyPayRoll + count;
+      document.getElementById(temp).value = log.timeOut;
+      const key = '' + keyPayRoll + count;
+      var status;
+      if (log.isPaidLeave == null) {
+        console.log("null")
+        status = { label: 'Normally', value: 0 };
+      } else {
+        if (log.isPaidLeave == true) {
+          status = { label: 'Paid leave', value: 1 };
+        } else {
+          status = { label: 'Unpaid leave', value: 2 };
+        }
+      }
+      setValuesStatus(prevState => ({
+        ...prevState,
+        [key]: status
+      }));
+      count += 1;
+
+    });
+    setCountSetTime(countSetTime + 1)
+  }, [workLoglist]);
+
+
+  useEffect(() => {
+    fetchWorklog(paySlipIdLoad);
+  }, [loadListWorkLog]);
+
+
+  const onUpdateWorkLog = () => {
+    setIsCompleteEditWorkLog(false);
+    const foundLog = workLoglist.find(log => log.workLogId === workLogIdOnClick);
+    setStartTimeWorkLogSave(foundLog.timeIn);
+    setEndTimeWorkLogSave(foundLog.timeOut);
+    console.log("foundLog.isPaidLeave");
+    console.log(foundLog.isPaidLeave);
+    setStatusWorkLogSave(foundLog.isPaidLeave);
+    setEditableRowId(workLogIdOnClick);
+  };
+
+  const onUpdatePaySlip = () => {
+    const foundLog = payRollDetail.find(log => log.paySlipId === payslipIdOnClick);
+    setTotalOTPayslipSave(foundLog.totalOvertimeHours)
+    setEdiPaySlipRowId(payslipIdOnClick);
+  };
+
+
+
+
   useEffect(() => {
     fetchProjectDetails();
   }, []);
@@ -820,8 +850,6 @@ const ProjectDetailDescription = () => {
       const newDate = `${parts[2]}-${parts[1]}-25`;
       fetchDetailPayPeriod(newDate)
     }
-    console.log("luc doi")
-    setRangeCalendar()
   }, [currentMonthIndex]);
 
   useEffect(() => {
@@ -833,10 +861,143 @@ const ProjectDetailDescription = () => {
     }
   }, [loadPayPeriod]);
 
-  const setPayRollEdit = (payrollId, key) => {
-    setPayslipIdOnClick(payrollId)
-    setKeyPayslip(key)
+  function formatTime00(inputTime) {
+    if (inputTime.indexOf(":") !== -1 && inputTime.lastIndexOf(":") === inputTime.indexOf(":")) {
+      // Nếu có ít hơn hai dấu hai chấm (":") trong chuỗi, thêm ":00" vào cuối
+      return inputTime + ":00";
+    } else {
+      // Nếu đã có hai dấu hai chấm, giữ nguyên chuỗi
+      return inputTime;
+    }
+  }
 
+  useEffect(() => {
+    if (!isCancelEditWorkLog) {
+      if (workLogIdOnClick) {
+        const temp2 = "endTimeWorkLog" + keyPayRoll + keyWorkLog;
+        const temp = "endTimeWorkLog2" + keyPayRoll + keyWorkLog;
+        const key = '' + keyPayRoll + keyWorkLog;
+        var statusSave;
+        if (statusWorkLogSave == null) {
+          statusSave = { label: 'Normally', value: 0 };
+        } else {
+          if (statusWorkLogSave == true) {
+            statusSave = { label: 'Paid leave', value: 1 };
+          } else {
+            statusSave = { label: 'Unpaid leave', value: 2 };
+          }
+        }
+        const status = valuesStatus[key]
+        console.log(statusSave)
+        console.log(status)
+        if (statusSave.value == status.value) {
+          console.log("giong nhau")
+        } else {
+          console.log("khac nhau")
+        }
+        if (formatTime00(document.getElementById(temp2).value) >= formatTime00(document.getElementById(temp).value) && status.value == 0) {
+          const temp3 = "timeErrorWorkLog" + workLogIdOnClick;
+          document.getElementById(temp3).innerHTML = "The start time of work must be less than the end time of work";
+          setIsCompleteEditWorkLog(false);
+        } else {
+          const temp3 = "timeErrorWorkLog" + workLogIdOnClick;
+          document.getElementById(temp3).innerHTML = "";
+          if (formatTime00(document.getElementById(temp2).value) != startTimeWorkLogSave || formatTime00(document.getElementById(temp).value) != endTimeWorkLogSave || statusSave.value != status.value) {
+            console.log("co update")
+            var isPaid;
+            if (status.value == 0) {
+              isPaid = null;
+            }
+            if (status.value == 1) {
+              isPaid = true;
+            }
+            if (status.value == 2) {
+              isPaid = false;
+            }
+            updatedWorkLog(formatTime00(document.getElementById(temp2).value), formatTime00(document.getElementById(temp).value), isPaid)
+          } else {
+            setIsCompleteEditWorkLog(true);
+            setEditableRowId(null);
+          }
+        }
+      }
+    } else {
+      try {
+        console.log("false")
+        const temp2 = "endTimeWorkLog" + keyPayRoll + keyWorkLog;
+        document.getElementById(temp2).value = startTimeWorkLogSave;
+
+        const temp = "endTimeWorkLog2" + keyPayRoll + keyWorkLog;
+        document.getElementById(temp).value = endTimeWorkLogSave;
+
+        const key = '' + keyPayRoll + keyWorkLog;
+        var status;
+        if (statusWorkLogSave == null) {
+          console.log("null")
+          status = { label: 'Normally', value: 0 };
+        } else {
+          if (statusWorkLogSave == true) {
+            status = { label: 'Paid leave', value: 1 };
+          } else {
+            status = { label: 'Unpaid leave', value: 2 };
+          }
+        }
+        setValuesStatus(prevState => ({
+          ...prevState,
+          [key]: status
+        }));
+        setIsCompleteEditWorkLog(true);
+        setEditableRowId(null);
+      } catch (error) {
+        console.log("Loi khi update worklog", error)
+      }
+    }
+  }, [isEditWorkLog]);
+
+
+  useEffect(() => {
+    if (!isCancelEditPayslip) {
+      if (payslipIdOnClick) {
+        const temp2 = "totalOT" + keyPayslip;
+        if (formatTime00(document.getElementById(temp2).value) < 0) {
+          const temp = "totalOT" + keyPayslip;
+          console.log(temp)
+          document.getElementById(temp).value = totalOTPayslipSave;
+          setEdiPaySlipRowId(null);
+
+        } else {
+          if (formatTime00(document.getElementById(temp2).value) != totalOTPayslipSave) {
+            updatedPayslip(document.getElementById(temp2).value)
+          } else {
+            setEdiPaySlipRowId(null);
+          }
+        }
+      }
+    } else {
+      try {
+        console.log("false")
+        const temp2 = "totalOT" + keyPayslip;
+        console.log(temp2)
+        document.getElementById(temp2).value = totalOTPayslipSave;
+        setEdiPaySlipRowId(null);
+
+      } catch (error) {
+        console.log("Loi khi update worklog", error)
+
+      }
+    }
+  }, [isEditPayslip]);
+
+
+  const cancelUpdateWorkLog = () => {
+    setIsEditWorkLog(!isEditWorkLog);
+    setIsCancelEditWorkLog(true);
+  };
+
+
+  const saveUpdateWorkLog = () => {
+    setIsEditWorkLog(!isEditWorkLog);
+    setIsCancelEditWorkLog(false);
   };
 
   const cancelUpdatePayslip = () => {
@@ -864,7 +1025,6 @@ const ProjectDetailDescription = () => {
   const previousMonth = () => {
     const updatedShowCollapse = showCollapse.map(() => false);
     setShowCollapse(updatedShowCollapse);
-    setRangeCalendar();
     setIsEditWorkLog(!isEditWorkLog);
     setIsEditPayslip(!isEditPayslip);
     setIsCancelEditPayslip(true);
@@ -877,8 +1037,7 @@ const ProjectDetailDescription = () => {
   const createNewPayPeriod = async () => {
     setLoadingCreateNew(true)
     try {
-      const queryParams = new URLSearchParams(location.search);
-      const projectId = queryParams.get("Id");
+      const projectId = state.projectId;
       const currentMonthData = listMonth[currentMonthIndex];
 
       const date = new Date(currentMonthData);
@@ -894,6 +1053,8 @@ const ProjectDetailDescription = () => {
       setLoadingCreateNew(false);
     }
   };
+
+
 
   return (
     <React.Fragment>
@@ -1606,20 +1767,21 @@ const ProjectDetailDescription = () => {
                                         <Col
                                           md={2}
                                           style={{ textAlign: "center" }}
+
                                         >
                                           <div>
                                             <span >{payRollDetailNew.totalEarnings}</span>
                                           </div>
                                         </Col>
 
-                                        <Col md={1} className="d-flex gap-2 justify-content-between align-items-center">
+                                        <Col md={1} className="d-flex gap-2 justify-content-between align-items-center" style={{ paddingLeft: "0px" }}>
                                           <div
                                             className="d-flex justify-content-center align-items-center rounded-circle"
                                             onClick={() => toggleCollapse(key2, payRollDetailNew.paySlipId)}
                                             style={{
                                               backgroundColor: "#ECECED",
-                                              width: "50px",
-                                              height: "50px",
+                                              width: "30px",
+                                              height: "30px",
                                             }}
                                           >
                                             <i
@@ -1629,11 +1791,9 @@ const ProjectDetailDescription = () => {
                                           </div>
                                           {payPeriodDetail.statusString == "Created" && (
                                             <>
-                                              <DropdownAntd trigger={['click']} menu={{ items: profileItems3 }}
-                                                onClick={() =>
-                                                  setPayRollEdit(payRollDetailNew.paySlipId, key2)
-                                                }
-                                                overlayStyle={{ right: '4.312px', bottom: "auto", left: "auto" }} >
+                                              <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
+                                                setPayRollEdit(payRollDetailNew.paySlipId, key2)
+                                              }>
                                                 <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
                                                   <FontAwesomeIcon
                                                     icon={faGear}
@@ -1716,7 +1876,7 @@ const ProjectDetailDescription = () => {
                                           >
                                             <Row>
                                               <Col
-                                                md={3}
+                                                md={2}
                                                 className="d-flex justify-content-center align-items-center"
                                                 id={`time-In2-${workLogDetail.workLogId}`}
                                               >
