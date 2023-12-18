@@ -1493,7 +1493,6 @@ const ProjectDetailDesciption = () => {
   const onSearch = () => {
     setCurrentPage(1);
     fetchJobVacancies();
-
   };
 
   const handleChooseAvatar = () => {
@@ -1546,7 +1545,6 @@ const ProjectDetailDesciption = () => {
     }
   };
   useEffect(() => {
-
     fetchData();
   }, []);
 

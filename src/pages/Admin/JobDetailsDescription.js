@@ -36,11 +36,15 @@ import { Progress, Space } from "antd";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import hireddevServices from "../../services/hireddev.services";
+import { RingLoader } from "react-spinners";
 
 const JobDetailsDescription = () => {
+  const [loading, setLoading] = useState(false);
+
   const { state } = useLocation();
 
   const [hiringRequestDetail, setHiringRequestDetail] = useState(null);
+
   const [devMatching, setDevMatching] = useState([]);
 
   const [devHasBeenSent, setDevHasBeenSent] = useState([]);
@@ -224,6 +228,7 @@ const JobDetailsDescription = () => {
 
   const fetchSendDevToHRNew = async () => {
     let response;
+    setLoading(true);
     try {
       response = await hireddevServices.sendDevToHRNew(
         state.hiringRequestId,
@@ -231,9 +236,13 @@ const JobDetailsDescription = () => {
       );
       setIsSendButtonVisibility(false);
       fetchDeveloperMatchingInManager();
+      setLoading(false);
+
       toast.success("Send developer successfully!");
     } catch (error) {
       console.error("Error fetching send dev to HR:", error);
+      setLoading(false);
+
       toast.error("Send developer to HR error", {
         position: "top-right",
         autoClose: 3000,
@@ -447,6 +456,12 @@ const JobDetailsDescription = () => {
           boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
         }}
       >
+        {loading && (
+          <div className="overlay" style={{ zIndex: "2000" }}>
+            <div className="spinner"></div>
+          </div>
+        )}
+
         <div>
           <div className="job-details-compnay-profile d-flex justify-content-between">
             <div
@@ -772,8 +787,13 @@ const JobDetailsDescription = () => {
                         class="btn btn-primary"
                         role="button"
                         onClick={handleSendToDev}
+                        disabled={loading}
                       >
-                        <span className="fs-17">Send To Dev</span>
+                        {loading ? (
+                          <RingLoader color="#fff" loading={true} size={20} />
+                        ) : (
+                          <span className="fs-17">Send To Company</span>
+                        )}
                       </button>
                       {
                         <Modal
@@ -792,7 +812,7 @@ const JobDetailsDescription = () => {
                             <div>
                               <h6 style={{ color: "#969BA5" }}>
                                 Are you sure you would like to send this hirring
-                                request to developer{" "}
+                                request to company{" "}
                                 <span>
                                   {selectedDev.map((developer, key) => (
                                     <span key={key}>

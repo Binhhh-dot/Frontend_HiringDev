@@ -281,7 +281,7 @@ const ProjectVacancyList = (a) => {
                                                     </div>
                                                 </Col>
 
-                                                <Col md={3}>
+                                                <Col md={2}>
                                                     <div className="d-flex mb-2">
                                                         <div className="flex-shrink-0">
                                                             <i className="uil uil-user-check text-primary me-1"></i>
@@ -292,7 +292,7 @@ const ProjectVacancyList = (a) => {
                                                     </div>
                                                 </Col>
 
-                                                <Col md={2}>
+                                                <Col md={3}>
                                                     <div className="d-flex mb-0">
                                                         <div className="flex-shrink-0">
                                                             <i className="uil uil-clock-three text-primary me-1"></i>

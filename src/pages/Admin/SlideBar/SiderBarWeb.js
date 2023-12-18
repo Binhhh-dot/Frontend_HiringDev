@@ -126,29 +126,29 @@ const SiderBarWeb = ({ choose }) => {
       link: "/listcontract",
     },
 
-    {
-      label: "Interview",
-      key: "menu-key/11",
-      icon: <SolutionOutlined />,
-      className: "interview",
-      link: "/newlistinterview",
-    },
+    // {
+    //   label: "Interview",
+    //   key: "menu-key/11",
+    //   icon: <SolutionOutlined />,
+    //   className: "interview",
+    //   link: "/newlistinterview",
+    // },
 
-    {
-      label: "Report",
-      key: "menu-key/16",
-      icon: <HighlightOutlined />,
-      className: "report",
-      link: "/listreportinmanager", // Add the link property
-    },
+    // {
+    //   label: "Report",
+    //   key: "menu-key/16",
+    //   icon: <HighlightOutlined />,
+    //   className: "report",
+    //   link: "/listreportinmanager", // Add the link property
+    // },
 
-    {
-      label: "Company",
-      key: "menu-key/15",
-      icon: <BankOutlined />,
-      className: "company",
-      link: "/listcompanyPartner",
-    },
+    // {
+    //   label: "Company",
+    //   key: "menu-key/15",
+    //   icon: <BankOutlined />,
+    //   className: "company",
+    //   link: "/listcompanyPartner",
+    // },
 
     {
       label: "Transaction History",

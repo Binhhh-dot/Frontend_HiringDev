@@ -11,8 +11,12 @@ import {
   Col,
   Row,
 } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import userSerrvices from "../../../services/user.serrvices";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import notificationServices from "../../../services/notification.services";
+import { onMessageListener } from "../../../utils/firebase";
 
 const NavBarWeb = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -20,7 +24,16 @@ const NavBarWeb = () => {
   const [imgUser, setImgUser] = useState("");
   const [status, setStatus] = useState("");
   const [roleString, setRoleString] = useState("");
+  //-------------------------------------------------------------------------
+  const navigate = useNavigate();
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [route, setRoute] = useState("");
 
+  //-------------------------------------------------------------------------
+  const [notification, setNotification] = useState(false);
+  const [notificationFb, setNotificationFb] = useState(false);
+  const [listNotification, setListNotification] = useState([]);
+  const [countNotification, setCountNotification] = useState(false);
   //-------------------------------------------------------------------------
   const userId = localStorage.getItem("userId");
   //-------------------------------------------------------------------------
@@ -58,6 +71,112 @@ const NavBarWeb = () => {
     }
   };
 
+  //-------------------------------------------------------------------------
+  const dropDownnotification = async () => {
+    setNotification((prevState) => !prevState);
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      try {
+        const response = await notificationServices.unNewNotification(userId);
+        console.log(response);
+        setCountNotification(0);
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu người dùng:", error);
+      }
+    }
+  };
+  //------------------------------------------------------------------------
+  const fetchListNotification = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = await notificationServices.getListNotificationByUserId(
+        userId
+      );
+      console.log(response);
+      setListNotification(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchCountNotification = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const respone = await notificationServices.getCountNotificationByUserId(
+        userId
+      );
+      console.log(respone);
+      setCountNotification(respone.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchListNotification();
+    fetchCountNotification();
+  }, []);
+
+  useEffect(() => {
+    console.log("navbar");
+    fetchListNotification();
+    fetchCountNotification();
+  }, [notificationFb]);
+
+  //-------------------------------------------------------------------------
+  const handleNoti = async (jobVacancyListDetails) => {
+    const page = jobVacancyListDetails.notificationTypeName;
+    const routeId = jobVacancyListDetails.routeId;
+    var url;
+    // if (page == "Hiring Request") {
+    //   url = "/hiringrequestlistincompanypartnerdetail?Id=" + routeId;
+    //   console.log(url);
+    // }
+    // if (page == "Interview") {
+    //   url = "/hiringrequestlistincompanypartnerdetail?Id=" + routeId;
+    //   console.log(url);
+    // }
+    // if (page == "Contract") {
+    //   url = "/contractListHr";
+    //   console.log(url);
+    // }
+    // if (page == "Project ") {
+    //   url = "/projectdetailhr?Id=" + routeId;
+    //   console.log(url);
+    // }
+    // if (page == "Payment") {
+    //   url = "/payment?Id=" + routeId;
+    //   console.log(url);
+    // }
+    const userId = localStorage.getItem("userId");
+    try {
+      const respone = await notificationServices.readNotification(
+        jobVacancyListDetails.notificationId,
+        userId
+      );
+      console.log(respone);
+    } catch (error) {
+      console.log(error);
+    }
+    navigate(url, { replace: true });
+    setNotification(false);
+    //window.location.reload();
+    fetchListNotification();
+  };
+
+  //-------------------------------------------------------------------------
+  onMessageListener()
+    .then((payload) => {
+      // Xử lý thông báo ở đây
+      console.log("Received message from Firebase:", payload);
+      setNotificationFb(!notificationFb);
+    })
+    .catch((error) => {
+      console.error("Error listening to messages:", error);
+    });
+
+  //-------------------------------------------------------------------------
+
   useEffect(() => {
     fetchGetUserDetail2();
   }, []);
@@ -80,17 +199,99 @@ const NavBarWeb = () => {
           className="mt-4 justify-content-end"
         >
           <div
-            className="d-flex gap-4 align-items-center"
+            className="d-flex align-items-center"
             style={{ height: "inherit" }}
           >
-            <Space>
-              <Badge dot>
-                <i
-                  className="uil uil-bell"
-                  style={{ color: "#8F78DF", fontSize: "20px" }}
-                ></i>
-              </Badge>
-            </Space>
+            <div>
+              {userId ? (
+                <ul className="header-menu list-inline d-flex align-items-center mb-0">
+                  <Dropdown
+                    isOpen={notification}
+                    toggle={dropDownnotification}
+                    className="list-inline-item  me-4"
+                  >
+                    <DropdownToggle
+                      // href="#"
+                      className="header-item noti-icon position-relative"
+                      id="notification"
+                      type="button"
+                      tag="div"
+                    >
+                      <i className="mdi mdi-bell fs-22"></i>
+                      {countNotification != 0 && (
+                        <>
+                          <div className="count position-absolute">
+                            {countNotification}
+                          </div>
+                        </>
+                      )}
+                    </DropdownToggle>
+                    <DropdownMenu
+                      className="dropdown-menu-md dropdown-menu-end p-0"
+                      aria-labelledby="notification"
+                      end
+                    >
+                      <div className="notification-header border-bottom bg-light">
+                        <h6 className="mb-1"> Notification </h6>
+                        <p className="text-muted fs-13 mb-0">
+                          You have {countNotification} unread Notification
+                        </p>
+                      </div>
+                      <div className="notification-wrapper dropdown-scroll">
+                        {listNotification.map((jobVacancyListDetails, key) => (
+                          <div
+                            key={key}
+                            className="text-dark notification-item d-block active"
+                            onClick={() => handleNoti(jobVacancyListDetails)}
+                          >
+                            <div className="d-flex align-items-center gap-2">
+                              <div className="flex-shrink-0 me-3">
+                                <div className="avatar-xs bg-primary text-white rounded-circle text-center">
+                                  <i className="uil uil-user-check"></i>
+                                </div>
+                              </div>
+                              <div className="flex-grow-1">
+                                <p className="mt-0 mb-1 fs-14">
+                                  {jobVacancyListDetails.content}
+                                </p>
+                                <p className="mb-0 fs-12 ">
+                                  {jobVacancyListDetails.isRead != true ? (
+                                    <>
+                                      <i
+                                        style={{ color: "green" }}
+                                        className="mdi mdi-clock-outline"
+                                      ></i>{" "}
+                                      <span style={{ color: "green" }}>
+                                        {" "}
+                                        {jobVacancyListDetails.createdTime}
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <i className="mdi mdi-clock-outline"></i>{" "}
+                                      <span>
+                                        {" "}
+                                        {jobVacancyListDetails.createdTime}
+                                      </span>
+                                    </>
+                                  )}
+                                </p>
+                              </div>
+                              {jobVacancyListDetails.isRead != true && (
+                                <FontAwesomeIcon
+                                  icon={faCircle}
+                                  style={{ fontSize: "10px", color: "green" }}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </DropdownMenu>
+                  </Dropdown>
+                </ul>
+              ) : null}
+            </div>
 
             <div
               className="p-1  d-flex gap-3 align-items-center me-2"

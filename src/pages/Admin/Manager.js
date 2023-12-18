@@ -206,7 +206,7 @@ const Manager = () => {
   //-------------------------------------------------------------------------------------
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <SiderBarWeb choose={"menu-key/2"}></SiderBarWeb>
+      <SiderBarWeb choose={"menu-key/10"}></SiderBarWeb>
       <Layout>
         <NavBarWeb></NavBarWeb>
         {/* <div
