@@ -120,6 +120,7 @@ import ReportListDetail from "../pages/Admin/ReportListDetail";
 import TransactionHistoryList from "../pages/Admin/TransactionHistoryList";
 import UpdateProfileManager from "../pages/Admin/NavBar/UpdateProfileManager";
 import UpdateProfileAdmin from "../pages/Admin/NavBar/UpdateProfileAdmin";
+import UpdateProfileStaff from "../pages/Admin/NavBar/UpdateProfileStaff";
 //Home Section
 const Layout1 = React.lazy(() => import("../pages/Home/Layout1/Layout1"));
 const Layout2 = React.lazy(() => import("../pages/Home/Layout2/Layout2"));
@@ -287,6 +288,8 @@ const authRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
   { path: "/profilemanager", component: <UpdateProfileManager /> },
   { path: "/profileadmin", component: <UpdateProfileAdmin /> },
+  { path: "/profilestaff", component: <UpdateProfileStaff /> },
+
 
 ];
 

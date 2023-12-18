@@ -20,6 +20,9 @@ import {
 import img0 from "../../assets/images/user/img-00.jpg";
 import CompanyDetailPartnerDescription from "./CompanyDetailPartnerDescription";
 import NavBarWeb from "./NavBar/NavBarWeb";
+import NavBarWebStaff from "./NavBar/NavBarWebStaff";
+import SiderBarWebAdmin from "./SlideBar/SiderBarWebAdmin";
+import SiderBarWebStaff from "./SlideBar/SiderBarWebStaff";
 const { Header, Footer, Sider, Content } = Layout;
 
 const CompanyDetailPartner = () => {
@@ -31,9 +34,9 @@ const CompanyDetailPartner = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SiderBarWeb choose={"menu-key/15"}></SiderBarWeb>
+        <SiderBarWebStaff choose={"menu-key/1"}></SiderBarWebStaff>
         <Layout>
-          <NavBarWeb></NavBarWeb>
+          <NavBarWebStaff></NavBarWebStaff>
           <Content>
             <section className="section " style={{ paddingTop: "14px" }}>
               <Container

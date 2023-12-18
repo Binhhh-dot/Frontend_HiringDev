@@ -24,6 +24,8 @@ import {
 import img0 from "../../assets/images/user/img-00.jpg";
 import reportServices from "../../services/report.services";
 import NavBarWeb from "./NavBar/NavBarWeb";
+import SiderBarWebStaff from "./SlideBar/SiderBarWebStaff";
+import NavBarWebStaff from "./NavBar/NavBarWebStaff";
 import { Empty } from "antd";
 
 const { Header, Footer, Content } = Layout;
@@ -350,9 +352,105 @@ const ReportList = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SiderBarWeb choose={"menu-key/16"}></SiderBarWeb>
+        <SiderBarWebStaff choose={"menu-key/3"}></SiderBarWebStaff>
         <Layout>
-          <NavBarWeb></NavBarWeb>
+          {/* <div
+            style={{
+              backgroundColor: "#FFFF",
+              height: "70px",
+              display: "flex",
+              alignItems: "center",
+              borderRadius: "7px",
+              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+              marginLeft: "30px",
+              marginRight: "30px",
+              marginBottom: "0px",
+            }}
+            className="mt-4 justify-content-end"
+          >
+            <div
+              className="d-flex gap-4 align-items-center"
+              style={{ height: "inherit" }}
+            >
+              <Space>
+                <Badge dot>
+                  <i
+                    className="uil uil-bell"
+                    style={{ color: "#8F78DF", fontSize: "20px" }}
+                  ></i>
+                </Badge>
+              </Space>
+              <Space>
+                <Badge dot>
+                  <i
+                    className="uil uil-envelope-open"
+                    style={{ color: "#8F78DF", fontSize: "20px" }}
+                  ></i>
+                </Badge>
+              </Space>
+
+              <div
+                className="p-2  d-flex gap-3 align-items-center"
+                style={{
+                  height: "inherit",
+                  backgroundColor: "#6546D2",
+                  color: "white",
+                  borderRadius: "10px",
+                }}
+              >
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                  <DropdownToggle
+                    className="p-2 d-flex gap-3 align-items-center"
+                    style={{
+                      height: "inherit",
+                      backgroundColor: "#6546D2",
+                      color: "white",
+
+                      cursor: "pointer",
+                      border: "0px",
+                    }}
+                  >
+                    <div>
+                      <img
+                        src={img0}
+                        className="ms-1"
+                        style={{
+                          borderRadius: "10px",
+                          height: "50px",
+                        }}
+                      />
+                    </div>
+                    <div className="me-1 d-flex flex-column align-items-center">
+                      <span className="fs-18">Nik jone</span>
+                      <span>Available</span>
+                    </div>
+                  </DropdownToggle>
+                  <DropdownMenu
+                    style={{
+                      marginLeft: "-25px",
+                    }}
+                  >
+                    <DropdownItem style={{ padding: "0px" }}>
+                      <div>
+                        <Link to="#" className="dropdown-item">
+                          Setting
+                        </Link>
+                      </div>
+                    </DropdownItem>
+
+                    <DropdownItem style={{ padding: "0px" }}>
+                      <div>
+                        <Link to="/signout" className="dropdown-item">
+                          Logout
+                        </Link>
+                      </div>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+            </div>
+          </div> */}
+          <NavBarWebStaff></NavBarWebStaff>
 
           <Content>
             <section
@@ -568,15 +666,15 @@ const ReportList = () => {
                                               <span
                                                 className={
                                                   reportListNew.statusString ===
-                                                  "Pending"
+                                                    "Pending"
                                                     ? "badge bg-warning text-light fs-12"
                                                     : reportListNew.statusString ===
                                                       "Processing"
-                                                    ? "badge bg-blue text-light fs-12"
-                                                    : reportListNew.statusString ===
-                                                      "Done"
-                                                    ? "badge bg-newGreen text-light fs-12"
-                                                    : ""
+                                                      ? "badge bg-blue text-light fs-12"
+                                                      : reportListNew.statusString ===
+                                                        "Done"
+                                                        ? "badge bg-newGreen text-light fs-12"
+                                                        : ""
                                                 }
                                               >
                                                 {reportListNew.statusString}
@@ -595,11 +693,10 @@ const ReportList = () => {
                                       <nav aria-label="Page navigation example">
                                         <div className="pagination job-pagination mb-0 justify-content-center">
                                           <li
-                                            className={`page-item ${
-                                              currentPage === 1
-                                                ? "disabled"
-                                                : ""
-                                            }`}
+                                            className={`page-item ${currentPage === 1
+                                              ? "disabled"
+                                              : ""
+                                              }`}
                                           >
                                             <Link
                                               className="page-link"
@@ -612,11 +709,10 @@ const ReportList = () => {
                                           </li>
                                           {renderPageNumbers()}
                                           <li
-                                            className={`page-item ${
-                                              currentPage === totalPages
-                                                ? "disabled"
-                                                : ""
-                                            }`}
+                                            className={`page-item ${currentPage === totalPages
+                                              ? "disabled"
+                                              : ""
+                                              }`}
                                           >
                                             <Link
                                               className="page-link"
@@ -761,15 +857,15 @@ const ReportList = () => {
                                                 <span
                                                   className={
                                                     reportListNew.statusString ===
-                                                    "Pending"
+                                                      "Pending"
                                                       ? "badge bg-warning text-light fs-12"
                                                       : reportListNew.statusString ===
                                                         "Processing"
-                                                      ? "badge bg-blue text-light fs-12"
-                                                      : reportListNew.statusString ===
-                                                        "Done"
-                                                      ? "badge bg-newGreen text-light fs-12"
-                                                      : ""
+                                                        ? "badge bg-blue text-light fs-12"
+                                                        : reportListNew.statusString ===
+                                                          "Done"
+                                                          ? "badge bg-newGreen text-light fs-12"
+                                                          : ""
                                                   }
                                                 >
                                                   {reportListNew.statusString}
@@ -789,11 +885,10 @@ const ReportList = () => {
                                       <nav aria-label="Page navigation example">
                                         <div className="pagination job-pagination mb-0 justify-content-center">
                                           <li
-                                            className={`page-item ${
-                                              currentPagePending === 1
-                                                ? "disabled"
-                                                : ""
-                                            }`}
+                                            className={`page-item ${currentPagePending === 1
+                                              ? "disabled"
+                                              : ""
+                                              }`}
                                           >
                                             <Link
                                               className="page-link"
@@ -806,12 +901,11 @@ const ReportList = () => {
                                           </li>
                                           {renderPageNumbersPending()}
                                           <li
-                                            className={`page-item ${
-                                              currentPagePending ===
+                                            className={`page-item ${currentPagePending ===
                                               totalPagesPending
-                                                ? "disabled"
-                                                : ""
-                                            }`}
+                                              ? "disabled"
+                                              : ""
+                                              }`}
                                           >
                                             <Link
                                               className="page-link"
@@ -956,15 +1050,15 @@ const ReportList = () => {
                                                 <span
                                                   className={
                                                     reportListNew.statusString ===
-                                                    "Pending"
+                                                      "Pending"
                                                       ? "badge bg-warning text-light fs-12"
                                                       : reportListNew.statusString ===
                                                         "Processing"
-                                                      ? "badge bg-blue text-light fs-12"
-                                                      : reportListNew.statusString ===
-                                                        "Done"
-                                                      ? "badge bg-newGreen text-light fs-12"
-                                                      : ""
+                                                        ? "badge bg-blue text-light fs-12"
+                                                        : reportListNew.statusString ===
+                                                          "Done"
+                                                          ? "badge bg-newGreen text-light fs-12"
+                                                          : ""
                                                   }
                                                 >
                                                   {reportListNew.statusString}
@@ -984,11 +1078,10 @@ const ReportList = () => {
                                       <nav aria-label="Page navigation example">
                                         <div className="pagination job-pagination mb-0 justify-content-center">
                                           <li
-                                            className={`page-item ${
-                                              currentPageProcessing === 1
-                                                ? "disabled"
-                                                : ""
-                                            }`}
+                                            className={`page-item ${currentPageProcessing === 1
+                                              ? "disabled"
+                                              : ""
+                                              }`}
                                           >
                                             <Link
                                               className="page-link"
@@ -1001,12 +1094,11 @@ const ReportList = () => {
                                           </li>
                                           {renderPageNumbersProcessing()}
                                           <li
-                                            className={`page-item ${
-                                              currentPageProcessing ===
+                                            className={`page-item ${currentPageProcessing ===
                                               totalPagesProcessing
-                                                ? "disabled"
-                                                : ""
-                                            }`}
+                                              ? "disabled"
+                                              : ""
+                                              }`}
                                           >
                                             <Link
                                               className="page-link"
@@ -1138,15 +1230,15 @@ const ReportList = () => {
                                               <span
                                                 className={
                                                   reportListNew.statusString ===
-                                                  "Pending"
+                                                    "Pending"
                                                     ? "badge bg-warning text-light fs-12"
                                                     : reportListNew.statusString ===
                                                       "Processing"
-                                                    ? "badge bg-blue text-light fs-12"
-                                                    : reportListNew.statusString ===
-                                                      "Done"
-                                                    ? "badge bg-newGreen text-light fs-12"
-                                                    : ""
+                                                      ? "badge bg-blue text-light fs-12"
+                                                      : reportListNew.statusString ===
+                                                        "Done"
+                                                        ? "badge bg-newGreen text-light fs-12"
+                                                        : ""
                                                 }
                                               >
                                                 {reportListNew.statusString}
@@ -1165,11 +1257,10 @@ const ReportList = () => {
                                       <nav aria-label="Page navigation example">
                                         <div className="pagination job-pagination mb-0 justify-content-center">
                                           <li
-                                            className={`page-item ${
-                                              currentPageDone === 1
-                                                ? "disabled"
-                                                : ""
-                                            }`}
+                                            className={`page-item ${currentPageDone === 1
+                                              ? "disabled"
+                                              : ""
+                                              }`}
                                           >
                                             <Link
                                               className="page-link"
@@ -1182,11 +1273,10 @@ const ReportList = () => {
                                           </li>
                                           {renderPageNumbersDone()}
                                           <li
-                                            className={`page-item ${
-                                              currentPageDone === totalPagesDone
-                                                ? "disabled"
-                                                : ""
-                                            }`}
+                                            className={`page-item ${currentPageDone === totalPagesDone
+                                              ? "disabled"
+                                              : ""
+                                              }`}
                                           >
                                             <Link
                                               className="page-link"

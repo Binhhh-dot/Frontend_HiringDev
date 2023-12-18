@@ -343,7 +343,7 @@ const ListAccountHR = () => {
           <NavBarWebAdmin></NavBarWebAdmin>
           <div
             style={{
-              padding: "0px 30px 0px 50px",
+              padding: "10px 5px 0px 5px",
               background: "white",
               margin: "30px",
               borderRadius: "12px",
@@ -351,14 +351,18 @@ const ListAccountHR = () => {
             }}
           >
             <Content>
-              <Breadcrumb
+              <h1
                 style={{
-                  margin: "13px 0",
+                  padding: "5px 0px 0px 0px",
+                  margin: "0px 0px 0px 20px",
+                  color: "black",
+                  fontSize: "20px",
+                  fontWeight: "bold"
                 }}
               >
-                <Breadcrumb.Item>Management</Breadcrumb.Item>
-                <Breadcrumb.Item>Manager List</Breadcrumb.Item>
-              </Breadcrumb>
+                MANAGE HUMAN RESOURCE
+              </h1>
+
               <a
                 className="me-1 d-flex flex-column align-items-end"
                 onClick={showModal1}
@@ -367,8 +371,8 @@ const ListAccountHR = () => {
               </a>
               <div
                 style={{
-                  padding: 20,
-                  minHeight: 360,
+                  padding: 25,
+                  minHeight: 400,
                 }}
               >
                 <div style={{ height: "600px", overflow: "auto" }}>

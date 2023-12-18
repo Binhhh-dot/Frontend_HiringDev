@@ -64,7 +64,7 @@ const SignIn = () => {
           // Save user ID to local storage
           localStorage.setItem("userId", userId);
           localStorage.setItem("role", role)
-          localStorage.setItem("refreshTokenExp ", refreshTokenExp)
+          localStorage.setItem("refreshTokenExp", refreshTokenExp)
           localStorage.setItem("accessToken", accessToken)
           localStorage.setItem("refreshToken", refreshToken)
           localStorage.setItem("accessTokenExp", accessTokenExp)
@@ -82,6 +82,12 @@ const SignIn = () => {
           });
         } else if (role === "Admin") {
           navigate("/dashboard")
+          requestPermission((token) => {
+            console.log(token)
+            sendDeviceToken(token);
+          });
+        } else if (role === "Staff") {
+          navigate("/listcompanyPartner")
           requestPermission((token) => {
             console.log(token)
             sendDeviceToken(token);
