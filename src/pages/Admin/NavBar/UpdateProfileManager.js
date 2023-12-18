@@ -128,7 +128,7 @@ const UpdateProfileManager = () => {
         }
       } catch (error) {
         setLoadingUpdateAccount(false);
-        toast.success("Update fail");
+        toast.error("Update fail");
       }
 
       setLoadingUpdateAccount(false);

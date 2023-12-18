@@ -42,6 +42,7 @@ import {
   DropdownItem,
 } from "reactstrap";
 import NavBarWeb from "./NavBar/NavBarWeb";
+import SiderBarWebStaff from "./SlideBar/SiderBarWebStaff";
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
@@ -55,7 +56,7 @@ const NewHiringRequestDetail = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SiderBarWeb choose={"menu-key/10"}></SiderBarWeb>
+        <SiderBarWebStaff choose={"menu-key/2"}></SiderBarWebStaff>
 
         <Layout>
           {/* <div
