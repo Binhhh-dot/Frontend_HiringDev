@@ -24,6 +24,10 @@ import {
 import img0 from "../../assets/images/user/img-00.jpg";
 import reportServices from "../../services/report.services";
 import NavBarWeb from "./NavBar/NavBarWeb";
+import SiderBarWebStaff from "./SlideBar/SiderBarWebStaff";
+import NavBarWebStaff from "./NavBar/NavBarWebStaff";
+import { Empty } from "antd";
+
 const { Header, Footer, Content } = Layout;
 
 const ReportList = () => {
@@ -277,16 +281,18 @@ const ReportList = () => {
   //-----------------------------------------------------------------------------------
   const fetchGetReportListPending = async () => {
     let response;
-    let tmp;
-    try {
-      response = await reportServices.getReportList(currentPagePending, 7);
-      console.log(response.data.data);
-      tmp = response.data.data.filter(
-        (report) => report.statusString == "Pending"
-      );
 
-      setReportListPending(tmp);
-      setTotalPagesPending(Math.ceil(tmp.length / pageSizePending));
+    try {
+      response = await reportServices.getReportListPendingPaging(
+        currentPagePending,
+        7
+      );
+      console.log(response.data.data);
+
+      setReportListPending(response.data.data);
+      setTotalPagesPending(
+        Math.ceil(response.data.paging.total / pageSizePending)
+      );
     } catch (error) {
       console.error("Error fetching list report pending:", error);
     }
@@ -294,16 +300,17 @@ const ReportList = () => {
   //-----------------------------------------------------------------------------------
   const fetchGetReportListProcessing = async () => {
     let response;
-    let tmp;
     try {
-      response = await reportServices.getReportList(currentPageProcessing, 7);
-      console.log(response.data.data);
-      tmp = response.data.data.filter(
-        (report) => report.statusString == "Processing"
+      response = await reportServices.getReportListProcessingPaging(
+        currentPageProcessing,
+        7
       );
+      console.log(response.data.data);
 
-      setReportListProcessing(tmp);
-      setTotalPagesProcessing(Math.ceil(tmp.length / pageSizeProcessing));
+      setReportListProcessing(response.data.data);
+      setTotalPagesProcessing(
+        Math.ceil(response.data.paging.total / pageSizeProcessing)
+      );
     } catch (error) {
       console.error("Error fetching list report processing:", error);
     }
@@ -311,16 +318,16 @@ const ReportList = () => {
   //-----------------------------------------------------------------------------------
   const fetchGetReportListDone = async () => {
     let response;
-    let tmp;
-    try {
-      response = await reportServices.getReportList(currentPageDone, 7);
-      console.log(response.data.data);
-      tmp = response.data.data.filter(
-        (report) => report.statusString == "Done"
-      );
 
-      setReportListDone(tmp);
-      setTotalPagesDone(Math.ceil(tmp.length / pageSizeDone));
+    try {
+      response = await reportServices.getReportListDonePaging(
+        currentPageDone,
+        7
+      );
+      console.log(response.data.data);
+
+      setReportListDone(response.data.data);
+      setTotalPagesDone(Math.ceil(response.data.paging.total / pageSizeDone));
     } catch (error) {
       console.error("Error fetching list report done:", error);
     }
@@ -345,7 +352,7 @@ const ReportList = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SiderBarWeb choose={"menu-key/16"}></SiderBarWeb>
+        <SiderBarWebStaff choose={"menu-key/3"}></SiderBarWebStaff>
         <Layout>
           {/* <div
             style={{
@@ -443,7 +450,7 @@ const ReportList = () => {
               </div>
             </div>
           </div> */}
-          <NavBarWeb></NavBarWeb>
+          <NavBarWebStaff></NavBarWebStaff>
 
           <Content>
             <section
@@ -545,686 +552,746 @@ const ReportList = () => {
                         <CardBody className="px-0">
                           <TabContent activeTab={activeTab}>
                             <TabPane tabId="1">
-                              {reportList.map((reportListNew, key) => (
-                                <div
-                                  key={key}
-                                  className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                                  style={{
-                                    boxShadow:
-                                      "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                  }}
-                                >
-                                  <CardBody className="p-2">
-                                    <Row className="align-items-center justify-content-evenly">
-                                      <Col md={1}>
-                                        <div className="d-flex justify-content-center">
-                                          <i
-                                            className="uil uil-clipboard-notes"
-                                            style={{ fontSize: "50px" }}
-                                          ></i>
-                                        </div>
-                                      </Col>
-
-                                      <Col md={2}>
-                                        <div>
-                                          <h5 className="fs-18 mb-0">
-                                            <Link
-                                              to="/listreportinmanagerdetail"
-                                              className="text-dark"
-                                              state={{
-                                                reportId:
-                                                  reportListNew.reportId,
-                                                developerId:
-                                                  reportListNew.developerId,
-                                                projectId:
-                                                  reportListNew.projectId,
-                                              }}
-                                            >
-                                              {reportListNew.reportTitle}
-                                            </Link>
-                                          </h5>
-                                          <p className="text-muted fs-14 mb-0">
-                                            {reportListNew.companyPartnerName}
-                                          </p>
-                                        </div>
-                                      </Col>
-
-                                      <Col md={3}>
-                                        <div className="d-flex flex-column gap-1 justify-content-center">
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Project Name
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.projectName}
-                                            </p>
-                                          </div>
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Project Code
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.projectCode}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </Col>
-
-                                      <Col md={3}>
-                                        <div className="d-flex flex-column gap-1 justify-content-center">
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Developer Name
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.developerName}
-                                            </p>
-                                          </div>
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Developer Code
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.developerCode}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </Col>
-
-                                      <Col
-                                        md={1}
-                                        className="d-flex justify-content-start"
-                                      >
-                                        <div className="d-flex align-items-center">
-                                          <span
-                                            className={
-                                              reportListNew.statusString ===
-                                              "Pending"
-                                                ? "badge bg-warning text-light fs-12"
-                                                : reportListNew.statusString ===
-                                                  "Processing"
-                                                ? "badge bg-blue text-light fs-12"
-                                                : reportListNew.statusString ===
-                                                  "Done"
-                                                ? "badge bg-newGreen text-light fs-12"
-                                                : ""
-                                            }
-                                          >
-                                            {reportListNew.statusString}
-                                          </span>
-                                        </div>
-                                      </Col>
-                                    </Row>
-                                  </CardBody>
+                              {reportList.length === 0 ? (
+                                <div>
+                                  <Empty />
                                 </div>
-                              ))}
+                              ) : (
+                                <div>
+                                  {reportList.map((reportListNew, key) => (
+                                    <div
+                                      key={key}
+                                      className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                      style={{
+                                        boxShadow:
+                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                      }}
+                                    >
+                                      <CardBody className="p-2">
+                                        <Row className="align-items-center justify-content-evenly">
+                                          <Col md={1}>
+                                            <div className="d-flex justify-content-center">
+                                              <i
+                                                className="uil uil-clipboard-notes"
+                                                style={{ fontSize: "50px" }}
+                                              ></i>
+                                            </div>
+                                          </Col>
 
-                              {/* ---------------------------------------------------------------------- */}
-                              {/* phan trang */}
-                              <Row>
-                                <Col lg={12} className="mt-4 pt-2">
-                                  <nav aria-label="Page navigation example">
-                                    <div className="pagination job-pagination mb-0 justify-content-center">
-                                      <li
-                                        className={`page-item ${
-                                          currentPage === 1 ? "disabled" : ""
-                                        }`}
-                                      >
-                                        <Link
-                                          className="page-link"
-                                          to="#"
-                                          tabIndex="-1"
-                                          onClick={handlePrevPage}
-                                        >
-                                          <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                        </Link>
-                                      </li>
-                                      {renderPageNumbers()}
-                                      <li
-                                        className={`page-item ${
-                                          currentPage === totalPages
-                                            ? "disabled"
-                                            : ""
-                                        }`}
-                                      >
-                                        <Link
-                                          className="page-link"
-                                          to="#"
-                                          onClick={handleNextPage}
-                                        >
-                                          <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                        </Link>
-                                      </li>
+                                          <Col md={2}>
+                                            <div>
+                                              <h5 className="fs-18 mb-0">
+                                                <Link
+                                                  to="/listreportinmanagerdetail"
+                                                  className="text-dark"
+                                                  state={{
+                                                    reportId:
+                                                      reportListNew.reportId,
+                                                    developerId:
+                                                      reportListNew.developerId,
+                                                    projectId:
+                                                      reportListNew.projectId,
+                                                  }}
+                                                >
+                                                  {reportListNew.reportTitle}
+                                                </Link>
+                                              </h5>
+                                              <p className="text-muted fs-14 mb-0">
+                                                {
+                                                  reportListNew.companyPartnerName
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+
+                                          <Col md={3}>
+                                            <div className="d-flex flex-column gap-1 justify-content-center">
+                                              <div>
+                                                <p className="text-muted mb-0 fs-13">
+                                                  Project Name
+                                                </p>
+                                                <p
+                                                  className="mb-0 fs-17"
+                                                  style={{ fontWeight: "600" }}
+                                                >
+                                                  {reportListNew.projectName}
+                                                </p>
+                                              </div>
+                                              <div>
+                                                <p className="text-muted mb-0 fs-13">
+                                                  Project Code
+                                                </p>
+                                                <p
+                                                  className="mb-0 fs-17"
+                                                  style={{ fontWeight: "600" }}
+                                                >
+                                                  {reportListNew.projectCode}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </Col>
+
+                                          <Col md={3}>
+                                            <div className="d-flex flex-column gap-1 justify-content-center">
+                                              <div>
+                                                <p className="text-muted mb-0 fs-13">
+                                                  Developer Name
+                                                </p>
+                                                <p
+                                                  className="mb-0 fs-17"
+                                                  style={{ fontWeight: "600" }}
+                                                >
+                                                  {reportListNew.developerName}
+                                                </p>
+                                              </div>
+                                              <div>
+                                                <p className="text-muted mb-0 fs-13">
+                                                  Developer Code
+                                                </p>
+                                                <p
+                                                  className="mb-0 fs-17"
+                                                  style={{ fontWeight: "600" }}
+                                                >
+                                                  {reportListNew.developerCode}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={1}
+                                            className="d-flex justify-content-start"
+                                          >
+                                            <div className="d-flex align-items-center">
+                                              <span
+                                                className={
+                                                  reportListNew.statusString ===
+                                                    "Pending"
+                                                    ? "badge bg-warning text-light fs-12"
+                                                    : reportListNew.statusString ===
+                                                      "Processing"
+                                                      ? "badge bg-blue text-light fs-12"
+                                                      : reportListNew.statusString ===
+                                                        "Done"
+                                                        ? "badge bg-newGreen text-light fs-12"
+                                                        : ""
+                                                }
+                                              >
+                                                {reportListNew.statusString}
+                                              </span>
+                                            </div>
+                                          </Col>
+                                        </Row>
+                                      </CardBody>
                                     </div>
-                                  </nav>
-                                </Col>
-                              </Row>
+                                  ))}
+
+                                  {/* ---------------------------------------------------------------------- */}
+                                  {/* phan trang */}
+                                  <Row>
+                                    <Col lg={12} className="mt-4 pt-2">
+                                      <nav aria-label="Page navigation example">
+                                        <div className="pagination job-pagination mb-0 justify-content-center">
+                                          <li
+                                            className={`page-item ${currentPage === 1
+                                              ? "disabled"
+                                              : ""
+                                              }`}
+                                          >
+                                            <Link
+                                              className="page-link"
+                                              to="#"
+                                              tabIndex="-1"
+                                              onClick={handlePrevPage}
+                                            >
+                                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                            </Link>
+                                          </li>
+                                          {renderPageNumbers()}
+                                          <li
+                                            className={`page-item ${currentPage === totalPages
+                                              ? "disabled"
+                                              : ""
+                                              }`}
+                                          >
+                                            <Link
+                                              className="page-link"
+                                              to="#"
+                                              onClick={handleNextPage}
+                                            >
+                                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                            </Link>
+                                          </li>
+                                        </div>
+                                      </nav>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              )}
                             </TabPane>
                             <TabPane tabId="2">
-                              {reportListPending.map((reportListNew, key) => (
-                                <div
-                                  key={key}
-                                  className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                                  style={{
-                                    boxShadow:
-                                      "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                  }}
-                                >
-                                  <CardBody className="p-2">
-                                    <Row className="align-items-center justify-content-evenly">
-                                      <Col md={1}>
-                                        <div className="d-flex justify-content-center">
-                                          <i
-                                            className="uil uil-clipboard-notes"
-                                            style={{ fontSize: "50px" }}
-                                          ></i>
-                                        </div>
-                                      </Col>
-
-                                      <Col md={2}>
-                                        <div>
-                                          <h5 className="fs-18 mb-0">
-                                            <Link
-                                              to="/listreportinmanagerdetail"
-                                              className="text-dark"
-                                              state={{
-                                                reportId:
-                                                  reportListNew.reportId,
-                                                developerId:
-                                                  reportListNew.developerId,
-                                                projectId:
-                                                  reportListNew.projectId,
-                                              }}
-                                            >
-                                              {reportListNew.reportTitle}
-                                            </Link>
-                                          </h5>
-                                          <p className="text-muted fs-14 mb-0">
-                                            {reportListNew.companyPartnerName}
-                                          </p>
-                                        </div>
-                                      </Col>
-
-                                      <Col md={3}>
-                                        <div className="d-flex flex-column gap-1 justify-content-center">
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Project Name
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.projectName}
-                                            </p>
-                                          </div>
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Project Code
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.projectCode}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </Col>
-
-                                      <Col md={3}>
-                                        <div className="d-flex flex-column gap-1 justify-content-center">
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Developer Name
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.developerName}
-                                            </p>
-                                          </div>
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Developer Code
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.developerCode}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </Col>
-
-                                      <Col
-                                        md={1}
-                                        className="d-flex justify-content-start"
-                                      >
-                                        <div className="d-flex align-items-center">
-                                          <span
-                                            className={
-                                              reportListNew.statusString ===
-                                              "Pending"
-                                                ? "badge bg-warning text-light fs-12"
-                                                : reportListNew.statusString ===
-                                                  "Processing"
-                                                ? "badge bg-blue text-light fs-12"
-                                                : reportListNew.statusString ===
-                                                  "Done"
-                                                ? "badge bg-newGreen text-light fs-12"
-                                                : ""
-                                            }
-                                          >
-                                            {reportListNew.statusString}
-                                          </span>
-                                        </div>
-                                      </Col>
-                                    </Row>
-                                  </CardBody>
+                              {reportListPending.length === 0 ? (
+                                <div>
+                                  <Empty />
                                 </div>
-                              ))}
+                              ) : (
+                                <div>
+                                  {reportListPending.map(
+                                    (reportListNew, key) => (
+                                      <div
+                                        key={key}
+                                        className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                        style={{
+                                          boxShadow:
+                                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                        }}
+                                      >
+                                        <CardBody className="p-2">
+                                          <Row className="align-items-center justify-content-evenly">
+                                            <Col md={1}>
+                                              <div className="d-flex justify-content-center">
+                                                <i
+                                                  className="uil uil-clipboard-notes"
+                                                  style={{ fontSize: "50px" }}
+                                                ></i>
+                                              </div>
+                                            </Col>
 
-                              {/* ---------------------------------------------------------------------- */}
-                              {/* phan trang */}
-                              <Row>
-                                <Col lg={12} className="mt-4 pt-2">
-                                  <nav aria-label="Page navigation example">
-                                    <div className="pagination job-pagination mb-0 justify-content-center">
-                                      <li
-                                        className={`page-item ${
-                                          currentPagePending === 1
-                                            ? "disabled"
-                                            : ""
-                                        }`}
-                                      >
-                                        <Link
-                                          className="page-link"
-                                          to="#"
-                                          tabIndex="-1"
-                                          onClick={handlePrevPagePending}
-                                        >
-                                          <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                        </Link>
-                                      </li>
-                                      {renderPageNumbersPending()}
-                                      <li
-                                        className={`page-item ${
-                                          currentPagePending ===
-                                          totalPagesPending
-                                            ? "disabled"
-                                            : ""
-                                        }`}
-                                      >
-                                        <Link
-                                          className="page-link"
-                                          to="#"
-                                          onClick={handleNextPagePending}
-                                        >
-                                          <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                        </Link>
-                                      </li>
-                                    </div>
-                                  </nav>
-                                </Col>
-                              </Row>
+                                            <Col md={2}>
+                                              <div>
+                                                <h5 className="fs-18 mb-0">
+                                                  <Link
+                                                    to="/listreportinmanagerdetail"
+                                                    className="text-dark"
+                                                    state={{
+                                                      reportId:
+                                                        reportListNew.reportId,
+                                                      developerId:
+                                                        reportListNew.developerId,
+                                                      projectId:
+                                                        reportListNew.projectId,
+                                                    }}
+                                                  >
+                                                    {reportListNew.reportTitle}
+                                                  </Link>
+                                                </h5>
+                                                <p className="text-muted fs-14 mb-0">
+                                                  {
+                                                    reportListNew.companyPartnerName
+                                                  }
+                                                </p>
+                                              </div>
+                                            </Col>
+
+                                            <Col md={3}>
+                                              <div className="d-flex flex-column gap-1 justify-content-center">
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-13">
+                                                    Project Name
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {reportListNew.projectName}
+                                                  </p>
+                                                </div>
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-13">
+                                                    Project Code
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {reportListNew.projectCode}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </Col>
+
+                                            <Col md={3}>
+                                              <div className="d-flex flex-column gap-1 justify-content-center">
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-13">
+                                                    Developer Name
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {
+                                                      reportListNew.developerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-13">
+                                                    Developer Code
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {
+                                                      reportListNew.developerCode
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </Col>
+
+                                            <Col
+                                              md={1}
+                                              className="d-flex justify-content-start"
+                                            >
+                                              <div className="d-flex align-items-center">
+                                                <span
+                                                  className={
+                                                    reportListNew.statusString ===
+                                                      "Pending"
+                                                      ? "badge bg-warning text-light fs-12"
+                                                      : reportListNew.statusString ===
+                                                        "Processing"
+                                                        ? "badge bg-blue text-light fs-12"
+                                                        : reportListNew.statusString ===
+                                                          "Done"
+                                                          ? "badge bg-newGreen text-light fs-12"
+                                                          : ""
+                                                  }
+                                                >
+                                                  {reportListNew.statusString}
+                                                </span>
+                                              </div>
+                                            </Col>
+                                          </Row>
+                                        </CardBody>
+                                      </div>
+                                    )
+                                  )}
+
+                                  {/* ---------------------------------------------------------------------- */}
+                                  {/* phan trang */}
+                                  <Row>
+                                    <Col lg={12} className="mt-4 pt-2">
+                                      <nav aria-label="Page navigation example">
+                                        <div className="pagination job-pagination mb-0 justify-content-center">
+                                          <li
+                                            className={`page-item ${currentPagePending === 1
+                                              ? "disabled"
+                                              : ""
+                                              }`}
+                                          >
+                                            <Link
+                                              className="page-link"
+                                              to="#"
+                                              tabIndex="-1"
+                                              onClick={handlePrevPagePending}
+                                            >
+                                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                            </Link>
+                                          </li>
+                                          {renderPageNumbersPending()}
+                                          <li
+                                            className={`page-item ${currentPagePending ===
+                                              totalPagesPending
+                                              ? "disabled"
+                                              : ""
+                                              }`}
+                                          >
+                                            <Link
+                                              className="page-link"
+                                              to="#"
+                                              onClick={handleNextPagePending}
+                                            >
+                                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                            </Link>
+                                          </li>
+                                        </div>
+                                      </nav>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              )}
                             </TabPane>
                             <TabPane tabId="3">
-                              {reportListProcessing.map(
-                                (reportListNew, key) => (
-                                  <div
-                                    key={key}
-                                    className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                                    style={{
-                                      boxShadow:
-                                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                    }}
-                                  >
-                                    <CardBody className="p-2">
-                                      <Row className="align-items-center justify-content-evenly">
-                                        <Col md={1}>
-                                          <div className="d-flex justify-content-center">
-                                            <i
-                                              className="uil uil-clipboard-notes"
-                                              style={{ fontSize: "50px" }}
-                                            ></i>
-                                          </div>
-                                        </Col>
+                              {reportListProcessing.length === 0 ? (
+                                <div>
+                                  <Empty />
+                                </div>
+                              ) : (
+                                <div>
+                                  {reportListProcessing.map(
+                                    (reportListNew, key) => (
+                                      <div
+                                        key={key}
+                                        className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                        style={{
+                                          boxShadow:
+                                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                        }}
+                                      >
+                                        <CardBody className="p-2">
+                                          <Row className="align-items-center justify-content-evenly">
+                                            <Col md={1}>
+                                              <div className="d-flex justify-content-center">
+                                                <i
+                                                  className="uil uil-clipboard-notes"
+                                                  style={{ fontSize: "50px" }}
+                                                ></i>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={2}>
-                                          <div>
-                                            <h5 className="fs-18 mb-0">
-                                              <Link
-                                                to="/listreportinmanagerdetail"
-                                                className="text-dark"
-                                                state={{
-                                                  reportId:
-                                                    reportListNew.reportId,
-                                                  developerId:
-                                                    reportListNew.developerId,
-                                                  projectId:
-                                                    reportListNew.projectId,
-                                                }}
-                                              >
-                                                {reportListNew.reportTitle}
-                                              </Link>
-                                            </h5>
-                                            <p className="text-muted fs-14 mb-0">
-                                              {reportListNew.companyPartnerName}
-                                            </p>
-                                          </div>
-                                        </Col>
+                                            <Col md={2}>
+                                              <div>
+                                                <h5 className="fs-18 mb-0">
+                                                  <Link
+                                                    to="/listreportinmanagerdetail"
+                                                    className="text-dark"
+                                                    state={{
+                                                      reportId:
+                                                        reportListNew.reportId,
+                                                      developerId:
+                                                        reportListNew.developerId,
+                                                      projectId:
+                                                        reportListNew.projectId,
+                                                    }}
+                                                  >
+                                                    {reportListNew.reportTitle}
+                                                  </Link>
+                                                </h5>
+                                                <p className="text-muted fs-14 mb-0">
+                                                  {
+                                                    reportListNew.companyPartnerName
+                                                  }
+                                                </p>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={3}>
-                                          <div className="d-flex flex-column gap-1 justify-content-center">
-                                            <div>
-                                              <p className="text-muted mb-0 fs-13">
-                                                Project Name
-                                              </p>
-                                              <p
-                                                className="mb-0 fs-17"
-                                                style={{ fontWeight: "600" }}
-                                              >
-                                                {reportListNew.projectName}
-                                              </p>
-                                            </div>
-                                            <div>
-                                              <p className="text-muted mb-0 fs-13">
-                                                Project Code
-                                              </p>
-                                              <p
-                                                className="mb-0 fs-17"
-                                                style={{ fontWeight: "600" }}
-                                              >
-                                                {reportListNew.projectCode}
-                                              </p>
-                                            </div>
-                                          </div>
-                                        </Col>
+                                            <Col md={3}>
+                                              <div className="d-flex flex-column gap-1 justify-content-center">
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-13">
+                                                    Project Name
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {reportListNew.projectName}
+                                                  </p>
+                                                </div>
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-13">
+                                                    Project Code
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {reportListNew.projectCode}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </Col>
 
-                                        <Col md={3}>
-                                          <div className="d-flex flex-column gap-1 justify-content-center">
-                                            <div>
-                                              <p className="text-muted mb-0 fs-13">
-                                                Developer Name
-                                              </p>
-                                              <p
-                                                className="mb-0 fs-17"
-                                                style={{ fontWeight: "600" }}
-                                              >
-                                                {reportListNew.developerName}
-                                              </p>
-                                            </div>
-                                            <div>
-                                              <p className="text-muted mb-0 fs-13">
-                                                Developer Code
-                                              </p>
-                                              <p
-                                                className="mb-0 fs-17"
-                                                style={{ fontWeight: "600" }}
-                                              >
-                                                {reportListNew.developerCode}
-                                              </p>
-                                            </div>
-                                          </div>
-                                        </Col>
+                                            <Col md={3}>
+                                              <div className="d-flex flex-column gap-1 justify-content-center">
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-13">
+                                                    Developer Name
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {
+                                                      reportListNew.developerName
+                                                    }
+                                                  </p>
+                                                </div>
+                                                <div>
+                                                  <p className="text-muted mb-0 fs-13">
+                                                    Developer Code
+                                                  </p>
+                                                  <p
+                                                    className="mb-0 fs-17"
+                                                    style={{
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {
+                                                      reportListNew.developerCode
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </Col>
 
-                                        <Col
-                                          md={1}
-                                          className="d-flex justify-content-start"
-                                        >
-                                          <div className="d-flex align-items-center">
-                                            <span
-                                              className={
-                                                reportListNew.statusString ===
-                                                "Pending"
-                                                  ? "badge bg-warning text-light fs-12"
-                                                  : reportListNew.statusString ===
-                                                    "Processing"
-                                                  ? "badge bg-blue text-light fs-12"
-                                                  : reportListNew.statusString ===
-                                                    "Done"
-                                                  ? "badge bg-newGreen text-light fs-12"
-                                                  : ""
-                                              }
+                                            <Col
+                                              md={1}
+                                              className="d-flex justify-content-start"
                                             >
-                                              {reportListNew.statusString}
-                                            </span>
-                                          </div>
-                                        </Col>
-                                      </Row>
-                                    </CardBody>
-                                  </div>
-                                )
-                              )}
+                                              <div className="d-flex align-items-center">
+                                                <span
+                                                  className={
+                                                    reportListNew.statusString ===
+                                                      "Pending"
+                                                      ? "badge bg-warning text-light fs-12"
+                                                      : reportListNew.statusString ===
+                                                        "Processing"
+                                                        ? "badge bg-blue text-light fs-12"
+                                                        : reportListNew.statusString ===
+                                                          "Done"
+                                                          ? "badge bg-newGreen text-light fs-12"
+                                                          : ""
+                                                  }
+                                                >
+                                                  {reportListNew.statusString}
+                                                </span>
+                                              </div>
+                                            </Col>
+                                          </Row>
+                                        </CardBody>
+                                      </div>
+                                    )
+                                  )}
 
-                              {/* ---------------------------------------------------------------------- */}
-                              {/* phan trang */}
-                              <Row>
-                                <Col lg={12} className="mt-4 pt-2">
-                                  <nav aria-label="Page navigation example">
-                                    <div className="pagination job-pagination mb-0 justify-content-center">
-                                      <li
-                                        className={`page-item ${
-                                          currentPageProcessing === 1
-                                            ? "disabled"
-                                            : ""
-                                        }`}
-                                      >
-                                        <Link
-                                          className="page-link"
-                                          to="#"
-                                          tabIndex="-1"
-                                          onClick={handlePrevPageProcessing}
-                                        >
-                                          <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                        </Link>
-                                      </li>
-                                      {renderPageNumbersProcessing()}
-                                      <li
-                                        className={`page-item ${
-                                          currentPageProcessing ===
-                                          totalPagesProcessing
-                                            ? "disabled"
-                                            : ""
-                                        }`}
-                                      >
-                                        <Link
-                                          className="page-link"
-                                          to="#"
-                                          onClick={handleNextPageProcessing}
-                                        >
-                                          <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                        </Link>
-                                      </li>
-                                    </div>
-                                  </nav>
-                                </Col>
-                              </Row>
+                                  {/* ---------------------------------------------------------------------- */}
+                                  {/* phan trang */}
+                                  <Row>
+                                    <Col lg={12} className="mt-4 pt-2">
+                                      <nav aria-label="Page navigation example">
+                                        <div className="pagination job-pagination mb-0 justify-content-center">
+                                          <li
+                                            className={`page-item ${currentPageProcessing === 1
+                                              ? "disabled"
+                                              : ""
+                                              }`}
+                                          >
+                                            <Link
+                                              className="page-link"
+                                              to="#"
+                                              tabIndex="-1"
+                                              onClick={handlePrevPageProcessing}
+                                            >
+                                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                            </Link>
+                                          </li>
+                                          {renderPageNumbersProcessing()}
+                                          <li
+                                            className={`page-item ${currentPageProcessing ===
+                                              totalPagesProcessing
+                                              ? "disabled"
+                                              : ""
+                                              }`}
+                                          >
+                                            <Link
+                                              className="page-link"
+                                              to="#"
+                                              onClick={handleNextPageProcessing}
+                                            >
+                                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                            </Link>
+                                          </li>
+                                        </div>
+                                      </nav>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              )}
                             </TabPane>
                             <TabPane tabId="4">
-                              {reportListDone.map((reportListNew, key) => (
-                                <div
-                                  key={key}
-                                  className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                                  style={{
-                                    boxShadow:
-                                      "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                  }}
-                                >
-                                  <CardBody className="p-2">
-                                    <Row className="align-items-center justify-content-evenly">
-                                      <Col md={1}>
-                                        <div className="d-flex justify-content-center">
-                                          <i
-                                            className="uil uil-clipboard-notes"
-                                            style={{ fontSize: "50px" }}
-                                          ></i>
-                                        </div>
-                                      </Col>
-
-                                      <Col md={2}>
-                                        <div>
-                                          <h5 className="fs-18 mb-0">
-                                            <Link
-                                              to="/listreportinmanagerdetail"
-                                              className="text-dark"
-                                              state={{
-                                                reportId:
-                                                  reportListNew.reportId,
-                                                developerId:
-                                                  reportListNew.developerId,
-                                                projectId:
-                                                  reportListNew.projectId,
-                                              }}
-                                            >
-                                              {reportListNew.reportTitle}
-                                            </Link>
-                                          </h5>
-                                          <p className="text-muted fs-14 mb-0">
-                                            {reportListNew.companyPartnerName}
-                                          </p>
-                                        </div>
-                                      </Col>
-
-                                      <Col md={3}>
-                                        <div className="d-flex flex-column gap-1 justify-content-center">
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Project Name
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.projectName}
-                                            </p>
-                                          </div>
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Project Code
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.projectCode}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </Col>
-
-                                      <Col md={3}>
-                                        <div className="d-flex flex-column gap-1 justify-content-center">
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Developer Name
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.developerName}
-                                            </p>
-                                          </div>
-                                          <div>
-                                            <p className="text-muted mb-0 fs-13">
-                                              Developer Code
-                                            </p>
-                                            <p
-                                              className="mb-0 fs-17"
-                                              style={{ fontWeight: "600" }}
-                                            >
-                                              {reportListNew.developerCode}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </Col>
-
-                                      <Col
-                                        md={1}
-                                        className="d-flex justify-content-start"
-                                      >
-                                        <div className="d-flex align-items-center">
-                                          <span
-                                            className={
-                                              reportListNew.statusString ===
-                                              "Pending"
-                                                ? "badge bg-warning text-light fs-12"
-                                                : reportListNew.statusString ===
-                                                  "Processing"
-                                                ? "badge bg-blue text-light fs-12"
-                                                : reportListNew.statusString ===
-                                                  "Done"
-                                                ? "badge bg-newGreen text-light fs-12"
-                                                : ""
-                                            }
-                                          >
-                                            {reportListNew.statusString}
-                                          </span>
-                                        </div>
-                                      </Col>
-                                    </Row>
-                                  </CardBody>
+                              {reportListDone.length === 0 ? (
+                                <div>
+                                  <Empty />
                                 </div>
-                              ))}
+                              ) : (
+                                <div>
+                                  {reportListDone.map((reportListNew, key) => (
+                                    <div
+                                      key={key}
+                                      className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                      style={{
+                                        boxShadow:
+                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                      }}
+                                    >
+                                      <CardBody className="p-2">
+                                        <Row className="align-items-center justify-content-evenly">
+                                          <Col md={1}>
+                                            <div className="d-flex justify-content-center">
+                                              <i
+                                                className="uil uil-clipboard-notes"
+                                                style={{ fontSize: "50px" }}
+                                              ></i>
+                                            </div>
+                                          </Col>
 
-                              {/* ---------------------------------------------------------------------- */}
-                              {/* phan trang */}
-                              <Row>
-                                <Col lg={12} className="mt-4 pt-2">
-                                  <nav aria-label="Page navigation example">
-                                    <div className="pagination job-pagination mb-0 justify-content-center">
-                                      <li
-                                        className={`page-item ${
-                                          currentPageDone === 1
-                                            ? "disabled"
-                                            : ""
-                                        }`}
-                                      >
-                                        <Link
-                                          className="page-link"
-                                          to="#"
-                                          tabIndex="-1"
-                                          onClick={handlePrevPageDone}
-                                        >
-                                          <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                        </Link>
-                                      </li>
-                                      {renderPageNumbersDone()}
-                                      <li
-                                        className={`page-item ${
-                                          currentPageDone === totalPagesDone
-                                            ? "disabled"
-                                            : ""
-                                        }`}
-                                      >
-                                        <Link
-                                          className="page-link"
-                                          to="#"
-                                          onClick={handleNextPageDone}
-                                        >
-                                          <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                        </Link>
-                                      </li>
+                                          <Col md={2}>
+                                            <div>
+                                              <h5 className="fs-18 mb-0">
+                                                <Link
+                                                  to="/listreportinmanagerdetail"
+                                                  className="text-dark"
+                                                  state={{
+                                                    reportId:
+                                                      reportListNew.reportId,
+                                                    developerId:
+                                                      reportListNew.developerId,
+                                                    projectId:
+                                                      reportListNew.projectId,
+                                                  }}
+                                                >
+                                                  {reportListNew.reportTitle}
+                                                </Link>
+                                              </h5>
+                                              <p className="text-muted fs-14 mb-0">
+                                                {
+                                                  reportListNew.companyPartnerName
+                                                }
+                                              </p>
+                                            </div>
+                                          </Col>
+
+                                          <Col md={3}>
+                                            <div className="d-flex flex-column gap-1 justify-content-center">
+                                              <div>
+                                                <p className="text-muted mb-0 fs-13">
+                                                  Project Name
+                                                </p>
+                                                <p
+                                                  className="mb-0 fs-17"
+                                                  style={{ fontWeight: "600" }}
+                                                >
+                                                  {reportListNew.projectName}
+                                                </p>
+                                              </div>
+                                              <div>
+                                                <p className="text-muted mb-0 fs-13">
+                                                  Project Code
+                                                </p>
+                                                <p
+                                                  className="mb-0 fs-17"
+                                                  style={{ fontWeight: "600" }}
+                                                >
+                                                  {reportListNew.projectCode}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </Col>
+
+                                          <Col md={3}>
+                                            <div className="d-flex flex-column gap-1 justify-content-center">
+                                              <div>
+                                                <p className="text-muted mb-0 fs-13">
+                                                  Developer Name
+                                                </p>
+                                                <p
+                                                  className="mb-0 fs-17"
+                                                  style={{ fontWeight: "600" }}
+                                                >
+                                                  {reportListNew.developerName}
+                                                </p>
+                                              </div>
+                                              <div>
+                                                <p className="text-muted mb-0 fs-13">
+                                                  Developer Code
+                                                </p>
+                                                <p
+                                                  className="mb-0 fs-17"
+                                                  style={{ fontWeight: "600" }}
+                                                >
+                                                  {reportListNew.developerCode}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </Col>
+
+                                          <Col
+                                            md={1}
+                                            className="d-flex justify-content-start"
+                                          >
+                                            <div className="d-flex align-items-center">
+                                              <span
+                                                className={
+                                                  reportListNew.statusString ===
+                                                    "Pending"
+                                                    ? "badge bg-warning text-light fs-12"
+                                                    : reportListNew.statusString ===
+                                                      "Processing"
+                                                      ? "badge bg-blue text-light fs-12"
+                                                      : reportListNew.statusString ===
+                                                        "Done"
+                                                        ? "badge bg-newGreen text-light fs-12"
+                                                        : ""
+                                                }
+                                              >
+                                                {reportListNew.statusString}
+                                              </span>
+                                            </div>
+                                          </Col>
+                                        </Row>
+                                      </CardBody>
                                     </div>
-                                  </nav>
-                                </Col>
-                              </Row>
+                                  ))}
+
+                                  {/* ---------------------------------------------------------------------- */}
+                                  {/* phan trang */}
+                                  <Row>
+                                    <Col lg={12} className="mt-4 pt-2">
+                                      <nav aria-label="Page navigation example">
+                                        <div className="pagination job-pagination mb-0 justify-content-center">
+                                          <li
+                                            className={`page-item ${currentPageDone === 1
+                                              ? "disabled"
+                                              : ""
+                                              }`}
+                                          >
+                                            <Link
+                                              className="page-link"
+                                              to="#"
+                                              tabIndex="-1"
+                                              onClick={handlePrevPageDone}
+                                            >
+                                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                            </Link>
+                                          </li>
+                                          {renderPageNumbersDone()}
+                                          <li
+                                            className={`page-item ${currentPageDone === totalPagesDone
+                                              ? "disabled"
+                                              : ""
+                                              }`}
+                                          >
+                                            <Link
+                                              className="page-link"
+                                              to="#"
+                                              onClick={handleNextPageDone}
+                                            >
+                                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                            </Link>
+                                          </li>
+                                        </div>
+                                      </nav>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              )}
                             </TabPane>
                           </TabContent>
                         </CardBody>

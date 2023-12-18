@@ -14,10 +14,8 @@ const userAuthorization = (localStorageRole, linkPage) => {
         '/myprofile',
     ];
     const listPageManagerAccpet = [
-        '/newlistinterview',
         '/projectlistinmanager',
         '/listcontract',
-        '/listcompanyPartner',
         '/manager',
         '/listcontract',
         '/projectlistinmanager',
@@ -28,6 +26,16 @@ const userAuthorization = (localStorageRole, linkPage) => {
         '/listAccountManager',
         '/listAccountStaff',
         '/listcompanyPartner',
+        '/manageSkill',
+        '/manageType',
+        '/manageLevel'
+    ]
+
+    const listPageStaffAccper = [
+        '/listcompanyPartner',
+        '/newlistinterview',
+        '/listreportinmanager',
+        '/listcompanyPartnerdetail',
     ]
 
     if (localStorageRole === "HR") {
@@ -38,6 +46,9 @@ const userAuthorization = (localStorageRole, linkPage) => {
     }
     if (localStorageRole === "Admin") {
         return listPageAdminAccpet.includes(linkPage);
+    }
+    if (localStorageRole === "Staff") {
+        return listPageStaffAccper.includes(linkPage);
     }
 };
 

@@ -14,7 +14,7 @@ import {
 import { Link } from "react-router-dom";
 import userSerrvices from "../../../services/user.serrvices";
 
-const NavBarWebAdmin = () => {
+const NavBarWebStaff = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [name, setName] = useState("");
     const [imgUser, setImgUser] = useState("");
@@ -138,7 +138,7 @@ const NavBarWebAdmin = () => {
                                         <div>
                                             {/* onClick={openPopupProfileUser} */}
                                             <Link
-                                                to={"/profileadmin"}
+                                                to={"/profilestaff"}
                                                 className="dropdown-item px-0 p-0"
                                             >
                                                 <div className="dropdown-item">Profile</div>
@@ -180,4 +180,4 @@ const NavBarWebAdmin = () => {
     );
 };
 
-export default NavBarWebAdmin;
+export default NavBarWebStaff;

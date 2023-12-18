@@ -16,8 +16,10 @@ const createHiringRequest = async (
   employmentTypeId
 ) => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.createHiringRequest;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'POST', {
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "POST",
+    {
       companyId,
       projectId,
       jobTitle,
@@ -30,7 +32,8 @@ const createHiringRequest = async (
       skillIds,
       isSaved,
       employmentTypeId,
-    });
+    }
+  );
   return response;
 };
 
@@ -52,8 +55,10 @@ const updateHiringRequest = async (
       "${requestId}",
       requestId
     );
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "PUT",
+    {
       requestId,
       jobTitle,
       jobDescription,
@@ -65,21 +70,26 @@ const updateHiringRequest = async (
       skillIds,
       isSaved,
       employmentTypeId,
-    });
+    }
+  );
   return response;
 };
 
 const getAllHiringRequest = async () => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.getAll;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   return response;
 };
 
 const getAllStatusHiringRequest = async () => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.getAllStatus;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   console.log(serviceUrl);
   return response;
 };
@@ -90,8 +100,7 @@ const getHiringRequestAndPaging = async (currentPage, pageSize) => {
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", pageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, "GET");
   return response;
 };
 
@@ -128,7 +137,7 @@ const getAllHiringRequestByJobTitleAndSkill = async (
     const fullUrls = skillUrls.join("&");
     fullUrl += fullUrls;
   }
-  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, "GET");
   console.log(fullUrl);
   return response;
 };
@@ -141,7 +150,10 @@ const getHiringRequestDetailInManager = async (hiringRequestId) => {
       hiringRequestId
     );
 
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
 
   return response;
 };
@@ -153,7 +165,10 @@ const getHiringRequestDetailInCompany = async (hiringRequestId) => {
       hiringRequestId
     );
 
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   return response;
 };
 //-----------------------------------------------------------------------------------------
@@ -169,7 +184,7 @@ const getHiringRequestSaved = async (companyId) => {
       0
     );
   const fullUrl = serviceUrl + statusUrls;
-  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, "GET");
   return response;
 };
 
@@ -187,11 +202,14 @@ const getHiringRequestSaved = async (companyId) => {
 const sendHiringRequestToDevMatching = async (requestId, developerIds) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.sendHiringRequestToDevMatching;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'POST', {
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "POST",
+    {
       requestId,
       developerIds,
-    });
+    }
+  );
   return response;
 };
 
@@ -201,7 +219,10 @@ const getDevMatchingHasBeenSent = async (requestId) => {
       "${requestId}",
       requestId
     );
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   return response;
 };
 
@@ -211,7 +232,10 @@ const getDeveloperDetailInManager = async (devId) => {
       "${devId}",
       devId
     );
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   return response;
 };
 
@@ -235,7 +259,7 @@ const getHiringRequestByidAndPaging = async (
       status
     );
   const fullUrl = serviceUrl + pagingUrl + statusUrls;
-  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, "GET");
   return response;
 };
 
@@ -286,7 +310,7 @@ const getAllHiringRequestByIdAndJobTitleAndSkill = async (
   //       );
   //     fullUrl += statusUrls;
   //   }
-  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, "GET");
   console.log(fullUrl);
   return response;
 };
@@ -298,12 +322,15 @@ const approvedHirringRequestStatus = async (
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.approvedHirringRequestStatus;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "PUT",
+    {
       requestId,
       rejectionReason,
       isApproved,
-    });
+    }
+  );
   return response;
 };
 
@@ -314,12 +341,15 @@ const cancelHirringRequestStatus = async (
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.cancelHirringRequestStatus;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "PUT",
+    {
       requestId,
       rejectionReason,
       isApproved,
-    });
+    }
+  );
   return response;
 };
 
@@ -331,12 +361,15 @@ const cancelHirringRequestStatusAfter = async (
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.cancelHirringRequestStatusAfter;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "PUT",
+    {
       requestId,
       rejectionReason,
       isCompanyPartner,
-    });
+    }
+  );
   return response;
 };
 
@@ -354,7 +387,7 @@ const getHiringRequestByProjectIdAndPaging = async (
     .replace("${currentPage}", currentPage)
     .replace("${pageSize}", pageSize);
   const fullUrl = serviceUrl + pagingUrl;
-  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(fullUrl, "GET");
   return response;
 };
 
@@ -364,7 +397,10 @@ const getHiringRequestByProjectId = async (projectId) => {
       "${projectId}",
       projectId
     );
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   return response;
 };
 
@@ -389,7 +425,10 @@ const getAllHiringRequestByProjectIdAndPaging = async (
       .replace("${LevelRequireId}", levelSearch)
       .replace("${Status}", statusSearch) + values.join("");
   console.log(serviceUrl);
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   return response;
 };
 
@@ -400,12 +439,15 @@ const closeHiringRequest = async (
 ) => {
   const serviceUrl =
     urlConstant.endpoint.hiringRequest.closeHirringRequestStatus;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "PUT",
+    {
       requestId,
       rejectionReason,
       isCompanyPartner,
-    });
+    }
+  );
   return response;
 };
 
@@ -422,11 +464,98 @@ const cloneHiringRequest = async (requestId) => {
 
 const extendDuration = async (requestId, newDuration) => {
   const serviceUrl = urlConstant.endpoint.hiringRequest.extendDuration;
-  const response = await axiosLocalHost
-    .sendAuthorizedRequest(serviceUrl, 'PUT', {
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "PUT",
+    {
       requestId,
       newDuration,
-    });
+    }
+  );
+  return response;
+};
+
+const getHiringRequestWaitingApprovalPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestWaitingApprovalPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
+  return response;
+};
+
+const getHiringRequestInProgressPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestInProgressPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
+  return response;
+};
+
+const getHiringRequestRejectedPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestRejectedPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
+  return response;
+};
+
+const getHiringRequestExpiredPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestExpiredPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
+  return response;
+};
+
+const getHiringRequestCancelledPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestCancelledPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
+  return response;
+};
+
+const getHiringRequestClosedPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestClosedPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
+  return response;
+};
+
+const getHiringRequestCompletedPaging = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.hiringRequest.getHiringRequestCompletedPaging
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   return response;
 };
 
@@ -455,4 +584,11 @@ export default {
   closeHiringRequest,
   cloneHiringRequest,
   extendDuration,
+  getHiringRequestWaitingApprovalPaging,
+  getHiringRequestInProgressPaging,
+  getHiringRequestRejectedPaging,
+  getHiringRequestExpiredPaging,
+  getHiringRequestCancelledPaging,
+  getHiringRequestClosedPaging,
+  getHiringRequestCompletedPaging,
 };

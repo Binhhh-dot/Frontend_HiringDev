@@ -574,7 +574,7 @@ const ListAccountDeveloper = () => {
 
           <div
             style={{
-              padding: "0px 5px 0px 5px",
+              padding: "10px 5px 0px 5px",
               background: "white",
               margin: "30px",
               borderRadius: "12px",
@@ -582,14 +582,18 @@ const ListAccountDeveloper = () => {
             }}
           >
             <Content>
-              <Breadcrumb
+              <h1
                 style={{
-                  margin: "16px 0",
+                  padding: "5px 0px 0px 0px",
+                  margin: "0px 0px 0px 20px",
+                  color: "black",
+                  fontSize: "20px",
+                  fontWeight: "bold"
                 }}
               >
-                <Breadcrumb.Item>Management</Breadcrumb.Item>
-                <Breadcrumb.Item>Developer List</Breadcrumb.Item>
-              </Breadcrumb>
+                MANAGE DEVELOPER
+              </h1>
+
               <a
                 className="me-1 d-flex flex-column align-items-end"
                 onClick={showModal1}
@@ -598,7 +602,7 @@ const ListAccountDeveloper = () => {
               </a>
               <div
                 style={{
-                  padding: 10,
+                  padding: 25,
                   minHeight: 400,
                 }}
               >
