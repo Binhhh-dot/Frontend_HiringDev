@@ -18,6 +18,8 @@ import {
   TabContent,
   Collapse,
 } from "reactstrap";
+import { Dropdown as DropdownAntd } from 'antd';
+import { HashLoader } from "react-spinners";
 
 import projectServices from "../../services/project.services";
 import { useLocation } from "react-router";
@@ -28,6 +30,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEllipsisVertical,
   faUserMinus,
+  faAngleLeft,
+  faAngleRight
 } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
@@ -53,12 +57,16 @@ import UpdateProjectPopup from "./UpdateProjectPopup/UpdateProjectPopup";
 import { Editor } from "@tinymce/tinymce-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import payPeriodServices from "../../services/payPeriod.services";
+import paySlipServices from "../../services/paySlip.services";
+import workLogServices from "../../services/workLog.services";
 
 dayjs.extend(customParseFormat);
 
 const monthFormat = "YYYY-MM-DD";
 
 const ProjectDetailDescription = () => {
+  const location = useLocation();
   const { state } = useLocation();
   const [value, setValue] = useState("");
   const [allowedMonthsList, setAllowedMonthsList] = useState([]);
@@ -86,6 +94,113 @@ const ProjectDetailDescription = () => {
   const [listPaySlip, setlistPaySlip] = useState([]);
 
   const [listWorklog, setListWorklog] = useState([]);
+
+
+  const [payRollDetail, setPayRollDetail] = useState([]);
+  const [payPeriodDetail, setPayPeriodDetail] = useState(null);
+  const [loadingSaveWorkLog, setLoadingSaveWorkLog] = useState(false);
+  const [workLogIdOnClick, setWorkLogIdOnClick] = useState(0);
+  const [listEndDay, setListEndDay] = useState([]);
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(null);
+  const [loadListWorkLog, setLoadListWorkLog] = useState(false);
+  const [isCompleteEditWorkLog, setIsCompleteEditWorkLog] = useState(true);
+  const [editableRowId, setEditableRowId] = useState(null);
+  const [loadingSavePaySlip, setLoadingSavePaySlip] = useState(false);
+  const [payslipIdOnClick, setPayslipIdOnClick] = useState(0);
+  const [ediPaySlipRowId, setEdiPaySlipRowId] = useState(null);
+  const [listStartDay, setListStartDay] = useState([]);
+  const [loadPayPeriod, setLoadPayPeriod] = useState(false);
+  const [workLoglist, setWorkLoglist] = useState([]);
+  const [valuesStatus, setValuesStatus] = useState({});
+  const [keyPayRoll, setKeyPayRoll] = useState(null);
+  const [keyWorkLog, setKeyWorkLog] = useState(null);
+  const [isEditWorkLog, setIsEditWorkLog] = useState(false);
+  const [isCancelEditWorkLog, setIsCancelEditWorkLog] = useState();
+  const [selectedRange, setSelectedRange] = useState([]);
+  const [keyPayslip, setKeyPayslip] = useState(null);
+  const [startTimeWorkLogSave, setStartTimeWorkLogSave] = useState(false);
+  const [endTimeWorkLogSave, setEndTimeWorkLogSave] = useState(false);
+  const [statusWorkLogSave, setStatusWorkLogSave] = useState();
+  const [totalOTPayslipSave, setTotalOTPayslipSave] = useState(false);
+  const [isEditPayslip, setIsEditPayslip] = useState(false);
+  const [isCancelEditPayslip, setIsCancelEditPayslip] = useState(false);
+  const [hiringRequestDetail, setHiringRequestDetail] = useState([]);
+  const [minDateDuration, setMinDateDuration] = useState();
+  const [listMonth, setListMonth] = useState([]);
+  const [isHavePayment, setIsHavePaymemt] = useState(false);
+  const [loadingCreateNew, setLoadingCreateNew] = useState(false);
+
+
+  function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because it's zero-indexed
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  }
+
+  const optionsStatus = [
+    { label: 'Normally', value: 0 },
+    { label: 'Paid leave', value: 1 },
+    { label: 'Unpaid leave', value: 2 },
+  ];
+
+  const handleChangeStatus = (selected) => {
+    console.log(selected)
+    const key = '' + keyPayRoll + keyWorkLog;
+    setValuesStatus(prevState => ({
+      ...prevState,
+      [key]: selected
+    }));
+  };
+
+  const setKeyAndIdWorkLog = (workLogId, key) => {
+    setWorkLogIdOnClick(workLogId)
+    setKeyWorkLog(key)
+  };
+
+  const cancelUpdateWorkLog = () => {
+    setIsEditWorkLog(!isEditWorkLog);
+    setIsCancelEditWorkLog(true);
+  };
+
+  const saveUpdateWorkLog = () => {
+    setIsEditWorkLog(!isEditWorkLog);
+    setIsCancelEditWorkLog(false);
+  };
+
+  const onUpdateWorkLog = () => {
+    setIsCompleteEditWorkLog(false);
+    const foundLog = workLoglist.find(log => log.workLogId === workLogIdOnClick);
+    setStartTimeWorkLogSave(foundLog.timeIn);
+    setEndTimeWorkLogSave(foundLog.timeOut);
+    console.log("foundLog.isPaidLeave");
+    console.log(foundLog.isPaidLeave);
+    setStatusWorkLogSave(foundLog.isPaidLeave);
+    setEditableRowId(workLogIdOnClick);
+  };
+
+  const onUpdatePaySlip = () => {
+    const foundLog = payRollDetail.find(log => log.paySlipId === payslipIdOnClick);
+    setTotalOTPayslipSave(foundLog.totalOvertimeHours)
+    setEdiPaySlipRowId(payslipIdOnClick);
+  };
+
+  const profileItems2 = [
+    {
+      key: "1",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => onUpdateWorkLog()}
+        >
+          Edit
+        </div>
+      ),
+    },
+  ]
+
+
+
   //------------------------------------------------
   const [selectProjectId, setSelectProjectId] = useState(null);
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
@@ -454,6 +569,332 @@ const ProjectDetailDescription = () => {
 
   //--------------------------------------------------------------------------------
 
+
+  const profileItems3 = [
+    {
+      key: "1",
+      label: (
+        <div
+          style={{ width: "100px" }}
+          onClick={() => onUpdatePaySlip()}
+        >
+          Edit
+        </div>
+      ),
+    },
+  ]
+
+  const setRangeCalendar = () => {
+    const startDate = listStartDay[currentMonthIndex];
+    let startDateRange;
+    if (startDate) {
+      let startDateParts = startDate.split(".");
+      let newStartDate = startDateParts[2] + "-" + startDateParts[1] + "-" + startDateParts[0];
+      startDateRange = new Date(newStartDate);
+    }
+    let endDateRange;
+    const endDate = listEndDay[currentMonthIndex];
+    if (endDate) {
+      let endDateParts = endDate.split(".");
+      let newEndDate = endDateParts[2] + "-" + endDateParts[1] + "-" + endDateParts[0];
+      endDateRange = new Date(newEndDate);
+    }
+    console.log("startDateRange")
+    console.log(startDate)
+    console.log("endDateRange")
+    console.log(endDate)
+    setSelectedRange([startDateRange, endDateRange])
+  }
+
+  const fetchDetailPayPeriod = async (newDate) => {
+    let response;
+    console.log("ham nay bi goi lai")
+    console.log(newDate)
+    try {
+      const queryParams = new URLSearchParams(location.search);
+      const projectId = queryParams.get("Id");
+      console.log(projectId)
+      response = await payPeriodServices.getPayPeriodDetailByProjectIdAndDate(projectId, newDate);
+      console.log(response)
+      setPayPeriodDetail(response.data.data);
+      if (response.data.code === 200) {
+        console.log("cho nay ms bi goi lai");
+        console.log(response.data.data.payPeriodId);
+        const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
+        console.log("response2")
+        console.log(response2)
+        if (response.data.code == 200) {
+          setPayRollDetail(response2.data.data);
+          response2.data.data.forEach((payRollDetailNew, key2) => {
+            const temp = "totalOT" + key2;
+            console.log(temp)
+            const element = document.getElementById(temp);
+            if (element) {
+              console.log("co")
+              console.log(payRollDetailNew.totalOvertimeHours)
+              element.value = payRollDetailNew.totalOvertimeHours;
+            }
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      console.log("payperiod loi")
+      setPayPeriodDetail(null);
+      setPayRollDetail([]);
+    }
+  }
+
+  const updatedWorkLog = async (timeIn, timeOut, isPaid) => {
+    let response;
+    setLoadingSaveWorkLog(true)
+    try {
+      console.log(workLogIdOnClick)
+      console.log(timeIn)
+      console.log(timeOut)
+      response = await workLogServices.updateWorkLog(workLogIdOnClick, timeIn, timeOut, isPaid);
+      console.log("worklog21312312312")
+      console.log(response.data.data)
+      const temp = "hourInDay" + response.data.data.workLogId;
+      // const temp2 = "totalhourspayroll" + response.data.data.payPeriodId;
+      document.getElementById(temp).innerHTML = "Hours in day: " + response.data.data.hourWorkInDay;
+      // document.getElementById(temp2).innerHTML = response.data.data.totalAmount;
+      const temp2 = listEndDay[currentMonthIndex];
+      if (temp2) {
+        const parts = temp2.split('.');
+        const newDate = `${parts[2]}-${parts[1]}-25`;
+        fetchDetailPayPeriod(newDate)
+      }
+      toast.success("Update worklog successfully")
+      setLoadListWorkLog(!loadListWorkLog);
+      setIsCompleteEditWorkLog(true);
+      setLoadingSaveWorkLog(false)
+      setEditableRowId(null);
+    } catch (error) {
+      setIsCompleteEditWorkLog(false);
+      setLoadingSaveWorkLog(false)
+      console.error("Error fetching job vacancies:", error);
+      toast.error("Update worklog fail")
+    }
+  };
+  const updatedPayslip = async (totalOT) => {
+    let response;
+    setLoadingSavePaySlip(true)
+    try {
+      console.log(payslipIdOnClick)
+      console.log(totalOT)
+      response = await paySlipServices.updateTotalOTPayslip(payslipIdOnClick, totalOT);
+      console.log(response.data.data)
+
+
+      const temp2 = listEndDay[currentMonthIndex];
+      if (temp2) {
+        const parts = temp2.split('.');
+        const newDate = `${parts[2]}-${parts[1]}-25`;
+        fetchDetailPayPeriod(newDate)
+      }
+      toast.success("Update payslip successfully")
+      setEdiPaySlipRowId(null);
+      setLoadingSavePaySlip(false)
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+      toast.error("Update payslip fail")
+
+      setLoadingSavePaySlip(false)
+    }
+  };
+
+  const fetchProjectDetails = async () => {
+    let response;
+    try {
+      const projectId = state.projectId;
+      response = await projectServices.getProjectDetailByProjectId(projectId);
+      console.log(response.data.data);
+      setHiringRequestDetail(response.data.data);
+      function convertToDateObject(dateString) {
+        const [day, month, year] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day); // month - 1 because months are zero-indexed in JavaScript
+      }
+
+      if (response.data.data.minStartDate !== "" && response.data.data.maxEndDate !== "") {
+        const startDate = convertToDateObject(response.data.data.minStartDate);
+        const endDate = convertToDateObject(response.data.data.maxEndDate);
+
+        var temp = new Date(startDate);
+        var formattedMinDate = temp.toISOString().split('T')[0];
+
+        var temp2 = new Date(endDate);
+        var formattedMaxDate = temp2.toISOString().split('T')[0]; // Sử dụng temp2 thay vì temp
+        var currentDate = new Date();
+        // Trừ đi 7 ngày từ formattedMinDate
+
+
+        // Kiểm tra nếu startDate trừ đi 7 ngày bé hơn ngày hiện tại
+
+        // Thêm 3 ngày vào startDate
+        currentDate.setDate(currentDate.getDate() + 4);
+        const formattedSevenDaysBeforeMinDate = currentDate.toISOString().split('T')[0];
+
+
+        setMinDateDuration(formattedSevenDaysBeforeMinDate);
+
+
+        const monthsArray = [];
+        const startDateArray = [];
+        const endDateArray = [];
+
+        let currentMonthStart = new Date(startDate.getFullYear(), startDate.getMonth() - 1, 25);
+        let currentMonthEnd = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() + 1, 24);
+
+        let checkFirstMonth = false;
+        while (currentMonthStart <= endDate) {
+          let formattedMonth;
+          let formattedStartDay;
+          let formattedEndDay;
+          if (!checkFirstMonth) {
+            if (currentMonthStart < startDate && startDate < currentMonthEnd) {
+              formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+              formattedStartDay = formatDate(startDate);
+              formattedEndDay = formatDate(new Date(currentMonthEnd));
+              monthsArray.push(formattedMonth);
+              startDateArray.push(formattedStartDay);
+              endDateArray.push(formattedEndDay);
+            }
+
+            checkFirstMonth = true;
+          } else {
+            if (currentMonthStart < startDate) {
+              formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+              formattedStartDay = formatDate(startDate);
+              formattedEndDay = formatDate(new Date(currentMonthEnd));
+              monthsArray.push(formattedMonth);
+              startDateArray.push(formattedStartDay);
+              endDateArray.push(formattedEndDay);
+            } else {
+
+              formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+              formattedStartDay = formatDate(new Date(currentMonthStart));
+              formattedEndDay = formatDate(currentMonthEnd > endDate ? endDate : new Date(currentMonthEnd));
+              monthsArray.push(formattedMonth);
+              startDateArray.push(formattedStartDay);
+              endDateArray.push(formattedEndDay);
+            }
+          }
+
+          currentMonthStart.setMonth(currentMonthStart.getMonth() + 1);
+          currentMonthStart.setDate(25);
+
+          currentMonthEnd = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() + 1, 24);
+        }
+
+        setListMonth(monthsArray);
+        if (monthsArray.length === 0) {
+          setIsHavePaymemt(false);
+          console.log("monthsArray")
+          console.log(monthsArray)
+        } else {
+          setIsHavePaymemt(true);
+          console.log("monthsArray")
+          console.log(monthsArray)
+          setListStartDay(startDateArray);
+          setListEndDay(endDateArray);
+        }
+
+        setLoadPayPeriod(!loadPayPeriod);
+        setCurrentMonthIndex(0);
+      }
+      return response;
+    } catch (error) {
+      console.error("Error fetching job vacancies:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjectDetails();
+  }, []);
+
+  useEffect(() => {
+    const temp = listEndDay[currentMonthIndex];
+    if (temp) {
+      const parts = temp.split('.');
+      const newDate = `${parts[2]}-${parts[1]}-25`;
+      fetchDetailPayPeriod(newDate)
+    }
+    console.log("luc doi")
+    setRangeCalendar()
+  }, [currentMonthIndex]);
+
+  useEffect(() => {
+    const temp = listStartDay[currentMonthIndex];
+    if (temp) {
+      const parts = temp.split('.');
+      const newDate = `${parts[2]}-${parts[1]}-25`;
+      fetchDetailPayPeriod(newDate)
+    }
+  }, [loadPayPeriod]);
+
+  const setPayRollEdit = (payrollId, key) => {
+    setPayslipIdOnClick(payrollId)
+    setKeyPayslip(key)
+
+  };
+
+  const cancelUpdatePayslip = () => {
+    setIsEditPayslip(!isEditPayslip);
+    setIsCancelEditPayslip(true);
+  };
+
+  const saveUpdatePayslip = () => {
+    setIsEditPayslip(!isEditPayslip);
+    setIsCancelEditPayslip(false);
+  };
+
+  const nextMonth = () => {
+    const updatedShowCollapse = showCollapse.map(() => false);
+    setShowCollapse(updatedShowCollapse);
+    setIsEditWorkLog(!isEditWorkLog);
+    setIsEditPayslip(!isEditPayslip);
+    setIsCancelEditPayslip(true);
+    setIsCancelEditWorkLog(true);
+    if (currentMonthIndex < listMonth.length - 1) {
+      setCurrentMonthIndex(currentMonthIndex + 1);
+    }
+  };
+
+  const previousMonth = () => {
+    const updatedShowCollapse = showCollapse.map(() => false);
+    setShowCollapse(updatedShowCollapse);
+    setRangeCalendar();
+    setIsEditWorkLog(!isEditWorkLog);
+    setIsEditPayslip(!isEditPayslip);
+    setIsCancelEditPayslip(true);
+    setIsCancelEditWorkLog(true);
+    if (currentMonthIndex > 0) {
+      setCurrentMonthIndex(currentMonthIndex - 1);
+    }
+  };
+
+  const createNewPayPeriod = async () => {
+    setLoadingCreateNew(true)
+    try {
+      const queryParams = new URLSearchParams(location.search);
+      const projectId = queryParams.get("Id");
+      const currentMonthData = listMonth[currentMonthIndex];
+
+      const date = new Date(currentMonthData);
+      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-25` + "T08:47:13.849Z";
+      console.log(formattedDate)
+      const response = await payPeriodServices.createNewPayPeriod(projectId, formattedDate);
+      console.log(response)
+      toast.success("Create pay period successfully")
+      setLoadPayPeriod(!loadPayPeriod);
+      setLoadingCreateNew(false);
+    } catch (error) {
+      toast.error("Create pay period fail")
+      setLoadingCreateNew(false);
+    }
+  };
+
   return (
     <React.Fragment>
       <Card
@@ -478,14 +919,14 @@ const ProjectDetailDescription = () => {
                         projectDetail.statusString === "Preparing"
                           ? "badge bg-warning text-light fs-12"
                           : projectDetail.statusString === "Closed"
-                          ? "badge bg-danger text-light fs-12"
-                          : projectDetail.statusString === "In process"
-                          ? "badge bg-blue text-light fs-12"
-                          : projectDetail.statusString === "Completed"
-                          ? "badge bg-success text-light fs-12"
-                          : projectDetail.statusString === "Closing process"
-                          ? "badge bg-purple text-light fs-12"
-                          : ""
+                            ? "badge bg-danger text-light fs-12"
+                            : projectDetail.statusString === "In process"
+                              ? "badge bg-blue text-light fs-12"
+                              : projectDetail.statusString === "Completed"
+                                ? "badge bg-success text-light fs-12"
+                                : projectDetail.statusString === "Closing process"
+                                  ? "badge bg-purple text-light fs-12"
+                                  : ""
                       }
                     >
                       {projectDetail.statusString}
@@ -844,13 +1285,14 @@ const ProjectDetailDescription = () => {
 
                     <div className="mb-2 d-flex justify-content-between">
                       {/* defaultMonth */}
-                      <DatePicker
-                        defaultValue={defaultMonth}
-                        picker="month"
-                        disabledDate={allowedDates(allowedDatesList)}
-                        format="MM YYYY"
-                        onChange={(date) => pickDate(date)}
-                      />
+                      <div className="d-flex align-items-center gap-3" disabled="true">
+                        <FontAwesomeIcon icon={faAngleLeft} style={{ fontSize: '20px' }} onClick={previousMonth} />
+                        <FontAwesomeIcon icon={faAngleRight} style={{ fontSize: '20px' }} onClick={nextMonth} />
+                        <div className="d-flex flex-column">
+                          <div id="monthYearSelected" style={{ fontSize: "20px", fontWeight: "600" }}>{listMonth[currentMonthIndex]}</div>
+                          <div id="dateSelected" style={{ fontSize: "15px", color: "grey" }}>{listStartDay[currentMonthIndex]} - {listEndDay[currentMonthIndex]}</div>
+                        </div>
+                      </div>
                       <div style={{ borderRadius: "9px" }}>
                         <div
                           className="border border-1 p-2"
@@ -1015,18 +1457,18 @@ const ProjectDetailDescription = () => {
                                             <span
                                               className={
                                                 listPeriod.statusString ===
-                                                "Created"
+                                                  "Created"
                                                   ? "badge bg-blue text-light fs-12"
                                                   : listPeriod.statusString ===
                                                     "cancelled"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : listPeriod.statusString ===
-                                                    "Inprogress"
-                                                  ? "badge bg-primary text-light fs-12"
-                                                  : listPeriod.statusString ===
-                                                    "completed"
-                                                  ? "badge bg-primary text-light fs-12"
-                                                  : ""
+                                                    ? "badge bg-danger text-light fs-12"
+                                                    : listPeriod.statusString ===
+                                                      "Inprogress"
+                                                      ? "badge bg-primary text-light fs-12"
+                                                      : listPeriod.statusString ===
+                                                        "completed"
+                                                        ? "badge bg-primary text-light fs-12"
+                                                        : ""
                                               }
                                             >
                                               {listPeriod.statusString}
@@ -1047,236 +1489,361 @@ const ProjectDetailDescription = () => {
                         </TabPane>
                         <TabPane tabId="6">
                           <div>
-                            <Row className="mb-2 px-3">
-                              <Col md={2} style={{ textAlign: "center" }}>
-                                First Name
-                              </Col>
-                              <Col
-                                md={2}
-                                className="px-0"
-                                style={{ textAlign: "center" }}
-                              >
-                                Last Name
-                              </Col>
-                              <Col
-                                md={2}
-                                className="px-0"
-                                style={{ textAlign: "center" }}
-                              >
-                                Email
-                              </Col>
-                              <Col
-                                md={2}
-                                className="px-0"
-                                style={{ textAlign: "center" }}
-                              >
-                                Total Hours
-                              </Col>
-                              <Col
-                                md={1}
-                                className="px-0"
-                                style={{ textAlign: "center" }}
-                              >
-                                Total OT
-                              </Col>
-                              <Col
-                                md={2}
-                                className="px-0"
-                                style={{ textAlign: "center" }}
-                              >
-                                Total Salary
-                              </Col>
-                              <Col md={1}></Col>
-                            </Row>
+                            {payRollDetail[0] ? (
+                              <>
+                                <Row className="mb-2 px-3">
+                                  <Col md={2} style={{ textAlign: "center" }}>
+                                    First Name
+                                  </Col>
+                                  <Col
+                                    md={2}
+                                    className="px-0"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    Last Name
+                                  </Col>
+                                  <Col
+                                    md={2}
+                                    className="px-0"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    Email
+                                  </Col>
+                                  <Col
+                                    md={2}
+                                    className="px-0"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    Total Hours
+                                  </Col>
+                                  <Col
+                                    md={1}
+                                    className="px-0"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    Total OT
+                                  </Col>
+                                  <Col
+                                    md={2}
+                                    className="px-0"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    Total Salary
+                                  </Col>
+                                  <Col md={1}></Col>
+                                </Row>
+                              </>
+                            ) : (
+                              <Empty />
+                            )}
+                            <div className="d-flex flex-column gap-2">
+                              {payRollDetail.map((payRollDetailNew, key2) => (
+                                <div key2={key2}>
+                                  <div
+                                    style={{
+                                      boxShadow:
+                                        "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                    }}
+                                    className={
+                                      "job-box-dev-in-list-hiringRequest-for-dev card"
+                                    }
+                                  >
+                                    <div className="p-3">
+                                      <Row className="align-items-center">
+                                        <Col
+                                          md={2}
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <div>
+                                            <span className="mb-0">{payRollDetailNew.firstName}</span>
+                                          </div>
+                                        </Col>
 
-                            {listPeriod !== null ? (
-                              <div className="d-flex flex-column gap-2">
-                                {listPaySlip.map((listPaySlipNew, key) => (
-                                  <div key={key}>
+                                        <Col
+                                          md={2}
+                                          className="px-0"
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <div>
+                                            <p className="mb-0">{payRollDetailNew.lastName}</p>
+                                          </div>
+                                        </Col>
+
+                                        <Col
+                                          md={2}
+                                          className="px-0"
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <div>
+                                            <p className="mb-0">{payRollDetailNew.email}</p>
+                                          </div>
+                                        </Col>
+
+                                        <Col
+                                          md={2}
+                                          className="px-0"
+                                          style={{ textAlign: "center" }}
+
+
+                                        >
+                                          <p className="mb-0" > {payRollDetailNew.totalActualWorkedHours}</p>
+                                        </Col>
+
+                                        <Col
+                                          md={1}
+                                          className=" px-0"
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <input
+                                            type="number"
+                                            className="form-control"
+                                            id={`totalOT${key2}`}
+                                            readOnly={ediPaySlipRowId !== payRollDetailNew.paySlipId}
+                                            defaultValue={0}
+                                          />
+                                        </Col>
+
+                                        <Col
+                                          md={2}
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          <div>
+                                            <span >{payRollDetailNew.totalEarnings}</span>
+                                          </div>
+                                        </Col>
+
+                                        <Col md={1} className="d-flex gap-2 justify-content-between align-items-center">
+                                          <div
+                                            className="d-flex justify-content-center align-items-center rounded-circle"
+                                            onClick={() => toggleCollapse(key2, payRollDetailNew.paySlipId)}
+                                            style={{
+                                              backgroundColor: "#ECECED",
+                                              width: "50px",
+                                              height: "50px",
+                                            }}
+                                          >
+                                            <i
+                                              className="uil uil-angle-down"
+                                              style={{ fontSize: "30px" }}
+                                            ></i>
+                                          </div>
+                                          {payPeriodDetail.statusString == "Created" && (
+                                            <>
+                                              <DropdownAntd trigger={['click']} menu={{ items: profileItems3 }}
+                                                onClick={() =>
+                                                  setPayRollEdit(payRollDetailNew.paySlipId, key2)
+                                                }
+                                                overlayStyle={{ right: '4.312px', bottom: "auto", left: "auto" }} >
+                                                <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                  <FontAwesomeIcon
+                                                    icon={faGear}
+                                                    size="xl"
+                                                    color="#909191"
+                                                  />
+                                                </a>
+                                              </DropdownAntd>
+                                            </>
+                                          )}
+                                        </Col>
+                                        {ediPaySlipRowId == payRollDetailNew.paySlipId ? (
+                                          <>
+                                            <Row style={{ marginTop: "10px" }}>
+                                              <Col
+                                                md={2}
+                                                style={{ textAlign: "end" }}
+                                                className="d-flex gap-2 justify-content-end"
+                                              >
+                                              </Col>
+                                              <Col
+                                                md={6}
+                                                style={{ textAlign: "end" }}
+                                                className="d-flex gap-2 justify-content-end"
+                                              >
+                                              </Col>
+                                              <Col
+                                                md={4}
+                                                style={{ textAlign: "end" }}
+                                                className="d-flex gap-2 justify-content-end"
+                                              >
+                                                <div className="btn btn-soft-danger"
+                                                  onClick={() => cancelUpdatePayslip()}
+                                                >
+                                                  Cancel
+                                                </div>
+
+                                                <button className="btn btn-soft-blue "
+                                                  onClick={() => {
+                                                    saveUpdatePayslip();
+                                                  }}
+                                                  disabled={loadingSavePaySlip}
+                                                >
+                                                  {loadingSavePaySlip ? (
+                                                    <div style={{ width: "45px" }} className="d-flex align-items-center justify-content-center">
+                                                      <HashLoader
+                                                        size={20}
+                                                        color={"white"}
+                                                        loading={true}
+                                                      />
+                                                    </div>
+                                                  ) : (
+                                                    "Save"
+                                                  )}
+                                                </button>
+
+
+                                              </Col>
+                                            </Row>
+                                          </>
+                                        ) : (
+                                          null
+                                        )}
+                                      </Row>
+                                    </div>
+                                  </div>
+                                  <Collapse isOpen={showCollapse[key2]}>
                                     <div
                                       style={{
-                                        boxShadow:
-                                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                        backgroundColor: "#EFF0F2",
+                                        borderRadius: "7px",
                                       }}
-                                      className={
-                                        "job-box-dev-in-list-hiringRequest-for-dev card"
-                                      }
+                                      className="mt-1 p-2 d-flex flex-column gap-2"
                                     >
-                                      <div className="p-3">
-                                        <Row className="align-items-center">
-                                          <Col
-                                            md={2}
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            <div>
-                                              <span className="mb-0">
-                                                {listPaySlipNew.firstName}
-                                              </span>
-                                            </div>
-                                          </Col>
-
-                                          <Col
-                                            md={2}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            <div>
-                                              <p className="mb-0">
-                                                {listPaySlipNew.lastName}
-                                              </p>
-                                            </div>
-                                          </Col>
-
-                                          <Col
-                                            md={2}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            <div>
-                                              <p className="mb-0">
-                                                {listPaySlipNew.email}
-                                              </p>
-                                            </div>
-                                          </Col>
-
-                                          <Col
-                                            md={2}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            <p className="mb-0">
-                                              {
-                                                listPaySlipNew.totalActualWorkedHours
-                                              }
-                                            </p>
-                                          </Col>
-
-                                          <Col
-                                            md={1}
-                                            className=" px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            {listPaySlipNew.totalOvertimeHours}
-                                          </Col>
-
-                                          <Col
-                                            md={2}
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            <div>
-                                              <span>
-                                                {listPaySlipNew.totalEarnings}
-                                              </span>
-                                            </div>
-                                          </Col>
-
-                                          <Col md={1}>
-                                            <div
-                                              className="d-flex justify-content-center rounded-circle"
-                                              onClick={() =>
-                                                toggleCollapse(
-                                                  key,
-                                                  listPaySlipNew.paySlipId
-                                                )
-                                              }
-                                              style={{
-                                                backgroundColor: "#ECECED",
-                                              }}
-                                            >
-                                              <i
-                                                className="uil uil-angle-down"
-                                                style={{ fontSize: "26px" }}
-                                              ></i>
-                                            </div>
-                                          </Col>
-                                        </Row>
-                                      </div>
-                                    </div>
-
-                                    <Collapse isOpen={showCollapse[key]}>
-                                      {listWorklog.map(
-                                        (listWorklogNew, key) => (
+                                      {workLoglist.map((workLogDetail, key) => (
+                                        <div className="d-flex flex-column gap-2">
                                           <div
-                                            key={key}
-                                            style={{
-                                              backgroundColor: "#EFF0F2",
-                                              borderRadius: "7px",
-                                            }}
-                                            className="mt-1 p-2"
+                                            className="job-box-dev-in-list-hiringRequest-for-dev card d-flex flex-column gap-2 p-2"
+                                            style={{ backgroundColor: "#FFFFFF" }}
                                           >
-                                            <div className="d-flex flex-column gap-2">
-                                              <div
-                                                className="job-box-dev-in-list-hiringRequest-for-dev card  p-2"
-                                                style={{
-                                                  backgroundColor: "#FFFFFF",
-                                                }}
+                                            <Row>
+                                              <Col
+                                                md={3}
+                                                className="d-flex justify-content-center align-items-center"
+                                                id={`time-In2-${workLogDetail.workLogId}`}
                                               >
+                                                {workLogDetail.workDateMMM}
+
+                                              </Col>
+                                              <Col md={2}>
+                                                <div>
+                                                  <input
+                                                    type="time"
+                                                    className="form-control"
+                                                    id={`endTimeWorkLog${key2}${key}`}
+                                                    readOnly={editableRowId !== workLogDetail.workLogId}
+                                                  />
+                                                </div>
+                                              </Col>
+                                              <Col md={2}>
+                                                <div>
+                                                  <input
+                                                    type="time"
+                                                    className="form-control"
+                                                    id={`endTimeWorkLog2${key2}${key}`}
+                                                    readOnly={editableRowId !== workLogDetail.workLogId}
+                                                  />
+                                                </div>
+                                              </Col>
+                                              <Col
+                                                md={2}
+                                                className="d-flex justify-content-center align-items-center"
+                                                id={`hourInDay${workLogDetail.workLogId}`}
+                                              >
+                                                Hours in day: {workLogDetail.hourWorkInDay}
+                                              </Col>
+                                              <Col md={2}>
+                                                <Select
+                                                  options={optionsStatus}
+                                                  name="choices-single-categories"
+                                                  id={`statusWorkLog${key2}${key}`}
+                                                  value={valuesStatus[`${key2}${key}`]}
+                                                  onChange={handleChangeStatus}
+                                                  aria-label="Default select example"
+                                                  menuPosition={'fixed'}
+                                                  isDisabled={editableRowId !== workLogDetail.workLogId}
+                                                />
+                                              </Col>
+                                              <Col
+                                                md={1}
+                                                className="d-flex justify-content-center align-items-center"
+                                              >
+                                                {payPeriodDetail.statusString == "Created" && (
+                                                  <>
+                                                    {isCompleteEditWorkLog && ( // Kiểm tra nếu isCompleteEditWorkLog === false
+                                                      <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
+                                                        setKeyAndIdWorkLog(workLogDetail.workLogId, key)
+                                                      }>
+                                                        <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                          <FontAwesomeIcon
+                                                            icon={faGear}
+                                                            size="xl"
+                                                            color="#909191"
+                                                          />
+                                                        </a>
+                                                      </DropdownAntd>
+                                                    )}
+                                                  </>
+                                                )}
+                                              </Col>
+                                            </Row>
+                                            {editableRowId == workLogDetail.workLogId ? (
+                                              <>
                                                 <Row>
                                                   <Col
-                                                    md={3}
-                                                    className="d-flex justify-content-center align-items-center"
+                                                    md={2}
+                                                    style={{ textAlign: "end" }}
+                                                    className="d-flex gap-2 justify-content-end"
                                                   >
-                                                    {listWorklogNew.workDateMMM}
-                                                  </Col>
-                                                  <Col md={3}>
-                                                    <div>
-                                                      {" "}
-                                                      <Input
-                                                        type="text"
-                                                        className="form-control"
-                                                        id="time-In"
-                                                        value={
-                                                          listWorklogNew.timeIn
-                                                        }
-                                                        onChange={(e) =>
-                                                          setCurrentProjectName(
-                                                            e.target.value
-                                                          )
-                                                        }
-                                                      />
-                                                    </div>
-                                                  </Col>
-                                                  <Col md={3}>
-                                                    <div>
-                                                      {" "}
-                                                      <Input
-                                                        type="text"
-                                                        className="form-control"
-                                                        id="time-Out"
-                                                        value={
-                                                          listWorklogNew.timeOut
-                                                        }
-                                                        onChange={(e) =>
-                                                          setCurrentProjectName(
-                                                            e.target.value
-                                                          )
-                                                        }
-                                                      />
-                                                    </div>
                                                   </Col>
                                                   <Col
-                                                    md={3}
-                                                    className="d-flex justify-content-center align-items-center"
+                                                    md={6}
+                                                    style={{ textAlign: "end" }}
+                                                    className="d-flex gap-2 justify-content-end"
                                                   >
-                                                    {
-                                                      listWorklogNew.hourWorkInDay
-                                                    }
+                                                    <p id={`timeErrorWorkLog${workLogDetail.workLogId}`} className="text-danger mt-2"></p>
+                                                  </Col>
+                                                  <Col
+                                                    md={4}
+                                                    style={{ textAlign: "end" }}
+                                                    className="d-flex gap-2 justify-content-end"
+                                                  >
+                                                    <div className="btn btn-soft-danger"
+                                                      onClick={() => cancelUpdateWorkLog()}
+                                                    >
+                                                      Cancel
+                                                    </div>
+                                                    <button className="btn btn-soft-blue "
+                                                      onClick={() => {
+                                                        saveUpdateWorkLog();
+                                                      }}
+                                                      disabled={loadingSaveWorkLog}
+                                                    >
+                                                      {loadingSaveWorkLog ? (
+                                                        <div style={{ width: "45px" }} className="d-flex align-items-center justify-content-center">
+                                                          <HashLoader
+                                                            size={20}
+                                                            color={"white"}
+                                                            loading={true}
+                                                          />
+                                                        </div>
+                                                      ) : (
+                                                        "Save"
+                                                      )}
+                                                    </button>
+
                                                   </Col>
                                                 </Row>
-                                              </div>
-                                            </div>
+                                              </>
+                                            ) : (
+                                              null
+                                            )}
                                           </div>
-                                        )
-                                      )}
-                                    </Collapse>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <div>
-                                <Empty />
-                              </div>
-                            )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </Collapse>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </TabPane>
                       </TabContent>
