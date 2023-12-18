@@ -55,6 +55,7 @@ const NavBar = (props) => {
   //Notification Dropdown
   const [notification, setNotification] = useState(false);
   const [notificationFb, setNotificationFb] = useState(false)
+  const [firstNoti, setFirstNoti] = useState(false)
   const [listNotification, setListNotification] = useState([])
   const [countNotification, setCountNotification] = useState(false)
   //user Profile Dropdown
@@ -180,9 +181,8 @@ const NavBar = (props) => {
     } catch (error) {
       console.log(error);
     }
-    navigate(url, { replace: true });
+    navigate(url);
     setNotification(false);
-    window.location.reload()
   };
 
   useEffect(() => {
@@ -233,24 +233,29 @@ const NavBar = (props) => {
   }
 
   const fetchListNotification = async () => {
-    try {
-      const userId = localStorage.getItem("userId");
-      const respone = await notificationServices.getListNotificationByUserId(userId);
-      console.log(respone)
-      setListNotification(respone.data.data)
-    } catch (error) {
-      console.log(error)
+    let userId = localStorage.getItem("userId");
+    if (userId) {
+      try {
+        const respone = await notificationServices.getListNotificationByUserId(userId);
+        console.log(respone)
+        setListNotification(respone.data.data)
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
   const fetchCountNotification = async () => {
-    try {
-      const userId = localStorage.getItem("userId");
-      const respone = await notificationServices.getCountNotificationByUserId(userId);
-      console.log(respone)
-      setCountNotification(respone.data.data)
-    } catch (error) {
-      console.log(error)
+    let userId = localStorage.getItem("userId");
+    if (userId) {
+      try {
+        const userId = localStorage.getItem("userId");
+        const respone = await notificationServices.getCountNotificationByUserId(userId);
+        console.log(respone)
+        setCountNotification(respone.data.data)
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
@@ -261,9 +266,12 @@ const NavBar = (props) => {
 
 
   useEffect(() => {
-    console.log("navbar")
+    if (firstNoti) {
+      toast.info("You have new notification");
+    }
     fetchListNotification();
     fetchCountNotification();
+    setFirstNoti(false)
   }, [notificationFb])
 
 
@@ -272,10 +280,22 @@ const NavBar = (props) => {
   onMessageListener().then((payload) => {
     // Xử lý thông báo ở đây
     console.log('Received message from Firebase:', payload);
+    setFirstNoti(true);
     setNotificationFb(!notificationFb)
   }).catch((error) => {
     console.error('Error listening to messages:', error);
   });
+
+
+
+  const channel = new BroadcastChannel('notificationChannel');
+  channel.onmessage = function (event) {
+    setFirstNoti(true);
+    setNotificationFb(!notificationFb)
+  };
+
+
+
 
   return (
     <React.Fragment >

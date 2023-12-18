@@ -415,7 +415,7 @@ const cloneHiringRequest = async (requestId) => {
       "${requestId}",
       requestId
     );
-  const response = await axiosLocalHost.normalRequest
+  const response = await axiosLocalHost
     .sendAuthorizedRequest(serviceUrl, 'POST', requestId);
   return response;
 };

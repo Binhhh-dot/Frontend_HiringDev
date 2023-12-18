@@ -1,55 +1,20 @@
 import axios from "axios";
 import url from '../Common/urlConstant'
-import { useNavigate } from "react-router-dom";
-import notificationServices from "../services/notification.services";
-import loginService from "../services/login.service";
-
 
 const axiosClient = axios.create({
     baseURL: url.base,
 });
 
-// const clearData = async () => {
-//     let response;
-//     let response2;
-//     try {
-//         const userId = localStorage.getItem("userId");
-//         if (userId) {
-//             response2 = await notificationServices.getUserDeviceId(userId);
-
-//             if (response2?.status === 200) {
-//                 const deviceToken = localStorage.getItem("deviceToken");
-//                 const foundDevice = response2.data.data.find(item => item.deviceToken === deviceToken);
-//                 if (foundDevice) {
-//                     console.log("DeviceToken tồn tại trong danh sách:");
-//                     console.log("UserDeviceId:", foundDevice.userDeviceId);
-//                     const response3 = await notificationServices.deleteUserDevice(foundDevice.userDeviceId);
-//                     response = await loginService.revokeAccount(userId);
-//                     localStorage.clear();
-//                 } else {
-//                     console.log("DeviceToken không tồn tại trong danh sách.");
-//                     response = await loginService.revokeAccount(userId);
-//                     localStorage.clear();
-//                 }
-//             } else {
-//                 response = await loginService.revokeAccount(userId);
-//                 localStorage.clear();
-//             }
-//         }
-
-//     } catch (error) {
-//         console.log(error);
-//     }
-// };
 
 const sendAuthorizedRequest = async (url, method, data = null, config = {}) => {
     let accessToken = localStorage.getItem('accessToken');
     const headers = {};
 
-    if (!accessToken || isAccessTokenExpired()) {
+    if (isAccessTokenExpired()) {
         const newAccessToken = await tokensCheckAndRefresh();
         if (!newAccessToken) {
             // clearData();
+            deleteUserDevice();
             console.log("het token")
             return; // Dừng hàm tại đây hoặc xử lý tiếp theo tùy theo logic ứng dụng của bạn
         }
@@ -75,6 +40,39 @@ const sendAuthorizedRequest = async (url, method, data = null, config = {}) => {
         throw error;
     }
 };
+
+const deleteUserDevice = async () => {
+    try {
+        const userId = localStorage.getItem('userId');
+        const response = await axios.get(`https://wehireapi.azurewebsites.net/api/UserDevice/User/${userId}`);
+
+        if (response?.status === 200) {
+            const deviceToken = localStorage.getItem("deviceToken");
+            const foundDevice = response.data.data.find(item => item.deviceToken === deviceToken);
+
+            if (foundDevice) {
+                console.log("DeviceToken exists in the list:");
+                console.log("UserDeviceId:", foundDevice.userDeviceId);
+
+                const response3 = await axios.delete(`https://wehireapi.azurewebsites.net/api/UserDevice/${foundDevice.userDeviceId}`);
+                localStorage.clear();
+                // window.location.href = '/signin';
+            } else {
+                console.log("DeviceToken does not exist in the list.");
+                localStorage.clear();
+                // window.location.href = '/signin';
+            }
+        } else {
+            localStorage.clear();
+            // window.location.href = '/signin';
+        }
+    } catch (error) {
+        localStorage.clear();
+        // window.location.href = '/signin';
+        console.error('Error refreshing tokens: ', error);
+    }
+};
+
 
 const refreshTokenByApi = async (accessToken, refreshToken) => {
     try {

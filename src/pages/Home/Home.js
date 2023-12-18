@@ -11,7 +11,6 @@ const Home = () => {
   return (
     <React.Fragment>
       <Jobcatogaries />
-      <JobList />
       <HowItWorks />
       <Cta />
       <Testimonal />

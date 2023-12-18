@@ -21,6 +21,7 @@ import {
   Form
 } from "reactstrap";
 import { Pie, Column, Bar } from '@ant-design/charts';
+import { Skeleton } from 'antd';
 
 import { Await, Link, Navigate, useLocation } from "react-router-dom";
 import DeveloperDetailInManagerPopup from "../../Home/SubSection/DeveloperDetailInManager";
@@ -200,6 +201,11 @@ const ProjectDetailDesciption = () => {
 
   const [selectedRange, setSelectedRange] = useState([]);
   const [isCloseProject, setIsCloseProject] = useState(false);
+
+  const [loadingHiringrequestList, setLoadingHiringrequestList] = useState(true);
+  const [loadingDeveloperOnboardList, setLoadingDeveloperOnboardList] = useState(true);
+  const [loadingPayOverview, setLoadingPayOverview] = useState(true);
+  const [loadingPayPeriod, setLoadingPayPeriod] = useState(true);
 
   const setRangeCalendar = () => {
     const startDate = listStartDay[currentMonthIndex];
@@ -469,7 +475,6 @@ const ProjectDetailDesciption = () => {
   const setPayRollEdit = (payrollId, key) => {
     setPayslipIdOnClick(payrollId)
     setKeyPayslip(key)
-
   };
 
   const [activeTabMini, setActiveTabMini] = useState("5");
@@ -731,8 +736,11 @@ const ProjectDetailDesciption = () => {
         };
       });
       setDeveloperOnboardList(listDeveloperOnboard);
+      setLoadingDeveloperOnboardList(false)
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
+      setLoadingDeveloperOnboardList(false)
+
     }
   };
 
@@ -932,7 +940,7 @@ const ProjectDetailDesciption = () => {
     setLoadingPaynow(true)
     try {
       const payerId = localStorage.getItem("userId");
-      const description = companyName + "pays for" + listMonth[currentMonthIndex];
+      const description = companyName + " pays for " + listMonth[currentMonthIndex];
       const queryParams = new URLSearchParams(location.search);
       const projectId = queryParams.get("Id");
       console.log(payPeriodId);
@@ -989,6 +997,7 @@ const ProjectDetailDesciption = () => {
       response = await payPeriodServices.getPayPeriodDetailByProjectIdAndDate(projectId, newDate);
       console.log(response)
       setPayPeriodDetail(response.data.data);
+      setLoadingPayOverview(false);
       if (response.data.code === 200) {
         console.log("cho nay ms bi goi lai");
         console.log(response.data.data.payPeriodId);
@@ -997,6 +1006,7 @@ const ProjectDetailDesciption = () => {
         console.log(response2)
         if (response.data.code == 200) {
           setPayRollDetail(response2.data.data);
+          setLoadingPayPeriod(false);
           response2.data.data.forEach((payRollDetailNew, key2) => {
             const temp = "totalOT" + key2;
             console.log(temp)
@@ -1010,6 +1020,8 @@ const ProjectDetailDesciption = () => {
         }
       }
     } catch (error) {
+      setLoadingPayOverview(false);
+      setLoadingPayPeriod(false);
       console.error("Error fetching job vacancies:", error);
       console.log("payperiod loi")
       setPayPeriodDetail(null);
@@ -1103,6 +1115,8 @@ const ProjectDetailDesciption = () => {
   }, [isUpdateImage]);
 
   useEffect(() => {
+    setLoadingPayPeriod(true);
+    setLoadingPayOverview(true);
     const temp = listEndDay[currentMonthIndex];
     if (temp) {
       const parts = temp.split('.');
@@ -1114,7 +1128,9 @@ const ProjectDetailDesciption = () => {
   }, [currentMonthIndex]);
 
   useEffect(() => {
-    const temp = listStartDay[currentMonthIndex];
+    setLoadingPayPeriod(true);
+    setLoadingPayOverview(true);
+    const temp = listEndDay[currentMonthIndex];
     if (temp) {
       const parts = temp.split('.');
       const newDate = `${parts[2]}-${parts[1]}-25`;
@@ -1253,8 +1269,8 @@ const ProjectDetailDesciption = () => {
     let response;
     try {
       const skillSearch = skill.map(skill => skill.value);
-      const levelSearch = typeRequire ? typeRequire.value : "";
-      const typeSearch = levelRequire ? levelRequire.value : "";
+      const typeSearch = typeRequire ? typeRequire.value : "";
+      const levelSearch = levelRequire ? levelRequire.value : "";
       const statusSearch = status ? status.value : "";
       const inputSearch = search;
       const queryParams = new URLSearchParams(location.search);
@@ -1297,9 +1313,11 @@ const ProjectDetailDesciption = () => {
 
       setJobVacancyList(formattedJobVacancies);
       setTotalPages(Math.ceil(response.data.paging.total / 5));
+      setLoadingHiringrequestList(false)
 
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
+      setLoadingHiringrequestList(false)
     }
   };
 
@@ -1308,10 +1326,12 @@ const ProjectDetailDesciption = () => {
   }, []);
 
   useEffect(() => {
+    setLoadingHiringrequestList(true)
     fetchJobVacancies();
   }, [currentPage]);
 
   useEffect(() => {
+    setLoadingHiringrequestList(true)
     setCurrentPage(1);
     fetchJobVacancies();
   }, [skill, typeRequire, levelRequire, status]);
@@ -1321,6 +1341,9 @@ const ProjectDetailDesciption = () => {
   };
 
   useEffect(() => {
+    setLoadingHiringrequestList(true)
+    setLoadingDeveloperOnboardList(true)
+
     setLoading(true);
     fetchData();
     fetchProjectDetails();
@@ -1963,154 +1986,161 @@ const ProjectDetailDesciption = () => {
                     </TabPane>
                     <TabPane tabId="3">
                       <Row>
-                        {developerOnboardList.length > 0 ? (
+                        {loadingDeveloperOnboardList ? ( // Render Skeleton while loading is true
                           <>
-                            {developerOnboardList.map((candidategridDetailsNew, key) => (
-                              <Col lg={3} md={6} key={key}>
-                                <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
-                                  <CardBody className="p-4 dev-accepted  d-flex flex-column gap-1" style={{ borderRadius: "15px" }}>
-                                    <div className="d-flex mb-2 justify-content-between">
-                                      <div className="d-flex">
-                                        <div
-                                          className="flex-shrink-0 position-relative"
-                                          onClick={() =>
-                                            openModal(candidategridDetailsNew)
-                                          }
-                                        >
-                                          <img
-                                            src={
-                                              candidategridDetailsNew.userImg ||
-                                              userImage0
-                                            }
-                                            alt=""
-                                            className="avatar-md rounded"
-                                          />
-                                          <span
-                                            className={
-                                              candidategridDetailsNew.candidateStatusClassName
-                                            }
-                                          ></span>
-                                        </div>
-                                        <div className="ms-3">
-                                          <div className="primary-link">
-                                            <h5
-                                              className="fs-17"
-                                              onClick={() =>
-                                                openModal(candidategridDetailsNew)
-                                              }
-                                            >
-                                              {candidategridDetailsNew.firstName} {candidategridDetailsNew.lastName}
-                                            </h5>
-                                          </div>
-                                          <span
-                                            className={
-                                              candidategridDetailsNew.hiredDevStatusString ===
-                                                "Rejected"
-                                                ? "badge bg-danger text-light mb-2"
-                                                : candidategridDetailsNew.hiredDevStatusString ===
-                                                  "Contract Failed"
-                                                  ? "badge bg-danger text-light mb-2"
-                                                  : candidategridDetailsNew.hiredDevStatusString ===
-                                                    "Working"
-                                                    ? "badge bg-blue text-light mb-2"
-                                                    : candidategridDetailsNew.hiredDevStatusString ===
-                                                      "Under Consideration"
-                                                      ? "badge bg-warning text-light mb-2"
-                                                      : candidategridDetailsNew.hiredDevStatusString ===
-                                                        "Contract Processing"
-                                                        ? "badge bg-warning text-light mb-2"
-                                                        : candidategridDetailsNew.hiredDevStatusString ===
-                                                          "Interview Scheduled"
-                                                          ? "badge bg-blue text-light mb-2"
-                                                          : candidategridDetailsNew.hiredDevStatusString ===
-                                                            "Completed"
-                                                            ? "badge bg-primary text-light mb-2"
-                                                            : candidategridDetailsNew.hiredDevStatusString ===
-                                                              "Waiting Interview"
-                                                              ? "badge bg-warning text-light mb-2"
-                                                              : candidategridDetailsNew.hiredDevStatusString ===
-                                                                "Terminated"
-                                                                ? "badge bg-danger text-light mb-2"
-                                                                : candidategridDetailsNew.hiredDevStatusString ===
-                                                                  "Request Closed"
-                                                                  ? "badge  bg-teal text-light mb-2"
-                                                                  : ""
+                            <Skeleton active />
+                            <Skeleton active />
+                            <Skeleton active />
+                          </>
+                        ) :
+                          developerOnboardList.length > 0 ? (
+                            <>
+                              {developerOnboardList.map((candidategridDetailsNew, key) => (
+                                <Col lg={3} md={6} key={key}>
+                                  <div style={{ backgroundColor: "white", borderRadius: "15px" }}>
+                                    <CardBody className="p-4 dev-accepted  d-flex flex-column gap-1" style={{ borderRadius: "15px" }}>
+                                      <div className="d-flex mb-2 justify-content-between">
+                                        <div className="d-flex">
+                                          <div
+                                            className="flex-shrink-0 position-relative"
+                                            onClick={() =>
+                                              openModal(candidategridDetailsNew)
                                             }
                                           >
-                                            {candidategridDetailsNew.hiredDevStatusString}
-                                          </span>{" "}
-                                        </div>
-                                      </div>
-                                      <div className="d-flex gap-1">
-                                        <div
-                                          className="list-inline-item"
-                                          data-bs-toggle="tooltip"
-                                          data-bs-placement="top"
-                                          onClick={() => openModal(candidategridDetailsNew)}
-                                          title="View More"
-                                        >
-                                          <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
-                                            <i className="mdi mdi-eye"></i>
+                                            <img
+                                              src={
+                                                candidategridDetailsNew.userImg ||
+                                                userImage0
+                                              }
+                                              alt=""
+                                              className="avatar-md rounded"
+                                            />
+                                            <span
+                                              className={
+                                                candidategridDetailsNew.candidateStatusClassName
+                                              }
+                                            ></span>
+                                          </div>
+                                          <div className="ms-3">
+                                            <div className="primary-link">
+                                              <h5
+                                                className="fs-17"
+                                                onClick={() =>
+                                                  openModal(candidategridDetailsNew)
+                                                }
+                                              >
+                                                {candidategridDetailsNew.firstName} {candidategridDetailsNew.lastName}
+                                              </h5>
+                                            </div>
+                                            <span
+                                              className={
+                                                candidategridDetailsNew.hiredDevStatusString ===
+                                                  "Rejected"
+                                                  ? "badge bg-danger text-light mb-2"
+                                                  : candidategridDetailsNew.hiredDevStatusString ===
+                                                    "Contract Failed"
+                                                    ? "badge bg-danger text-light mb-2"
+                                                    : candidategridDetailsNew.hiredDevStatusString ===
+                                                      "Working"
+                                                      ? "badge bg-blue text-light mb-2"
+                                                      : candidategridDetailsNew.hiredDevStatusString ===
+                                                        "Under Consideration"
+                                                        ? "badge bg-warning text-light mb-2"
+                                                        : candidategridDetailsNew.hiredDevStatusString ===
+                                                          "Contract Processing"
+                                                          ? "badge bg-warning text-light mb-2"
+                                                          : candidategridDetailsNew.hiredDevStatusString ===
+                                                            "Interview Scheduled"
+                                                            ? "badge bg-blue text-light mb-2"
+                                                            : candidategridDetailsNew.hiredDevStatusString ===
+                                                              "Completed"
+                                                              ? "badge bg-primary text-light mb-2"
+                                                              : candidategridDetailsNew.hiredDevStatusString ===
+                                                                "Waiting Interview"
+                                                                ? "badge bg-warning text-light mb-2"
+                                                                : candidategridDetailsNew.hiredDevStatusString ===
+                                                                  "Terminated"
+                                                                  ? "badge bg-danger text-light mb-2"
+                                                                  : candidategridDetailsNew.hiredDevStatusString ===
+                                                                    "Request Closed"
+                                                                    ? "badge  bg-teal text-light mb-2"
+                                                                    : ""
+                                              }
+                                            >
+                                              {candidategridDetailsNew.hiredDevStatusString}
+                                            </span>{" "}
                                           </div>
                                         </div>
-                                        {hiringRequestDetail.statusString != "Closed" && hiringRequestDetail.statusString != "Closing process" && (
-                                          <>
-                                            <DropdownAntd trigger={['click']}
-                                              onClick={() =>
-                                                setIdDeveloperReport(candidategridDetailsNew)
-                                              }
-                                              menu={{ items: profileItems4 }}>
-                                              <FontAwesomeIcon icon={faEllipsisVertical}
-                                                style={{ fontSize: "24px", color: 'gray', cursor: "pointer" }}
-                                              />
-                                            </DropdownAntd>
-                                          </>
-                                        )}
+                                        <div className="d-flex gap-1">
+                                          <div
+                                            className="list-inline-item"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            onClick={() => openModal(candidategridDetailsNew)}
+                                            title="View More"
+                                          >
+                                            <div className="avatar-sm bg-success-subtle text-success d-inline-block text-center rounded-circle fs-18">
+                                              <i className="mdi mdi-eye"></i>
+                                            </div>
+                                          </div>
+                                          {hiringRequestDetail.statusString != "Closed" && hiringRequestDetail.statusString != "Closing process" && (
+                                            <>
+                                              <DropdownAntd trigger={['click']}
+                                                onClick={() =>
+                                                  setIdDeveloperReport(candidategridDetailsNew)
+                                                }
+                                                menu={{ items: profileItems4 }}>
+                                                <FontAwesomeIcon icon={faEllipsisVertical}
+                                                  style={{ fontSize: "24px", color: 'gray', cursor: "pointer" }}
+                                                />
+                                              </DropdownAntd>
+                                            </>
+                                          )}
 
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div className="row" style={{ alignItems: "center" }}>
-                                      <FontAwesomeIcon icon={faEnvelope} className="col-lg-1" />
-                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
-                                        {candidategridDetailsNew.email}
-                                      </div>
-                                    </div >
-                                    <div className="row" style={{ alignItems: "center" }}>
-                                      <FontAwesomeIcon icon={faMobileScreen} className="col-lg-1" />
-                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
-                                        {candidategridDetailsNew.phoneNumber}
-                                      </div>
-                                    </div >
-                                    <div className="row" style={{ alignItems: "center" }}>
-                                      <FontAwesomeIcon icon={faLocationDot} className="col-lg-1" />
-                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
-                                        {candidategridDetailsNew.employmentTypeName}
-                                      </div>
-                                    </div >
-                                    <div className="row" style={{ alignItems: "center" }}>
-                                      <FontAwesomeIcon icon={faFlag} className="col-lg-1" />
-                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
-                                        Start day:
-                                        {candidategridDetailsNew.startWorkingDate}
-                                      </div>
-                                    </div >
-                                    <div className="row" style={{ alignItems: "center" }}>
-                                      <FontAwesomeIcon icon={faCircleXmark} className="col-lg-1" />
-                                      <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
-                                        End day:
-                                        {candidategridDetailsNew.endWorkingDate}
-                                      </div>
-                                    </div >
+                                      <div className="row" style={{ alignItems: "center" }}>
+                                        <FontAwesomeIcon icon={faEnvelope} className="col-lg-1" />
+                                        <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                          {candidategridDetailsNew.email}
+                                        </div>
+                                      </div >
+                                      <div className="row" style={{ alignItems: "center" }}>
+                                        <FontAwesomeIcon icon={faMobileScreen} className="col-lg-1" />
+                                        <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                          {candidategridDetailsNew.phoneNumber}
+                                        </div>
+                                      </div >
+                                      <div className="row" style={{ alignItems: "center" }}>
+                                        <FontAwesomeIcon icon={faLocationDot} className="col-lg-1" />
+                                        <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                          {candidategridDetailsNew.employmentTypeName}
+                                        </div>
+                                      </div >
+                                      <div className="row" style={{ alignItems: "center" }}>
+                                        <FontAwesomeIcon icon={faFlag} className="col-lg-1" />
+                                        <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                          Start day:
+                                          {candidategridDetailsNew.startWorkingDate}
+                                        </div>
+                                      </div >
+                                      <div className="row" style={{ alignItems: "center" }}>
+                                        <FontAwesomeIcon icon={faCircleXmark} className="col-lg-1" />
+                                        <div className="col-lg-10" style={{ paddingLeft: "0px" }}>
+                                          End day:
+                                          {candidategridDetailsNew.endWorkingDate}
+                                        </div>
+                                      </div >
 
 
-                                  </CardBody>
-                                </div>
-                              </Col>
-                            ))}
-                          </>
-                        ) : (
-                          <Empty />
-                        )}
+                                    </CardBody>
+                                  </div>
+                                </Col>
+                              ))}
+                            </>
+                          ) : (
+                            <Empty />
+                          )}
                       </Row>
                       <div>
                         <DeveloperDetailInCompanyPopup
@@ -2128,43 +2158,18 @@ const ProjectDetailDesciption = () => {
                               <div style={{ fontSize: "30px", fontWeight: "bold" }}>
                                 Payroll
                               </div>
+                              {hiringRequestDetail.statusString != "Closed" && hiringRequestDetail.statusString != "Closing process" && (
+                                <>
+                                  <div className="d-flex gap-5 justify-content-end">
 
-                              <div className="d-flex gap-5 justify-content-end">
-
-                                <button className="btn btn-soft-primary fw-bold"
-                                  onClick={() => {
-                                    createNewPayPeriod();
-                                  }}
-                                  disabled={loadingCreateNew}
-                                >
-                                  {loadingCreateNew ? (
-                                    <div style={{ width: "110px" }} className="d-flex align-items-center justify-content-center">
-                                      <HashLoader
-                                        size={20}
-                                        color={"white"}
-                                        loading={true}
-                                      />
-                                    </div>
-                                  ) : (
-                                    "Create new"
-                                  )}
-                                </button>
-                                <div className="d-flex justify-content-end gap-2">
-                                  <div>
-                                    <input
-                                      key={key}
-                                      type="file"
-                                      style={{ display: 'none' }}
-                                      onChange={handleFileChange}
-                                      id="fileInput" // Đặt id để tham chiếu trong nút Import Excel
-                                      disabled={loadingImportExel}
-                                    />
-                                    <label
-                                      htmlFor="fileInput"
-                                      className="btn btn-soft-blue fw-bold"
+                                    <button className="btn btn-soft-primary fw-bold"
+                                      onClick={() => {
+                                        createNewPayPeriod();
+                                      }}
+                                      disabled={loadingCreateNew}
                                     >
-                                      {loadingImportExel ? (
-                                        <div style={{ width: "100px" }} className="d-flex align-items-center justify-content-center">
+                                      {loadingCreateNew ? (
+                                        <div style={{ width: "110px" }} className="d-flex align-items-center justify-content-center">
                                           <HashLoader
                                             size={20}
                                             color={"white"}
@@ -2172,30 +2177,58 @@ const ProjectDetailDesciption = () => {
                                           />
                                         </div>
                                       ) : (
-                                        "Import Excel"
+                                        "Create new"
                                       )}
-                                    </label>
-                                  </div>
-                                  <button className="btn btn-soft-blue fw-bold"
-                                    onClick={() => {
-                                      generateExel();
-                                    }}
-                                    disabled={loadingGenerateExel}
-                                  >
-                                    {loadingGenerateExel ? (
-                                      <div style={{ width: "110px" }} className="d-flex align-items-center justify-content-center">
-                                        <HashLoader
-                                          size={20}
-                                          color={"white"}
-                                          loading={true}
+                                    </button>
+                                    <div className="d-flex justify-content-end gap-2">
+                                      <div>
+                                        <input
+                                          key={key}
+                                          type="file"
+                                          style={{ display: 'none' }}
+                                          onChange={handleFileChange}
+                                          id="fileInput" // Đặt id để tham chiếu trong nút Import Excel
+                                          disabled={loadingImportExel}
                                         />
+                                        <label
+                                          htmlFor="fileInput"
+                                          className="btn btn-soft-blue fw-bold"
+                                        >
+                                          {loadingImportExel ? (
+                                            <div style={{ width: "100px" }} className="d-flex align-items-center justify-content-center">
+                                              <HashLoader
+                                                size={20}
+                                                color={"white"}
+                                                loading={true}
+                                              />
+                                            </div>
+                                          ) : (
+                                            "Import Excel"
+                                          )}
+                                        </label>
                                       </div>
-                                    ) : (
-                                      "Generate Excel"
-                                    )}
-                                  </button>
-                                </div>
-                              </div>
+                                      <button className="btn btn-soft-blue fw-bold"
+                                        onClick={() => {
+                                          generateExel();
+                                        }}
+                                        disabled={loadingGenerateExel}
+                                      >
+                                        {loadingGenerateExel ? (
+                                          <div style={{ width: "110px" }} className="d-flex align-items-center justify-content-center">
+                                            <HashLoader
+                                              size={20}
+                                              color={"white"}
+                                              loading={true}
+                                            />
+                                          </div>
+                                        ) : (
+                                          "Generate Excel"
+                                        )}
+                                      </button>
+                                    </div>
+                                  </div>
+                                </>
+                              )}
                             </div>
 
                             <Nav
@@ -2242,592 +2275,611 @@ const ProjectDetailDesciption = () => {
                             <div>
                               <TabContent activeTab={activeTabMini}>
                                 <TabPane tabId="5" className="pt-4 ">
-                                  {payPeriodDetail ? (
+                                  {loadingPayOverview ? ( // Render Skeleton while loading is true
                                     <>
-                                      <div className="row">
-                                        <div className="col-lg-9 p-4 d-flex flex-column gap-4 card  " style={{
-                                          boxShadow:
-                                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                        }}>
-                                          <div className="d-flex align-items-center justify-content-between">
-                                            <div style={{ color: "black", fontWeight: "500" }}>Total salary payable for the month</div>
-                                            <div>
-                                              <span
-                                                className={
-                                                  payPeriodDetail.statusString === "Created"
-                                                    ? "badge bg-blue text-light fs-12 "
-                                                    : payPeriodDetail.statusString === "Expired"
-                                                      ? "badge bg-danger text-light fs-12 "
-                                                      : payPeriodDetail.statusString === "Deleted"
-                                                        ? "badge bg-secondary text-light fs-12 "
-                                                        : payPeriodDetail.statusString === "Paid"
-                                                          ? "badge bg-primary text-light fs-12 "
-                                                          : ""
-                                                }
-                                              >
-                                                {payPeriodDetail.statusString}
-                                              </span>
-                                            </div>
-                                          </div>
-                                          <div style={{ border: "1px solid #d9d9d9" }}></div>
-                                          <div className="d-flex justify-content-between" style={{ fontSize: "35px" }}>
-                                            <div>Total salary for developers in {listMonth[currentMonthIndex].split(' ')[0]}</div>
-                                            <div>{payPeriodDetail.totalAmount}</div>
-                                          </div>
-                                          <div className="d-flex flex-column">
-                                            {payPeriodDetail.developerFullName.map((fullName, index) => (
-                                              <>
-                                                <div className="d-flex gap-2  align-items-center ">
-                                                  <FontAwesomeIcon icon={faCircle} style={{ color: "#20b144", fontSize: "10px" }} />
-                                                  <div style={{ color: "black", fontWeight: "480" }} key={index}>Salary of {fullName}</div>
-                                                </div>
-                                              </>
-                                            ))}
-                                          </div>
-                                          <div style={{ color: "grey", marginTop: "80px" }} className="d-flex justify-content-between" >
-                                            <div>Last updated : {payPeriodDetail.updatedAt}</div>
-                                            {payPeriodDetail.statusString !== "Paid" && (
-                                              <div className="btn btn-soft-primary fw-bold" onClick={() => {
-                                                setShowPopup(true);
-                                              }}>Continues</div>
-                                            )}
-                                            {payPeriodDetail.statusString == "Paid" && (
-                                              <div className="btn btn-soft-primary fw-bold" onClick={() => {
-                                                setShowPopup(true);
-                                              }}>View detail</div>
-                                            )}
-                                          </div>
-                                        </div>
-                                        <div className="col-lg-3 "
-                                        >
-                                          <div className="card p-3" style={{
+                                      <Skeleton active />
+                                      <Skeleton active />
+                                      <Skeleton active />
+                                    </>
+                                  ) :
+                                    payPeriodDetail ? (
+                                      <>
+                                        <div className="row">
+                                          <div className="col-lg-9 p-4 d-flex flex-column gap-4 card  " style={{
                                             boxShadow:
                                               "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
                                           }}>
-                                            <Calendar
-                                              value={selectedRange}
-                                              view={"month"}
-                                              locale='en-US'
-                                              // tileContent={<Text color='brand.500'></Text>}
-                                              prevLabel={<FontAwesomeIcon icon={faAngleLeft} style={{ fontSize: '20px' }} />}
-                                              nextLabel={<FontAwesomeIcon icon={faAngleRight} style={{ fontSize: '20px' }} />}
-                                            // onClickDay={() => null}
-                                            // disabled={true}
-                                            />
+                                            <div className="d-flex align-items-center justify-content-between">
+                                              <div style={{ color: "black", fontWeight: "500" }}>Total salary payable for the month</div>
+                                              <div>
+                                                <span
+                                                  className={
+                                                    payPeriodDetail.statusString === "Created"
+                                                      ? "badge bg-blue text-light fs-12 "
+                                                      : payPeriodDetail.statusString === "Expired"
+                                                        ? "badge bg-danger text-light fs-12 "
+                                                        : payPeriodDetail.statusString === "Deleted"
+                                                          ? "badge bg-secondary text-light fs-12 "
+                                                          : payPeriodDetail.statusString === "Paid"
+                                                            ? "badge bg-primary text-light fs-12 "
+                                                            : ""
+                                                  }
+                                                >
+                                                  {payPeriodDetail.statusString}
+                                                </span>
+                                              </div>
+                                            </div>
+                                            <div style={{ border: "1px solid #d9d9d9" }}></div>
+                                            <div className="d-flex justify-content-between" style={{ fontSize: "35px" }}>
+                                              <div>Total salary for developers in {listMonth[currentMonthIndex].split(' ')[0]}</div>
+                                              <div>{payPeriodDetail.totalAmount}</div>
+                                            </div>
+                                            <div className="d-flex flex-column">
+                                              {payPeriodDetail.developerFullName.map((fullName, index) => (
+                                                <>
+                                                  <div className="d-flex gap-2  align-items-center ">
+                                                    <FontAwesomeIcon icon={faCircle} style={{ color: "#20b144", fontSize: "10px" }} />
+                                                    <div style={{ color: "black", fontWeight: "480" }} key={index}>Salary of {fullName}</div>
+                                                  </div>
+                                                </>
+                                              ))}
+                                            </div>
+                                            <div style={{ color: "grey", marginTop: "80px" }} className="d-flex justify-content-between" >
+                                              <div>Last updated : {payPeriodDetail.updatedAt}</div>
+                                              {payPeriodDetail.statusString !== "Paid" && (
+                                                <div className="btn btn-soft-primary fw-bold" onClick={() => {
+                                                  setShowPopup(true);
+                                                }}>Continues</div>
+                                              )}
+                                              {payPeriodDetail.statusString == "Paid" && (
+                                                <div className="btn btn-soft-primary fw-bold" onClick={() => {
+                                                  setShowPopup(true);
+                                                }}>View detail</div>
+                                              )}
+                                            </div>
                                           </div>
-                                        </div>
-                                      </div>
-
-                                      <AntdModal
-                                        centered
-                                        open={showPopup}
-                                        onOk={() => setShowPopup(false)}
-                                        onCancel={() => {
-                                          setShowPopup(false);
-                                        }}
-                                        width={750}
-                                        footer={null}
-                                        zIndex={2000}
-                                      >
-                                        <div className="ps-3 pr-5 row ">
-                                          <div className="col-lg-9">
-                                            <div className=" profile-user">
-                                              <img
-                                                src={payPeriodDetail.companyImage}  // Giá trị mặc định là "userImage2"
-                                                className="rounded-circle img-thumbnail"
-                                                style={{ width: "120px" }}
-                                                id="profile-img-2"
-                                                alt=""
+                                          <div className="col-lg-3 "
+                                          >
+                                            <div className="card p-3" style={{
+                                              boxShadow:
+                                                "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                            }}>
+                                              <Calendar
+                                                value={selectedRange}
+                                                view={"month"}
+                                                locale='en-US'
+                                                // tileContent={<Text color='brand.500'></Text>}
+                                                prevLabel={<FontAwesomeIcon icon={faAngleLeft} style={{ fontSize: '20px' }} />}
+                                                nextLabel={<FontAwesomeIcon icon={faAngleRight} style={{ fontSize: '20px' }} />}
+                                              // onClickDay={() => null}
+                                              // disabled={true}
                                               />
                                             </div>
-                                            <div className="candidate-profile-overview ">
-                                              <h6 className="fs-17 fw-semibold ">{payPeriodDetail.companyName}</h6>
-                                              <h6 style={{ color: "grey" }}>{hiringRequestDetail.projectName}</h6>
+                                          </div>
+                                        </div>
+
+                                        <AntdModal
+                                          centered
+                                          open={showPopup}
+                                          onOk={() => setShowPopup(false)}
+                                          onCancel={() => {
+                                            setShowPopup(false);
+                                          }}
+                                          width={750}
+                                          footer={null}
+                                          zIndex={2000}
+                                        >
+                                          <div className="ps-3 pr-5 row ">
+                                            <div className="col-lg-9">
+                                              <div className=" profile-user">
+                                                <img
+                                                  src={payPeriodDetail.companyImage}  // Giá trị mặc định là "userImage2"
+                                                  className="rounded-circle img-thumbnail"
+                                                  style={{ width: "120px" }}
+                                                  id="profile-img-2"
+                                                  alt=""
+                                                />
+                                              </div>
+                                              <div className="candidate-profile-overview ">
+                                                <h6 className="fs-17 fw-semibold ">{payPeriodDetail.companyName}</h6>
+                                                <h6 style={{ color: "grey" }}>{hiringRequestDetail.projectName}</h6>
+                                              </div>
+                                            </div>
+                                            <div className="col-lg-3 d-flex flex-column justify-content-start" style={{ textAlign: "end", paddingTop: "30px", paddingRight: '30px' }} >
+                                              <div style={{ fontSize: "15px", color: "grey" }}>{payPeriodDetail.payPeriodCode}</div>
+                                              <div style={{ fontSize: "15px", color: "grey" }}>{currentDateBill}</div>
                                             </div>
                                           </div>
-                                          <div className="col-lg-3 d-flex flex-column justify-content-start" style={{ textAlign: "end", paddingTop: "30px", paddingRight: '30px' }} >
-                                            <div style={{ fontSize: "15px", color: "grey" }}>{payPeriodDetail.payPeriodCode}</div>
-                                            <div style={{ fontSize: "15px", color: "grey" }}>{currentDateBill}</div>
-                                          </div>
-                                        </div>
-                                        <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
+                                          <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
 
-                                        <div className="px-3 d-flex justify-content-between align-items-center">
-                                          <div style={{ fontWeight: "600" }}>
-                                            Actual total amount
-                                          </div>
-                                          <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
-                                            {payPeriodDetail.totalActualAmount}
-                                          </div>
-                                        </div>
-                                        <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
-
-                                        <div className="px-3 d-flex justify-content-between align-items-center">
-                                          <div style={{ fontWeight: "600" }}>
-                                            Total OT amount
-                                          </div>
-                                          <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
-                                            {payPeriodDetail.totalOTAmount}
-                                          </div>
-                                        </div>
-                                        <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
-                                        <div className="px-3 d-flex justify-content-between align-items-center">
-                                          <div style={{ fontWeight: "600" }}>
-                                            Total amount
-                                          </div>
-                                          <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
-                                            {payPeriodDetail.totalAmount}
-                                          </div>
-                                        </div>
-
-                                        <div className="px-3 d-flex justify-content-between align-items-center">
-                                          <div style={{ fontWeight: "600" }}>
-                                            Commission amount (8%)
-                                          </div>
-                                          <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
-                                            {payPeriodDetail.commissionAmount}
-                                          </div>
-                                        </div>
-                                        <div className="px-3 d-flex justify-content-end align-items-end">
-                                          <div style={{ fontWeight: "600", fontSize: "20px" }}>
-                                            Total Due : {payPeriodDetail.totalDue}
-                                          </div>
-                                        </div>
-                                        <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
-
-
-                                        <div className="row" style={{ paddingLeft: "30px", paddingRight: "30px" }}>
-                                          <div className="col-lg-4  d-flex flex-column gap-2" >
-                                            <div style={{ color: "grey" }}>
-                                              TO
-                                            </div>
+                                          <div className="px-3 d-flex justify-content-between align-items-center">
                                             <div style={{ fontWeight: "600" }}>
-                                              WeHire Co.
+                                              Actual total amount
                                             </div>
-                                            <div className="d-flex flex-column" style={{ color: "grey" }}>
-                                              <div>
-                                                Quan 9
+                                            <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
+                                              {payPeriodDetail.totalActualAmount}
+                                            </div>
+                                          </div>
+                                          <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
+
+                                          <div className="px-3 d-flex justify-content-between align-items-center">
+                                            <div style={{ fontWeight: "600" }}>
+                                              Total OT amount
+                                            </div>
+                                            <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
+                                              {payPeriodDetail.totalOTAmount}
+                                            </div>
+                                          </div>
+                                          <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
+                                          <div className="px-3 d-flex justify-content-between align-items-center">
+                                            <div style={{ fontWeight: "600" }}>
+                                              Total amount
+                                            </div>
+                                            <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
+                                              {payPeriodDetail.totalAmount}
+                                            </div>
+                                          </div>
+
+                                          <div className="px-3 d-flex justify-content-between align-items-center">
+                                            <div style={{ fontWeight: "600" }}>
+                                              Commission amount (8%)
+                                            </div>
+                                            <div style={{ fontSize: "20px", color: "green", fontWeight: "500" }} >
+                                              {payPeriodDetail.commissionAmount}
+                                            </div>
+                                          </div>
+                                          <div className="px-3 d-flex justify-content-end align-items-end">
+                                            <div style={{ fontWeight: "600", fontSize: "20px" }}>
+                                              Total Due : {payPeriodDetail.totalDue}
+                                            </div>
+                                          </div>
+                                          <Divider style={{ marginBottom: "12px", marginTop: "12px" }}></Divider>
+
+
+                                          <div className="row" style={{ paddingLeft: "30px", paddingRight: "30px" }}>
+                                            <div className="col-lg-4  d-flex flex-column gap-2" >
+                                              <div style={{ color: "grey" }}>
+                                                TO
+                                              </div>
+                                              <div style={{ fontWeight: "600" }}>
+                                                WeHire Co.
+                                              </div>
+                                              <div className="d-flex flex-column" style={{ color: "grey" }}>
+                                                <div>
+                                                  Quan 9
+                                                </div>
+                                                <div>
+                                                  Ho Chi Minh City
+                                                </div>
+                                                VietNam
+                                              </div>
+                                              <div style={{ color: "grey" }}>
+                                                wehire@gmail.com
+                                              </div>
+                                            </div>
+                                            <div className=" col-lg-4 d-flex flex-column gap-2" >
+                                              <div style={{ color: "grey" }}>
+                                                FROM
+                                              </div>
+                                              <div style={{ fontWeight: "600" }}>
+                                                {payPeriodDetail.companyName}
+                                              </div>
+                                              <div className="d-flex flex-column" style={{ color: "grey" }}>
+                                                {payPeriodDetail.companyAddress}
+                                              </div>
+                                              <div style={{ color: "grey" }}>
+                                                {payPeriodDetail.companyEmail}
+                                              </div>
+                                            </div>
+                                            <div className="d-flex col-lg-4 flex-column gap-2" >
+                                              <div style={{ color: "grey" }}>
+                                                NOTE
                                               </div>
                                               <div>
-                                                Ho Chi Minh City
+                                                Note
                                               </div>
-                                              VietNam
-                                            </div>
-                                            <div style={{ color: "grey" }}>
-                                              wehire@gmail.com
                                             </div>
                                           </div>
-                                          <div className=" col-lg-4 d-flex flex-column gap-2" >
-                                            <div style={{ color: "grey" }}>
-                                              FROM
-                                            </div>
-                                            <div style={{ fontWeight: "600" }}>
-                                              {payPeriodDetail.companyName}
-                                            </div>
-                                            <div className="d-flex flex-column" style={{ color: "grey" }}>
-                                              {payPeriodDetail.companyAddress}
-                                            </div>
-                                            <div style={{ color: "grey" }}>
-                                              {payPeriodDetail.companyEmail}
-                                            </div>
-                                          </div>
-                                          <div className="d-flex col-lg-4 flex-column gap-2" >
-                                            <div style={{ color: "grey" }}>
-                                              NOTE
-                                            </div>
-                                            <div>
-                                              Note
-                                            </div>
-                                          </div>
-                                        </div>
-                                        {payPeriodDetail.statusString !== "Paid" && (
-                                          <>
-                                            <div className="px-3 d-flex justify-content-end align-items-end">
-                                              <button className="btn btn-warning fw-bold d-flex align-items-center justify-content-center mt-3"
-                                                onClick={() => {
-                                                  openPayment(payPeriodDetail.payPeriodId, payPeriodDetail.companyName);
-                                                }}
-                                                disabled={loadingPayNow}
-                                                style={{ width: "1000px" }}
-                                              >
-                                                {loadingPayNow ? (
-                                                  <div style={{ width: "300px" }} className="d-flex align-items-center justify-content-center">
-                                                    <HashLoader
-                                                      size={20}
-                                                      color={"white"}
-                                                      loading={true}
-                                                    />
-                                                  </div>
-                                                ) : (
-                                                  <img src={paypalImage} alt="PayPal" style={{ width: "150px" }}></img>
-                                                )}
-                                              </button>
-                                            </div>
-                                          </>
-                                        )}
-                                      </AntdModal>
+                                          {payPeriodDetail.statusString !== "Paid" && (
+                                            <>
+                                              <div className="px-3 d-flex justify-content-end align-items-end">
+                                                <button className="btn btn-warning fw-bold d-flex align-items-center justify-content-center mt-3"
+                                                  onClick={() => {
+                                                    openPayment(payPeriodDetail.payPeriodId, payPeriodDetail.companyName);
+                                                  }}
+                                                  disabled={loadingPayNow}
+                                                  style={{ width: "1000px" }}
+                                                >
+                                                  {loadingPayNow ? (
+                                                    <div style={{ width: "300px" }} className="d-flex align-items-center justify-content-center">
+                                                      <HashLoader
+                                                        size={20}
+                                                        color={"white"}
+                                                        loading={true}
+                                                      />
+                                                    </div>
+                                                  ) : (
+                                                    <img src={paypalImage} alt="PayPal" style={{ width: "150px" }}></img>
+                                                  )}
+                                                </button>
+                                              </div>
+                                            </>
+                                          )}
+                                        </AntdModal>
 
-                                    </>
-                                  ) : (
-                                    <Empty />
-                                  )}
-                                </TabPane>
-                                <TabPane tabId="6" className="pt-4">
-                                  <div>
-                                    {payRollDetail[0] ? (
-                                      <>
-                                        <Row className="mb-2 px-3">
-                                          <Col md={2} style={{ textAlign: "center" }}>
-                                            First Name
-                                          </Col>
-                                          <Col
-                                            md={2}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            Last Name
-                                          </Col>
-                                          <Col
-                                            md={2}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            Email
-                                          </Col>
-                                          <Col
-                                            md={2}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            Total Hours
-                                          </Col>
-                                          <Col
-                                            md={1}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            Total OT
-                                          </Col>
-                                          <Col
-                                            md={2}
-                                            className="px-0"
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            Total Salary
-                                          </Col>
-                                          <Col md={1}></Col>
-                                        </Row>
                                       </>
                                     ) : (
                                       <Empty />
                                     )}
+                                </TabPane>
+                                <TabPane tabId="6" className="pt-4">
+                                  <div>
+                                    {loadingPayPeriod ? ( // Render Skeleton while loading is true
+                                      <>
+                                        <Skeleton active />
+                                        <Skeleton active />
+                                        <Skeleton active />
+                                      </>
+                                    ) :
+                                      payRollDetail[0] ? (
+                                        <>
+                                          <Row className="mb-2 px-3">
+                                            <Col md={2} style={{ textAlign: "center" }}>
+                                              First Name
+                                            </Col>
+                                            <Col
+                                              md={2}
+                                              className="px-0"
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              Last Name
+                                            </Col>
+                                            <Col
+                                              md={2}
+                                              className="px-0"
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              Email
+                                            </Col>
+                                            <Col
+                                              md={2}
+                                              className="px-0"
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              Total Hours
+                                            </Col>
+                                            <Col
+                                              md={1}
+                                              className="px-0"
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              Total OT
+                                            </Col>
+                                            <Col
+                                              md={2}
+                                              className="px-0"
+                                              style={{ textAlign: "center" }}
+                                            >
+                                              Total Salary
+                                            </Col>
+                                            <Col md={1}></Col>
+                                          </Row>
+                                        </>
+                                      ) : (
+                                        <Empty />
+                                      )}
                                     <div className="d-flex flex-column gap-2">
-                                      {payRollDetail.map((payRollDetailNew, key2) => (
-                                        <div key2={key2}>
-                                          <div
-                                            style={{
-                                              boxShadow:
-                                                "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                                            }}
-                                            className={
-                                              "job-box-dev-in-list-hiringRequest-for-dev card"
-                                            }
-                                          >
-                                            <div className="p-3">
-                                              <Row className="align-items-center">
-                                                <Col
-                                                  md={2}
-                                                  style={{ textAlign: "center" }}
-                                                >
-                                                  <div>
-                                                    <span className="mb-0">{payRollDetailNew.firstName}</span>
-                                                  </div>
-                                                </Col>
+                                      {loadingPayPeriod ? ( // Render Skeleton while loading is true
+                                        <>
 
-                                                <Col
-                                                  md={2}
-                                                  className="px-0"
-                                                  style={{ textAlign: "center" }}
-                                                >
-                                                  <div>
-                                                    <p className="mb-0">{payRollDetailNew.lastName}</p>
-                                                  </div>
-                                                </Col>
-
-                                                <Col
-                                                  md={2}
-                                                  className="px-0"
-                                                  style={{ textAlign: "center" }}
-                                                >
-                                                  <div>
-                                                    <p className="mb-0">{payRollDetailNew.email}</p>
-                                                  </div>
-                                                </Col>
-
-                                                <Col
-                                                  md={2}
-                                                  className="px-0"
-                                                  style={{ textAlign: "center" }}
-
-
-                                                >
-                                                  <p className="mb-0" > {payRollDetailNew.totalActualWorkedHours}</p>
-                                                </Col>
-
-                                                <Col
-                                                  md={1}
-                                                  className=" px-0"
-                                                  style={{ textAlign: "center" }}
-                                                >
-                                                  <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    id={`totalOT${key2}`}
-                                                    readOnly={ediPaySlipRowId !== payRollDetailNew.paySlipId}
-                                                    defaultValue={0}
-                                                  />
-                                                </Col>
-
-                                                <Col
-                                                  md={2}
-                                                  style={{ textAlign: "center" }}
-                                                >
-                                                  <div>
-                                                    <span >{payRollDetailNew.totalEarnings}</span>
-                                                  </div>
-                                                </Col>
-
-                                                <Col md={1} className="d-flex gap-2 justify-content-between align-items-center">
-                                                  <div
-                                                    className="d-flex justify-content-center align-items-center rounded-circle"
-                                                    onClick={() => toggleCollapse(key2, payRollDetailNew.paySlipId)}
-                                                    style={{
-                                                      backgroundColor: "#ECECED",
-                                                      width: "50px",
-                                                      height: "50px",
-                                                    }}
-                                                  >
-                                                    <i
-                                                      className="uil uil-angle-down"
-                                                      style={{ fontSize: "30px" }}
-                                                    ></i>
-                                                  </div>
-                                                  {payPeriodDetail.statusString == "Created" && (
-                                                    <>
-                                                      <DropdownAntd trigger={['click']} menu={{ items: profileItems3 }}
-                                                        onClick={() =>
-                                                          setPayRollEdit(payRollDetailNew.paySlipId, key2)
-                                                        }
-                                                        overlayStyle={{ right: '4.312px', bottom: "auto", left: "auto" }} >
-                                                        <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
-                                                          <FontAwesomeIcon
-                                                            icon={faGear}
-                                                            size="xl"
-                                                            color="#909191"
-                                                          />
-                                                        </a>
-                                                      </DropdownAntd>
-                                                    </>
-                                                  )}
-                                                </Col>
-                                                {ediPaySlipRowId == payRollDetailNew.paySlipId ? (
-                                                  <>
-                                                    <Row style={{ marginTop: "10px" }}>
-                                                      <Col
-                                                        md={2}
-                                                        style={{ textAlign: "end" }}
-                                                        className="d-flex gap-2 justify-content-end"
-                                                      >
-                                                      </Col>
-                                                      <Col
-                                                        md={6}
-                                                        style={{ textAlign: "end" }}
-                                                        className="d-flex gap-2 justify-content-end"
-                                                      >
-                                                      </Col>
-                                                      <Col
-                                                        md={4}
-                                                        style={{ textAlign: "end" }}
-                                                        className="d-flex gap-2 justify-content-end"
-                                                      >
-                                                        <div className="btn btn-soft-danger"
-                                                          onClick={() => cancelUpdatePayslip()}
-                                                        >
-                                                          Cancel
-                                                        </div>
-
-                                                        <button className="btn btn-soft-blue "
-                                                          onClick={() => {
-                                                            saveUpdatePayslip();
-                                                          }}
-                                                          disabled={loadingSavePaySlip}
-                                                        >
-                                                          {loadingSavePaySlip ? (
-                                                            <div style={{ width: "45px" }} className="d-flex align-items-center justify-content-center">
-                                                              <HashLoader
-                                                                size={20}
-                                                                color={"white"}
-                                                                loading={true}
-                                                              />
-                                                            </div>
-                                                          ) : (
-                                                            "Save"
-                                                          )}
-                                                        </button>
-
-
-                                                      </Col>
-                                                    </Row>
-                                                  </>
-                                                ) : (
-                                                  null
-                                                )}
-                                              </Row>
-                                            </div>
-                                          </div>
-                                          <Collapse isOpen={showCollapse[key2]}>
+                                        </>
+                                      ) :
+                                        payRollDetail.map((payRollDetailNew, key2) => (
+                                          <div key2={key2}>
                                             <div
                                               style={{
-                                                backgroundColor: "#EFF0F2",
-                                                borderRadius: "7px",
+                                                boxShadow:
+                                                  "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
                                               }}
-                                              className="mt-1 p-2 d-flex flex-column gap-2"
+                                              className={
+                                                "job-box-dev-in-list-hiringRequest-for-dev card"
+                                              }
                                             >
-                                              {workLoglist.map((workLogDetail, key) => (
-                                                <div className="d-flex flex-column gap-2">
-                                                  <div
-                                                    className="job-box-dev-in-list-hiringRequest-for-dev card d-flex flex-column gap-2 p-2"
-                                                    style={{ backgroundColor: "#FFFFFF" }}
+                                              <div className="p-3">
+                                                <Row className="align-items-center">
+                                                  <Col
+                                                    md={2}
+                                                    style={{ textAlign: "center" }}
                                                   >
-                                                    <Row>
-                                                      <Col
-                                                        md={3}
-                                                        className="d-flex justify-content-center align-items-center"
-                                                        id={`time-In2-${workLogDetail.workLogId}`}
-                                                      >
-                                                        {workLogDetail.workDateMMM}
+                                                    <div>
+                                                      <span className="mb-0">{payRollDetailNew.firstName}</span>
+                                                    </div>
+                                                  </Col>
 
-                                                      </Col>
-                                                      <Col md={2}>
-                                                        <div>
-                                                          <input
-                                                            type="time"
-                                                            className="form-control"
-                                                            id={`endTimeWorkLog${key2}${key}`}
-                                                            readOnly={editableRowId !== workLogDetail.workLogId}
-                                                          />
-                                                        </div>
-                                                      </Col>
-                                                      <Col md={2}>
-                                                        <div>
-                                                          <input
-                                                            type="time"
-                                                            className="form-control"
-                                                            id={`endTimeWorkLog2${key2}${key}`}
-                                                            readOnly={editableRowId !== workLogDetail.workLogId}
-                                                          />
-                                                        </div>
-                                                      </Col>
-                                                      <Col
-                                                        md={2}
-                                                        className="d-flex justify-content-center align-items-center"
-                                                        id={`hourInDay${workLogDetail.workLogId}`}
-                                                      >
-                                                        Hours in day: {workLogDetail.hourWorkInDay}
-                                                      </Col>
-                                                      <Col md={2}>
-                                                        <Select
-                                                          options={optionsStatus}
-                                                          name="choices-single-categories"
-                                                          id={`statusWorkLog${key2}${key}`}
-                                                          value={valuesStatus[`${key2}${key}`]}
-                                                          onChange={handleChangeStatus}
-                                                          aria-label="Default select example"
-                                                          menuPosition={'fixed'}
-                                                          isDisabled={editableRowId !== workLogDetail.workLogId}
-                                                        />
-                                                      </Col>
-                                                      <Col
-                                                        md={1}
-                                                        className="d-flex justify-content-center align-items-center"
-                                                      >
-                                                        {payPeriodDetail.statusString == "Created" && (
-                                                          <>
-                                                            {isCompleteEditWorkLog && ( // Kiểm tra nếu isCompleteEditWorkLog === false
-                                                              <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
-                                                                setKeyAndIdWorkLog(workLogDetail.workLogId, key)
-                                                              }>
-                                                                <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
-                                                                  <FontAwesomeIcon
-                                                                    icon={faGear}
-                                                                    size="xl"
-                                                                    color="#909191"
-                                                                  />
-                                                                </a>
-                                                              </DropdownAntd>
-                                                            )}
-                                                          </>
-                                                        )}
-                                                      </Col>
-                                                    </Row>
-                                                    {editableRowId == workLogDetail.workLogId ? (
+                                                  <Col
+                                                    md={2}
+                                                    className="px-0"
+                                                    style={{ textAlign: "center" }}
+                                                  >
+                                                    <div>
+                                                      <p className="mb-0">{payRollDetailNew.lastName}</p>
+                                                    </div>
+                                                  </Col>
+
+                                                  <Col
+                                                    md={2}
+                                                    className="px-0"
+                                                    style={{ textAlign: "center" }}
+                                                  >
+                                                    <div>
+                                                      <p className="mb-0">{payRollDetailNew.email}</p>
+                                                    </div>
+                                                  </Col>
+
+                                                  <Col
+                                                    md={2}
+                                                    className="px-0"
+                                                    style={{ textAlign: "center" }}
+
+
+                                                  >
+                                                    <p className="mb-0" > {payRollDetailNew.totalActualWorkedHours}</p>
+                                                  </Col>
+
+                                                  <Col
+                                                    md={1}
+                                                    className=" px-0"
+                                                    style={{ textAlign: "center" }}
+                                                  >
+                                                    <input
+                                                      type="number"
+                                                      className="form-control"
+                                                      id={`totalOT${key2}`}
+                                                      readOnly={ediPaySlipRowId !== payRollDetailNew.paySlipId}
+                                                      defaultValue={0}
+                                                    />
+                                                  </Col>
+
+                                                  <Col
+                                                    md={2}
+                                                    style={{ textAlign: "center" }}
+                                                  >
+                                                    <div>
+                                                      <span >{payRollDetailNew.totalEarnings}</span>
+                                                    </div>
+                                                  </Col>
+
+                                                  <Col md={1} className="d-flex gap-2 justify-content-between align-items-center">
+                                                    <div
+                                                      className="d-flex justify-content-center align-items-center rounded-circle"
+                                                      onClick={() => toggleCollapse(key2, payRollDetailNew.paySlipId)}
+                                                      style={{
+                                                        backgroundColor: "#ECECED",
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                    >
+                                                      <i
+                                                        className="uil uil-angle-down"
+                                                        style={{ fontSize: "30px" }}
+                                                      ></i>
+                                                    </div>
+                                                    {payPeriodDetail.statusString == "Created" && (
                                                       <>
-                                                        <Row>
-                                                          <Col
-                                                            md={2}
-                                                            style={{ textAlign: "end" }}
-                                                            className="d-flex gap-2 justify-content-end"
-                                                          >
-                                                          </Col>
-                                                          <Col
-                                                            md={6}
-                                                            style={{ textAlign: "end" }}
-                                                            className="d-flex gap-2 justify-content-end"
-                                                          >
-                                                            <p id={`timeErrorWorkLog${workLogDetail.workLogId}`} className="text-danger mt-2"></p>
-                                                          </Col>
-                                                          <Col
-                                                            md={4}
-                                                            style={{ textAlign: "end" }}
-                                                            className="d-flex gap-2 justify-content-end"
-                                                          >
-                                                            <div className="btn btn-soft-danger"
-                                                              onClick={() => cancelUpdateWorkLog()}
-                                                            >
-                                                              Cancel
-                                                            </div>
-                                                            <button className="btn btn-soft-blue "
-                                                              onClick={() => {
-                                                                saveUpdateWorkLog();
-                                                              }}
-                                                              disabled={loadingSaveWorkLog}
-                                                            >
-                                                              {loadingSaveWorkLog ? (
-                                                                <div style={{ width: "45px" }} className="d-flex align-items-center justify-content-center">
-                                                                  <HashLoader
-                                                                    size={20}
-                                                                    color={"white"}
-                                                                    loading={true}
-                                                                  />
-                                                                </div>
-                                                              ) : (
-                                                                "Save"
-                                                              )}
-                                                            </button>
-
-                                                          </Col>
-                                                        </Row>
+                                                        <DropdownAntd trigger={['click']} menu={{ items: profileItems3 }}
+                                                          onClick={() =>
+                                                            setPayRollEdit(payRollDetailNew.paySlipId, key2)
+                                                          }
+                                                          overlayStyle={{ right: '4.312px', bottom: "auto", left: "auto" }} >
+                                                          <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                            <FontAwesomeIcon
+                                                              icon={faGear}
+                                                              size="xl"
+                                                              color="#909191"
+                                                            />
+                                                          </a>
+                                                        </DropdownAntd>
                                                       </>
-                                                    ) : (
-                                                      null
                                                     )}
-                                                  </div>
-                                                </div>
-                                              ))}
+                                                  </Col>
+                                                  {ediPaySlipRowId == payRollDetailNew.paySlipId ? (
+                                                    <>
+                                                      <Row style={{ marginTop: "10px" }}>
+                                                        <Col
+                                                          md={2}
+                                                          style={{ textAlign: "end" }}
+                                                          className="d-flex gap-2 justify-content-end"
+                                                        >
+                                                        </Col>
+                                                        <Col
+                                                          md={6}
+                                                          style={{ textAlign: "end" }}
+                                                          className="d-flex gap-2 justify-content-end"
+                                                        >
+                                                        </Col>
+                                                        <Col
+                                                          md={4}
+                                                          style={{ textAlign: "end" }}
+                                                          className="d-flex gap-2 justify-content-end"
+                                                        >
+                                                          <div className="btn btn-soft-danger"
+                                                            onClick={() => cancelUpdatePayslip()}
+                                                          >
+                                                            Cancel
+                                                          </div>
+
+                                                          <button className="btn btn-soft-blue "
+                                                            onClick={() => {
+                                                              saveUpdatePayslip();
+                                                            }}
+                                                            disabled={loadingSavePaySlip}
+                                                          >
+                                                            {loadingSavePaySlip ? (
+                                                              <div style={{ width: "45px" }} className="d-flex align-items-center justify-content-center">
+                                                                <HashLoader
+                                                                  size={20}
+                                                                  color={"white"}
+                                                                  loading={true}
+                                                                />
+                                                              </div>
+                                                            ) : (
+                                                              "Save"
+                                                            )}
+                                                          </button>
+
+
+                                                        </Col>
+                                                      </Row>
+                                                    </>
+                                                  ) : (
+                                                    null
+                                                  )}
+                                                </Row>
+                                              </div>
                                             </div>
-                                          </Collapse>
-                                        </div>
-                                      ))}
+                                            <Collapse isOpen={showCollapse[key2]}>
+                                              <div
+                                                style={{
+                                                  backgroundColor: "#EFF0F2",
+                                                  borderRadius: "7px",
+                                                }}
+                                                className="mt-1 p-2 d-flex flex-column gap-2"
+                                              >
+                                                {workLoglist.map((workLogDetail, key) => (
+                                                  <div className="d-flex flex-column gap-2">
+                                                    <div
+                                                      className="job-box-dev-in-list-hiringRequest-for-dev card d-flex flex-column gap-2 p-2"
+                                                      style={{ backgroundColor: "#FFFFFF" }}
+                                                    >
+                                                      <Row>
+                                                        <Col
+                                                          md={3}
+                                                          className="d-flex justify-content-center align-items-center"
+                                                          id={`time-In2-${workLogDetail.workLogId}`}
+                                                        >
+                                                          {workLogDetail.workDateMMM}
+
+                                                        </Col>
+                                                        <Col md={2}>
+                                                          <div>
+                                                            <input
+                                                              type="time"
+                                                              className="form-control"
+                                                              id={`endTimeWorkLog${key2}${key}`}
+                                                              readOnly={editableRowId !== workLogDetail.workLogId}
+                                                            />
+                                                          </div>
+                                                        </Col>
+                                                        <Col md={2}>
+                                                          <div>
+                                                            <input
+                                                              type="time"
+                                                              className="form-control"
+                                                              id={`endTimeWorkLog2${key2}${key}`}
+                                                              readOnly={editableRowId !== workLogDetail.workLogId}
+                                                            />
+                                                          </div>
+                                                        </Col>
+                                                        <Col
+                                                          md={2}
+                                                          className="d-flex justify-content-center align-items-center"
+                                                          id={`hourInDay${workLogDetail.workLogId}`}
+                                                        >
+                                                          Hours in day: {workLogDetail.hourWorkInDay}
+                                                        </Col>
+                                                        <Col md={2}>
+                                                          <Select
+                                                            options={optionsStatus}
+                                                            name="choices-single-categories"
+                                                            id={`statusWorkLog${key2}${key}`}
+                                                            value={valuesStatus[`${key2}${key}`]}
+                                                            onChange={handleChangeStatus}
+                                                            aria-label="Default select example"
+                                                            menuPosition={'fixed'}
+                                                            isDisabled={editableRowId !== workLogDetail.workLogId}
+                                                          />
+                                                        </Col>
+                                                        <Col
+                                                          md={1}
+                                                          className="d-flex justify-content-center align-items-center"
+                                                        >
+                                                          {payPeriodDetail.statusString == "Created" && (
+                                                            <>
+                                                              {isCompleteEditWorkLog && ( // Kiểm tra nếu isCompleteEditWorkLog === false
+                                                                <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
+                                                                  setKeyAndIdWorkLog(workLogDetail.workLogId, key)
+                                                                }>
+                                                                  <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                                    <FontAwesomeIcon
+                                                                      icon={faGear}
+                                                                      size="xl"
+                                                                      color="#909191"
+                                                                    />
+                                                                  </a>
+                                                                </DropdownAntd>
+                                                              )}
+                                                            </>
+                                                          )}
+                                                        </Col>
+                                                      </Row>
+                                                      {editableRowId == workLogDetail.workLogId ? (
+                                                        <>
+                                                          <Row>
+                                                            <Col
+                                                              md={2}
+                                                              style={{ textAlign: "end" }}
+                                                              className="d-flex gap-2 justify-content-end"
+                                                            >
+                                                            </Col>
+                                                            <Col
+                                                              md={6}
+                                                              style={{ textAlign: "end" }}
+                                                              className="d-flex gap-2 justify-content-end"
+                                                            >
+                                                              <p id={`timeErrorWorkLog${workLogDetail.workLogId}`} className="text-danger mt-2"></p>
+                                                            </Col>
+                                                            <Col
+                                                              md={4}
+                                                              style={{ textAlign: "end" }}
+                                                              className="d-flex gap-2 justify-content-end"
+                                                            >
+                                                              <div className="btn btn-soft-danger"
+                                                                onClick={() => cancelUpdateWorkLog()}
+                                                              >
+                                                                Cancel
+                                                              </div>
+                                                              <button className="btn btn-soft-blue "
+                                                                onClick={() => {
+                                                                  saveUpdateWorkLog();
+                                                                }}
+                                                                disabled={loadingSaveWorkLog}
+                                                              >
+                                                                {loadingSaveWorkLog ? (
+                                                                  <div style={{ width: "45px" }} className="d-flex align-items-center justify-content-center">
+                                                                    <HashLoader
+                                                                      size={20}
+                                                                      color={"white"}
+                                                                      loading={true}
+                                                                    />
+                                                                  </div>
+                                                                ) : (
+                                                                  "Save"
+                                                                )}
+                                                              </button>
+
+                                                            </Col>
+                                                          </Row>
+                                                        </>
+                                                      ) : (
+                                                        null
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                ))}
+                                              </div>
+                                            </Collapse>
+                                          </div>
+                                        ))}
                                     </div>
                                   </div>
                                 </TabPane>
@@ -2959,183 +3011,196 @@ const ProjectDetailDesciption = () => {
                       </UpdateProjectPopup>
 
                       <div>
-                        {jobVacancyList.length > 0 ? (
+                        {loadingHiringrequestList ? ( // Render Skeleton while loading is true
                           <>
-                            {jobVacancyList.map((jobVacancyListDetails, key) => (
-                              <div
-                                key={key}
-                                className={
-                                  "job-box card mt-4"
-                                }
-                                onClick={() => openHiringRequestDetail(jobVacancyListDetails.requestId, jobVacancyListDetails.statusString)}
-                              >
-                                <div className="p-4">
-                                  <Row className="align-items-center">
-                                    <Col md={3}>
-                                      <div className="mb-2 mb-md-0">
-                                        <h5 className="fs-18 mb-0">
-                                          <div
-                                            className="text-dark"
-                                          >
-                                            {jobVacancyListDetails.jobTitle}
-                                          </div>
-                                        </h5>
-                                        <p className="text-muted fs-14 mb-0">
-                                          {jobVacancyListDetails.requestCode}
-                                        </p>
-                                      </div>
-                                    </Col>
-
-                                    <Col md={3}>
-                                      <div className="d-flex mb-2">
-                                        <div className="flex-shrink-0">
-                                          <i className="uil uil-user-check text-primary me-1"></i>
-                                        </div>
-                                        <p className="text-muted mb-0">
-                                          {jobVacancyListDetails.targetedDev} / {jobVacancyListDetails.numberOfDev} Developer
-                                        </p>
-                                      </div>
-                                    </Col>
-                                    <Col md={2}>
-                                      <div className="d-flex mb-0">
-                                        <div className="flex-shrink-0">
-                                          <i className="uil uil-location-pin-alt text-primary me-1"></i>
-                                        </div>
-                                        <p className="text-muted mb-0">
-                                          {" "}
-                                          {jobVacancyListDetails.employmentTypeName}
-                                        </p>
-                                      </div>
-                                    </Col>
-                                    <Col md={2}>
-                                      <div className="d-flex mb-0">
-                                        <div className="flex-shrink-0">
-                                          <i className="uil uil-clock-three text-primary me-1"></i>
-                                        </div>
-                                        <p className="text-muted mb-0">
-                                          {" "}
-                                          {jobVacancyListDetails.durationMMM}
-                                        </p>
-                                      </div>
-                                    </Col>
-
-                                    <Col md={2}>
-                                      <div>
-                                        <span
-                                          className={
-                                            jobVacancyListDetails.statusString === "Rejected"
-                                              ? "badge bg-danger text-light mb-2"
-                                              : jobVacancyListDetails.statusString ===
-                                                "Waiting Approval"
-                                                ? "badge bg-warning text-light mb-2"
-                                                : jobVacancyListDetails.statusString ===
-                                                  "In Progress"
-                                                  ? "badge bg-blue text-light mb-2"
-                                                  : jobVacancyListDetails.statusString ===
-                                                    "Expired"
-                                                    ? "badge bg-danger text-light mb-2"
-                                                    : jobVacancyListDetails.statusString ===
-                                                      "Cancelled"
-                                                      ? "badge bg-blue text-light mb-2"
-                                                      : jobVacancyListDetails.statusString ===
-                                                        "Closed"
-                                                        ? "badge bg-gray text-light mb-2"
-                                                        : jobVacancyListDetails.statusString ===
-                                                          "Completed"
-                                                          ? "badge bg-primary text-light mb-2"
-                                                          : jobVacancyListDetails.statusString === "Saved"
-                                                            ? "badge bg-teal text-light mb-2"
-                                                            : ""
-                                          }
-                                        >
-                                          {jobVacancyListDetails.statusString}
-                                        </span>
-                                      </div>
-                                    </Col>
-                                  </Row>
-                                </div>
-                                <div className="p-3 bg-light">
-                                  <Row className="justify-content-between">
-                                    <Col md={10}>
-                                      <div>
-                                        <p className="text-muted mb-0 ">
-                                          {jobVacancyListDetails.experience
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              showFullSkills[jobVacancyListDetails.id]
-                                                ? undefined
-                                                : 8
-                                            )
-                                            .map((skill, index) => (
-                                              <span
-                                                key={index}
-                                                className={`badge ${index === 0
-                                                  ? "bg-info text-light"
-                                                  : index === 1
-                                                    ? "bg-danger-subtle text-danger"
-                                                    : "bg-primary-subtle text-primary"
-                                                  }  ms-2`}
-                                              >
-                                                {skill.trim()}
-                                              </span>
-                                            ))}
-
-                                          {jobVacancyListDetails.experience.split(",").length >
-                                            8 ? (
-                                            <span className="badge bg-primary-subtle text-primary ms-2">
-                                              ...
-                                            </span>
-                                          ) : (
-                                            ""
-                                          )}
-                                        </p>
-                                      </div>
-                                    </Col>
-                                    <Col md={2}>
-                                      <div>
-                                        {jobVacancyListDetails.postedTime}
-                                      </div>
-                                    </Col>
-                                  </Row>
-                                </div>
-                              </div>
-                            ))}
+                            <Skeleton active />
+                            <Skeleton active />
+                            <Skeleton active />
                           </>
-                        ) : (
-                          <Empty className="mt-4" />
-                        )}
+                        ) :
+                          jobVacancyList.length > 0 ? (
+                            <>
+                              {jobVacancyList.map((jobVacancyListDetails, key) => (
+                                <div
+                                  key={key}
+                                  className={
+                                    "job-box card mt-4"
+                                  }
+                                  onClick={() => openHiringRequestDetail(jobVacancyListDetails.requestId, jobVacancyListDetails.statusString)}
+                                >
+                                  <div className="p-4">
+                                    <Row className="align-items-center">
+                                      <Col md={3}>
+                                        <div className="mb-2 mb-md-0">
+                                          <h5 className="fs-18 mb-0">
+                                            <div
+                                              className="text-dark"
+                                            >
+                                              {jobVacancyListDetails.jobTitle}
+                                            </div>
+                                          </h5>
+                                          <p className="text-muted fs-14 mb-0">
+                                            {jobVacancyListDetails.requestCode}
+                                          </p>
+                                        </div>
+                                      </Col>
+
+                                      <Col md={3}>
+                                        <div className="d-flex mb-2">
+                                          <div className="flex-shrink-0">
+                                            <i className="uil uil-user-check text-primary me-1"></i>
+                                          </div>
+                                          <p className="text-muted mb-0">
+                                            {jobVacancyListDetails.targetedDev} / {jobVacancyListDetails.numberOfDev} Developer
+                                          </p>
+                                        </div>
+                                      </Col>
+                                      <Col md={2}>
+                                        <div className="d-flex mb-0">
+                                          <div className="flex-shrink-0">
+                                            <i className="uil uil-location-pin-alt text-primary me-1"></i>
+                                          </div>
+                                          <p className="text-muted mb-0">
+                                            {" "}
+                                            {jobVacancyListDetails.employmentTypeName}
+                                          </p>
+                                        </div>
+                                      </Col>
+                                      <Col md={2}>
+                                        <div className="d-flex mb-0">
+                                          <div className="flex-shrink-0">
+                                            <i className="uil uil-clock-three text-primary me-1"></i>
+                                          </div>
+                                          <p className="text-muted mb-0">
+                                            {" "}
+                                            {jobVacancyListDetails.durationMMM}
+                                          </p>
+                                        </div>
+                                      </Col>
+
+                                      <Col md={2}>
+                                        <div>
+                                          <span
+                                            className={
+                                              jobVacancyListDetails.statusString === "Rejected"
+                                                ? "badge bg-danger text-light mb-2"
+                                                : jobVacancyListDetails.statusString ===
+                                                  "Waiting Approval"
+                                                  ? "badge bg-warning text-light mb-2"
+                                                  : jobVacancyListDetails.statusString ===
+                                                    "In Progress"
+                                                    ? "badge bg-blue text-light mb-2"
+                                                    : jobVacancyListDetails.statusString ===
+                                                      "Expired"
+                                                      ? "badge bg-danger text-light mb-2"
+                                                      : jobVacancyListDetails.statusString ===
+                                                        "Cancelled"
+                                                        ? "badge bg-blue text-light mb-2"
+                                                        : jobVacancyListDetails.statusString ===
+                                                          "Closed"
+                                                          ? "badge bg-gray text-light mb-2"
+                                                          : jobVacancyListDetails.statusString ===
+                                                            "Completed"
+                                                            ? "badge bg-primary text-light mb-2"
+                                                            : jobVacancyListDetails.statusString === "Saved"
+                                                              ? "badge bg-teal text-light mb-2"
+                                                              : ""
+                                            }
+                                          >
+                                            {jobVacancyListDetails.statusString}
+                                          </span>
+                                        </div>
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                  <div className="p-3 bg-light">
+                                    <Row className="justify-content-between">
+                                      <Col md={10}>
+                                        <div>
+                                          <p className="text-muted mb-0 ">
+                                            {jobVacancyListDetails.experience
+                                              .split(",")
+                                              .slice(
+                                                0,
+                                                showFullSkills[jobVacancyListDetails.id]
+                                                  ? undefined
+                                                  : 8
+                                              )
+                                              .map((skill, index) => (
+                                                <span
+                                                  key={index}
+                                                  className={`badge ${index === 0
+                                                    ? "bg-info text-light"
+                                                    : index === 1
+                                                      ? "bg-danger-subtle text-danger"
+                                                      : "bg-primary-subtle text-primary"
+                                                    }  ms-2`}
+                                                >
+                                                  {skill.trim()}
+                                                </span>
+                                              ))}
+
+                                            {jobVacancyListDetails.experience.split(",").length >
+                                              8 ? (
+                                              <span className="badge bg-primary-subtle text-primary ms-2">
+                                                ...
+                                              </span>
+                                            ) : (
+                                              ""
+                                            )}
+                                          </p>
+                                        </div>
+                                      </Col>
+                                      <Col md={2}>
+                                        <div>
+                                          {jobVacancyListDetails.postedTime}
+                                        </div>
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                </div>
+                              ))}
+                            </>
+                          ) : (
+                            <Empty className="mt-4" />
+                          )}
                       </div>
-                      {totalPages > 1 && (
-                        <Row id="paging">
-                          <Col lg={12} className="mt-4 pt-2">
-                            <nav aria-label="Page navigation example">
-                              <div className="pagination job-pagination mb-0 justify-content-center">
-                                <li
-                                  className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-                                >
-                                  <div
-                                    className="page-link"
-                                    tabIndex="-1"
-                                    onClick={handlePrevPage}
+
+                      {loadingHiringrequestList ? ( // Render Skeleton while loading is true
+                        <>
+
+                        </>
+                      ) :
+                        totalPages > 1 && (
+                          <Row id="paging">
+                            <Col lg={12} className="mt-4 pt-2">
+                              <nav aria-label="Page navigation example">
+                                <div className="pagination job-pagination mb-0 justify-content-center">
+                                  <li
+                                    className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
                                   >
-                                    <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                  </div>
-                                </li>
-                                {renderPageNumbers()}
-                                <li
-                                  className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                                    }`}
-                                >
-                                  <div className="page-link" onClick={handleNextPage}>
-                                    <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                  </div>
-                                </li>
-                              </div>
-                            </nav>
-                          </Col>
-                        </Row>
-                      )}
+                                    <div
+                                      className="page-link"
+                                      tabIndex="-1"
+                                      onClick={handlePrevPage}
+                                    >
+                                      <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                    </div>
+                                  </li>
+                                  {renderPageNumbers()}
+                                  <li
+                                    className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                      }`}
+                                  >
+                                    <div className="page-link" onClick={handleNextPage}>
+                                      <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                    </div>
+                                  </li>
+                                </div>
+                              </nav>
+                            </Col>
+                          </Row>
+                        )}
                     </TabPane>
                   </TabContent>
                 </CardBody>

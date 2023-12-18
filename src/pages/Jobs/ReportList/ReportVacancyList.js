@@ -37,6 +37,7 @@ import {
     faCalendar,
 
 } from "@fortawesome/free-regular-svg-icons";
+import { Skeleton } from 'antd';
 
 const ReportVacancyList = (a) => {
     //Apply Now Model
@@ -47,7 +48,7 @@ const ReportVacancyList = (a) => {
     const [selectReportDetail, setSelectReportDetail] = useState({});
     const [projectDetail, setProjectDetail] = useState({});
     const [devInterviewDetail, setDevInterviewDetail] = useState([]);
-
+    const [loading, setLoading] = useState(true);
     const [options, setOptions] = useState([]);
 
 
@@ -162,7 +163,9 @@ const ReportVacancyList = (a) => {
             console.log(pageSize)
             setTotalPages(Math.ceil(response.data.paging.total / pageSize));
             console.log(totalPages)
+            setLoading(false);
         } catch (error) {
+            setLoading(false);
             console.error("Error fetching job vacancies:", error);
         }
     };
@@ -199,15 +202,18 @@ const ReportVacancyList = (a) => {
     };
 
     useEffect(() => {
+        setLoading(true);
         fetchJobVacancies();
     }, [currentPage]);
 
     useEffect(() => {
+        setLoading(true);
         fetchJobVacancies();
     }, [statuses]);
 
 
     const onSearch = () => {
+        setLoading(true);
         setCurrentPage(1);
         fetchJobVacancies();
     };
@@ -565,7 +571,14 @@ const ReportVacancyList = (a) => {
                         </Row>
                     </AntdModal>
                     <div>
-                        {jobVacancyList.length > 0 ? (
+                        {loading ? ( // Render Skeleton while loading is true
+                            <>
+                                <Skeleton active />
+                                <Skeleton active />
+                                <Skeleton active />
+                                {/* Add more Skeleton components as needed */}
+                            </>
+                        ) : jobVacancyList.length > 0 ? (
                             <>
                                 {jobVacancyList.map((jobVacancyListDetails, key) => (
                                     <div
@@ -697,8 +710,11 @@ const ReportVacancyList = (a) => {
                             <Empty />
                         )}
                     </div>
+                    {loading ? ( // Render Skeleton while loading is true
+                        <>
 
-                    {totalPages > 1 && (
+                        </>
+                    ) : totalPages > 1 && (
                         <>
                             <Row>
                                 <Col lg={12} className="mt-4 pt-2">

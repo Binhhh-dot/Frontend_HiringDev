@@ -81,15 +81,32 @@ const PageTwo = ({ onButtonClick, projectName, selectedOptions, startday, endday
         if (document.getElementById("start-date").value && document.getElementById("end-date").value) {
             const currentDate = new Date();
             const startdate = document.getElementById("start-date").value;
+            const enddate = document.getElementById("end-date").value;
             const startdateTemp = new Date(startdate);
+            const enddateTemp = new Date(enddate);
+            const millisecondsPerDay = 1000 * 60 * 60 * 24;
+            const thirtyDaysFromStart = new Date(startdateTemp.getTime() + 30 * millisecondsPerDay);
+            let checkStatus = true;
             if (startdateTemp < currentDate && selectedOptions3.value == 1) {
                 setStatusError("With project status preparing, the project start time must be greater than the current date");
                 check = false;
+                checkStatus = false;
             }
             if (startdateTemp > currentDate && selectedOptions3.value == 2) {
                 setStatusError("With project status being in process, the project start time must be less than the current date");
                 check = false;
+                checkStatus = false;
             }
+            if (checkStatus) {
+                setStatusError(null)
+            }
+            if (startdateTemp > enddateTemp || enddateTemp < thirtyDaysFromStart) {
+                setStartDateError("The start date must be less than the end date and within 30 days");
+                check = false;
+            } else {
+                setStartDateError(null)
+            }
+
         }
         if (check) {
             onButtonClick("pagethree", {
