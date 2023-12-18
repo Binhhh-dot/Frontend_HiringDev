@@ -269,10 +269,6 @@ const ProjectDetailDescription = () => {
   };
 
   //--------------------------------------------------------------------------------
-  // const [modalUpdateProject, setModalUpdateProject] = useState(false);
-  // const openModalUpdateProject = () => {
-  //   setModalUpdateProject(!modalUpdateProject);
-  // };
 
   //--------------------------------------------------------------------------------
   const [activeTab, setActiveTab] = useState("1");
@@ -289,8 +285,6 @@ const ProjectDetailDescription = () => {
     }
   };
   //---------------------------------------------------------------------------------
-  // Date---
-  //dayjs("2023/12/09", monthFormat)
 
   const getFormattedDate = (selectedDate) => {
     const selectedMonth = selectedDate.format("MM");
@@ -300,13 +294,6 @@ const ProjectDetailDescription = () => {
 
     return formattedDate;
   };
-
-  // const isMonthInRange = (current) => {
-  //   return (
-  //     current.isSameOrAfter(startMonth, "month") &&
-  //     current.isSameOrBefore(endMonth, "month")
-  //   );
-  // };
 
   const pickDate = (date) => {
     const formattedDate = getFormattedDate(date);
@@ -319,8 +306,6 @@ const ProjectDetailDescription = () => {
 
   const fetchGetPayPeriod = async () => {
     let response;
-    // console.log("defaultClickDay");
-    // console.log(defaultClickDay);
 
     try {
       response = await payServices.getPayPeriod(
@@ -1290,11 +1275,6 @@ const ProjectDetailDescription = () => {
       </Card>
 
       {/* ----------------------------------------------------------------------------- */}
-      {/* <DeveloperDetailInProjectPopup
-        isModalOpen={isModalOpen}
-        closeModal={closeModal}
-        devId={selectedCandidateInfo.developerId}
-      /> */}
     </React.Fragment>
   );
 };

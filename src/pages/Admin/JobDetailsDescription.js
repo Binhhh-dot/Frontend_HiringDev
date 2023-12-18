@@ -916,6 +916,7 @@ const JobDetailsDescription = () => {
                           <h5
                             className="fs-19 mb-0 d-flex"
                             onClick={() => openModal(candidateDetailsNew)}
+                            style={{ cursor: "pointer" }}
                           >
                             {candidateDetailsNew.firstName}{" "}
                             {candidateDetailsNew.lastName}
@@ -1072,13 +1073,14 @@ const JobDetailsDescription = () => {
                       <Col lg={6}>
                         <div className="candidate-list-content mt-3 mt-lg-0">
                           <h5 className="fs-19 mb-0 d-flex">
-                            <Link
-                              to="/developerinfo"
+                            <div
+                              style={{ cursor: "pointer" }}
                               className="primary-link d-flex align-items-end"
+                              onClick={() => openModal(devHasBeenSentNew)}
                             >
                               {devHasBeenSentNew.firstName}{" "}
                               {devHasBeenSentNew.lastName}
-                            </Link>
+                            </div>
                           </h5>
 
                           <ul className="list-inline mb-0 text-muted">
@@ -1266,13 +1268,14 @@ const JobDetailsDescription = () => {
                   <Col lg={5}>
                     <div className="candidate-list-content mt-lg-0 d-flex flex-column gap-1">
                       <h5 className="fs-19 mb-0 d-flex">
-                        <Link
-                          to="/developerinfo"
+                        <div
+                          style={{ cursor: "pointer" }}
                           className="primary-link d-flex align-items-end"
+                          onClick={() => openModal(devHasBeenSentNew)}
                         >
                           {devHasBeenSentNew.firstName}{" "}
                           {devHasBeenSentNew.lastName}
-                        </Link>
+                        </div>
                       </h5>
 
                       <p className="fs-14 text-muted list-inline-item mb-0">

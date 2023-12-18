@@ -354,5 +354,13 @@ export default {
 
       getListNotificationByManager: "/Notification/ByManager",
     },
+
+    education: {
+      getEducationByDeveloperId: "/Education/${developerId}",
+    },
+
+    professionalExperience: {
+      getProfessionalExperience: "/ProfessionalExperience/${developerId}",
+    },
   },
 };
