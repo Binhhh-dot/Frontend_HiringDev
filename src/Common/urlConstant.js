@@ -351,6 +351,8 @@ export default {
       unNewNotification: "/Notification/UnNew?userId=${userId}",
       deleteUserDevice: "/UserDevice/${userDeviceId}",
       getUserDeviceId: "/UserDevice/User/${userId}",
+
+      getListNotificationByManager: "/Notification/ByManager",
     },
   },
 };
