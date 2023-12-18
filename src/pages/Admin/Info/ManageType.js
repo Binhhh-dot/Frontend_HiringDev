@@ -233,7 +233,7 @@ const ManageType = () => {
                     <NavBarWebAdmin></NavBarWebAdmin>
                     <div
                         style={{
-                            padding: "0px 30px 0px 30px",
+                            padding: "10px 30px 0px 30px",
                             background: "white",
                             margin: "30px",
                             borderRadius: "12px",
@@ -241,20 +241,24 @@ const ManageType = () => {
                         }}
                     >
                         <Content>
+                            <h1
+                                style={{
+                                    padding: "5px 0px 0px 0px",
+                                    margin: "0px 0px 0px 20px",
+                                    color: "black",
+                                    fontSize: "20px",
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                MANAGE TYPE
+                            </h1>
                             <div
                                 style={{
                                     padding: 20,
                                     minHeight: 360,
                                 }}
                             >
-                                <Breadcrumb
-                                    style={{
-                                        margin: "13px 0",
-                                    }}
-                                >
-                                    <Breadcrumb.Item>Management Infomation</Breadcrumb.Item>
-                                    <Breadcrumb.Item>Manage Type</Breadcrumb.Item>
-                                </Breadcrumb>
+
 
                                 <a
                                     className="me-1 d-flex flex-column align-items-end"

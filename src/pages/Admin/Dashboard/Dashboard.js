@@ -252,6 +252,8 @@ const Dashboard = () => {
 
     // Modal
 
+
+
     const pieChartData = hRInfo?.accountDashboard || {};
 
     const totalValue = pieChartData.totalDeveloper + pieChartData.totalManager + pieChartData.totalAdmin + pieChartData.totalHumanResource + pieChartData.totalStaff;
@@ -297,18 +299,24 @@ const Dashboard = () => {
             },
         ],
 
-
         legend: {
             layout: 'vertical',
             position: 'right',
             itemName: {
                 formatter: (text, item) => {
                     const type = item.value;
+                    let formattedType = type;
+
+                    // Kiểm tra nếu là HumanResource thì định dạng lại thành Human Resource
+                    if (type === 'HumanResource') {
+                        formattedType = 'Human Resource';
+                    }
+
                     const count = pieChartData[`total${type}`] || 0;
-                    return `${type}: ${count}`;
+                    return `${formattedType}: ${count}`;
                 },
                 style: {
-                    fontSize: 14,
+                    fontSize: 10,
                 },
             },
         },
@@ -356,48 +364,48 @@ const Dashboard = () => {
                             <div className="ecommerce-widget">
                                 <div className="row row-with-margin">
                                     <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-                                        <div className="card border-3 border-top border-top-primary">
+                                        <div className="card border-5 border-top border-info-subtle">
                                             <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total Project</h5>
                                                 <div className="metric-value d-inline-block">
                                                     {hRInfo && (
-                                                        <h1>{hRInfo.totalProject}</h1>
+                                                        <h2>{hRInfo.totalProject}</h2>
                                                     )}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-                                        <div className="card border-3 border-top border-top-primary">
+                                        <div className="card border-5 border-top border-success-subtle">
                                             <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total Hiring Request</h5>
                                                 <div className="metric-value d-inline-block">
                                                     {hRInfo && (
-                                                        <h1>{hRInfo.totalHiringRequest}</h1>
+                                                        <h2>{hRInfo.totalHiringRequest}</h2>
                                                     )}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-                                        <div className="card border-3 border-top border-top-primary">
+                                        <div className="card border-5 border-top border-warning-subtle">
                                             <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total User</h5>
                                                 <div className="metric-value d-inline-block">
                                                     {hRInfo && (
-                                                        <h1>{hRInfo.accountDashboard.totalUser}</h1>
+                                                        <h2>{hRInfo.accountDashboard.totalUser}</h2>
                                                     )}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-                                        <div className="card border-3 border-top border-top-primary">
+                                        <div className="card border-5 border-top border-primary-subtle">
                                             <div className="card-body-dashboard">
                                                 <h5 className="text-muted">Total Money</h5>
                                                 <div className="metric-value d-inline-block">
                                                     {hRInfo && (
-                                                        <h1>{hRInfo.totalMoney}</h1>
+                                                        <h2>{hRInfo.totalMoney}</h2>
                                                     )}
                                                 </div>
 
@@ -407,8 +415,8 @@ const Dashboard = () => {
                                 </div>
 
                                 <div className="row row-with-margin">
-                                    <div className="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12">
-                                        <div className="card">
+                                    <div className="col-xl-7 col-lg-12 col-md-6 col-sm-12 col-12">
+                                        <div className="card border-info-subtle border-3">
                                             <h5 className="card-header">Recent Hiring Requests</h5>
                                             <div className="card-body-dashboard p-0">
                                                 <div className="table-responsive">
@@ -417,7 +425,6 @@ const Dashboard = () => {
                                                             <tr className="border-0">
                                                                 <th className="border-0" >Request Code</th>
                                                                 <th className="border-0">Job Title</th>
-                                                                <th className="border-0" >Duration</th>
                                                                 <th className="border-0">Posted Time</th>
                                                                 <th className="border-0">Status</th>
                                                             </tr>
@@ -427,7 +434,6 @@ const Dashboard = () => {
                                                                 <tr key={request.requestId}>
                                                                     <td >{request.requestCode}</td>
                                                                     <td >{request.jobTitle}</td>
-                                                                    <td >{request.duration}</td>
                                                                     <td >{request.postedTime}</td>
                                                                     <td >
                                                                         <Badge
@@ -454,12 +460,12 @@ const Dashboard = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-xl-6 col-lg-5 col-md-12 col-sm-12 col-12">
-                                        <div className="card">
+                                    <div className="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
+                                        <div className="card border-info-subtle border-3">
                                             <h5 className="card-header">Account by role</h5>
                                             <div className="card-body-dashboard">
                                                 <div>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '10px' }}>
+                                                    <div >
                                                         <div style={{ width: '100%' }}>
                                                             <Pie {...pieConfig} />
                                                         </div>
@@ -495,7 +501,7 @@ const Dashboard = () => {
                                 </div>
                             </div> */}
                                     <div className="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12">
-                                        <div className="card">
+                                        <div className="card border-info-subtle border-3">
                                             <div className="card-header">
                                                 <h5 className="mb-0">Number Of Projects</h5>
                                             </div>
@@ -519,7 +525,7 @@ const Dashboard = () => {
                                         </div>
                                     </div>
                                     <div className="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12">
-                                        <div className="card">
+                                        <div className="card border-info-subtle border-3">
                                             <div className="card-header">
                                                 <h5 className="mb-0">Number Of Hiring Requests</h5>
                                             </div>
@@ -550,8 +556,8 @@ const Dashboard = () => {
                         </Content>
                     </div>
                 </Layout>
-            </Layout>
-        </React.Fragment>
+            </Layout >
+        </React.Fragment >
 
     )
 }
