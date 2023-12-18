@@ -27,6 +27,7 @@ import payServices from "../../services/pay.services";
 import classnames from "classnames";
 
 import NavBarWeb from "./NavBar/NavBarWeb";
+import { Empty } from "antd";
 
 const { Header, Footer, Content } = Layout;
 
@@ -163,102 +164,6 @@ const TransactionHistoryList = () => {
       <Layout style={{ minHeight: "100vh" }}>
         <SiderBarWeb choose={"menu-key/17"}></SiderBarWeb>
         <Layout>
-          {/* <div
-            style={{
-              backgroundColor: "#FFFF",
-              height: "70px",
-              display: "flex",
-              alignItems: "center",
-              borderRadius: "7px",
-              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-              marginLeft: "30px",
-              marginRight: "30px",
-              marginBottom: "0px",
-            }}
-            className="mt-4 justify-content-end"
-          >
-            <div
-              className="d-flex gap-4 align-items-center"
-              style={{ height: "inherit" }}
-            >
-              <Space>
-                <Badge dot>
-                  <i
-                    className="uil uil-bell"
-                    style={{ color: "#8F78DF", fontSize: "20px" }}
-                  ></i>
-                </Badge>
-              </Space>
-              <Space>
-                <Badge dot>
-                  <i
-                    className="uil uil-envelope-open"
-                    style={{ color: "#8F78DF", fontSize: "20px" }}
-                  ></i>
-                </Badge>
-              </Space>
-
-              <div
-                className="p-2  d-flex gap-3 align-items-center"
-                style={{
-                  height: "inherit",
-                  backgroundColor: "#6546D2",
-                  color: "white",
-                  borderRadius: "10px",
-                }}
-              >
-                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
-                  <DropdownToggle
-                    className="p-2 d-flex gap-3 align-items-center"
-                    style={{
-                      height: "inherit",
-                      backgroundColor: "#6546D2",
-                      color: "white",
-
-                      cursor: "pointer",
-                      border: "0px",
-                    }}
-                  >
-                    <div>
-                      <img
-                        src={img0}
-                        className="ms-1"
-                        style={{
-                          borderRadius: "10px",
-                          height: "50px",
-                        }}
-                      />
-                    </div>
-                    <div className="me-1 d-flex flex-column align-items-center">
-                      <span className="fs-18">Nik jone</span>
-                      <span>Available</span>
-                    </div>
-                  </DropdownToggle>
-                  <DropdownMenu
-                    style={{
-                      marginLeft: "-25px",
-                    }}
-                  >
-                    <DropdownItem style={{ padding: "0px" }}>
-                      <div>
-                        <Link to="#" className="dropdown-item">
-                          Setting
-                        </Link>
-                      </div>
-                    </DropdownItem>
-
-                    <DropdownItem style={{ padding: "0px" }}>
-                      <div>
-                        <Link to="/signout" className="dropdown-item">
-                          Logout
-                        </Link>
-                      </div>
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
-            </div>
-          </div> */}
           <NavBarWeb></NavBarWeb>
 
           <Content>
@@ -525,193 +430,205 @@ const TransactionHistoryList = () => {
                         </Row>
                       </Modal>
 
-                      <div className="mt-3">
-                        {transactionHistoryList.map(
-                          (transactionHistoryListNew, key) => (
-                            <div
-                              key={key}
-                              className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                              style={{
-                                boxShadow:
-                                  "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                              }}
-                            >
-                              <CardBody className="p-2">
-                                <Row className="align-items-center">
-                                  <Col md={2}>
-                                    <div>
-                                      <Link>
-                                        <img
-                                          style={{
-                                            width: "80px",
-                                            height: "80px",
-                                          }}
-                                          src={
-                                            transactionHistoryListNew.companyImage
-                                          }
-                                          alt=""
-                                          className="img-fluid rounded-3 img-avt-hiring-request"
-                                        />
-                                      </Link>
-                                    </div>
-                                  </Col>
-
-                                  <Col md={3}>
-                                    <div
-                                      onClick={() =>
-                                        midleSelect(
-                                          transactionHistoryListNew.transactionId
-                                        )
-                                      }
-                                    >
-                                      <h5 className="fs-18 mb-0">
-                                        <div className="text-dark">
-                                          {
-                                            transactionHistoryListNew.companyName
-                                          }
+                      {transactionHistoryList.length === 0 ? (
+                        <div>
+                          <Empty />
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="mt-3">
+                            {transactionHistoryList.map(
+                              (transactionHistoryListNew, key) => (
+                                <div
+                                  key={key}
+                                  className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                                  style={{
+                                    boxShadow:
+                                      "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                                  }}
+                                >
+                                  <CardBody className="p-2">
+                                    <Row className="align-items-center">
+                                      <Col md={2}>
+                                        <div>
+                                          <Link>
+                                            <img
+                                              style={{
+                                                width: "80px",
+                                                height: "80px",
+                                              }}
+                                              src={
+                                                transactionHistoryListNew.companyImage
+                                              }
+                                              alt=""
+                                              className="img-fluid rounded-3 img-avt-hiring-request"
+                                            />
+                                          </Link>
                                         </div>
-                                      </h5>
-                                      <p className="text-muted fs-14 mb-0">
-                                        {
-                                          transactionHistoryListNew.payPalTransactionId
-                                        }
-                                      </p>
-                                    </div>
-                                  </Col>
+                                      </Col>
 
-                                  <Col md={3}>
-                                    <div className="d-flex flex-column gap-1 justify-content-center">
-                                      <div>
-                                        <p className="text-muted mb-0 fs-13">
-                                          Project Name
-                                        </p>
-                                        <p
-                                          className="mb-0 fs-17"
-                                          style={{ fontWeight: "600" }}
-                                        >
-                                          {
-                                            transactionHistoryListNew.projectName
+                                      <Col md={3}>
+                                        <div
+                                          onClick={() =>
+                                            midleSelect(
+                                              transactionHistoryListNew.transactionId
+                                            )
                                           }
-                                        </p>
-                                      </div>
-                                      <div>
-                                        <p className="text-muted mb-0 fs-13">
-                                          Project Code
-                                        </p>
-                                        <p
-                                          className="mb-0 fs-17"
-                                          style={{ fontWeight: "600" }}
                                         >
-                                          {
-                                            transactionHistoryListNew.projectCode
-                                          }
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </Col>
+                                          <h5 className="fs-18 mb-0">
+                                            <div className="text-dark">
+                                              {
+                                                transactionHistoryListNew.companyName
+                                              }
+                                            </div>
+                                          </h5>
+                                          <p className="text-muted fs-14 mb-0">
+                                            {
+                                              transactionHistoryListNew.payPalTransactionId
+                                            }
+                                          </p>
+                                        </div>
+                                      </Col>
 
-                                  <Col md={2}>
-                                    <div className="d-flex flex-column gap-1 justify-content-center">
-                                      <div>
-                                        <p className="text-muted mb-0 fs-13">
-                                          Pay For Month
-                                        </p>
-                                        <p
-                                          className="mb-0 fs-17"
-                                          style={{ fontWeight: "600" }}
-                                        >
-                                          {
-                                            transactionHistoryListNew.payForMonth
-                                          }
-                                        </p>
-                                      </div>
-                                      <div>
-                                        <p className="text-muted mb-0 fs-13">
-                                          Payment Method
-                                        </p>
-                                        <p
-                                          className="mb-0 fs-17"
-                                          style={{ fontWeight: "600" }}
-                                        >
-                                          {
-                                            transactionHistoryListNew.paymentMethod
-                                          }
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </Col>
+                                      <Col md={3}>
+                                        <div className="d-flex flex-column gap-1 justify-content-center">
+                                          <div>
+                                            <p className="text-muted mb-0 fs-13">
+                                              Project Name
+                                            </p>
+                                            <p
+                                              className="mb-0 fs-17"
+                                              style={{ fontWeight: "600" }}
+                                            >
+                                              {
+                                                transactionHistoryListNew.projectName
+                                              }
+                                            </p>
+                                          </div>
+                                          <div>
+                                            <p className="text-muted mb-0 fs-13">
+                                              Project Code
+                                            </p>
+                                            <p
+                                              className="mb-0 fs-17"
+                                              style={{ fontWeight: "600" }}
+                                            >
+                                              {
+                                                transactionHistoryListNew.projectCode
+                                              }
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </Col>
 
-                                  <Col
-                                    md={2}
-                                    className="d-flex justify-content-center"
-                                  >
-                                    <div className="d-flex align-items-center">
-                                      <span
-                                        className={
-                                          transactionHistoryListNew.statusString ===
-                                          "Pending"
-                                            ? "badge bg-warning text-light fs-12"
-                                            : transactionHistoryListNew.statusString ===
-                                              "Created"
-                                            ? "badge bg-blue text-light fs-12"
-                                            : transactionHistoryListNew.statusString ===
-                                              "Success"
-                                            ? "badge bg-newGreen text-light fs-12"
-                                            : transactionHistoryListNew.statusString ===
-                                              "Failed"
-                                            ? "badge bg-danger text-light fs-12"
-                                            : ""
-                                        }
+                                      <Col md={2}>
+                                        <div className="d-flex flex-column gap-1 justify-content-center">
+                                          <div>
+                                            <p className="text-muted mb-0 fs-13">
+                                              Pay For Month
+                                            </p>
+                                            <p
+                                              className="mb-0 fs-17"
+                                              style={{ fontWeight: "600" }}
+                                            >
+                                              {
+                                                transactionHistoryListNew.payForMonth
+                                              }
+                                            </p>
+                                          </div>
+                                          <div>
+                                            <p className="text-muted mb-0 fs-13">
+                                              Payment Method
+                                            </p>
+                                            <p
+                                              className="mb-0 fs-17"
+                                              style={{ fontWeight: "600" }}
+                                            >
+                                              {
+                                                transactionHistoryListNew.paymentMethod
+                                              }
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </Col>
+
+                                      <Col
+                                        md={2}
+                                        className="d-flex justify-content-center"
                                       >
-                                        {transactionHistoryListNew.statusString}
-                                      </span>
-                                    </div>
-                                  </Col>
-                                </Row>
-                              </CardBody>
-                            </div>
-                          )
-                        )}
-                      </div>
+                                        <div className="d-flex align-items-center">
+                                          <span
+                                            className={
+                                              transactionHistoryListNew.statusString ===
+                                              "Pending"
+                                                ? "badge bg-warning text-light fs-12"
+                                                : transactionHistoryListNew.statusString ===
+                                                  "Created"
+                                                ? "badge bg-blue text-light fs-12"
+                                                : transactionHistoryListNew.statusString ===
+                                                  "Success"
+                                                ? "badge bg-newGreen text-light fs-12"
+                                                : transactionHistoryListNew.statusString ===
+                                                  "Failed"
+                                                ? "badge bg-danger text-light fs-12"
+                                                : ""
+                                            }
+                                          >
+                                            {
+                                              transactionHistoryListNew.statusString
+                                            }
+                                          </span>
+                                        </div>
+                                      </Col>
+                                    </Row>
+                                  </CardBody>
+                                </div>
+                              )
+                            )}
+                          </div>
 
-                      {/* ---------------------------------------------------------------------- */}
-                      {/* phan trang */}
-                      <Row>
-                        <Col lg={12} className="mt-4 pt-2">
-                          <nav aria-label="Page navigation example">
-                            <div className="pagination job-pagination mb-0 justify-content-center">
-                              <li
-                                className={`page-item ${
-                                  currentPage === 1 ? "disabled" : ""
-                                }`}
-                              >
-                                <Link
-                                  className="page-link"
-                                  to="#"
-                                  tabIndex="-1"
-                                  onClick={handlePrevPage}
-                                >
-                                  <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                </Link>
-                              </li>
-                              {renderPageNumbers()}
-                              <li
-                                className={`page-item ${
-                                  currentPage === totalPages ? "disabled" : ""
-                                }`}
-                              >
-                                <Link
-                                  className="page-link"
-                                  to="#"
-                                  onClick={handleNextPage}
-                                >
-                                  <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                </Link>
-                              </li>
-                            </div>
-                          </nav>
-                        </Col>
-                      </Row>
+                          {/* ---------------------------------------------------------------------- */}
+                          {/* phan trang */}
+                          <Row>
+                            <Col lg={12} className="mt-4 pt-2">
+                              <nav aria-label="Page navigation example">
+                                <div className="pagination job-pagination mb-0 justify-content-center">
+                                  <li
+                                    className={`page-item ${
+                                      currentPage === 1 ? "disabled" : ""
+                                    }`}
+                                  >
+                                    <Link
+                                      className="page-link"
+                                      to="#"
+                                      tabIndex="-1"
+                                      onClick={handlePrevPage}
+                                    >
+                                      <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                    </Link>
+                                  </li>
+                                  {renderPageNumbers()}
+                                  <li
+                                    className={`page-item ${
+                                      currentPage === totalPages
+                                        ? "disabled"
+                                        : ""
+                                    }`}
+                                  >
+                                    <Link
+                                      className="page-link"
+                                      to="#"
+                                      onClick={handleNextPage}
+                                    >
+                                      <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                    </Link>
+                                  </li>
+                                </div>
+                              </nav>
+                            </Col>
+                          </Row>
+                        </div>
+                      )}
                     </div>
                   </Col>
                 </Row>
