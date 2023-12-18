@@ -259,8 +259,6 @@ const Dashboard = () => {
     const totalValue = pieChartData.totalDeveloper + pieChartData.totalManager + pieChartData.totalAdmin + pieChartData.totalHumanResource + pieChartData.totalStaff;
 
     const pieConfig = {
-        width: 300,  // Điều chỉnh chiều rộng của biểu đồ
-        height: 300, // Điều chỉnh chiều cao của biểu đồ
         appendPadding: 10,
         data: [
             { type: 'Developer', value: pieChartData.totalDeveloper || 0 },
@@ -307,7 +305,6 @@ const Dashboard = () => {
                     const type = item.value;
                     let formattedType = type;
 
-                    // Kiểm tra nếu là HumanResource thì định dạng lại thành Human Resource
                     if (type === 'HumanResource') {
                         formattedType = 'Human Resource';
                     }

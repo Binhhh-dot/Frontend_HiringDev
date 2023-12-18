@@ -39,6 +39,8 @@ import {
   DropdownItem,
 } from "reactstrap";
 import NavBarWeb from "./NavBar/NavBarWeb";
+import SiderBarWebStaff from "./SlideBar/SiderBarWebStaff";
+import NavBarWebStaff from "./NavBar/NavBarWebStaff";
 
 const { Header, Footer, Content } = Layout;
 
@@ -287,9 +289,8 @@ const NewListInterviewInfo = () => {
       pageNumbers.push(
         <li
           key={i}
-          className={`page-item ${
-            i === currentPageWaitingApproval ? "active" : ""
-          }`}
+          className={`page-item ${i === currentPageWaitingApproval ? "active" : ""
+            }`}
         >
           <Link
             className="page-link"
@@ -575,7 +576,7 @@ const NewListInterviewInfo = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SiderBarWeb choose={"menu-key/11"}></SiderBarWeb>
+        <SiderBarWebStaff choose={"menu-key/2"}></SiderBarWebStaff>
 
         <Layout>
           {/* <div
@@ -674,7 +675,7 @@ const NewListInterviewInfo = () => {
               </div>
             </div>
           </div> */}
-          <NavBarWeb></NavBarWeb>
+          <NavBarWebStaff></NavBarWebStaff>
 
           <Content>
             <section
@@ -1108,7 +1109,7 @@ const NewListInterviewInfo = () => {
                                   }}
                                 >
                                   {selectInterviewDetail.rejectionReason ==
-                                  null ? (
+                                    null ? (
                                     <span></span>
                                   ) : (
                                     selectInterviewDetail.rejectionReason
@@ -1233,24 +1234,24 @@ const NewListInterviewInfo = () => {
                                           <span
                                             className={
                                               newInterviewListInManagerDetail.statusString ===
-                                              "Waiting Approval"
+                                                "Waiting Approval"
                                                 ? "badge bg-warning text-light fs-12"
                                                 : newInterviewListInManagerDetail.statusString ===
                                                   "Approved"
-                                                ? "badge bg-newGreen text-light fs-12"
-                                                : newInterviewListInManagerDetail.statusString ===
-                                                  "Rejected"
-                                                ? "badge bg-danger text-light fs-12"
-                                                : newInterviewListInManagerDetail.statusString ===
-                                                  "Expired"
-                                                ? "badge bg-danger text-light fs-12"
-                                                : newInterviewListInManagerDetail.statusString ===
-                                                  "Completed"
-                                                ? "badge bg-success text-light fs-12"
-                                                : newInterviewListInManagerDetail.statusString ===
-                                                  "Cancelled"
-                                                ? "badge bg-secondary text-light fs-12"
-                                                : ""
+                                                  ? "badge bg-newGreen text-light fs-12"
+                                                  : newInterviewListInManagerDetail.statusString ===
+                                                    "Rejected"
+                                                    ? "badge bg-danger text-light fs-12"
+                                                    : newInterviewListInManagerDetail.statusString ===
+                                                      "Expired"
+                                                      ? "badge bg-danger text-light fs-12"
+                                                      : newInterviewListInManagerDetail.statusString ===
+                                                        "Completed"
+                                                        ? "badge bg-success text-light fs-12"
+                                                        : newInterviewListInManagerDetail.statusString ===
+                                                          "Cancelled"
+                                                          ? "badge bg-secondary text-light fs-12"
+                                                          : ""
                                             }
                                           >
                                             {
@@ -1271,9 +1272,8 @@ const NewListInterviewInfo = () => {
                                 <nav aria-label="Page navigation example">
                                   <div className="pagination job-pagination mb-0 justify-content-center">
                                     <li
-                                      className={`page-item ${
-                                        currentPage === 1 ? "disabled" : ""
-                                      }`}
+                                      className={`page-item ${currentPage === 1 ? "disabled" : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -1286,11 +1286,10 @@ const NewListInterviewInfo = () => {
                                     </li>
                                     {renderPageNumbers()}
                                     <li
-                                      className={`page-item ${
-                                        currentPage === totalPages
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                      className={`page-item ${currentPage === totalPages
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -1417,21 +1416,21 @@ const NewListInterviewInfo = () => {
                                             <span
                                               className={
                                                 newInterviewListInManagerDetail.statusString ===
-                                                "Waiting Approval"
+                                                  "Waiting Approval"
                                                   ? "badge bg-warning text-light fs-12"
                                                   : newInterviewListInManagerDetail.statusString ===
                                                     "Approved"
-                                                  ? "badge bg-newGreen text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Rejected"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Expired"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Completed"
-                                                  ? "badge bg-success text-light fs-12"
-                                                  : ""
+                                                    ? "badge bg-newGreen text-light fs-12"
+                                                    : newInterviewListInManagerDetail.statusString ===
+                                                      "Rejected"
+                                                      ? "badge bg-danger text-light fs-12"
+                                                      : newInterviewListInManagerDetail.statusString ===
+                                                        "Expired"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : newInterviewListInManagerDetail.statusString ===
+                                                          "Completed"
+                                                          ? "badge bg-success text-light fs-12"
+                                                          : ""
                                               }
                                             >
                                               {
@@ -1453,11 +1452,10 @@ const NewListInterviewInfo = () => {
                                 <nav aria-label="Page navigation example">
                                   <div className="pagination job-pagination mb-0 justify-content-center">
                                     <li
-                                      className={`page-item ${
-                                        currentPageWaitingApproval === 1
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                      className={`page-item ${currentPageWaitingApproval === 1
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -1470,12 +1468,11 @@ const NewListInterviewInfo = () => {
                                     </li>
                                     {renderPageNumbersWaitingApproval()}
                                     <li
-                                      className={`page-item ${
-                                        currentPageWaitingApproval ===
+                                      className={`page-item ${currentPageWaitingApproval ===
                                         totalPagesWaitingApproval
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -1602,21 +1599,21 @@ const NewListInterviewInfo = () => {
                                             <span
                                               className={
                                                 newInterviewListInManagerDetail.statusString ===
-                                                "Waiting Approval"
+                                                  "Waiting Approval"
                                                   ? "badge bg-warning text-light fs-12"
                                                   : newInterviewListInManagerDetail.statusString ===
                                                     "Approved"
-                                                  ? "badge bg-newGreen text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Rejected"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Expired"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Completed"
-                                                  ? "badge bg-success text-light fs-12"
-                                                  : ""
+                                                    ? "badge bg-newGreen text-light fs-12"
+                                                    : newInterviewListInManagerDetail.statusString ===
+                                                      "Rejected"
+                                                      ? "badge bg-danger text-light fs-12"
+                                                      : newInterviewListInManagerDetail.statusString ===
+                                                        "Expired"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : newInterviewListInManagerDetail.statusString ===
+                                                          "Completed"
+                                                          ? "badge bg-success text-light fs-12"
+                                                          : ""
                                               }
                                             >
                                               {
@@ -1638,11 +1635,10 @@ const NewListInterviewInfo = () => {
                                 <nav aria-label="Page navigation example">
                                   <div className="pagination job-pagination mb-0 justify-content-center">
                                     <li
-                                      className={`page-item ${
-                                        currentPageApproval === 1
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                      className={`page-item ${currentPageApproval === 1
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -1655,12 +1651,11 @@ const NewListInterviewInfo = () => {
                                     </li>
                                     {renderPageNumbersApproval()}
                                     <li
-                                      className={`page-item ${
-                                        currentPageApproval ===
+                                      className={`page-item ${currentPageApproval ===
                                         totalPagesApproval
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -1787,21 +1782,21 @@ const NewListInterviewInfo = () => {
                                             <span
                                               className={
                                                 newInterviewListInManagerDetail.statusString ===
-                                                "Waiting Approval"
+                                                  "Waiting Approval"
                                                   ? "badge bg-warning text-light fs-12"
                                                   : newInterviewListInManagerDetail.statusString ===
                                                     "Approved"
-                                                  ? "badge bg-newGreen text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Rejected"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Expired"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Completed"
-                                                  ? "badge bg-success text-light fs-12"
-                                                  : ""
+                                                    ? "badge bg-newGreen text-light fs-12"
+                                                    : newInterviewListInManagerDetail.statusString ===
+                                                      "Rejected"
+                                                      ? "badge bg-danger text-light fs-12"
+                                                      : newInterviewListInManagerDetail.statusString ===
+                                                        "Expired"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : newInterviewListInManagerDetail.statusString ===
+                                                          "Completed"
+                                                          ? "badge bg-success text-light fs-12"
+                                                          : ""
                                               }
                                             >
                                               {
@@ -1823,11 +1818,10 @@ const NewListInterviewInfo = () => {
                                 <nav aria-label="Page navigation example">
                                   <div className="pagination job-pagination mb-0 justify-content-center">
                                     <li
-                                      className={`page-item ${
-                                        currentPageComplete === 1
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                      className={`page-item ${currentPageComplete === 1
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -1840,12 +1834,11 @@ const NewListInterviewInfo = () => {
                                     </li>
                                     {renderPageNumbersComplete()}
                                     <li
-                                      className={`page-item ${
-                                        currentPageComplete ===
+                                      className={`page-item ${currentPageComplete ===
                                         totalPagesComplete
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -1972,21 +1965,21 @@ const NewListInterviewInfo = () => {
                                             <span
                                               className={
                                                 newInterviewListInManagerDetail.statusString ===
-                                                "Waiting Approval"
+                                                  "Waiting Approval"
                                                   ? "badge bg-warning text-light fs-12"
                                                   : newInterviewListInManagerDetail.statusString ===
                                                     "Approved"
-                                                  ? "badge bg-newGreen text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Rejected"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Expired"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Completed"
-                                                  ? "badge bg-success text-light fs-12"
-                                                  : ""
+                                                    ? "badge bg-newGreen text-light fs-12"
+                                                    : newInterviewListInManagerDetail.statusString ===
+                                                      "Rejected"
+                                                      ? "badge bg-danger text-light fs-12"
+                                                      : newInterviewListInManagerDetail.statusString ===
+                                                        "Expired"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : newInterviewListInManagerDetail.statusString ===
+                                                          "Completed"
+                                                          ? "badge bg-success text-light fs-12"
+                                                          : ""
                                               }
                                             >
                                               {
@@ -2008,11 +2001,10 @@ const NewListInterviewInfo = () => {
                                 <nav aria-label="Page navigation example">
                                   <div className="pagination job-pagination mb-0 justify-content-center">
                                     <li
-                                      className={`page-item ${
-                                        currentPageReject === 1
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                      className={`page-item ${currentPageReject === 1
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -2025,11 +2017,10 @@ const NewListInterviewInfo = () => {
                                     </li>
                                     {renderPageNumbersReject()}
                                     <li
-                                      className={`page-item ${
-                                        currentPageReject === totalPagesReject
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                      className={`page-item ${currentPageReject === totalPagesReject
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -2156,24 +2147,24 @@ const NewListInterviewInfo = () => {
                                             <span
                                               className={
                                                 newInterviewListInManagerDetail.statusString ===
-                                                "Waiting Approval"
+                                                  "Waiting Approval"
                                                   ? "badge bg-warning text-light fs-12"
                                                   : newInterviewListInManagerDetail.statusString ===
                                                     "Approved"
-                                                  ? "badge bg-newGreen text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Rejected"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Expired"
-                                                  ? "badge bg-danger text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Completed"
-                                                  ? "badge bg-success text-light fs-12"
-                                                  : newInterviewListInManagerDetail.statusString ===
-                                                    "Cancelled"
-                                                  ? "badge bg-secondary text-light fs-12"
-                                                  : ""
+                                                    ? "badge bg-newGreen text-light fs-12"
+                                                    : newInterviewListInManagerDetail.statusString ===
+                                                      "Rejected"
+                                                      ? "badge bg-danger text-light fs-12"
+                                                      : newInterviewListInManagerDetail.statusString ===
+                                                        "Expired"
+                                                        ? "badge bg-danger text-light fs-12"
+                                                        : newInterviewListInManagerDetail.statusString ===
+                                                          "Completed"
+                                                          ? "badge bg-success text-light fs-12"
+                                                          : newInterviewListInManagerDetail.statusString ===
+                                                            "Cancelled"
+                                                            ? "badge bg-secondary text-light fs-12"
+                                                            : ""
                                               }
                                             >
                                               {
@@ -2195,11 +2186,10 @@ const NewListInterviewInfo = () => {
                                 <nav aria-label="Page navigation example">
                                   <div className="pagination job-pagination mb-0 justify-content-center">
                                     <li
-                                      className={`page-item ${
-                                        currentPageCancelled === 1
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                      className={`page-item ${currentPageCancelled === 1
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"
@@ -2212,12 +2202,11 @@ const NewListInterviewInfo = () => {
                                     </li>
                                     {renderPageNumbersCancelled()}
                                     <li
-                                      className={`page-item ${
-                                        currentPageCancelled ===
+                                      className={`page-item ${currentPageCancelled ===
                                         totalPagesCancelled
-                                          ? "disabled"
-                                          : ""
-                                      }`}
+                                        ? "disabled"
+                                        : ""
+                                        }`}
                                     >
                                       <Link
                                         className="page-link"

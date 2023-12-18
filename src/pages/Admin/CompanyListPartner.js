@@ -15,6 +15,8 @@ import {
   DropdownItem,
 } from "reactstrap";
 import NavBarWeb from "./NavBar/NavBarWeb";
+import SiderBarWebStaff from "./SlideBar/SiderBarWebStaff";
+import NavBarWebStaff from "./NavBar/NavBarWebStaff";
 const { Header, Footer, Content } = Layout;
 
 const CompanyListPartner = () => {
@@ -137,7 +139,7 @@ const CompanyListPartner = () => {
   return (
     <React.Fragment>
       <Layout style={{ minHeight: "100vh" }}>
-        <SiderBarWeb choose={"menu-key/15"}></SiderBarWeb>
+        <SiderBarWebStaff choose={"menu-key/1"}></SiderBarWebStaff>
         <Layout>
           {/* <div
             style={{
@@ -235,7 +237,7 @@ const CompanyListPartner = () => {
               </div>
             </div>
           </div> */}
-          <NavBarWeb></NavBarWeb>
+          <NavBarWebStaff></NavBarWebStaff>
 
           <Content>
             <section

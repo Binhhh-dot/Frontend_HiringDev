@@ -86,6 +86,12 @@ const SignIn = () => {
             console.log(token)
             sendDeviceToken(token);
           });
+        } else if (role === "Staff") {
+          navigate("/listcompanyPartner")
+          requestPermission((token) => {
+            console.log(token)
+            sendDeviceToken(token);
+          });
         }
         else {
           if (userData.data.companyId != null) {
