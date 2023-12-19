@@ -26,6 +26,7 @@ import hiringrequestService from "../../services/hiringrequest.service";
 import jobImage1 from "../../assets/images/featured-job/img-01.png";
 import classnames from "classnames";
 import { Empty } from "antd";
+import { Skeleton } from "antd";
 
 const JobVacancyList = (a) => {
   //Apply Now Model
@@ -39,6 +40,15 @@ const JobVacancyList = (a) => {
   const [jobVacancyListClosed, setJobVacancyListClosed] = useState([]);
   const [jobVacancyListCompleted, setJobVacancyListCompleted] = useState([]);
   const [jobVacancyListSaved, setJobVacancyListSaved] = useState([]);
+
+  const [skeleton1, setSkeleton1] = useState(true);
+  const [skeleton2, setSkeleton2] = useState(true);
+  const [skeleton3, setSkeleton3] = useState(true);
+  const [skeleton4, setSkeleton4] = useState(true);
+  const [skeleton5, setSkeleton5] = useState(true);
+  const [skeleton6, setSkeleton6] = useState(true);
+  const [skeleton7, setSkeleton7] = useState(true);
+  const [skeleton8, setSkeleton8] = useState(true);
 
   //--------------------------------------------------------------------------------------------
   let [currentPage, setCurrentPage] = useState(1);
@@ -98,13 +108,14 @@ const JobVacancyList = (a) => {
 
       console.log(response.data.data);
       console.log(response.data.paging.total);
-
+      setSkeleton1(false);
       setJobVacancyList(response.data.data);
       setTotalPages(Math.ceil(response.data.paging.total / pageSize));
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
   };
+  //--------------------------------------------------------------------------------------------
 
   //--------------------------------------------------------------------------------------------
   let [currentPageWaitingApproval, setCurrentPageWaitingApproval] = useState(1);
@@ -177,7 +188,7 @@ const JobVacancyList = (a) => {
         );
 
       console.log(response.data.data);
-
+      setSkeleton2(false);
       setJobVacancyListWaitingApproval(response.data.data);
       setTotalPagesWaitingApproval(
         Math.ceil(response.data.paging.total / pageSizeWaitingApproval)
@@ -257,6 +268,7 @@ const JobVacancyList = (a) => {
       console.log(response.data.data);
 
       setJobVacancyListInProgress(response.data.data);
+      setSkeleton3(false);
       setTotalPagesInProgress(
         Math.ceil(response.data.paging.total / pageSizeInProgress)
       );
@@ -330,7 +342,7 @@ const JobVacancyList = (a) => {
       );
 
       console.log(response.data.data);
-
+      setSkeleton4(false);
       setJobVacancyListRejected(response.data.data);
       setTotalPagesRejected(
         Math.ceil(response.data.paging.total / pageSizeRejected)
@@ -405,7 +417,7 @@ const JobVacancyList = (a) => {
       );
 
       console.log(response.data.data);
-
+      setSkeleton5(false);
       setJobVacancyListExpired(response.data.data);
       setTotalPagesExpired(
         Math.ceil(response.data.paging.total / pageSizeExpired)
@@ -480,8 +492,9 @@ const JobVacancyList = (a) => {
       );
 
       console.log(response.data.data);
-
+      setSkeleton6(false);
       setJobVacancyListCancelled(response.data.data);
+
       setTotalPagesCancelled(
         Math.ceil(response.data.paging.total / pageSizeCancelled)
       );
@@ -557,6 +570,7 @@ const JobVacancyList = (a) => {
       console.log(response.data.data);
 
       setJobVacancyListClosed(response.data.data);
+      setSkeleton7(false);
       setTotalPagesClosed(
         Math.ceil(response.data.paging.total / pageSizeClosed)
       );
@@ -630,7 +644,7 @@ const JobVacancyList = (a) => {
       );
 
       console.log(response.data.data);
-
+      setSkeleton8(false);
       setJobVacancyListCompleted(response.data.data);
       setTotalPagesCompleted(
         Math.ceil(response.data.paging.total / pageSizeCompleted)
@@ -836,183 +850,548 @@ const JobVacancyList = (a) => {
       <CardBody className="px-0">
         <TabContent activeTab={activeTab}>
           <TabPane tabId="1">
-            {jobVacancyList.length === 0 ? (
-              <div>
-                <Empty />
-              </div>
-            ) : (
-              <div>
+            <Skeleton loading={skeleton1}>
+              {jobVacancyList.length === 0 ? (
                 <div>
-                  {jobVacancyList.map((jobVacancyListDetail, key) => (
-                    <div
-                      style={{
-                        boxShadow:
-                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                      }}
-                      key={key}
-                      className={
-                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                      }
-                    >
-                      <div className="p-2">
-                        <Row className="align-items-center">
-                          <Col md={2}>
-                            <div>
-                              <Link>
-                                <img
-                                  style={{
-                                    width: "80px",
-                                    height: "80px",
-                                  }}
-                                  src={jobVacancyListDetail.companyImage}
-                                  alt=""
-                                  className="img-fluid rounded-3 img-avt-hiring-request"
-                                />
-                              </Link>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div>
-                              <h5 className="fs-18 mb-0">
-                                <Link
-                                  to="/newhiringrequestdetail"
-                                  className="text-dark"
-                                  state={{
-                                    hiringRequestId:
-                                      jobVacancyListDetail.requestId,
-                                    companyId: jobVacancyListDetail.companyId,
-                                    projectId: jobVacancyListDetail.projectId,
-                                  }}
-                                >
-                                  {jobVacancyListDetail.jobTitle}
-                                </Link>
-                              </h5>
-                              <p className="text-muted fs-14 mb-0">
-                                {jobVacancyListDetail.requestCode}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-user-check text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.numberOfDev} developer
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-clock-three text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.duration}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2} className="d-flex justify-content-around">
-                            <div className="d-flex align-items-center">
-                              <span
-                                className={
-                                  jobVacancyListDetail.statusString ===
-                                  "Waiting Approval"
-                                    ? "badge bg-warning text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "In Progress"
-                                    ? "badge bg-blue text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Rejected"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Expired"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Closed"
-                                    ? "badge bg-secondary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Saved"
-                                    ? "badge bg-info text-light fs-12"
-                                    : ""
-                                }
-                              >
-                                {jobVacancyListDetail.statusString}
-                              </span>
-                            </div>
-                          </Col>
-                        </Row>
-                      </div>
-                    </div>
-                  ))}
+                  <Empty />
                 </div>
-                {/* ----------------------------------------------------- */}
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPage === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPage}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbers()}
-                        <li
-                          className={`page-item ${
-                            currentPage === totalPages ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPage}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
+              ) : (
+                <div>
+                  <div>
+                    {jobVacancyList.map((jobVacancyListDetail, key) => (
+                      <div
+                        style={{
+                          boxShadow:
+                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                        }}
+                        key={key}
+                        className={
+                          "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                        }
+                      >
+                        <div className="p-2">
+                          <Row className="align-items-center">
+                            <Col md={2}>
+                              <div>
+                                <Link>
+                                  <img
+                                    style={{
+                                      width: "80px",
+                                      height: "80px",
+                                    }}
+                                    src={jobVacancyListDetail.companyImage}
+                                    alt=""
+                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                  />
+                                </Link>
+                              </div>
+                            </Col>
+
+                            <Col md={3}>
+                              <div>
+                                <h5 className="fs-18 mb-0">
+                                  <Link
+                                    to="/newhiringrequestdetail"
+                                    className="text-dark"
+                                    state={{
+                                      hiringRequestId:
+                                        jobVacancyListDetail.requestId,
+                                      companyId: jobVacancyListDetail.companyId,
+                                      projectId: jobVacancyListDetail.projectId,
+                                    }}
+                                  >
+                                    {jobVacancyListDetail.jobTitle}
+                                  </Link>
+                                </h5>
+                                <p className="text-muted fs-14 mb-0">
+                                  {jobVacancyListDetail.requestCode}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col md={3}>
+                              <div className="d-flex mb-0 align-items-center">
+                                <div className="flex-shrink-0">
+                                  <i
+                                    className="uil uil-user-check text-primary me-1"
+                                    style={{ fontSize: "19px" }}
+                                  ></i>
+                                </div>
+                                <p className="text-muted mb-0">
+                                  {jobVacancyListDetail.numberOfDev} developer
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex mb-0 align-items-center">
+                                <div className="flex-shrink-0">
+                                  <i
+                                    className="uil uil-clock-three text-primary me-1"
+                                    style={{ fontSize: "19px" }}
+                                  ></i>
+                                </div>
+                                <p className="text-muted mb-0">
+                                  {jobVacancyListDetail.duration}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-around"
+                            >
+                              <div className="d-flex align-items-center">
+                                <span
+                                  className={
+                                    jobVacancyListDetail.statusString ===
+                                    "Waiting Approval"
+                                      ? "badge bg-warning text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "In Progress"
+                                      ? "badge bg-blue text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Rejected"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Expired"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Cancelled"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Closed"
+                                      ? "badge bg-secondary text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Completed"
+                                      ? "badge bg-primary text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Saved"
+                                      ? "badge bg-info text-light fs-12"
+                                      : ""
+                                  }
+                                >
+                                  {jobVacancyListDetail.statusString}
+                                </span>
+                              </div>
+                            </Col>
+                          </Row>
+                        </div>
                       </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </div>
-            )}
+                    ))}
+                  </div>
+                  {/* ----------------------------------------------------- */}
+                  {/* phan trang */}
+                  <Row>
+                    <Col lg={12} className="mt-4 pt-2">
+                      <nav aria-label="Page navigation example">
+                        <div className="pagination job-pagination mb-0 justify-content-center">
+                          <li
+                            className={`page-item ${
+                              currentPage === 1 ? "disabled" : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              tabIndex="-1"
+                              onClick={handlePrevPage}
+                            >
+                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                            </Link>
+                          </li>
+                          {renderPageNumbers()}
+                          <li
+                            className={`page-item ${
+                              currentPage === totalPages ? "disabled" : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={handleNextPage}
+                            >
+                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                            </Link>
+                          </li>
+                        </div>
+                      </nav>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+            </Skeleton>
           </TabPane>
           <TabPane tabId="2">
-            {jobVacancyListWaitingApproval.length === 0 ? (
-              <div>
-                <Empty />
-              </div>
-            ) : (
-              <div>
+            <Skeleton loading={skeleton2}>
+              {jobVacancyListWaitingApproval.length === 0 ? (
                 <div>
-                  {jobVacancyListWaitingApproval.map(
-                    (jobVacancyListDetail, key) => (
+                  <Empty />
+                </div>
+              ) : (
+                <div>
+                  <div>
+                    {jobVacancyListWaitingApproval.map(
+                      (jobVacancyListDetail, key) => (
+                        <div
+                          style={{
+                            boxShadow:
+                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                          }}
+                          key={key}
+                          className={
+                            "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                          }
+                        >
+                          <div className="p-2">
+                            <Row className="align-items-center">
+                              <Col md={2}>
+                                <div>
+                                  <Link to="/companydetails">
+                                    <img
+                                      style={{
+                                        width: "80px",
+                                        height: "80px",
+                                      }}
+                                      src={jobVacancyListDetail.companyImage}
+                                      alt=""
+                                      className="img-fluid rounded-3 img-avt-hiring-request"
+                                    />
+                                  </Link>
+                                </div>
+                              </Col>
+
+                              <Col md={3}>
+                                <div>
+                                  <h5 className="fs-18 mb-0">
+                                    <Link
+                                      to="/newhiringrequestdetail"
+                                      className="text-dark"
+                                      state={{
+                                        hiringRequestId:
+                                          jobVacancyListDetail.requestId,
+                                        companyId:
+                                          jobVacancyListDetail.companyId,
+                                        projectId:
+                                          jobVacancyListDetail.projectId,
+                                      }}
+                                    >
+                                      {jobVacancyListDetail.jobTitle}
+                                    </Link>
+                                  </h5>
+                                  <p className="text-muted fs-14 mb-0">
+                                    {jobVacancyListDetail.requestCode}
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col md={3}>
+                                <div className="d-flex mb-0 align-items-center">
+                                  <div className="flex-shrink-0">
+                                    <i
+                                      className="uil uil-user-check text-primary me-1"
+                                      style={{ fontSize: "19px" }}
+                                    ></i>
+                                  </div>
+                                  <p className="text-muted mb-0">
+                                    {jobVacancyListDetail.numberOfDev} developer
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col md={2}>
+                                <div className="d-flex mb-0 align-items-center">
+                                  <div className="flex-shrink-0">
+                                    <i
+                                      className="uil uil-clock-three text-primary me-1"
+                                      style={{ fontSize: "19px" }}
+                                    ></i>
+                                  </div>
+                                  <p className="text-muted mb-0">
+                                    {jobVacancyListDetail.duration}
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col
+                                md={2}
+                                className="d-flex justify-content-around"
+                              >
+                                <div className="d-flex align-items-center">
+                                  <span
+                                    className={
+                                      jobVacancyListDetail.statusString ===
+                                      "Waiting Approval"
+                                        ? "badge bg-warning text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "In Progress"
+                                        ? "badge bg-blue text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Rejected"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Expired"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Cancelled"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Closed"
+                                        ? "badge bg-secondary text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Completed"
+                                        ? "badge bg-primary text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Saved"
+                                        ? "badge bg-info text-light fs-12"
+                                        : ""
+                                    }
+                                  >
+                                    {jobVacancyListDetail.statusString}
+                                  </span>
+                                </div>
+                              </Col>
+                            </Row>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+
+                  {/* ----------------------------------------------------- */}
+                  {/* phan trang */}
+                  <Row>
+                    <Col lg={12} className="mt-4 pt-2">
+                      <nav aria-label="Page navigation example">
+                        <div className="pagination job-pagination mb-0 justify-content-center">
+                          <li
+                            className={`page-item ${
+                              currentPageWaitingApproval === 1 ? "disabled" : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              tabIndex="-1"
+                              onClick={handlePrevPageWaitingApproval}
+                            >
+                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                            </Link>
+                          </li>
+                          {renderPageNumbersWaitingApproval()}
+                          <li
+                            className={`page-item ${
+                              currentPageWaitingApproval ===
+                              totalPagesWaitingApproval
+                                ? "disabled"
+                                : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={handleNextPageWaitingApproval}
+                            >
+                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                            </Link>
+                          </li>
+                        </div>
+                      </nav>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+            </Skeleton>
+          </TabPane>
+          <TabPane tabId="3">
+            <Skeleton loading={skeleton3}>
+              {jobVacancyListInProgress.length === 0 ? (
+                <div>
+                  <Empty />
+                </div>
+              ) : (
+                <div>
+                  <div>
+                    {jobVacancyListInProgress.map(
+                      (jobVacancyListDetail, key) => (
+                        <div
+                          style={{
+                            boxShadow:
+                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                          }}
+                          key={key}
+                          className={
+                            "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                          }
+                        >
+                          <div className="p-2">
+                            <Row className="align-items-center">
+                              <Col md={2}>
+                                <div>
+                                  <Link to="/companydetails">
+                                    <img
+                                      style={{
+                                        width: "80px",
+                                        height: "80px",
+                                      }}
+                                      src={jobVacancyListDetail.companyImage}
+                                      alt=""
+                                      className="img-fluid rounded-3 img-avt-hiring-request"
+                                    />
+                                  </Link>
+                                </div>
+                              </Col>
+
+                              <Col md={3}>
+                                <div>
+                                  <h5 className="fs-18 mb-0">
+                                    <Link
+                                      to="/newhiringrequestdetail"
+                                      className="text-dark"
+                                      state={{
+                                        hiringRequestId:
+                                          jobVacancyListDetail.requestId,
+                                        companyId:
+                                          jobVacancyListDetail.companyId,
+                                        projectId:
+                                          jobVacancyListDetail.projectId,
+                                      }}
+                                    >
+                                      {jobVacancyListDetail.jobTitle}
+                                    </Link>
+                                  </h5>
+                                  <p className="text-muted fs-14 mb-0">
+                                    {jobVacancyListDetail.requestCode}
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col md={3}>
+                                <div className="d-flex mb-0 align-items-center">
+                                  <div className="flex-shrink-0">
+                                    <i
+                                      className="uil uil-user-check text-primary me-1"
+                                      style={{ fontSize: "19px" }}
+                                    ></i>
+                                  </div>
+                                  <p className="text-muted mb-0">
+                                    {jobVacancyListDetail.numberOfDev} developer
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col md={2}>
+                                <div className="d-flex mb-0 align-items-center">
+                                  <div className="flex-shrink-0">
+                                    <i
+                                      className="uil uil-clock-three text-primary me-1"
+                                      style={{ fontSize: "19px" }}
+                                    ></i>
+                                  </div>
+                                  <p className="text-muted mb-0">
+                                    {jobVacancyListDetail.duration}
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col
+                                md={2}
+                                className="d-flex justify-content-around"
+                              >
+                                <div className="d-flex align-items-center">
+                                  <span
+                                    className={
+                                      jobVacancyListDetail.statusString ===
+                                      "Waiting Approval"
+                                        ? "badge bg-warning text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "In Progress"
+                                        ? "badge bg-blue text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Rejected"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Expired"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Cancelled"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Closed"
+                                        ? "badge bg-secondary text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Completed"
+                                        ? "badge bg-primary text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Saved"
+                                        ? "badge bg-info text-light fs-12"
+                                        : ""
+                                    }
+                                  >
+                                    {jobVacancyListDetail.statusString}
+                                  </span>
+                                </div>
+                              </Col>
+                            </Row>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                  {/* ----------------------------------------------------- */}
+                  {/* phan trang */}
+                  <Row>
+                    <Col lg={12} className="mt-4 pt-2">
+                      <nav aria-label="Page navigation example">
+                        <div className="pagination job-pagination mb-0 justify-content-center">
+                          <li
+                            className={`page-item ${
+                              currentPageInProgress === 1 ? "disabled" : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              tabIndex="-1"
+                              onClick={handlePrevPageInProgress}
+                            >
+                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                            </Link>
+                          </li>
+                          {renderPageNumbersInProgress()}
+                          <li
+                            className={`page-item ${
+                              currentPageInProgress === totalPagesInProgress
+                                ? "disabled"
+                                : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={handleNextPageInProgress}
+                            >
+                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                            </Link>
+                          </li>
+                        </div>
+                      </nav>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+            </Skeleton>
+          </TabPane>
+          <TabPane tabId="4">
+            <Skeleton loading={skeleton4}>
+              {jobVacancyListRejected.length === 0 ? (
+                <div>
+                  <Empty />
+                </div>
+              ) : (
+                <div>
+                  <div>
+                    {jobVacancyListRejected.map((jobVacancyListDetail, key) => (
                       <div
                         style={{
                           boxShadow:
@@ -1132,1073 +1511,759 @@ const JobVacancyList = (a) => {
                           </Row>
                         </div>
                       </div>
-                    )
-                  )}
+                    ))}
+                  </div>
+                  {/* ----------------------------------------------------- */}
+                  {/* phan trang */}
+                  <Row>
+                    <Col lg={12} className="mt-4 pt-2">
+                      <nav aria-label="Page navigation example">
+                        <div className="pagination job-pagination mb-0 justify-content-center">
+                          <li
+                            className={`page-item ${
+                              currentPageRejected === 1 ? "disabled" : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              tabIndex="-1"
+                              onClick={handlePrevPageRejected}
+                            >
+                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                            </Link>
+                          </li>
+                          {renderPageNumbersRejected()}
+                          <li
+                            className={`page-item ${
+                              currentPageRejected === totalPagesRejected
+                                ? "disabled"
+                                : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={handleNextPageRejected}
+                            >
+                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                            </Link>
+                          </li>
+                        </div>
+                      </nav>
+                    </Col>
+                  </Row>
                 </div>
-
-                {/* ----------------------------------------------------- */}
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPageWaitingApproval === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPageWaitingApproval}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbersWaitingApproval()}
-                        <li
-                          className={`page-item ${
-                            currentPageWaitingApproval ===
-                            totalPagesWaitingApproval
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPageWaitingApproval}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
-                      </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </div>
-            )}
-          </TabPane>
-          <TabPane tabId="3">
-            {jobVacancyListInProgress.length === 0 ? (
-              <div>
-                <Empty />
-              </div>
-            ) : (
-              <div>
-                <div>
-                  {jobVacancyListInProgress.map((jobVacancyListDetail, key) => (
-                    <div
-                      style={{
-                        boxShadow:
-                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                      }}
-                      key={key}
-                      className={
-                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                      }
-                    >
-                      <div className="p-2">
-                        <Row className="align-items-center">
-                          <Col md={2}>
-                            <div>
-                              <Link to="/companydetails">
-                                <img
-                                  style={{
-                                    width: "80px",
-                                    height: "80px",
-                                  }}
-                                  src={jobVacancyListDetail.companyImage}
-                                  alt=""
-                                  className="img-fluid rounded-3 img-avt-hiring-request"
-                                />
-                              </Link>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div>
-                              <h5 className="fs-18 mb-0">
-                                <Link
-                                  to="/newhiringrequestdetail"
-                                  className="text-dark"
-                                  state={{
-                                    hiringRequestId:
-                                      jobVacancyListDetail.requestId,
-                                    companyId: jobVacancyListDetail.companyId,
-                                    projectId: jobVacancyListDetail.projectId,
-                                  }}
-                                >
-                                  {jobVacancyListDetail.jobTitle}
-                                </Link>
-                              </h5>
-                              <p className="text-muted fs-14 mb-0">
-                                {jobVacancyListDetail.requestCode}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-user-check text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.numberOfDev} developer
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-clock-three text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.duration}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2} className="d-flex justify-content-around">
-                            <div className="d-flex align-items-center">
-                              <span
-                                className={
-                                  jobVacancyListDetail.statusString ===
-                                  "Waiting Approval"
-                                    ? "badge bg-warning text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "In Progress"
-                                    ? "badge bg-blue text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Rejected"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Expired"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Closed"
-                                    ? "badge bg-secondary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Saved"
-                                    ? "badge bg-info text-light fs-12"
-                                    : ""
-                                }
-                              >
-                                {jobVacancyListDetail.statusString}
-                              </span>
-                            </div>
-                          </Col>
-                        </Row>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {/* ----------------------------------------------------- */}
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPageInProgress === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPageInProgress}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbersInProgress()}
-                        <li
-                          className={`page-item ${
-                            currentPageInProgress === totalPagesInProgress
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPageInProgress}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
-                      </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </div>
-            )}
-          </TabPane>
-          <TabPane tabId="4">
-            {jobVacancyListRejected.length === 0 ? (
-              <div>
-                <Empty />
-              </div>
-            ) : (
-              <div>
-                <div>
-                  {jobVacancyListRejected.map((jobVacancyListDetail, key) => (
-                    <div
-                      style={{
-                        boxShadow:
-                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                      }}
-                      key={key}
-                      className={
-                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                      }
-                    >
-                      <div className="p-2">
-                        <Row className="align-items-center">
-                          <Col md={2}>
-                            <div>
-                              <Link to="/companydetails">
-                                <img
-                                  style={{
-                                    width: "80px",
-                                    height: "80px",
-                                  }}
-                                  src={jobVacancyListDetail.companyImage}
-                                  alt=""
-                                  className="img-fluid rounded-3 img-avt-hiring-request"
-                                />
-                              </Link>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div>
-                              <h5 className="fs-18 mb-0">
-                                <Link
-                                  to="/newhiringrequestdetail"
-                                  className="text-dark"
-                                  state={{
-                                    hiringRequestId:
-                                      jobVacancyListDetail.requestId,
-                                    companyId: jobVacancyListDetail.companyId,
-                                    projectId: jobVacancyListDetail.projectId,
-                                  }}
-                                >
-                                  {jobVacancyListDetail.jobTitle}
-                                </Link>
-                              </h5>
-                              <p className="text-muted fs-14 mb-0">
-                                {jobVacancyListDetail.requestCode}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-user-check text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.numberOfDev} developer
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-clock-three text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.duration}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2} className="d-flex justify-content-around">
-                            <div className="d-flex align-items-center">
-                              <span
-                                className={
-                                  jobVacancyListDetail.statusString ===
-                                  "Waiting Approval"
-                                    ? "badge bg-warning text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "In Progress"
-                                    ? "badge bg-blue text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Rejected"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Expired"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Closed"
-                                    ? "badge bg-secondary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Saved"
-                                    ? "badge bg-info text-light fs-12"
-                                    : ""
-                                }
-                              >
-                                {jobVacancyListDetail.statusString}
-                              </span>
-                            </div>
-                          </Col>
-                        </Row>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {/* ----------------------------------------------------- */}
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPageRejected === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPageRejected}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbersRejected()}
-                        <li
-                          className={`page-item ${
-                            currentPageRejected === totalPagesRejected
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPageRejected}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
-                      </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </div>
-            )}
+              )}
+            </Skeleton>
           </TabPane>
           <TabPane tabId="5">
-            {jobVacancyListExpired.length === 0 ? (
-              <div>
-                <Empty />
-              </div>
-            ) : (
-              <div>
+            <Skeleton loading={skeleton5}>
+              {jobVacancyListExpired.length === 0 ? (
                 <div>
-                  {jobVacancyListExpired.map((jobVacancyListDetail, key) => (
-                    <div
-                      style={{
-                        boxShadow:
-                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                      }}
-                      key={key}
-                      className={
-                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                      }
-                    >
-                      <div className="p-2">
-                        <Row className="align-items-center">
-                          <Col md={2}>
-                            <div>
-                              <Link to="/companydetails">
-                                <img
-                                  style={{
-                                    width: "80px",
-                                    height: "80px",
-                                  }}
-                                  src={jobVacancyListDetail.companyImage}
-                                  alt=""
-                                  className="img-fluid rounded-3 img-avt-hiring-request"
-                                />
-                              </Link>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div>
-                              <h5 className="fs-18 mb-0">
-                                <Link
-                                  to="/newhiringrequestdetail"
-                                  className="text-dark"
-                                  state={{
-                                    hiringRequestId:
-                                      jobVacancyListDetail.requestId,
-                                    companyId: jobVacancyListDetail.companyId,
-                                    projectId: jobVacancyListDetail.projectId,
-                                  }}
-                                >
-                                  {jobVacancyListDetail.jobTitle}
-                                </Link>
-                              </h5>
-                              <p className="text-muted fs-14 mb-0">
-                                {jobVacancyListDetail.requestCode}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-user-check text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.numberOfDev} developer
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-clock-three text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.duration}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2} className="d-flex justify-content-around">
-                            <div className="d-flex align-items-center">
-                              <span
-                                className={
-                                  jobVacancyListDetail.statusString ===
-                                  "Waiting Approval"
-                                    ? "badge bg-warning text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "In Progress"
-                                    ? "badge bg-blue text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Rejected"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Expired"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Closed"
-                                    ? "badge bg-secondary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Saved"
-                                    ? "badge bg-info text-light fs-12"
-                                    : ""
-                                }
-                              >
-                                {jobVacancyListDetail.statusString}
-                              </span>
-                            </div>
-                          </Col>
-                        </Row>
-                      </div>
-                    </div>
-                  ))}
+                  <Empty />
                 </div>
-                {/* ----------------------------------------------------- */}
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPageExpired === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPageExpired}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbersExpired()}
-                        <li
-                          className={`page-item ${
-                            currentPageExpired === totalPagesExpired
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPageExpired}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
+              ) : (
+                <div>
+                  <div>
+                    {jobVacancyListExpired.map((jobVacancyListDetail, key) => (
+                      <div
+                        style={{
+                          boxShadow:
+                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                        }}
+                        key={key}
+                        className={
+                          "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                        }
+                      >
+                        <div className="p-2">
+                          <Row className="align-items-center">
+                            <Col md={2}>
+                              <div>
+                                <Link to="/companydetails">
+                                  <img
+                                    style={{
+                                      width: "80px",
+                                      height: "80px",
+                                    }}
+                                    src={jobVacancyListDetail.companyImage}
+                                    alt=""
+                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                  />
+                                </Link>
+                              </div>
+                            </Col>
+
+                            <Col md={3}>
+                              <div>
+                                <h5 className="fs-18 mb-0">
+                                  <Link
+                                    to="/newhiringrequestdetail"
+                                    className="text-dark"
+                                    state={{
+                                      hiringRequestId:
+                                        jobVacancyListDetail.requestId,
+                                      companyId: jobVacancyListDetail.companyId,
+                                      projectId: jobVacancyListDetail.projectId,
+                                    }}
+                                  >
+                                    {jobVacancyListDetail.jobTitle}
+                                  </Link>
+                                </h5>
+                                <p className="text-muted fs-14 mb-0">
+                                  {jobVacancyListDetail.requestCode}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col md={3}>
+                              <div className="d-flex mb-0 align-items-center">
+                                <div className="flex-shrink-0">
+                                  <i
+                                    className="uil uil-user-check text-primary me-1"
+                                    style={{ fontSize: "19px" }}
+                                  ></i>
+                                </div>
+                                <p className="text-muted mb-0">
+                                  {jobVacancyListDetail.numberOfDev} developer
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex mb-0 align-items-center">
+                                <div className="flex-shrink-0">
+                                  <i
+                                    className="uil uil-clock-three text-primary me-1"
+                                    style={{ fontSize: "19px" }}
+                                  ></i>
+                                </div>
+                                <p className="text-muted mb-0">
+                                  {jobVacancyListDetail.duration}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-around"
+                            >
+                              <div className="d-flex align-items-center">
+                                <span
+                                  className={
+                                    jobVacancyListDetail.statusString ===
+                                    "Waiting Approval"
+                                      ? "badge bg-warning text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "In Progress"
+                                      ? "badge bg-blue text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Rejected"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Expired"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Cancelled"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Closed"
+                                      ? "badge bg-secondary text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Completed"
+                                      ? "badge bg-primary text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Saved"
+                                      ? "badge bg-info text-light fs-12"
+                                      : ""
+                                  }
+                                >
+                                  {jobVacancyListDetail.statusString}
+                                </span>
+                              </div>
+                            </Col>
+                          </Row>
+                        </div>
                       </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </div>
-            )}
+                    ))}
+                  </div>
+                  {/* ----------------------------------------------------- */}
+                  {/* phan trang */}
+                  <Row>
+                    <Col lg={12} className="mt-4 pt-2">
+                      <nav aria-label="Page navigation example">
+                        <div className="pagination job-pagination mb-0 justify-content-center">
+                          <li
+                            className={`page-item ${
+                              currentPageExpired === 1 ? "disabled" : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              tabIndex="-1"
+                              onClick={handlePrevPageExpired}
+                            >
+                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                            </Link>
+                          </li>
+                          {renderPageNumbersExpired()}
+                          <li
+                            className={`page-item ${
+                              currentPageExpired === totalPagesExpired
+                                ? "disabled"
+                                : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={handleNextPageExpired}
+                            >
+                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                            </Link>
+                          </li>
+                        </div>
+                      </nav>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+            </Skeleton>
           </TabPane>
           <TabPane tabId="6">
-            {jobVacancyListCancelled.length === 0 ? (
-              <div>
-                <Empty />
-              </div>
-            ) : (
-              <div>
+            <Skeleton loading={skeleton6}>
+              {jobVacancyListCancelled.length === 0 ? (
                 <div>
-                  {jobVacancyListCancelled.map((jobVacancyListDetail, key) => (
-                    <div
-                      style={{
-                        boxShadow:
-                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                      }}
-                      key={key}
-                      className={
-                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                      }
-                    >
-                      <div className="p-2">
-                        <Row className="align-items-center">
-                          <Col md={2}>
-                            <div>
-                              <Link to="/companydetails">
-                                <img
-                                  style={{
-                                    width: "80px",
-                                    height: "80px",
-                                  }}
-                                  src={jobVacancyListDetail.companyImage}
-                                  alt=""
-                                  className="img-fluid rounded-3 img-avt-hiring-request"
-                                />
-                              </Link>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div>
-                              <h5 className="fs-18 mb-0">
-                                <Link
-                                  to="/newhiringrequestdetail"
-                                  className="text-dark"
-                                  state={{
-                                    hiringRequestId:
-                                      jobVacancyListDetail.requestId,
-                                    companyId: jobVacancyListDetail.companyId,
-                                    projectId: jobVacancyListDetail.projectId,
-                                  }}
-                                >
-                                  {jobVacancyListDetail.jobTitle}
-                                </Link>
-                              </h5>
-                              <p className="text-muted fs-14 mb-0">
-                                {jobVacancyListDetail.requestCode}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-user-check text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.numberOfDev} developer
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-clock-three text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.duration}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2} className="d-flex justify-content-around">
-                            <div className="d-flex align-items-center">
-                              <span
-                                className={
-                                  jobVacancyListDetail.statusString ===
-                                  "Waiting Approval"
-                                    ? "badge bg-warning text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "In Progress"
-                                    ? "badge bg-blue text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Rejected"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Expired"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Closed"
-                                    ? "badge bg-secondary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Saved"
-                                    ? "badge bg-info text-light fs-12"
-                                    : ""
-                                }
-                              >
-                                {jobVacancyListDetail.statusString}
-                              </span>
-                            </div>
-                          </Col>
-                        </Row>
-                      </div>
-                    </div>
-                  ))}
+                  <Empty />
                 </div>
-                {/* ----------------------------------------------------- */}
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPageCancelled === 1 ? "disabled" : ""
-                          }`}
+              ) : (
+                <div>
+                  <div>
+                    {jobVacancyListCancelled.map(
+                      (jobVacancyListDetail, key) => (
+                        <div
+                          style={{
+                            boxShadow:
+                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                          }}
+                          key={key}
+                          className={
+                            "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                          }
                         >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPageCancelled}
+                          <div className="p-2">
+                            <Row className="align-items-center">
+                              <Col md={2}>
+                                <div>
+                                  <Link to="/companydetails">
+                                    <img
+                                      style={{
+                                        width: "80px",
+                                        height: "80px",
+                                      }}
+                                      src={jobVacancyListDetail.companyImage}
+                                      alt=""
+                                      className="img-fluid rounded-3 img-avt-hiring-request"
+                                    />
+                                  </Link>
+                                </div>
+                              </Col>
+
+                              <Col md={3}>
+                                <div>
+                                  <h5 className="fs-18 mb-0">
+                                    <Link
+                                      to="/newhiringrequestdetail"
+                                      className="text-dark"
+                                      state={{
+                                        hiringRequestId:
+                                          jobVacancyListDetail.requestId,
+                                        companyId:
+                                          jobVacancyListDetail.companyId,
+                                        projectId:
+                                          jobVacancyListDetail.projectId,
+                                      }}
+                                    >
+                                      {jobVacancyListDetail.jobTitle}
+                                    </Link>
+                                  </h5>
+                                  <p className="text-muted fs-14 mb-0">
+                                    {jobVacancyListDetail.requestCode}
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col md={3}>
+                                <div className="d-flex mb-0 align-items-center">
+                                  <div className="flex-shrink-0">
+                                    <i
+                                      className="uil uil-user-check text-primary me-1"
+                                      style={{ fontSize: "19px" }}
+                                    ></i>
+                                  </div>
+                                  <p className="text-muted mb-0">
+                                    {jobVacancyListDetail.numberOfDev} developer
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col md={2}>
+                                <div className="d-flex mb-0 align-items-center">
+                                  <div className="flex-shrink-0">
+                                    <i
+                                      className="uil uil-clock-three text-primary me-1"
+                                      style={{ fontSize: "19px" }}
+                                    ></i>
+                                  </div>
+                                  <p className="text-muted mb-0">
+                                    {jobVacancyListDetail.duration}
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col
+                                md={2}
+                                className="d-flex justify-content-around"
+                              >
+                                <div className="d-flex align-items-center">
+                                  <span
+                                    className={
+                                      jobVacancyListDetail.statusString ===
+                                      "Waiting Approval"
+                                        ? "badge bg-warning text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "In Progress"
+                                        ? "badge bg-blue text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Rejected"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Expired"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Cancelled"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Closed"
+                                        ? "badge bg-secondary text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Completed"
+                                        ? "badge bg-primary text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Saved"
+                                        ? "badge bg-info text-light fs-12"
+                                        : ""
+                                    }
+                                  >
+                                    {jobVacancyListDetail.statusString}
+                                  </span>
+                                </div>
+                              </Col>
+                            </Row>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                  {/* ----------------------------------------------------- */}
+                  {/* phan trang */}
+                  <Row>
+                    <Col lg={12} className="mt-4 pt-2">
+                      <nav aria-label="Page navigation example">
+                        <div className="pagination job-pagination mb-0 justify-content-center">
+                          <li
+                            className={`page-item ${
+                              currentPageCancelled === 1 ? "disabled" : ""
+                            }`}
                           >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbersCancelled()}
-                        <li
-                          className={`page-item ${
-                            currentPageCancelled === totalPagesCancelled
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPageCancelled}
+                            <Link
+                              className="page-link"
+                              to="#"
+                              tabIndex="-1"
+                              onClick={handlePrevPageCancelled}
+                            >
+                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                            </Link>
+                          </li>
+                          {renderPageNumbersCancelled()}
+                          <li
+                            className={`page-item ${
+                              currentPageCancelled === totalPagesCancelled
+                                ? "disabled"
+                                : ""
+                            }`}
                           >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
-                      </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </div>
-            )}
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={handleNextPageCancelled}
+                            >
+                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                            </Link>
+                          </li>
+                        </div>
+                      </nav>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+            </Skeleton>
           </TabPane>
           <TabPane tabId="7">
-            {jobVacancyListClosed.length === 0 ? (
-              <div>
-                <Empty />
-              </div>
-            ) : (
-              <div>
+            <Skeleton loading={skeleton7}>
+              {jobVacancyListClosed.length === 0 ? (
                 <div>
-                  {jobVacancyListClosed.map((jobVacancyListDetail, key) => (
-                    <div
-                      style={{
-                        boxShadow:
-                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                      }}
-                      key={key}
-                      className={
-                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                      }
-                    >
-                      <div className="p-2">
-                        <Row className="align-items-center">
-                          <Col md={2}>
-                            <div>
-                              <Link to="/companydetails">
-                                <img
-                                  style={{
-                                    width: "80px",
-                                    height: "80px",
-                                  }}
-                                  src={jobVacancyListDetail.companyImage}
-                                  alt=""
-                                  className="img-fluid rounded-3 img-avt-hiring-request"
-                                />
-                              </Link>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div>
-                              <h5 className="fs-18 mb-0">
-                                <Link
-                                  to="/newhiringrequestdetail"
-                                  className="text-dark"
-                                  state={{
-                                    hiringRequestId:
-                                      jobVacancyListDetail.requestId,
-                                    companyId: jobVacancyListDetail.companyId,
-                                    projectId: jobVacancyListDetail.projectId,
-                                  }}
-                                >
-                                  {jobVacancyListDetail.jobTitle}
-                                </Link>
-                              </h5>
-                              <p className="text-muted fs-14 mb-0">
-                                {jobVacancyListDetail.requestCode}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-user-check text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.numberOfDev} developer
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-clock-three text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.duration}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2} className="d-flex justify-content-around">
-                            <div className="d-flex align-items-center">
-                              <span
-                                className={
-                                  jobVacancyListDetail.statusString ===
-                                  "Waiting Approval"
-                                    ? "badge bg-warning text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "In Progress"
-                                    ? "badge bg-blue text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Rejected"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Expired"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Closed"
-                                    ? "badge bg-secondary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Saved"
-                                    ? "badge bg-info text-light fs-12"
-                                    : ""
-                                }
-                              >
-                                {jobVacancyListDetail.statusString}
-                              </span>
-                            </div>
-                          </Col>
-                        </Row>
-                      </div>
-                    </div>
-                  ))}
+                  <Empty />
                 </div>
-                {/* ----------------------------------------------------- */}
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPageClosed === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPageClosed}
-                          >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbersClosed()}
-                        <li
-                          className={`page-item ${
-                            currentPageClosed === totalPagesClosed
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPageClosed}
-                          >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
+              ) : (
+                <div>
+                  <div>
+                    {jobVacancyListClosed.map((jobVacancyListDetail, key) => (
+                      <div
+                        style={{
+                          boxShadow:
+                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                        }}
+                        key={key}
+                        className={
+                          "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                        }
+                      >
+                        <div className="p-2">
+                          <Row className="align-items-center">
+                            <Col md={2}>
+                              <div>
+                                <Link to="/companydetails">
+                                  <img
+                                    style={{
+                                      width: "80px",
+                                      height: "80px",
+                                    }}
+                                    src={jobVacancyListDetail.companyImage}
+                                    alt=""
+                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                  />
+                                </Link>
+                              </div>
+                            </Col>
+
+                            <Col md={3}>
+                              <div>
+                                <h5 className="fs-18 mb-0">
+                                  <Link
+                                    to="/newhiringrequestdetail"
+                                    className="text-dark"
+                                    state={{
+                                      hiringRequestId:
+                                        jobVacancyListDetail.requestId,
+                                      companyId: jobVacancyListDetail.companyId,
+                                      projectId: jobVacancyListDetail.projectId,
+                                    }}
+                                  >
+                                    {jobVacancyListDetail.jobTitle}
+                                  </Link>
+                                </h5>
+                                <p className="text-muted fs-14 mb-0">
+                                  {jobVacancyListDetail.requestCode}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col md={3}>
+                              <div className="d-flex mb-0 align-items-center">
+                                <div className="flex-shrink-0">
+                                  <i
+                                    className="uil uil-user-check text-primary me-1"
+                                    style={{ fontSize: "19px" }}
+                                  ></i>
+                                </div>
+                                <p className="text-muted mb-0">
+                                  {jobVacancyListDetail.numberOfDev} developer
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col md={2}>
+                              <div className="d-flex mb-0 align-items-center">
+                                <div className="flex-shrink-0">
+                                  <i
+                                    className="uil uil-clock-three text-primary me-1"
+                                    style={{ fontSize: "19px" }}
+                                  ></i>
+                                </div>
+                                <p className="text-muted mb-0">
+                                  {jobVacancyListDetail.duration}
+                                </p>
+                              </div>
+                            </Col>
+
+                            <Col
+                              md={2}
+                              className="d-flex justify-content-around"
+                            >
+                              <div className="d-flex align-items-center">
+                                <span
+                                  className={
+                                    jobVacancyListDetail.statusString ===
+                                    "Waiting Approval"
+                                      ? "badge bg-warning text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "In Progress"
+                                      ? "badge bg-blue text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Rejected"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Expired"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Cancelled"
+                                      ? "badge bg-danger text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Closed"
+                                      ? "badge bg-secondary text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Completed"
+                                      ? "badge bg-primary text-light fs-12"
+                                      : jobVacancyListDetail.statusString ===
+                                        "Saved"
+                                      ? "badge bg-info text-light fs-12"
+                                      : ""
+                                  }
+                                >
+                                  {jobVacancyListDetail.statusString}
+                                </span>
+                              </div>
+                            </Col>
+                          </Row>
+                        </div>
                       </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </div>
-            )}
+                    ))}
+                  </div>
+                  {/* ----------------------------------------------------- */}
+                  {/* phan trang */}
+                  <Row>
+                    <Col lg={12} className="mt-4 pt-2">
+                      <nav aria-label="Page navigation example">
+                        <div className="pagination job-pagination mb-0 justify-content-center">
+                          <li
+                            className={`page-item ${
+                              currentPageClosed === 1 ? "disabled" : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              tabIndex="-1"
+                              onClick={handlePrevPageClosed}
+                            >
+                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                            </Link>
+                          </li>
+                          {renderPageNumbersClosed()}
+                          <li
+                            className={`page-item ${
+                              currentPageClosed === totalPagesClosed
+                                ? "disabled"
+                                : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={handleNextPageClosed}
+                            >
+                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                            </Link>
+                          </li>
+                        </div>
+                      </nav>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+            </Skeleton>
           </TabPane>
           <TabPane tabId="8">
-            {jobVacancyListCompleted.length === 0 ? (
-              <div>
-                <Empty />
-              </div>
-            ) : (
-              <div>
+            <Skeleton loading={skeleton8}>
+              {jobVacancyListCompleted.length === 0 ? (
                 <div>
-                  {jobVacancyListCompleted.map((jobVacancyListDetail, key) => (
-                    <div
-                      style={{
-                        boxShadow:
-                          "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                      }}
-                      key={key}
-                      className={
-                        "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
-                      }
-                    >
-                      <div className="p-2">
-                        <Row className="align-items-center">
-                          <Col md={2}>
-                            <div>
-                              <Link to="/companydetails">
-                                <img
-                                  style={{
-                                    width: "80px",
-                                    height: "80px",
-                                  }}
-                                  src={jobVacancyListDetail.companyImage}
-                                  alt=""
-                                  className="img-fluid rounded-3 img-avt-hiring-request"
-                                />
-                              </Link>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div>
-                              <h5 className="fs-18 mb-0">
-                                <Link
-                                  to="/newhiringrequestdetail"
-                                  className="text-dark"
-                                  state={{
-                                    hiringRequestId:
-                                      jobVacancyListDetail.requestId,
-                                    companyId: jobVacancyListDetail.companyId,
-                                    projectId: jobVacancyListDetail.projectId,
-                                  }}
-                                >
-                                  {jobVacancyListDetail.jobTitle}
-                                </Link>
-                              </h5>
-                              <p className="text-muted fs-14 mb-0">
-                                {jobVacancyListDetail.requestCode}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={3}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-user-check text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.numberOfDev} developer
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2}>
-                            <div className="d-flex mb-0 align-items-center">
-                              <div className="flex-shrink-0">
-                                <i
-                                  className="uil uil-clock-three text-primary me-1"
-                                  style={{ fontSize: "19px" }}
-                                ></i>
-                              </div>
-                              <p className="text-muted mb-0">
-                                {jobVacancyListDetail.duration}
-                              </p>
-                            </div>
-                          </Col>
-
-                          <Col md={2} className="d-flex justify-content-around">
-                            <div className="d-flex align-items-center">
-                              <span
-                                className={
-                                  jobVacancyListDetail.statusString ===
-                                  "Waiting Approval"
-                                    ? "badge bg-warning text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "In Progress"
-                                    ? "badge bg-blue text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Rejected"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Expired"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Cancelled"
-                                    ? "badge bg-danger text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Closed"
-                                    ? "badge bg-secondary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Completed"
-                                    ? "badge bg-primary text-light fs-12"
-                                    : jobVacancyListDetail.statusString ===
-                                      "Saved"
-                                    ? "badge bg-info text-light fs-12"
-                                    : ""
-                                }
-                              >
-                                {jobVacancyListDetail.statusString}
-                              </span>
-                            </div>
-                          </Col>
-                        </Row>
-                      </div>
-                    </div>
-                  ))}
+                  <Empty />
                 </div>
-                {/* ----------------------------------------------------- */}
-                {/* phan trang */}
-                <Row>
-                  <Col lg={12} className="mt-4 pt-2">
-                    <nav aria-label="Page navigation example">
-                      <div className="pagination job-pagination mb-0 justify-content-center">
-                        <li
-                          className={`page-item ${
-                            currentPageCompleted === 1 ? "disabled" : ""
-                          }`}
+              ) : (
+                <div>
+                  <div>
+                    {jobVacancyListCompleted.map(
+                      (jobVacancyListDetail, key) => (
+                        <div
+                          style={{
+                            boxShadow:
+                              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                          }}
+                          key={key}
+                          className={
+                            "job-box-dev-in-list-hiringRequest-for-dev mt-3 card"
+                          }
                         >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            tabIndex="-1"
-                            onClick={handlePrevPageCompleted}
+                          <div className="p-2">
+                            <Row className="align-items-center">
+                              <Col md={2}>
+                                <div>
+                                  <Link to="/companydetails">
+                                    <img
+                                      style={{
+                                        width: "80px",
+                                        height: "80px",
+                                      }}
+                                      src={jobVacancyListDetail.companyImage}
+                                      alt=""
+                                      className="img-fluid rounded-3 img-avt-hiring-request"
+                                    />
+                                  </Link>
+                                </div>
+                              </Col>
+
+                              <Col md={3}>
+                                <div>
+                                  <h5 className="fs-18 mb-0">
+                                    <Link
+                                      to="/newhiringrequestdetail"
+                                      className="text-dark"
+                                      state={{
+                                        hiringRequestId:
+                                          jobVacancyListDetail.requestId,
+                                        companyId:
+                                          jobVacancyListDetail.companyId,
+                                        projectId:
+                                          jobVacancyListDetail.projectId,
+                                      }}
+                                    >
+                                      {jobVacancyListDetail.jobTitle}
+                                    </Link>
+                                  </h5>
+                                  <p className="text-muted fs-14 mb-0">
+                                    {jobVacancyListDetail.requestCode}
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col md={3}>
+                                <div className="d-flex mb-0 align-items-center">
+                                  <div className="flex-shrink-0">
+                                    <i
+                                      className="uil uil-user-check text-primary me-1"
+                                      style={{ fontSize: "19px" }}
+                                    ></i>
+                                  </div>
+                                  <p className="text-muted mb-0">
+                                    {jobVacancyListDetail.numberOfDev} developer
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col md={2}>
+                                <div className="d-flex mb-0 align-items-center">
+                                  <div className="flex-shrink-0">
+                                    <i
+                                      className="uil uil-clock-three text-primary me-1"
+                                      style={{ fontSize: "19px" }}
+                                    ></i>
+                                  </div>
+                                  <p className="text-muted mb-0">
+                                    {jobVacancyListDetail.duration}
+                                  </p>
+                                </div>
+                              </Col>
+
+                              <Col
+                                md={2}
+                                className="d-flex justify-content-around"
+                              >
+                                <div className="d-flex align-items-center">
+                                  <span
+                                    className={
+                                      jobVacancyListDetail.statusString ===
+                                      "Waiting Approval"
+                                        ? "badge bg-warning text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "In Progress"
+                                        ? "badge bg-blue text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Rejected"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Expired"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Cancelled"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Closed"
+                                        ? "badge bg-secondary text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Completed"
+                                        ? "badge bg-primary text-light fs-12"
+                                        : jobVacancyListDetail.statusString ===
+                                          "Saved"
+                                        ? "badge bg-info text-light fs-12"
+                                        : ""
+                                    }
+                                  >
+                                    {jobVacancyListDetail.statusString}
+                                  </span>
+                                </div>
+                              </Col>
+                            </Row>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                  {/* ----------------------------------------------------- */}
+                  {/* phan trang */}
+                  <Row>
+                    <Col lg={12} className="mt-4 pt-2">
+                      <nav aria-label="Page navigation example">
+                        <div className="pagination job-pagination mb-0 justify-content-center">
+                          <li
+                            className={`page-item ${
+                              currentPageCompleted === 1 ? "disabled" : ""
+                            }`}
                           >
-                            <i className="mdi mdi-chevron-double-left fs-15"></i>
-                          </Link>
-                        </li>
-                        {renderPageNumbersCompleted()}
-                        <li
-                          className={`page-item ${
-                            currentPageCompleted === totalPagesCompleted
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextPageCompleted}
+                            <Link
+                              className="page-link"
+                              to="#"
+                              tabIndex="-1"
+                              onClick={handlePrevPageCompleted}
+                            >
+                              <i className="mdi mdi-chevron-double-left fs-15"></i>
+                            </Link>
+                          </li>
+                          {renderPageNumbersCompleted()}
+                          <li
+                            className={`page-item ${
+                              currentPageCompleted === totalPagesCompleted
+                                ? "disabled"
+                                : ""
+                            }`}
                           >
-                            <i className="mdi mdi-chevron-double-right fs-15"></i>
-                          </Link>
-                        </li>
-                      </div>
-                    </nav>
-                  </Col>
-                </Row>
-              </div>
-            )}
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={handleNextPageCompleted}
+                            >
+                              <i className="mdi mdi-chevron-double-right fs-15"></i>
+                            </Link>
+                          </li>
+                        </div>
+                      </nav>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+            </Skeleton>
           </TabPane>
         </TabContent>
       </CardBody>

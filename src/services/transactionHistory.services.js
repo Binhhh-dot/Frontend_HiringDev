@@ -6,7 +6,10 @@ const getTransactionHistory = async (PageIndex, PageSize) => {
     urlConstant.endpoint.transactionHistory.getTransactionHistory
       .replace("${PageIndex}", PageIndex)
       .replace("${PageSize}", PageSize);
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   return response;
 };
 
@@ -14,7 +17,10 @@ const getAllTransactionHistory = async () => {
   const serviceUrl =
     urlConstant.endpoint.transactionHistory.getAllTransactionHistory;
 
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   return response;
 };
 
@@ -34,15 +40,58 @@ const getTransactionByCompanyIdAndPaging = async (
       .replace("${PayPalTransactionId}", PayPalTransactionId)
       .replace("${Status}", Status)
       .replace("${Amount}", Amount);
-  console.log(serviceUrl)
-  const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET');
+  console.log(serviceUrl);
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
   return response;
 };
 
-// export default { getTransactionHistory, getAllTransactionHistory };
+const getTransactionHistoryCreated = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.transactionHistory.getTransactionHistoryCreated
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
+  return response;
+};
+
+const getTransactionHistorySuccess = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.transactionHistory.getTransactionHistorySuccess
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
+  return response;
+};
+
+const getTransactionHistoryFailed = async (PageIndex, PageSize) => {
+  const serviceUrl =
+    urlConstant.endpoint.transactionHistory.getTransactionHistoryFailed
+      .replace("${PageIndex}", PageIndex)
+      .replace("${PageSize}", PageSize);
+
+  const response = await axiosLocalHost.sendAuthorizedRequest(
+    serviceUrl,
+    "GET"
+  );
+  return response;
+};
 
 export default {
   getTransactionHistory,
   getTransactionByCompanyIdAndPaging,
   getAllTransactionHistory,
+  getTransactionHistoryCreated,
+  getTransactionHistorySuccess,
+  getTransactionHistoryFailed,
 };

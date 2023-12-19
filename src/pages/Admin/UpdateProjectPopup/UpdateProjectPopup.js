@@ -153,7 +153,7 @@ const UpdateProjectPopup = (
         if (descriptionRef.current) {
           fetchGetProjectById();
         }
-      }, 200); // Đợi 100ms để chắc chắn rằng phần tử đã được render
+      }, 500); // Đợi 100ms để chắc chắn rằng phần tử đã được render
       return () => clearTimeout(timeout);
     }
   }, [isModalOpen]);

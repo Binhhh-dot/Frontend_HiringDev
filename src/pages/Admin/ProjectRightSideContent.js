@@ -16,6 +16,7 @@ import {
 } from "reactstrap";
 
 import companyServices from "../../services/company.services";
+import { Link } from "react-router-dom";
 
 const ProjectRightSideContent = () => {
   const [companyInfoInProject, setCompanyInfoInProject] = useState([]);
