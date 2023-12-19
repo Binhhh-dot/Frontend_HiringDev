@@ -165,7 +165,15 @@ const RightSideContent = () => {
                   <div className="ms-3">
                     <h6 className="fs-14 mb-2">Project</h6>
                     <p className="text-muted mb-0">
-                      {projectInfoInManager.projectName}
+                      <Link
+                        to="/projectdetail"
+                        state={{
+                          projectId: state.projectId,
+                          companyId: state.companyId,
+                        }}
+                      >
+                        {projectInfoInManager.projectName}
+                      </Link>
                     </p>
                   </div>
                 </div>

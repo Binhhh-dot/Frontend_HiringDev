@@ -23,14 +23,18 @@ import { Link, Navigate, useLocation } from "react-router-dom";
 import contractServices from "../../services/contract.services";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { RingLoader } from "react-spinners";
+
 const ContractDetailDescription = () => {
   const { state } = useLocation();
   const [contractDetail, setContractDetail] = useState({});
   const [confirmVisible, setConfirmVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   //---------------------------------------------------------------------------------------
   const fetchContractDetailById = async () => {
     let response;
+    setLoading(true);
     try {
       response = await contractServices.getContractById(state.contractId);
       console.log(response.data.data);
@@ -41,21 +45,26 @@ const ContractDetailDescription = () => {
       } else {
         setConfirmVisible(false);
       }
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching contract detail", error);
+      setLoading(false);
     }
   };
   //---------------------------------------------------------------------------------------
   const fetchconfirmContract = async () => {
     let response;
+    setLoading(true);
     try {
       response = await contractServices.confirmContract(state.contractId);
       console.log(response.data.data);
       console.log("Confirm OK");
       fetchContractDetailById();
+      setLoading(false);
       toast.success("Confirm contract successfully!");
     } catch (error) {
       console.error("Error fetching confirm contract detail", error);
+      setLoading(false);
       toast.error("Confirm contract failed", {
         position: "top-right",
         autoClose: 3000,
@@ -70,11 +79,9 @@ const ContractDetailDescription = () => {
   };
   //---------------------------------------------------------------------------------------
 
-  const conFirmContract = () => {
-    fetchconfirmContract();
-    //setConfirmVisible(false);
-    // fetchContractDetailById();
-  };
+  // const conFirmContract = () => {
+  //   fetchconfirmContract();
+  // };
 
   //---------------------------------------------------------------------------------------
   useEffect(() => {
@@ -90,6 +97,11 @@ const ContractDetailDescription = () => {
         }}
       >
         <CardBody className="p-3 ">
+          {loading && (
+            <div className="overlay" style={{ zIndex: "2000" }}>
+              <div className="spinner"></div>
+            </div>
+          )}
           <div>
             <Container style={{ backgroundColor: "white" }}>
               <Row
@@ -569,7 +581,7 @@ const ContractDetailDescription = () => {
                     <div className="text-end">
                       <div
                         className="btn btn-primary"
-                        onClick={() => conFirmContract()}
+                        onClick={() => fetchconfirmContract()}
                       >
                         Comfirm
                       </div>

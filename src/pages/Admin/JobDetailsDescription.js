@@ -37,6 +37,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import hireddevServices from "../../services/hireddev.services";
 import { RingLoader } from "react-spinners";
+import { Empty } from "antd";
 
 const JobDetailsDescription = () => {
   const [loading, setLoading] = useState(false);
@@ -880,595 +881,627 @@ const JobDetailsDescription = () => {
             )}
           </div>
 
-          {currentListDev === "matching"
-            ? candidateDetails.map((candidateDetailsNew, key) => (
-                <div
-                  key={key}
-                  className={
-                    candidateDetailsNew.addclassNameBookmark === true
-                      ? "candidate-list-box bookmark-post card mt-4"
-                      : "candidate-list-box card mt-4"
-                  }
-                >
-                  <CardBody className="p-4">
-                    <Row className="align-items-center">
-                      <Col lg={1}>
-                        <div className="checkbox-wrapper-hiring-detail-manager d-flex justify-content-center">
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={selectedDev.includes(
-                                candidateDetailsNew.developerId
-                              )}
-                              onChange={() =>
-                                toggleDevMatchingSelection(
-                                  candidateDetailsNew.developerId
-                                )
-                              }
-                            />
-                            <span className="checkbox"></span>
-                          </label>
-                        </div>
-                      </Col>
-
-                      <Col lg={5}>
-                        <div className="candidate-list-content mt-3 mt-lg-0">
-                          <h5
-                            className="fs-19 mb-0 d-flex"
-                            onClick={() => openModal(candidateDetailsNew)}
-                          >
-                            {candidateDetailsNew.firstName}{" "}
-                            {candidateDetailsNew.lastName}
-                          </h5>
-                          <ul className="list-inline mb-0 text-muted">
-                            <li className="list-inline-item">
-                              <i className="uil-keyboard"></i>{" "}
-                              {candidateDetailsNew.levelRequireName}
-                            </li>
-                            <br />
-                            <li className="list-inline-item">
-                              <i className="uil uil-wallet"></i>{" "}
-                              {candidateDetailsNew.averageSalary}$
-                            </li>
-                          </ul>
-                          <p className="text-muted mb-0">
-                            {candidateDetailsNew.typeRequireStrings
-
-                              .slice(0, 2)
-                              .map((typeDev, key) => (
-                                <span key={key}>{typeDev + ", "} </span>
-                              ))}
-
-                            {candidateDetailsNew.typeRequireStrings.length >
-                              2 && <span>...</span>}
-                          </p>
-
-                          <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                            {(candidateDetailsNew.skillRequireStrings || [])
-                              .slice(0, 4)
-                              .map((skillDevRequire, key) => (
-                                <span
-                                  className={`badge bg-success-subtle text-success fs-14 mt-1`}
-                                  key={key}
-                                >
-                                  {skillDevRequire}
-                                </span>
-                              ))}
-                            {candidateDetailsNew.skillRequireStrings.length >
-                              4 && (
-                              <span className="badge bg-success-subtle text-success fs-14 mt-1">
-                                ...
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </Col>
-
-                      <Col lg={3}>
-                        <div className="d-flex flex-column gap-1">
-                          <div className=" d-flex ">
-                            <span className=" fs-14" style={{ width: "38px" }}>
-                              Type{" "}
-                            </span>
-                            <div class="checkbox-wrapper-type ms-2">
-                              <div class="round ms-2">
-                                <input
-                                  type="checkbox"
-                                  id="checkbox-type"
-                                  checked={candidateDetailsNew.typeMatching}
-                                />
-                                <label htmlFor="checkbox-type"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <div className=" d-flex">
-                            <span className=" fs-14" style={{ width: "38px" }}>
-                              Level
-                            </span>
-                            <div class="checkbox-wrapper-level ms-2">
-                              <div class="round ms-2">
-                                <input
-                                  type="checkbox"
-                                  id="checkbox-level"
-                                  checked={candidateDetailsNew.levelMatching}
-                                />
-                                <label htmlFor="checkbox-level"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex  align-items-center justify-content-between">
-                            <span className=" fs-14">Salary</span>
-
-                            <div>
-                              <Space size={30} wrap>
-                                <Progress
-                                  steps={5}
-                                  percent={
-                                    candidateDetailsNew.salaryPerDevPercentage
-                                  }
-                                  strokeColor={getBarColor(
-                                    candidateDetailsNew.salaryPerDevPercentage
-                                  )}
-                                />
-                              </Space>
-                            </div>
-                          </div>
-                          <div className="d-flex  align-items-center justify-content-between">
-                            <span className=" fs-14">Skill</span>
-
-                            <div>
-                              <Space size={30} wrap>
-                                <Progress
-                                  steps={5}
-                                  percent={candidateDetailsNew.skillPercentage}
-                                  strokeColor={getBarColor(
-                                    candidateDetailsNew.skillPercentage
-                                  )}
-                                />
-                              </Space>
-                            </div>
-                          </div>
-                          <div>
-                            <span>
-                              Experience: {candidateDetailsNew.yearOfExperience}{" "}
-                              years
-                            </span>
-                          </div>
-                        </div>
-                      </Col>
-
-                      <Col lg={3} className="border-start border-3">
-                        <div style={{ height: "100%" }}>
-                          <div className="left-side-matching">
-                            <Space size={10}>
-                              <Progress
-                                type="circle"
-                                percent={candidateDetailsNew.averagedPercentage}
-                                size={97}
-                                strokeWidth={9}
-                                strokeColor={getBarColor(
-                                  candidateDetailsNew.averagedPercentage
-                                )}
-                              />
-                            </Space>
-                          </div>
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
+          {currentListDev === "matching" ? (
+            <div>
+              {candidateDetails.length === 0 ? (
+                <div>
+                  <Empty />
                 </div>
-              ))
-            : devHasBeenSent.map((devHasBeenSentNew, key) => (
-                <div
-                  key={key}
-                  className={
-                    devHasBeenSentNew.addclassNameBookmark === true
-                      ? "candidate-list-box bookmark-post card mt-4"
-                      : "candidate-list-box card mt-4"
-                  }
-                >
-                  <CardBody className="p-4">
-                    <Row className="align-items-center">
-                      <Col lg={6}>
-                        <div className="candidate-list-content mt-3 mt-lg-0">
-                          <h5 className="fs-19 mb-0 d-flex">
-                            <Link
-                              to="/developerinfo"
-                              className="primary-link d-flex align-items-end"
-                            >
-                              {devHasBeenSentNew.firstName}{" "}
-                              {devHasBeenSentNew.lastName}
-                            </Link>
-                          </h5>
-
-                          <ul className="list-inline mb-0 text-muted">
-                            <li className="list-inline-item">
-                              <i className="uil-keyboard"></i>{" "}
-                              {devHasBeenSentNew.levelRequireName}
-                            </li>
-                            <br />
-                            <li className="list-inline-item">
-                              <i className="uil uil-wallet"></i>{" "}
-                              {devHasBeenSentNew.averageSalary}$
-                            </li>
-                          </ul>
-
-                          <p className="text-muted mb-0">
-                            {devHasBeenSentNew.typeRequireStrings
-                              .slice(0, 2)
-                              .map((typeDev, key) => (
-                                <span key={key}>{typeDev + ","}</span>
-                              ))}
-                            {devHasBeenSentNew.typeRequireStrings.length >
-                              2 && <span>...</span>}
-                          </p>
-
-                          <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                            {(devHasBeenSentNew.skillRequireStrings || [])
-                              .slice(0, 4)
-                              .map((skillDevRequire, key) => (
-                                <span
-                                  className={`badge bg-success-subtle text-success fs-14 mt-1`}
-                                  key={key}
-                                >
-                                  {skillDevRequire}
-                                </span>
-                              ))}
-                          </div>
-                        </div>
-                      </Col>
-
-                      <Col lg={3}>
-                        <div className="d-flex flex-column">
-                          <div className=" d-flex mb-2">
-                            <span className=" fs-14" style={{ width: "38px" }}>
-                              Type{" "}
-                            </span>
-                            <div class="checkbox-wrapper-type ms-2">
-                              <div class="round ms-2">
+              ) : (
+                <div>
+                  {candidateDetails.map((candidateDetailsNew, key) => (
+                    <div
+                      key={key}
+                      className={
+                        candidateDetailsNew.addclassNameBookmark === true
+                          ? "candidate-list-box bookmark-post card mt-4"
+                          : "candidate-list-box card mt-4"
+                      }
+                    >
+                      <CardBody className="p-4">
+                        <Row className="align-items-center">
+                          <Col lg={1}>
+                            <div className="checkbox-wrapper-hiring-detail-manager d-flex justify-content-center">
+                              <label>
                                 <input
                                   type="checkbox"
-                                  id="checkbox-type"
-                                  checked={devHasBeenSentNew.typeMatching}
-                                />
-                                <label htmlFor="checkbox-type"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="mb-2 d-flex">
-                            <span className=" fs-14" style={{ width: "38px" }}>
-                              Level
-                            </span>
-                            <div class="checkbox-wrapper-level ms-2">
-                              <div class="round ms-2">
-                                <input
-                                  type="checkbox"
-                                  id="checkbox-level"
-                                  checked={devHasBeenSentNew.levelMatching}
-                                />
-                                <label htmlFor="checkbox-level"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex mb-2 align-items-center justify-content-between">
-                            <span className=" fs-14">Salary</span>
-
-                            <div>
-                              <Space size={30} wrap>
-                                <Progress
-                                  steps={5}
-                                  percent={
-                                    devHasBeenSentNew.salaryPerDevPercentage
+                                  checked={selectedDev.includes(
+                                    candidateDetailsNew.developerId
+                                  )}
+                                  onChange={() =>
+                                    toggleDevMatchingSelection(
+                                      candidateDetailsNew.developerId
+                                    )
                                   }
-                                  strokeColor={getBarColor(
-                                    devHasBeenSentNew.salaryPerDevPercentage
-                                  )}
                                 />
-                              </Space>
+                                <span className="checkbox"></span>
+                              </label>
                             </div>
-                          </div>
-                          <div className="d-flex mb-2 align-items-center justify-content-between">
-                            <span className=" fs-14">Skill</span>
+                          </Col>
 
-                            <div>
-                              <Space size={30} wrap>
-                                <Progress
-                                  steps={5}
-                                  percent={devHasBeenSentNew.skillPercentage}
-                                  strokeColor={getBarColor(
-                                    devHasBeenSentNew.skillPercentage
-                                  )}
-                                />
-                              </Space>
-                            </div>
-                          </div>
-                          <div>
-                            <span>
-                              Experience: {devHasBeenSentNew.yearOfExperience}{" "}
-                              years
-                            </span>
-                          </div>
-                        </div>
-                      </Col>
+                          <Col lg={5}>
+                            <div className="candidate-list-content mt-3 mt-lg-0">
+                              <h5
+                                className="fs-19 mb-0 d-flex"
+                                onClick={() => openModal(candidateDetailsNew)}
+                                style={{ cursor: "pointer" }}
+                              >
+                                {candidateDetailsNew.firstName}{" "}
+                                {candidateDetailsNew.lastName}
+                              </h5>
+                              <ul className="list-inline mb-0 text-muted">
+                                <li className="list-inline-item">
+                                  <i className="uil-keyboard"></i>{" "}
+                                  {candidateDetailsNew.levelRequireName}
+                                </li>
+                                <br />
+                                <li className="list-inline-item">
+                                  <i className="uil uil-wallet"></i>{" "}
+                                  {candidateDetailsNew.averageSalary}$
+                                </li>
+                              </ul>
+                              <p className="text-muted mb-0">
+                                {candidateDetailsNew.typeRequireStrings
 
-                      <Col lg={3} className="border-start border-3">
-                        <div style={{ height: "100%" }}>
-                          <div className="d-flex justify-content-end mb-3">
-                            <span
-                              className={
-                                devHasBeenSentNew.hiredDeveloperStatus ===
-                                "Interview Scheduled"
-                                  ? "badge bg-primary text-light"
-                                  : devHasBeenSentNew.hiredDeveloperStatus ===
-                                    "Rejected"
-                                  ? "badge bg-danger text-light"
-                                  : devHasBeenSentNew.hiredDeveloperStatus ===
-                                    "Waiting Interview"
-                                  ? "badge bg-warning text-light"
-                                  : devHasBeenSentNew.hiredDeveloperStatus ===
-                                    "Under Consideration"
-                                  ? "badge bg-blue text-light"
-                                  : devHasBeenSentNew.hiredDeveloperStatus ===
-                                    "Onboarding"
-                                  ? "badge bg-newGreen text-light"
-                                  : devHasBeenSentNew.hiredDeveloperStatus ===
-                                    "Contract Processing"
-                                  ? "badge bg-warning text-light"
-                                  : devHasBeenSentNew.hiredDeveloperStatus ===
-                                    "Contract Failed"
-                                  ? "badge bg-danger text-light"
-                                  : devHasBeenSentNew.hiredDeveloperStatus ===
-                                    "Request Closed"
-                                  ? "badge bg-danger text-light"
-                                  : ""
-                              }
-                            >
-                              {devHasBeenSentNew.hiredDeveloperStatus}
-                            </span>
-                          </div>
-                          <div className="right-side-percen-matching-devaccepted">
-                            <Space size={10}>
-                              <Progress
-                                type="circle"
-                                percent={devHasBeenSentNew.averagedPercentage}
-                                size={97}
-                                strokeWidth={9}
-                                strokeColor={getBarColor(
-                                  devHasBeenSentNew.averagedPercentage
+                                  .slice(0, 2)
+                                  .map((typeDev, key) => (
+                                    <span key={key}>{typeDev + ", "} </span>
+                                  ))}
+
+                                {candidateDetailsNew.typeRequireStrings.length >
+                                  2 && <span>...</span>}
+                              </p>
+
+                              <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                                {(candidateDetailsNew.skillRequireStrings || [])
+                                  .slice(0, 4)
+                                  .map((skillDevRequire, key) => (
+                                    <span
+                                      className={`badge bg-success-subtle text-success fs-14 mt-1`}
+                                      key={key}
+                                    >
+                                      {skillDevRequire}
+                                    </span>
+                                  ))}
+                                {candidateDetailsNew.skillRequireStrings
+                                  .length > 4 && (
+                                  <span className="badge bg-success-subtle text-success fs-14 mt-1">
+                                    ...
+                                  </span>
                                 )}
-                              />
-                            </Space>
-                          </div>
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
+                              </div>
+                            </div>
+                          </Col>
+
+                          <Col lg={3}>
+                            <div className="d-flex flex-column gap-1">
+                              <div className=" d-flex ">
+                                <span
+                                  className=" fs-14"
+                                  style={{ width: "38px" }}
+                                >
+                                  Type{" "}
+                                </span>
+                                <div class="checkbox-wrapper-type ms-2">
+                                  <div class="round ms-2">
+                                    <input
+                                      type="checkbox"
+                                      id="checkbox-type"
+                                      checked={candidateDetailsNew.typeMatching}
+                                    />
+                                    <label htmlFor="checkbox-type"></label>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className=" d-flex">
+                                <span
+                                  className=" fs-14"
+                                  style={{ width: "38px" }}
+                                >
+                                  Level
+                                </span>
+                                <div class="checkbox-wrapper-level ms-2">
+                                  <div class="round ms-2">
+                                    <input
+                                      type="checkbox"
+                                      id="checkbox-level"
+                                      checked={
+                                        candidateDetailsNew.levelMatching
+                                      }
+                                    />
+                                    <label htmlFor="checkbox-level"></label>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="d-flex  align-items-center justify-content-between">
+                                <span className=" fs-14">Salary</span>
+
+                                <div>
+                                  <Space size={30} wrap>
+                                    <Progress
+                                      steps={5}
+                                      percent={
+                                        candidateDetailsNew.salaryPerDevPercentage
+                                      }
+                                      strokeColor={getBarColor(
+                                        candidateDetailsNew.salaryPerDevPercentage
+                                      )}
+                                    />
+                                  </Space>
+                                </div>
+                              </div>
+                              <div className="d-flex  align-items-center justify-content-between">
+                                <span className=" fs-14">Skill</span>
+
+                                <div>
+                                  <Space size={30} wrap>
+                                    <Progress
+                                      steps={5}
+                                      percent={
+                                        candidateDetailsNew.skillPercentage
+                                      }
+                                      strokeColor={getBarColor(
+                                        candidateDetailsNew.skillPercentage
+                                      )}
+                                    />
+                                  </Space>
+                                </div>
+                              </div>
+                              <div>
+                                <span>
+                                  Experience:{" "}
+                                  {candidateDetailsNew.yearOfExperience} years
+                                </span>
+                              </div>
+                            </div>
+                          </Col>
+
+                          <Col lg={3} className="border-start border-3">
+                            <div style={{ height: "100%" }}>
+                              <div className="left-side-matching">
+                                <Space size={10}>
+                                  <Progress
+                                    type="circle"
+                                    percent={
+                                      candidateDetailsNew.averagedPercentage
+                                    }
+                                    size={97}
+                                    strokeWidth={9}
+                                    strokeColor={getBarColor(
+                                      candidateDetailsNew.averagedPercentage
+                                    )}
+                                  />
+                                </Space>
+                              </div>
+                            </div>
+                          </Col>
+                        </Row>
+                      </CardBody>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
+            </div>
+          ) : (
+            <div>
+              {devHasBeenSent.length === 0 ? (
+                <div>
+                  <Empty />
+                </div>
+              ) : (
+                <div>
+                  {devHasBeenSent.map((devHasBeenSentNew, key) => (
+                    <div
+                      key={key}
+                      className={
+                        devHasBeenSentNew.addclassNameBookmark === true
+                          ? "candidate-list-box bookmark-post card mt-4"
+                          : "candidate-list-box card mt-4"
+                      }
+                    >
+                      <CardBody className="p-4">
+                        <Row className="align-items-center">
+                          <Col lg={6}>
+                            <div className="candidate-list-content mt-3 mt-lg-0">
+                              <h5 className="fs-19 mb-0 d-flex">
+                                <div
+                                  style={{ cursor: "pointer" }}
+                                  className="primary-link d-flex align-items-end"
+                                  onClick={() => openModal(devHasBeenSentNew)}
+                                >
+                                  {devHasBeenSentNew.firstName}{" "}
+                                  {devHasBeenSentNew.lastName}
+                                </div>
+                              </h5>
+
+                              <ul className="list-inline mb-0 text-muted">
+                                <li className="list-inline-item">
+                                  <i className="uil-keyboard"></i>{" "}
+                                  {devHasBeenSentNew.levelRequireName}
+                                </li>
+                                <br />
+                                <li className="list-inline-item">
+                                  <i className="uil uil-wallet"></i>{" "}
+                                  {devHasBeenSentNew.averageSalary}$
+                                </li>
+                              </ul>
+
+                              <p className="text-muted mb-0">
+                                {devHasBeenSentNew.typeRequireStrings
+                                  .slice(0, 2)
+                                  .map((typeDev, key) => (
+                                    <span key={key}>{typeDev + ","}</span>
+                                  ))}
+                                {devHasBeenSentNew.typeRequireStrings.length >
+                                  2 && <span>...</span>}
+                              </p>
+
+                              <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                                {(devHasBeenSentNew.skillRequireStrings || [])
+                                  .slice(0, 4)
+                                  .map((skillDevRequire, key) => (
+                                    <span
+                                      className={`badge bg-success-subtle text-success fs-14 mt-1`}
+                                      key={key}
+                                    >
+                                      {skillDevRequire}
+                                    </span>
+                                  ))}
+                              </div>
+                            </div>
+                          </Col>
+
+                          <Col lg={3}>
+                            <div className="d-flex flex-column">
+                              <div className=" d-flex mb-2">
+                                <span
+                                  className=" fs-14"
+                                  style={{ width: "38px" }}
+                                >
+                                  Type{" "}
+                                </span>
+                                <div class="checkbox-wrapper-type ms-2">
+                                  <div class="round ms-2">
+                                    <input
+                                      type="checkbox"
+                                      id="checkbox-type"
+                                      checked={devHasBeenSentNew.typeMatching}
+                                    />
+                                    <label htmlFor="checkbox-type"></label>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="mb-2 d-flex">
+                                <span
+                                  className=" fs-14"
+                                  style={{ width: "38px" }}
+                                >
+                                  Level
+                                </span>
+                                <div class="checkbox-wrapper-level ms-2">
+                                  <div class="round ms-2">
+                                    <input
+                                      type="checkbox"
+                                      id="checkbox-level"
+                                      checked={devHasBeenSentNew.levelMatching}
+                                    />
+                                    <label htmlFor="checkbox-level"></label>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="d-flex mb-2 align-items-center justify-content-between">
+                                <span className=" fs-14">Salary</span>
+
+                                <div>
+                                  <Space size={30} wrap>
+                                    <Progress
+                                      steps={5}
+                                      percent={
+                                        devHasBeenSentNew.salaryPerDevPercentage
+                                      }
+                                      strokeColor={getBarColor(
+                                        devHasBeenSentNew.salaryPerDevPercentage
+                                      )}
+                                    />
+                                  </Space>
+                                </div>
+                              </div>
+                              <div className="d-flex mb-2 align-items-center justify-content-between">
+                                <span className=" fs-14">Skill</span>
+
+                                <div>
+                                  <Space size={30} wrap>
+                                    <Progress
+                                      steps={5}
+                                      percent={
+                                        devHasBeenSentNew.skillPercentage
+                                      }
+                                      strokeColor={getBarColor(
+                                        devHasBeenSentNew.skillPercentage
+                                      )}
+                                    />
+                                  </Space>
+                                </div>
+                              </div>
+                              <div>
+                                <span>
+                                  Experience:{" "}
+                                  {devHasBeenSentNew.yearOfExperience} years
+                                </span>
+                              </div>
+                            </div>
+                          </Col>
+
+                          <Col lg={3} className="border-start border-3">
+                            <div style={{ height: "100%" }}>
+                              <div className="d-flex justify-content-end mb-3">
+                                <span
+                                  className={
+                                    devHasBeenSentNew.hiredDeveloperStatus ===
+                                    "Interview Scheduled"
+                                      ? "badge bg-primary text-light"
+                                      : devHasBeenSentNew.hiredDeveloperStatus ===
+                                        "Rejected"
+                                      ? "badge bg-danger text-light"
+                                      : devHasBeenSentNew.hiredDeveloperStatus ===
+                                        "Waiting Interview"
+                                      ? "badge bg-warning text-light"
+                                      : devHasBeenSentNew.hiredDeveloperStatus ===
+                                        "Under Consideration"
+                                      ? "badge bg-blue text-light"
+                                      : devHasBeenSentNew.hiredDeveloperStatus ===
+                                        "Onboarding"
+                                      ? "badge bg-newGreen text-light"
+                                      : devHasBeenSentNew.hiredDeveloperStatus ===
+                                        "Contract Processing"
+                                      ? "badge bg-warning text-light"
+                                      : devHasBeenSentNew.hiredDeveloperStatus ===
+                                        "Contract Failed"
+                                      ? "badge bg-danger text-light"
+                                      : devHasBeenSentNew.hiredDeveloperStatus ===
+                                        "Request Closed"
+                                      ? "badge bg-danger text-light"
+                                      : ""
+                                  }
+                                >
+                                  {devHasBeenSentNew.hiredDeveloperStatus}
+                                </span>
+                              </div>
+                              <div className="right-side-percen-matching-devaccepted">
+                                <Space size={10}>
+                                  <Progress
+                                    type="circle"
+                                    percent={
+                                      devHasBeenSentNew.averagedPercentage
+                                    }
+                                    size={97}
+                                    strokeWidth={9}
+                                    strokeColor={getBarColor(
+                                      devHasBeenSentNew.averagedPercentage
+                                    )}
+                                  />
+                                </Space>
+                              </div>
+                            </div>
+                          </Col>
+                        </Row>
+                      </CardBody>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
       {/* ------------------------------------------------------------------------------------------------------*/}
-      {/* LIST DEV ACCEPT AFTER REJECT */}
+      {/* LIST DEV ACCEPT AFTER CLOSE */}
+      {isVisibleListDevAfter && (
+        <div>
+          <h4>List Developer After Close</h4>
+        </div>
+      )}
 
-      <div>
-        {isVisibleListDevAfter &&
-          devHasBeenSent.map((devHasBeenSentNew, key) => (
-            <div
-              key={key}
-              className={
-                devHasBeenSentNew.addclassNameBookmark === true
-                  ? "candidate-list-box bookmark-post card mt-4"
-                  : "candidate-list-box card mt-4"
-              }
-            >
-              <CardBody className="p-4">
-                <Row className="align-items-center">
-                  <Col lg={5}>
-                    <div className="candidate-list-content mt-lg-0 d-flex flex-column gap-1">
-                      <h5 className="fs-19 mb-0 d-flex">
-                        <Link
-                          to="/developerinfo"
-                          className="primary-link d-flex align-items-end"
-                        >
-                          {devHasBeenSentNew.firstName}{" "}
-                          {devHasBeenSentNew.lastName}
-                        </Link>
-                      </h5>
-
-                      <p className="fs-14 text-muted list-inline-item mb-0">
-                        <i className="uil-keyboard"></i>{" "}
-                        {devHasBeenSentNew.levelRequireName}
-                      </p>
-
-                      <p className="fs-14 text-muted list-inline-item mb-0">
-                        <i className="uil uil-wallet"></i>{" "}
-                        {devHasBeenSentNew.averageSalary}$
-                      </p>
-
-                      <p className="text-muted mb-1">
-                        {devHasBeenSentNew.typeRequireStrings
-                          .slice(0, 2)
-                          .map((typeDev, key) => (
-                            <span key={key}>{typeDev + ","}</span>
-                          ))}
-                        {devHasBeenSentNew.typeRequireStrings.length > 2 && (
-                          <span>...</span>
-                        )}
-                      </p>
-
-                      <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                        {(devHasBeenSentNew.skillRequireStrings || [])
-                          .slice(0, 4)
-                          .map((skillDevRequire, key) => (
-                            <span
-                              className={`badge bg-success-subtle text-success fs-14 mt-1`}
-                              key={key}
-                            >
-                              {skillDevRequire}
-                            </span>
-                          ))}
-                      </div>
-                    </div>
-                  </Col>
-
-                  <Col lg={4}>
-                    <div className="d-flex flex-column">
-                      <div className=" d-flex mb-2">
-                        <span className=" fs-14" style={{ width: "38px" }}>
-                          Type{" "}
-                        </span>
-                        <div class="checkbox-wrapper-type ms-2">
-                          <div class="round ms-2">
-                            <input
-                              type="checkbox"
-                              id="checkbox-type"
-                              checked={devHasBeenSentNew.typeMatching}
-                            />
-                            <label htmlFor="checkbox-type"></label>
+      {devHasBeenSent.length === 0 && isVisibleListDevAfter ? (
+        <div>
+          <Empty />
+        </div>
+      ) : (
+        <div>
+          {isVisibleListDevAfter &&
+            devHasBeenSent.map((devHasBeenSentNew, key) => (
+              <div
+                key={key}
+                className={
+                  devHasBeenSentNew.addclassNameBookmark === true
+                    ? "candidate-list-box bookmark-post card mt-4"
+                    : "candidate-list-box card mt-4"
+                }
+              >
+                <CardBody className="p-4">
+                  <Row className="align-items-center">
+                    <Col lg={5}>
+                      <div className="candidate-list-content mt-lg-0 d-flex flex-column gap-1">
+                        <h5 className="fs-19 mb-0 d-flex">
+                          <div
+                            style={{ cursor: "pointer" }}
+                            className="primary-link d-flex align-items-end"
+                            onClick={() => openModal(devHasBeenSentNew)}
+                          >
+                            {devHasBeenSentNew.firstName}{" "}
+                            {devHasBeenSentNew.lastName}
                           </div>
+                        </h5>
+
+                        <p className="fs-14 text-muted list-inline-item mb-0">
+                          <i className="uil-keyboard"></i>{" "}
+                          {devHasBeenSentNew.levelRequireName}
+                        </p>
+
+                        <p className="fs-14 text-muted list-inline-item mb-0">
+                          <i className="uil uil-wallet"></i>{" "}
+                          {devHasBeenSentNew.averageSalary}$
+                        </p>
+
+                        <p className="text-muted mb-1">
+                          {devHasBeenSentNew.typeRequireStrings
+                            .slice(0, 2)
+                            .map((typeDev, key) => (
+                              <span key={key}>{typeDev + ","}</span>
+                            ))}
+                          {devHasBeenSentNew.typeRequireStrings.length > 2 && (
+                            <span>...</span>
+                          )}
+                        </p>
+
+                        <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                          {(devHasBeenSentNew.skillRequireStrings || [])
+                            .slice(0, 4)
+                            .map((skillDevRequire, key) => (
+                              <span
+                                className={`badge bg-success-subtle text-success fs-14 mt-1`}
+                                key={key}
+                              >
+                                {skillDevRequire}
+                              </span>
+                            ))}
                         </div>
                       </div>
-                      <div className="mb-2 d-flex">
-                        <span className=" fs-14" style={{ width: "38px" }}>
-                          Level
-                        </span>
-                        <div class="checkbox-wrapper-level ms-2">
-                          <div class="round ms-2">
-                            <input
-                              type="checkbox"
-                              id="checkbox-level"
-                              checked={devHasBeenSentNew.levelMatching}
-                            />
-                            <label htmlFor="checkbox-level"></label>
+                    </Col>
+
+                    <Col lg={4}>
+                      <div className="d-flex flex-column">
+                        <div className=" d-flex mb-2">
+                          <span className=" fs-14" style={{ width: "38px" }}>
+                            Type{" "}
+                          </span>
+                          <div class="checkbox-wrapper-type ms-2">
+                            <div class="round ms-2">
+                              <input
+                                type="checkbox"
+                                id="checkbox-type"
+                                checked={devHasBeenSentNew.typeMatching}
+                              />
+                              <label htmlFor="checkbox-type"></label>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="d-flex mb-2 align-items-center justify-content-between">
-                        <span className=" fs-14">Salary</span>
+                        <div className="mb-2 d-flex">
+                          <span className=" fs-14" style={{ width: "38px" }}>
+                            Level
+                          </span>
+                          <div class="checkbox-wrapper-level ms-2">
+                            <div class="round ms-2">
+                              <input
+                                type="checkbox"
+                                id="checkbox-level"
+                                checked={devHasBeenSentNew.levelMatching}
+                              />
+                              <label htmlFor="checkbox-level"></label>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="d-flex mb-2 align-items-center justify-content-between">
+                          <span className=" fs-14">Salary</span>
 
+                          <div>
+                            <Space size={30} swap>
+                              <Progress
+                                steps={5}
+                                percent={
+                                  devHasBeenSentNew.salaryPerDevPercentage
+                                }
+                                strokeColor={getBarColor(
+                                  devHasBeenSentNew.salaryPerDevPercentage
+                                )}
+                              />
+                            </Space>
+                          </div>
+                        </div>
+                        <div className="d-flex mb-2 align-items-center justify-content-between">
+                          <span className=" fs-14">Skill</span>
+
+                          <div>
+                            <Space size={30} wrap>
+                              <Progress
+                                steps={5}
+                                percent={devHasBeenSentNew.skillPercentage}
+                                strokeColor={getBarColor(
+                                  devHasBeenSentNew.skillPercentage
+                                )}
+                              />
+                            </Space>
+                          </div>
+                        </div>
                         <div>
-                          <Space size={30} swap>
+                          <span>
+                            Experience: {devHasBeenSentNew.yearOfExperience}{" "}
+                            years
+                          </span>
+                        </div>
+                      </div>
+                    </Col>
+
+                    <Col lg={3} className="border-start border-3">
+                      <div style={{ height: "100%" }}>
+                        <div className="d-flex justify-content-end mb-2">
+                          <span
+                            className={
+                              devHasBeenSentNew.hiredDeveloperStatus ===
+                              "Interview Scheduled"
+                                ? "badge bg-primary text-light"
+                                : devHasBeenSentNew.hiredDeveloperStatus ===
+                                  "Rejected"
+                                ? "badge bg-danger text-light"
+                                : devHasBeenSentNew.hiredDeveloperStatus ===
+                                  "Waiting Interview"
+                                ? "badge bg-warning text-light"
+                                : devHasBeenSentNew.hiredDeveloperStatus ===
+                                  "Under Consideration"
+                                ? "badge bg-blue text-light"
+                                : devHasBeenSentNew.hiredDeveloperStatus ===
+                                  "Onboarding"
+                                ? "badge bg-newGreen text-light"
+                                : devHasBeenSentNew.hiredDeveloperStatus ===
+                                  "Contract Processing"
+                                ? "badge bg-warning text-light"
+                                : devHasBeenSentNew.hiredDeveloperStatus ===
+                                  "Contract Failed"
+                                ? "badge bg-danger text-light"
+                                : devHasBeenSentNew.hiredDeveloperStatus ===
+                                  "Request Closed"
+                                ? "badge bg-danger text-light"
+                                : devHasBeenSentNew.hiredDeveloperStatus ===
+                                  "Working"
+                                ? "badge bg-orangeRed2 text-light"
+                                : ""
+                            }
+                          >
+                            {devHasBeenSentNew.hiredDeveloperStatus}
+                          </span>
+                        </div>
+                        <div className="right-side-percen-matching-devaccepted">
+                          <Space size={10}>
                             <Progress
-                              steps={5}
-                              percent={devHasBeenSentNew.salaryPerDevPercentage}
+                              type="circle"
+                              percent={devHasBeenSentNew.averagedPercentage}
+                              size={97}
+                              strokeWidth={9}
                               strokeColor={getBarColor(
-                                devHasBeenSentNew.salaryPerDevPercentage
+                                devHasBeenSentNew.averagedPercentage
                               )}
                             />
                           </Space>
                         </div>
+                      </div>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </div>
+            ))}
+        </div>
+      )}
 
-                        {/* <div
-                          className="devmatching-bar-salary border border-1"
-                          style={{ marginLeft: "17px" }}
-                        >
-                          <div
-                            className="devmatch-level-salary"
-                            style={{
-                              width: `${devHasBeenSentNew.salaryPerDevPercentage}%`,
-                              backgroundColor: getBarColor(
-                                devHasBeenSentNew.salaryPerDevPercentage
-                              ),
-                            }}
-                          ></div>
-                        </div> */}
-                      </div>
-                      <div className="d-flex mb-2 align-items-center justify-content-between">
-                        <span className=" fs-14">Skill</span>
-
-                        <div>
-                          <Space size={30} wrap>
-                            <Progress
-                              steps={5}
-                              percent={devHasBeenSentNew.skillPercentage}
-                              strokeColor={getBarColor(
-                                devHasBeenSentNew.skillPercentage
-                              )}
-                            />
-                          </Space>
-                        </div>
-
-                        {/* <div
-                          className="devmatching-bar-skill border border-1 "
-                          style={{ marginLeft: "23px" }}
-                        >
-                          <div
-                            className="devmatch-level-skill"
-                            style={{
-                              width: `${devHasBeenSentNew.skillPercentage}%`,
-                              backgroundColor: getBarColor(
-                                devHasBeenSentNew.skillPercentage
-                              ),
-                            }}
-                          ></div>
-                        </div> */}
-                      </div>
-                      <div>
-                        <span>
-                          Experience: {devHasBeenSentNew.yearOfExperience} years
-                        </span>
-                      </div>
-                    </div>
-                  </Col>
-
-                  <Col lg={3} className="border-start border-3">
-                    <div style={{ height: "100%" }}>
-                      <div className="d-flex justify-content-end mb-2">
-                        <span
-                          className={
-                            devHasBeenSentNew.hiredDeveloperStatus ===
-                            "Interview Scheduled"
-                              ? "badge bg-primary text-light"
-                              : devHasBeenSentNew.hiredDeveloperStatus ===
-                                "Rejected"
-                              ? "badge bg-danger text-light"
-                              : devHasBeenSentNew.hiredDeveloperStatus ===
-                                "Waiting Interview"
-                              ? "badge bg-warning text-light"
-                              : devHasBeenSentNew.hiredDeveloperStatus ===
-                                "Under Consideration"
-                              ? "badge bg-blue text-light"
-                              : devHasBeenSentNew.hiredDeveloperStatus ===
-                                "Onboarding"
-                              ? "badge bg-newGreen text-light"
-                              : devHasBeenSentNew.hiredDeveloperStatus ===
-                                "Contract Processing"
-                              ? "badge bg-warning text-light"
-                              : devHasBeenSentNew.hiredDeveloperStatus ===
-                                "Contract Failed"
-                              ? "badge bg-danger text-light"
-                              : devHasBeenSentNew.hiredDeveloperStatus ===
-                                "Request Closed"
-                              ? "badge bg-danger text-light"
-                              : devHasBeenSentNew.hiredDeveloperStatus ===
-                                "Working"
-                              ? "badge bg-orangeRed2 text-light"
-                              : ""
-                          }
-                        >
-                          {devHasBeenSentNew.hiredDeveloperStatus}
-                        </span>
-                      </div>
-                      <div className="right-side-percen-matching-devaccepted">
-                        <Space size={10}>
-                          <Progress
-                            type="circle"
-                            percent={devHasBeenSentNew.averagedPercentage}
-                            size={97}
-                            strokeWidth={9}
-                            strokeColor={getBarColor(
-                              devHasBeenSentNew.averagedPercentage
-                            )}
-                          />
-                        </Space>
-                      </div>
-                    </div>
-                  </Col>
-                </Row>
-              </CardBody>
-            </div>
-          ))}
-      </div>
       {/* ----------------------------------------------------------------------------------------------------- */}
 
       <div>
