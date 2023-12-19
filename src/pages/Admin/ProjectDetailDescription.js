@@ -18,7 +18,7 @@ import {
   TabContent,
   Collapse,
 } from "reactstrap";
-import { Dropdown as DropdownAntd } from 'antd';
+import { Dropdown as DropdownAntd } from "antd";
 import { HashLoader } from "react-spinners";
 
 import projectServices from "../../services/project.services";
@@ -31,7 +31,7 @@ import {
   faEllipsisVertical,
   faUserMinus,
   faAngleLeft,
-  faAngleRight
+  faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
@@ -95,8 +95,6 @@ const ProjectDetailDescription = () => {
 
   const [listWorklog, setListWorklog] = useState([]);
 
-
-
   //------------------------------------------------
   const [selectProjectId, setSelectProjectId] = useState(null);
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
@@ -106,6 +104,7 @@ const ProjectDetailDescription = () => {
 
   const closeModalUpdateProject = () => {
     setIsModalUpdateOpen(false);
+    fetchGetProjectDetailByProjectId();
   };
   // -----------------------------------------------
 
@@ -125,7 +124,6 @@ const ProjectDetailDescription = () => {
   //     setCurrentFile(file);
   //   }
   // };
-
 
   const fetchGetProjectDetailByProjectId = async () => {
     let response;
@@ -469,77 +467,68 @@ const ProjectDetailDescription = () => {
   const [valuesStatus, setValuesStatus] = useState({});
 
   const optionsStatus = [
-    { label: 'Normally', value: 0 },
-    { label: 'Paid leave', value: 1 },
-    { label: 'Unpaid leave', value: 2 },
+    { label: "Normally", value: 0 },
+    { label: "Paid leave", value: 1 },
+    { label: "Unpaid leave", value: 2 },
   ];
-
 
   const profileItems2 = [
     {
       key: "1",
       label: (
-        <div
-          style={{ width: "100px" }}
-          onClick={() => onUpdateWorkLog()}
-        >
+        <div style={{ width: "100px" }} onClick={() => onUpdateWorkLog()}>
           Edit
         </div>
       ),
     },
-  ]
-
+  ];
 
   const profileItems3 = [
     {
       key: "1",
       label: (
-        <div
-          style={{ width: "100px" }}
-          onClick={() => onUpdatePaySlip()}
-        >
+        <div style={{ width: "100px" }} onClick={() => onUpdatePaySlip()}>
           Edit
         </div>
       ),
     },
-  ]
+  ];
 
-  const [showCollapse, setShowCollapse] = useState(Array(payRollDetail.length).fill(false));
+  const [showCollapse, setShowCollapse] = useState(
+    Array(payRollDetail.length).fill(false)
+  );
 
   const toggleCollapse = (key2, paySlipId) => {
     setKeyPayRoll(key2);
     const newShowCollapse = [...showCollapse];
     newShowCollapse[key2] = !newShowCollapse[key2];
     setShowCollapse(newShowCollapse);
-    setPaySlipIdLoad(paySlipId)
+    setPaySlipIdLoad(paySlipId);
     fetchWorklog(paySlipId);
   };
 
   const setKeyAndIdWorkLog = (workLogId, key) => {
-    setWorkLogIdOnClick(workLogId)
-    setKeyWorkLog(key)
+    setWorkLogIdOnClick(workLogId);
+    setKeyWorkLog(key);
   };
 
   const setPayRollEdit = (payrollId, key) => {
-    setPayslipIdOnClick(payrollId)
-    setKeyPayslip(key)
-
+    setPayslipIdOnClick(payrollId);
+    setKeyPayslip(key);
   };
 
   const handleChangeStatus = (selected) => {
-    console.log(selected)
-    const key = '' + keyPayRoll + keyWorkLog;
-    setValuesStatus(prevState => ({
+    console.log(selected);
+    const key = "" + keyPayRoll + keyWorkLog;
+    setValuesStatus((prevState) => ({
       ...prevState,
-      [key]: selected
+      [key]: selected,
     }));
   };
 
-
-
   function formatDate(date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because it's zero-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 to month because it's zero-indexed
     const year = date.getFullYear();
     return `${day}.${month}.${year}`;
   }
@@ -553,39 +542,47 @@ const ProjectDetailDescription = () => {
       response = await projectServices.getProjectDetailByProjectId(projectId);
       console.log(response.data.data);
       function convertToDateObject(dateString) {
-        const [day, month, year] = dateString.split('-').map(Number);
+        const [day, month, year] = dateString.split("-").map(Number);
         return new Date(year, month - 1, day); // month - 1 because months are zero-indexed in JavaScript
       }
 
-      if (response.data.data.minStartDate !== "" && response.data.data.maxEndDate !== "") {
+      if (
+        response.data.data.minStartDate !== "" &&
+        response.data.data.maxEndDate !== ""
+      ) {
         const startDate = convertToDateObject(response.data.data.minStartDate);
         const endDate = convertToDateObject(response.data.data.maxEndDate);
 
         var temp = new Date(startDate);
-        var formattedMinDate = temp.toISOString().split('T')[0];
+        var formattedMinDate = temp.toISOString().split("T")[0];
 
         var temp2 = new Date(endDate);
-        var formattedMaxDate = temp2.toISOString().split('T')[0]; // Sử dụng temp2 thay vì temp
+        var formattedMaxDate = temp2.toISOString().split("T")[0]; // Sử dụng temp2 thay vì temp
         var currentDate = new Date();
         // Trừ đi 7 ngày từ formattedMinDate
-
 
         // Kiểm tra nếu startDate trừ đi 7 ngày bé hơn ngày hiện tại
 
         // Thêm 3 ngày vào startDate
         currentDate.setDate(currentDate.getDate() + 4);
-        const formattedSevenDaysBeforeMinDate = currentDate.toISOString().split('T')[0];
-
-
-
-
+        const formattedSevenDaysBeforeMinDate = currentDate
+          .toISOString()
+          .split("T")[0];
 
         const monthsArray = [];
         const startDateArray = [];
         const endDateArray = [];
 
-        let currentMonthStart = new Date(startDate.getFullYear(), startDate.getMonth() - 1, 25);
-        let currentMonthEnd = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() + 1, 24);
+        let currentMonthStart = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth() - 1,
+          25
+        );
+        let currentMonthEnd = new Date(
+          currentMonthStart.getFullYear(),
+          currentMonthStart.getMonth() + 1,
+          24
+        );
 
         let checkFirstMonth = false;
         while (currentMonthStart <= endDate) {
@@ -594,7 +591,7 @@ const ProjectDetailDescription = () => {
           let formattedEndDay;
           if (!checkFirstMonth) {
             if (currentMonthStart < startDate && startDate < currentMonthEnd) {
-              formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+              formattedMonth = format(currentMonthEnd, "MMMM yyyy");
               formattedStartDay = formatDate(startDate);
               formattedEndDay = formatDate(new Date(currentMonthEnd));
               monthsArray.push(formattedMonth);
@@ -605,17 +602,18 @@ const ProjectDetailDescription = () => {
             checkFirstMonth = true;
           } else {
             if (currentMonthStart < startDate) {
-              formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+              formattedMonth = format(currentMonthEnd, "MMMM yyyy");
               formattedStartDay = formatDate(startDate);
               formattedEndDay = formatDate(new Date(currentMonthEnd));
               monthsArray.push(formattedMonth);
               startDateArray.push(formattedStartDay);
               endDateArray.push(formattedEndDay);
             } else {
-
-              formattedMonth = format(currentMonthEnd, 'MMMM yyyy');
+              formattedMonth = format(currentMonthEnd, "MMMM yyyy");
               formattedStartDay = formatDate(new Date(currentMonthStart));
-              formattedEndDay = formatDate(currentMonthEnd > endDate ? endDate : new Date(currentMonthEnd));
+              formattedEndDay = formatDate(
+                currentMonthEnd > endDate ? endDate : new Date(currentMonthEnd)
+              );
               monthsArray.push(formattedMonth);
               startDateArray.push(formattedStartDay);
               endDateArray.push(formattedEndDay);
@@ -625,18 +623,22 @@ const ProjectDetailDescription = () => {
           currentMonthStart.setMonth(currentMonthStart.getMonth() + 1);
           currentMonthStart.setDate(25);
 
-          currentMonthEnd = new Date(currentMonthStart.getFullYear(), currentMonthStart.getMonth() + 1, 24);
+          currentMonthEnd = new Date(
+            currentMonthStart.getFullYear(),
+            currentMonthStart.getMonth() + 1,
+            24
+          );
         }
 
         setListMonth(monthsArray);
         if (monthsArray.length === 0) {
           setIsHavePaymemt(false);
-          console.log("monthsArray")
-          console.log(monthsArray)
+          console.log("monthsArray");
+          console.log(monthsArray);
         } else {
           setIsHavePaymemt(true);
-          console.log("monthsArray")
-          console.log(monthsArray)
+          console.log("monthsArray");
+          console.log(monthsArray);
           setListStartDay(startDateArray);
           setListEndDay(endDateArray);
         }
@@ -650,14 +652,13 @@ const ProjectDetailDescription = () => {
     }
   };
 
-
   const fetchWorklog = async (paySlipId) => {
     let response;
     try {
       response = await workLogServices.getWorkLogByPaySlipId(paySlipId);
       setWorkLoglist(response.data.data);
-      console.log("worklog")
-      console.log(response.data.data)
+      console.log("worklog");
+      console.log(response.data.data);
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
     }
@@ -665,89 +666,102 @@ const ProjectDetailDescription = () => {
 
   const updatedWorkLog = async (timeIn, timeOut, isPaid) => {
     let response;
-    setLoadingSaveWorkLog(true)
+    setLoadingSaveWorkLog(true);
     try {
-      console.log(workLogIdOnClick)
-      console.log(timeIn)
-      console.log(timeOut)
-      response = await workLogServices.updateWorkLog(workLogIdOnClick, timeIn, timeOut, isPaid);
-      console.log("worklog21312312312")
-      console.log(response.data.data)
+      console.log(workLogIdOnClick);
+      console.log(timeIn);
+      console.log(timeOut);
+      response = await workLogServices.updateWorkLog(
+        workLogIdOnClick,
+        timeIn,
+        timeOut,
+        isPaid
+      );
+      console.log("worklog21312312312");
+      console.log(response.data.data);
       const temp = "hourInDay" + response.data.data.workLogId;
       // const temp2 = "totalhourspayroll" + response.data.data.payPeriodId;
-      document.getElementById(temp).innerHTML = "Hours in day: " + response.data.data.hourWorkInDay;
+      document.getElementById(temp).innerHTML =
+        "Hours in day: " + response.data.data.hourWorkInDay;
       // document.getElementById(temp2).innerHTML = response.data.data.totalAmount;
       const temp2 = listEndDay[currentMonthIndex];
       if (temp2) {
-        const parts = temp2.split('.');
+        const parts = temp2.split(".");
         const newDate = `${parts[2]}-${parts[1]}-25`;
-        fetchDetailPayPeriod(newDate)
+        fetchDetailPayPeriod(newDate);
       }
-      toast.success("Update worklog successfully")
+      toast.success("Update worklog successfully");
       setLoadListWorkLog(!loadListWorkLog);
       setIsCompleteEditWorkLog(true);
-      setLoadingSaveWorkLog(false)
+      setLoadingSaveWorkLog(false);
       setEditableRowId(null);
     } catch (error) {
       setIsCompleteEditWorkLog(false);
-      setLoadingSaveWorkLog(false)
+      setLoadingSaveWorkLog(false);
       console.error("Error fetching job vacancies:", error);
-      toast.error("Update worklog fail")
+      toast.error("Update worklog fail");
     }
   };
 
   const updatedPayslip = async (totalOT) => {
     let response;
-    setLoadingSavePaySlip(true)
+    setLoadingSavePaySlip(true);
     try {
-      console.log(payslipIdOnClick)
-      console.log(totalOT)
-      response = await paySlipServices.updateTotalOTPayslip(payslipIdOnClick, totalOT);
-      console.log(response.data.data)
-
+      console.log(payslipIdOnClick);
+      console.log(totalOT);
+      response = await paySlipServices.updateTotalOTPayslip(
+        payslipIdOnClick,
+        totalOT
+      );
+      console.log(response.data.data);
 
       const temp2 = listEndDay[currentMonthIndex];
       if (temp2) {
-        const parts = temp2.split('.');
+        const parts = temp2.split(".");
         const newDate = `${parts[2]}-${parts[1]}-25`;
-        fetchDetailPayPeriod(newDate)
+        fetchDetailPayPeriod(newDate);
       }
-      toast.success("Update payslip successfully")
+      toast.success("Update payslip successfully");
       setEdiPaySlipRowId(null);
-      setLoadingSavePaySlip(false)
+      setLoadingSavePaySlip(false);
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
-      toast.error("Update payslip fail")
+      toast.error("Update payslip fail");
 
-      setLoadingSavePaySlip(false)
+      setLoadingSavePaySlip(false);
     }
   };
 
   const fetchDetailPayPeriod = async (newDate) => {
     let response;
-    console.log("ham nay bi goi lai")
-    console.log(newDate)
+    console.log("ham nay bi goi lai");
+    console.log(newDate);
     try {
       const projectId = state.projectId;
-      console.log(projectId)
-      response = await payPeriodServices.getPayPeriodDetailByProjectIdAndDate(projectId, newDate);
-      console.log(response)
+      console.log(projectId);
+      response = await payPeriodServices.getPayPeriodDetailByProjectIdAndDate(
+        projectId,
+        newDate
+      );
+      console.log(response);
       setPayPeriodDetail(response.data.data);
       if (response.data.code === 200) {
         console.log("cho nay ms bi goi lai");
         console.log(response.data.data.payPeriodId);
-        const response2 = await paySlipServices.getPaySlipByPayPeriodId(response.data.data.payPeriodId);
-        console.log("response2")
-        console.log(response2)
+        const response2 = await paySlipServices.getPaySlipByPayPeriodId(
+          response.data.data.payPeriodId
+        );
+        console.log("response2");
+        console.log(response2);
         if (response.data.code == 200) {
           setPayRollDetail(response2.data.data);
           response2.data.data.forEach((payRollDetailNew, key2) => {
             const temp = "totalOT" + key2;
-            console.log(temp)
+            console.log(temp);
             const element = document.getElementById(temp);
             if (element) {
-              console.log("co")
-              console.log(payRollDetailNew.totalOvertimeHours)
+              console.log("co");
+              console.log(payRollDetailNew.totalOvertimeHours);
               element.value = payRollDetailNew.totalOvertimeHours;
             }
           });
@@ -755,58 +769,56 @@ const ProjectDetailDescription = () => {
       }
     } catch (error) {
       console.error("Error fetching job vacancies:", error);
-      console.log("payperiod loi")
+      console.log("payperiod loi");
       setPayPeriodDetail(null);
       setPayRollDetail([]);
     }
-  }
-
+  };
 
   useEffect(() => {
-    console.log(payRollDetail)
+    console.log(payRollDetail);
   }, [payRollDetail]);
 
   useEffect(() => {
     // if (countSetTime) {
-    console.log("thaydoi")
-    console.log(keyPayRoll)
+    console.log("thaydoi");
+    console.log(keyPayRoll);
     var count = 0;
     workLoglist.map((log) => {
       const temp2 = "endTimeWorkLog" + keyPayRoll + count;
       document.getElementById(temp2).value = log.timeIn;
       const temp = "endTimeWorkLog2" + keyPayRoll + count;
       document.getElementById(temp).value = log.timeOut;
-      const key = '' + keyPayRoll + count;
+      const key = "" + keyPayRoll + count;
       var status;
       if (log.isPaidLeave == null) {
-        console.log("null")
-        status = { label: 'Normally', value: 0 };
+        console.log("null");
+        status = { label: "Normally", value: 0 };
       } else {
         if (log.isPaidLeave == true) {
-          status = { label: 'Paid leave', value: 1 };
+          status = { label: "Paid leave", value: 1 };
         } else {
-          status = { label: 'Unpaid leave', value: 2 };
+          status = { label: "Unpaid leave", value: 2 };
         }
       }
-      setValuesStatus(prevState => ({
+      setValuesStatus((prevState) => ({
         ...prevState,
-        [key]: status
+        [key]: status,
       }));
       count += 1;
-
     });
-    setCountSetTime(countSetTime + 1)
+    setCountSetTime(countSetTime + 1);
   }, [workLoglist]);
-
 
   useEffect(() => {
     fetchWorklog(paySlipIdLoad);
   }, [loadListWorkLog]);
 
-
   const onUpdateWorkLog = () => {
     setIsCompleteEditWorkLog(false);
-    const foundLog = workLoglist.find(log => log.workLogId === workLogIdOnClick);
+    const foundLog = workLoglist.find(
+      (log) => log.workLogId === workLogIdOnClick
+    );
     setStartTimeWorkLogSave(foundLog.timeIn);
     setEndTimeWorkLogSave(foundLog.timeOut);
     console.log("foundLog.isPaidLeave");
@@ -816,13 +828,12 @@ const ProjectDetailDescription = () => {
   };
 
   const onUpdatePaySlip = () => {
-    const foundLog = payRollDetail.find(log => log.paySlipId === payslipIdOnClick);
-    setTotalOTPayslipSave(foundLog.totalOvertimeHours)
+    const foundLog = payRollDetail.find(
+      (log) => log.paySlipId === payslipIdOnClick
+    );
+    setTotalOTPayslipSave(foundLog.totalOvertimeHours);
     setEdiPaySlipRowId(payslipIdOnClick);
   };
-
-
-
 
   useEffect(() => {
     fetchProjectDetails();
@@ -831,23 +842,26 @@ const ProjectDetailDescription = () => {
   useEffect(() => {
     const temp = listEndDay[currentMonthIndex];
     if (temp) {
-      const parts = temp.split('.');
+      const parts = temp.split(".");
       const newDate = `${parts[2]}-${parts[1]}-25`;
-      fetchDetailPayPeriod(newDate)
+      fetchDetailPayPeriod(newDate);
     }
   }, [currentMonthIndex]);
 
   useEffect(() => {
     const temp = listStartDay[currentMonthIndex];
     if (temp) {
-      const parts = temp.split('.');
+      const parts = temp.split(".");
       const newDate = `${parts[2]}-${parts[1]}-25`;
-      fetchDetailPayPeriod(newDate)
+      fetchDetailPayPeriod(newDate);
     }
   }, [loadPayPeriod]);
 
   function formatTime00(inputTime) {
-    if (inputTime.indexOf(":") !== -1 && inputTime.lastIndexOf(":") === inputTime.indexOf(":")) {
+    if (
+      inputTime.indexOf(":") !== -1 &&
+      inputTime.lastIndexOf(":") === inputTime.indexOf(":")
+    ) {
       // Nếu có ít hơn hai dấu hai chấm (":") trong chuỗi, thêm ":00" vào cuối
       return inputTime + ":00";
     } else {
@@ -861,34 +875,45 @@ const ProjectDetailDescription = () => {
       if (workLogIdOnClick) {
         const temp2 = "endTimeWorkLog" + keyPayRoll + keyWorkLog;
         const temp = "endTimeWorkLog2" + keyPayRoll + keyWorkLog;
-        const key = '' + keyPayRoll + keyWorkLog;
+        const key = "" + keyPayRoll + keyWorkLog;
         var statusSave;
         if (statusWorkLogSave == null) {
-          statusSave = { label: 'Normally', value: 0 };
+          statusSave = { label: "Normally", value: 0 };
         } else {
           if (statusWorkLogSave == true) {
-            statusSave = { label: 'Paid leave', value: 1 };
+            statusSave = { label: "Paid leave", value: 1 };
           } else {
-            statusSave = { label: 'Unpaid leave', value: 2 };
+            statusSave = { label: "Unpaid leave", value: 2 };
           }
         }
-        const status = valuesStatus[key]
-        console.log(statusSave)
-        console.log(status)
+        const status = valuesStatus[key];
+        console.log(statusSave);
+        console.log(status);
         if (statusSave.value == status.value) {
-          console.log("giong nhau")
+          console.log("giong nhau");
         } else {
-          console.log("khac nhau")
+          console.log("khac nhau");
         }
-        if (formatTime00(document.getElementById(temp2).value) >= formatTime00(document.getElementById(temp).value) && status.value == 0) {
+        if (
+          formatTime00(document.getElementById(temp2).value) >=
+            formatTime00(document.getElementById(temp).value) &&
+          status.value == 0
+        ) {
           const temp3 = "timeErrorWorkLog" + workLogIdOnClick;
-          document.getElementById(temp3).innerHTML = "The start time of work must be less than the end time of work";
+          document.getElementById(temp3).innerHTML =
+            "The start time of work must be less than the end time of work";
           setIsCompleteEditWorkLog(false);
         } else {
           const temp3 = "timeErrorWorkLog" + workLogIdOnClick;
           document.getElementById(temp3).innerHTML = "";
-          if (formatTime00(document.getElementById(temp2).value) != startTimeWorkLogSave || formatTime00(document.getElementById(temp).value) != endTimeWorkLogSave || statusSave.value != status.value) {
-            console.log("co update")
+          if (
+            formatTime00(document.getElementById(temp2).value) !=
+              startTimeWorkLogSave ||
+            formatTime00(document.getElementById(temp).value) !=
+              endTimeWorkLogSave ||
+            statusSave.value != status.value
+          ) {
+            console.log("co update");
             var isPaid;
             if (status.value == 0) {
               isPaid = null;
@@ -899,7 +924,11 @@ const ProjectDetailDescription = () => {
             if (status.value == 2) {
               isPaid = false;
             }
-            updatedWorkLog(formatTime00(document.getElementById(temp2).value), formatTime00(document.getElementById(temp).value), isPaid)
+            updatedWorkLog(
+              formatTime00(document.getElementById(temp2).value),
+              formatTime00(document.getElementById(temp).value),
+              isPaid
+            );
           } else {
             setIsCompleteEditWorkLog(true);
             setEditableRowId(null);
@@ -908,37 +937,36 @@ const ProjectDetailDescription = () => {
       }
     } else {
       try {
-        console.log("false")
+        console.log("false");
         const temp2 = "endTimeWorkLog" + keyPayRoll + keyWorkLog;
         document.getElementById(temp2).value = startTimeWorkLogSave;
 
         const temp = "endTimeWorkLog2" + keyPayRoll + keyWorkLog;
         document.getElementById(temp).value = endTimeWorkLogSave;
 
-        const key = '' + keyPayRoll + keyWorkLog;
+        const key = "" + keyPayRoll + keyWorkLog;
         var status;
         if (statusWorkLogSave == null) {
-          console.log("null")
-          status = { label: 'Normally', value: 0 };
+          console.log("null");
+          status = { label: "Normally", value: 0 };
         } else {
           if (statusWorkLogSave == true) {
-            status = { label: 'Paid leave', value: 1 };
+            status = { label: "Paid leave", value: 1 };
           } else {
-            status = { label: 'Unpaid leave', value: 2 };
+            status = { label: "Unpaid leave", value: 2 };
           }
         }
-        setValuesStatus(prevState => ({
+        setValuesStatus((prevState) => ({
           ...prevState,
-          [key]: status
+          [key]: status,
         }));
         setIsCompleteEditWorkLog(true);
         setEditableRowId(null);
       } catch (error) {
-        console.log("Loi khi update worklog", error)
+        console.log("Loi khi update worklog", error);
       }
     }
   }, [isEditWorkLog]);
-
 
   useEffect(() => {
     if (!isCancelEditPayslip) {
@@ -946,13 +974,15 @@ const ProjectDetailDescription = () => {
         const temp2 = "totalOT" + keyPayslip;
         if (formatTime00(document.getElementById(temp2).value) < 0) {
           const temp = "totalOT" + keyPayslip;
-          console.log(temp)
+          console.log(temp);
           document.getElementById(temp).value = totalOTPayslipSave;
           setEdiPaySlipRowId(null);
-
         } else {
-          if (formatTime00(document.getElementById(temp2).value) != totalOTPayslipSave) {
-            updatedPayslip(document.getElementById(temp2).value)
+          if (
+            formatTime00(document.getElementById(temp2).value) !=
+            totalOTPayslipSave
+          ) {
+            updatedPayslip(document.getElementById(temp2).value);
           } else {
             setEdiPaySlipRowId(null);
           }
@@ -960,25 +990,21 @@ const ProjectDetailDescription = () => {
       }
     } else {
       try {
-        console.log("false")
+        console.log("false");
         const temp2 = "totalOT" + keyPayslip;
-        console.log(temp2)
+        console.log(temp2);
         document.getElementById(temp2).value = totalOTPayslipSave;
         setEdiPaySlipRowId(null);
-
       } catch (error) {
-        console.log("Loi khi update worklog", error)
-
+        console.log("Loi khi update worklog", error);
       }
     }
   }, [isEditPayslip]);
-
 
   const cancelUpdateWorkLog = () => {
     setIsEditWorkLog(!isEditWorkLog);
     setIsCancelEditWorkLog(true);
   };
-
 
   const saveUpdateWorkLog = () => {
     setIsEditWorkLog(!isEditWorkLog);
@@ -1020,26 +1046,30 @@ const ProjectDetailDescription = () => {
   };
 
   const createNewPayPeriod = async () => {
-    setLoadingCreateNew(true)
+    setLoadingCreateNew(true);
     try {
       const projectId = state.projectId;
       const currentMonthData = listMonth[currentMonthIndex];
 
       const date = new Date(currentMonthData);
-      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-25` + "T08:47:13.849Z";
-      console.log(formattedDate)
-      const response = await payPeriodServices.createNewPayPeriod(projectId, formattedDate);
-      console.log(response)
-      toast.success("Create pay period successfully")
+      const formattedDate =
+        `${date.getFullYear()}-${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-25` + "T08:47:13.849Z";
+      console.log(formattedDate);
+      const response = await payPeriodServices.createNewPayPeriod(
+        projectId,
+        formattedDate
+      );
+      console.log(response);
+      toast.success("Create pay period successfully");
       setLoadPayPeriod(!loadPayPeriod);
       setLoadingCreateNew(false);
     } catch (error) {
-      toast.error("Create pay period fail")
+      toast.error("Create pay period fail");
       setLoadingCreateNew(false);
     }
   };
-
-
 
   return (
     <React.Fragment>
@@ -1065,14 +1095,14 @@ const ProjectDetailDescription = () => {
                         projectDetail.statusString === "Preparing"
                           ? "badge bg-warning text-light fs-12"
                           : projectDetail.statusString === "Closed"
-                            ? "badge bg-danger text-light fs-12"
-                            : projectDetail.statusString === "In process"
-                              ? "badge bg-blue text-light fs-12"
-                              : projectDetail.statusString === "Completed"
-                                ? "badge bg-success text-light fs-12"
-                                : projectDetail.statusString === "Closing process"
-                                  ? "badge bg-purple text-light fs-12"
-                                  : ""
+                          ? "badge bg-danger text-light fs-12"
+                          : projectDetail.statusString === "In process"
+                          ? "badge bg-blue text-light fs-12"
+                          : projectDetail.statusString === "Completed"
+                          ? "badge bg-success text-light fs-12"
+                          : projectDetail.statusString === "Closing process"
+                          ? "badge bg-purple text-light fs-12"
+                          : ""
                       }
                     >
                       {projectDetail.statusString}
@@ -1277,114 +1307,131 @@ const ProjectDetailDescription = () => {
                       <h4>List Working Developers</h4>
                     </div>
 
-                    {devInProject.map((devInProjectDetail, key) => (
-                      <div
-                        style={{
-                          boxShadow:
-                            "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
-                        }}
-                        key={key}
-                        className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
-                      >
-                        <CardBody>
-                          <Row className="align-items-center">
-                            <Col
-                              lg={2}
-                              className="d-flex justify-content-center"
-                            >
-                              <div className="candidate-profile text-center">
-                                <img
-                                  src={devInProjectDetail.userImage || img0}
-                                  alt=""
-                                  className="avatar-lg rounded-circle"
-                                />
-                              </div>
-                            </Col>
-                            <Col lg={3} className="">
-                              <h5
-                                className="mb-0"
-                                onClick={() => openModal(devInProjectDetail)}
-                              >
-                                {devInProjectDetail.firstName}{" "}
-                                {devInProjectDetail.lastName}
-                              </h5>
-                              <ul className="info-dev-by-project mb-0">
-                                <li>
-                                  <i className="uil uil-envelope"></i>{" "}
-                                  {devInProjectDetail.email}
-                                </li>
-
-                                <li>
-                                  <i className="uil uil-phone-volume"></i>{" "}
-                                  {devInProjectDetail.phoneNumber}
-                                </li>
-                              </ul>
-                            </Col>
-                            <Col lg={2}>
-                              <ul className="info-dev-by-project mb-0 d-flex flex-column gap-1 align-items-center">
-                                <li>
-                                  <span className="d-flex gap-1 ">
-                                    <p className="mb-0">Exp: </p>
-                                    {devInProjectDetail.yearOfExperience} years
-                                  </span>
-                                </li>
-                              </ul>
-                            </Col>
-                            <Col
-                              lg={2}
-                              className="d-flex gap-1 justify-content-center"
-                            >
-                              <i className="uil uil-keyboard"></i>
-                              <p className="mb-0">
-                                {devInProjectDetail.levelRequireName}
-                              </p>
-                            </Col>
-                            <Col
-                              lg={2}
-                              className="d-flex justify-content-center"
-                            >
-                              <p className="mb-0 badge bg-blue text-light fs-13 ">
-                                {devInProjectDetail.hiredDevStatusString}
-                              </p>
-                            </Col>
-                            <Col
-                              lg={1}
-                              className="d-flex justify-content-center"
-                            >
-                              <div>
-                                <Dropdown
-                                  isOpen={showDropdown[key]}
-                                  toggle={() => toggleDropdown(key)}
-                                >
-                                  <Dropdown.Toggle
-                                    variant="white"
-                                    id="dropdown-devInProject"
-                                    style={{ padding: "0px", color: "#ACB4B6" }}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faUserMinus}
-                                      size="xl"
-                                    />
-                                  </Dropdown.Toggle>
-
-                                  <Dropdown.Menu>
-                                    <Dropdown.Item
-                                      onClick={() =>
-                                        openModalKickDevInProject(
-                                          devInProjectDetail.developerId
-                                        )
-                                      }
-                                    >
-                                      Remove Developer
-                                    </Dropdown.Item>
-                                  </Dropdown.Menu>
-                                </Dropdown>
-                              </div>
-                            </Col>
-                          </Row>
-                        </CardBody>
+                    {devInProject.length === 0 ? (
+                      <div>
+                        <Empty />
                       </div>
-                    ))}
+                    ) : (
+                      <div>
+                        {devInProject.map((devInProjectDetail, key) => (
+                          <div
+                            style={{
+                              boxShadow:
+                                "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+                            }}
+                            key={key}
+                            className="job-box-dev-in-list-hiringRequest-for-dev card mt-3"
+                          >
+                            <CardBody>
+                              <Row className="align-items-center">
+                                <Col
+                                  lg={2}
+                                  className="d-flex justify-content-center"
+                                >
+                                  <div className="candidate-profile text-center">
+                                    <img
+                                      src={devInProjectDetail.userImage || img0}
+                                      alt=""
+                                      className="avatar-lg rounded-circle"
+                                    />
+                                  </div>
+                                </Col>
+                                <Col lg={3} className="">
+                                  <h5
+                                    className="mb-0"
+                                    onClick={() =>
+                                      openModal(devInProjectDetail)
+                                    }
+                                  >
+                                    {devInProjectDetail.firstName}{" "}
+                                    {devInProjectDetail.lastName}
+                                  </h5>
+                                  <ul className="info-dev-by-project mb-0">
+                                    <li>
+                                      <i className="uil uil-envelope"></i>{" "}
+                                      {devInProjectDetail.email}
+                                    </li>
+
+                                    <li>
+                                      <i className="uil uil-phone-volume"></i>{" "}
+                                      {devInProjectDetail.phoneNumber}
+                                    </li>
+                                  </ul>
+                                </Col>
+                                <Col lg={2}>
+                                  <ul className="info-dev-by-project mb-0 d-flex flex-column gap-1 align-items-center">
+                                    <li>
+                                      <span className="d-flex gap-1 ">
+                                        <p className="mb-0">Exp: </p>
+                                        {
+                                          devInProjectDetail.yearOfExperience
+                                        }{" "}
+                                        years
+                                      </span>
+                                    </li>
+                                  </ul>
+                                </Col>
+                                <Col
+                                  lg={2}
+                                  className="d-flex gap-1 justify-content-center"
+                                >
+                                  <i className="uil uil-keyboard"></i>
+                                  <p className="mb-0">
+                                    {devInProjectDetail.levelRequireName}
+                                  </p>
+                                </Col>
+                                <Col
+                                  lg={2}
+                                  className="d-flex justify-content-center"
+                                >
+                                  <p className="mb-0 badge bg-blue text-light fs-13 ">
+                                    {devInProjectDetail.hiredDevStatusString}
+                                  </p>
+                                </Col>
+                                <Col
+                                  lg={1}
+                                  className="d-flex justify-content-center"
+                                >
+                                  <div>
+                                    <Dropdown
+                                      isOpen={showDropdown[key]}
+                                      toggle={() => toggleDropdown(key)}
+                                    >
+                                      <Dropdown.Toggle
+                                        variant="white"
+                                        id="dropdown-devInProject"
+                                        style={{
+                                          padding: "0px",
+                                          color: "#ACB4B6",
+                                        }}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faUserMinus}
+                                          size="xl"
+                                        />
+                                      </Dropdown.Toggle>
+
+                                      <Dropdown.Menu>
+                                        <Dropdown.Item
+                                          onClick={() =>
+                                            openModalKickDevInProject(
+                                              devInProjectDetail.developerId
+                                            )
+                                          }
+                                        >
+                                          Remove Developer
+                                        </Dropdown.Item>
+                                      </Dropdown.Menu>
+                                    </Dropdown>
+                                  </div>
+                                </Col>
+                              </Row>
+                            </CardBody>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     {/* Modal Kick Develoepr */}
                     <Modal
                       isOpen={modalKickDevInProject}
@@ -1431,12 +1478,34 @@ const ProjectDetailDescription = () => {
 
                     <div className="mb-2 d-flex justify-content-between">
                       {/* defaultMonth */}
-                      <div className="d-flex align-items-center gap-3" disabled="true">
-                        <FontAwesomeIcon icon={faAngleLeft} style={{ fontSize: '20px' }} onClick={previousMonth} />
-                        <FontAwesomeIcon icon={faAngleRight} style={{ fontSize: '20px' }} onClick={nextMonth} />
+                      <div
+                        className="d-flex align-items-center gap-3"
+                        disabled="true"
+                      >
+                        <FontAwesomeIcon
+                          icon={faAngleLeft}
+                          style={{ fontSize: "20px" }}
+                          onClick={previousMonth}
+                        />
+                        <FontAwesomeIcon
+                          icon={faAngleRight}
+                          style={{ fontSize: "20px" }}
+                          onClick={nextMonth}
+                        />
                         <div className="d-flex flex-column">
-                          <div id="monthYearSelected" style={{ fontSize: "20px", fontWeight: "600" }}>{listMonth[currentMonthIndex]}</div>
-                          <div id="dateSelected" style={{ fontSize: "15px", color: "grey" }}>{listStartDay[currentMonthIndex]} - {listEndDay[currentMonthIndex]}</div>
+                          <div
+                            id="monthYearSelected"
+                            style={{ fontSize: "20px", fontWeight: "600" }}
+                          >
+                            {listMonth[currentMonthIndex]}
+                          </div>
+                          <div
+                            id="dateSelected"
+                            style={{ fontSize: "15px", color: "grey" }}
+                          >
+                            {listStartDay[currentMonthIndex]} -{" "}
+                            {listEndDay[currentMonthIndex]}
+                          </div>
                         </div>
                       </div>
                       <div style={{ borderRadius: "9px" }}>
@@ -1603,18 +1672,18 @@ const ProjectDetailDescription = () => {
                                             <span
                                               className={
                                                 listPeriod.statusString ===
-                                                  "Created"
+                                                "Created"
                                                   ? "badge bg-blue text-light fs-12"
                                                   : listPeriod.statusString ===
                                                     "cancelled"
-                                                    ? "badge bg-danger text-light fs-12"
-                                                    : listPeriod.statusString ===
-                                                      "Inprogress"
-                                                      ? "badge bg-primary text-light fs-12"
-                                                      : listPeriod.statusString ===
-                                                        "completed"
-                                                        ? "badge bg-primary text-light fs-12"
-                                                        : ""
+                                                  ? "badge bg-danger text-light fs-12"
+                                                  : listPeriod.statusString ===
+                                                    "Inprogress"
+                                                  ? "badge bg-primary text-light fs-12"
+                                                  : listPeriod.statusString ===
+                                                    "completed"
+                                                  ? "badge bg-primary text-light fs-12"
+                                                  : ""
                                               }
                                             >
                                               {listPeriod.statusString}
@@ -1701,7 +1770,9 @@ const ProjectDetailDescription = () => {
                                           style={{ textAlign: "center" }}
                                         >
                                           <div>
-                                            <span className="mb-0">{payRollDetailNew.firstName}</span>
+                                            <span className="mb-0">
+                                              {payRollDetailNew.firstName}
+                                            </span>
                                           </div>
                                         </Col>
 
@@ -1711,7 +1782,9 @@ const ProjectDetailDescription = () => {
                                           style={{ textAlign: "center" }}
                                         >
                                           <div>
-                                            <p className="mb-0">{payRollDetailNew.lastName}</p>
+                                            <p className="mb-0">
+                                              {payRollDetailNew.lastName}
+                                            </p>
                                           </div>
                                         </Col>
 
@@ -1721,7 +1794,9 @@ const ProjectDetailDescription = () => {
                                           style={{ textAlign: "center" }}
                                         >
                                           <div>
-                                            <p className="mb-0">{payRollDetailNew.email}</p>
+                                            <p className="mb-0">
+                                              {payRollDetailNew.email}
+                                            </p>
                                           </div>
                                         </Col>
 
@@ -1729,10 +1804,13 @@ const ProjectDetailDescription = () => {
                                           md={2}
                                           className="px-0"
                                           style={{ textAlign: "center" }}
-
-
                                         >
-                                          <p className="mb-0" > {payRollDetailNew.totalActualWorkedHours}</p>
+                                          <p className="mb-0">
+                                            {" "}
+                                            {
+                                              payRollDetailNew.totalActualWorkedHours
+                                            }
+                                          </p>
                                         </Col>
 
                                         <Col
@@ -1744,7 +1822,10 @@ const ProjectDetailDescription = () => {
                                             type="number"
                                             className="form-control"
                                             id={`totalOT${key2}`}
-                                            readOnly={ediPaySlipRowId !== payRollDetailNew.paySlipId}
+                                            readOnly={
+                                              ediPaySlipRowId !==
+                                              payRollDetailNew.paySlipId
+                                            }
                                             defaultValue={0}
                                           />
                                         </Col>
@@ -1752,17 +1833,27 @@ const ProjectDetailDescription = () => {
                                         <Col
                                           md={2}
                                           style={{ textAlign: "center" }}
-
                                         >
                                           <div>
-                                            <span >{payRollDetailNew.totalEarnings}</span>
+                                            <span>
+                                              {payRollDetailNew.totalEarnings}
+                                            </span>
                                           </div>
                                         </Col>
 
-                                        <Col md={1} className="d-flex gap-2 justify-content-between align-items-center" style={{ paddingLeft: "0px" }}>
+                                        <Col
+                                          md={1}
+                                          className="d-flex gap-2 justify-content-between align-items-center"
+                                          style={{ paddingLeft: "0px" }}
+                                        >
                                           <div
                                             className="d-flex justify-content-center align-items-center rounded-circle"
-                                            onClick={() => toggleCollapse(key2, payRollDetailNew.paySlipId)}
+                                            onClick={() =>
+                                              toggleCollapse(
+                                                key2,
+                                                payRollDetailNew.paySlipId
+                                              )
+                                            }
                                             style={{
                                               backgroundColor: "#ECECED",
                                               width: "30px",
@@ -1774,12 +1865,27 @@ const ProjectDetailDescription = () => {
                                               style={{ fontSize: "30px" }}
                                             ></i>
                                           </div>
-                                          {payPeriodDetail.statusString == "Created" && (
+                                          {payPeriodDetail.statusString ==
+                                            "Created" && (
                                             <>
-                                              <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
-                                                setPayRollEdit(payRollDetailNew.paySlipId, key2)
-                                              }>
-                                                <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                              <DropdownAntd
+                                                trigger={["click"]}
+                                                menu={{ items: profileItems2 }}
+                                                onClick={() =>
+                                                  setPayRollEdit(
+                                                    payRollDetailNew.paySlipId,
+                                                    key2
+                                                  )
+                                                }
+                                              >
+                                                <a
+                                                  style={{
+                                                    height: "max-content",
+                                                  }}
+                                                  onClick={(e) =>
+                                                    e.preventDefault()
+                                                  }
+                                                >
                                                   <FontAwesomeIcon
                                                     icon={faGear}
                                                     size="xl"
@@ -1790,40 +1896,46 @@ const ProjectDetailDescription = () => {
                                             </>
                                           )}
                                         </Col>
-                                        {ediPaySlipRowId == payRollDetailNew.paySlipId ? (
+                                        {ediPaySlipRowId ==
+                                        payRollDetailNew.paySlipId ? (
                                           <>
                                             <Row style={{ marginTop: "10px" }}>
                                               <Col
                                                 md={2}
                                                 style={{ textAlign: "end" }}
                                                 className="d-flex gap-2 justify-content-end"
-                                              >
-                                              </Col>
+                                              ></Col>
                                               <Col
                                                 md={6}
                                                 style={{ textAlign: "end" }}
                                                 className="d-flex gap-2 justify-content-end"
-                                              >
-                                              </Col>
+                                              ></Col>
                                               <Col
                                                 md={4}
                                                 style={{ textAlign: "end" }}
                                                 className="d-flex gap-2 justify-content-end"
                                               >
-                                                <div className="btn btn-soft-danger"
-                                                  onClick={() => cancelUpdatePayslip()}
+                                                <div
+                                                  className="btn btn-soft-danger"
+                                                  onClick={() =>
+                                                    cancelUpdatePayslip()
+                                                  }
                                                 >
                                                   Cancel
                                                 </div>
 
-                                                <button className="btn btn-soft-blue "
+                                                <button
+                                                  className="btn btn-soft-blue "
                                                   onClick={() => {
                                                     saveUpdatePayslip();
                                                   }}
                                                   disabled={loadingSavePaySlip}
                                                 >
                                                   {loadingSavePaySlip ? (
-                                                    <div style={{ width: "45px" }} className="d-flex align-items-center justify-content-center">
+                                                    <div
+                                                      style={{ width: "45px" }}
+                                                      className="d-flex align-items-center justify-content-center"
+                                                    >
                                                       <HashLoader
                                                         size={20}
                                                         color={"white"}
@@ -1834,14 +1946,10 @@ const ProjectDetailDescription = () => {
                                                     "Save"
                                                   )}
                                                 </button>
-
-
                                               </Col>
                                             </Row>
                                           </>
-                                        ) : (
-                                          null
-                                        )}
+                                        ) : null}
                                       </Row>
                                     </div>
                                   </div>
@@ -1857,7 +1965,9 @@ const ProjectDetailDescription = () => {
                                         <div className="d-flex flex-column gap-2">
                                           <div
                                             className="job-box-dev-in-list-hiringRequest-for-dev card d-flex flex-column gap-2 p-2"
-                                            style={{ backgroundColor: "#FFFFFF" }}
+                                            style={{
+                                              backgroundColor: "#FFFFFF",
+                                            }}
                                           >
                                             <Row>
                                               <Col
@@ -1866,7 +1976,6 @@ const ProjectDetailDescription = () => {
                                                 id={`time-In2-${workLogDetail.workLogId}`}
                                               >
                                                 {workLogDetail.workDateMMM}
-
                                               </Col>
                                               <Col md={2}>
                                                 <div>
@@ -1874,7 +1983,10 @@ const ProjectDetailDescription = () => {
                                                     type="time"
                                                     className="form-control"
                                                     id={`endTimeWorkLog${key2}${key}`}
-                                                    readOnly={editableRowId !== workLogDetail.workLogId}
+                                                    readOnly={
+                                                      editableRowId !==
+                                                      workLogDetail.workLogId
+                                                    }
                                                   />
                                                 </div>
                                               </Col>
@@ -1884,7 +1996,10 @@ const ProjectDetailDescription = () => {
                                                     type="time"
                                                     className="form-control"
                                                     id={`endTimeWorkLog2${key2}${key}`}
-                                                    readOnly={editableRowId !== workLogDetail.workLogId}
+                                                    readOnly={
+                                                      editableRowId !==
+                                                      workLogDetail.workLogId
+                                                    }
                                                   />
                                                 </div>
                                               </Col>
@@ -1893,31 +2008,57 @@ const ProjectDetailDescription = () => {
                                                 className="d-flex justify-content-center align-items-center"
                                                 id={`hourInDay${workLogDetail.workLogId}`}
                                               >
-                                                Hours in day: {workLogDetail.hourWorkInDay}
+                                                Hours in day:{" "}
+                                                {workLogDetail.hourWorkInDay}
                                               </Col>
                                               <Col md={2}>
                                                 <Select
                                                   options={optionsStatus}
                                                   name="choices-single-categories"
                                                   id={`statusWorkLog${key2}${key}`}
-                                                  value={valuesStatus[`${key2}${key}`]}
+                                                  value={
+                                                    valuesStatus[
+                                                      `${key2}${key}`
+                                                    ]
+                                                  }
                                                   onChange={handleChangeStatus}
                                                   aria-label="Default select example"
-                                                  menuPosition={'fixed'}
-                                                  isDisabled={editableRowId !== workLogDetail.workLogId}
+                                                  menuPosition={"fixed"}
+                                                  isDisabled={
+                                                    editableRowId !==
+                                                    workLogDetail.workLogId
+                                                  }
                                                 />
                                               </Col>
                                               <Col
                                                 md={1}
                                                 className="d-flex justify-content-center align-items-center"
                                               >
-                                                {payPeriodDetail.statusString == "Created" && (
+                                                {payPeriodDetail.statusString ==
+                                                  "Created" && (
                                                   <>
                                                     {isCompleteEditWorkLog && ( // Kiểm tra nếu isCompleteEditWorkLog === false
-                                                      <DropdownAntd trigger={['click']} menu={{ items: profileItems2 }} onClick={() =>
-                                                        setKeyAndIdWorkLog(workLogDetail.workLogId, key)
-                                                      }>
-                                                        <a style={{ height: "max-content" }} onClick={(e) => e.preventDefault()}>
+                                                      <DropdownAntd
+                                                        trigger={["click"]}
+                                                        menu={{
+                                                          items: profileItems2,
+                                                        }}
+                                                        onClick={() =>
+                                                          setKeyAndIdWorkLog(
+                                                            workLogDetail.workLogId,
+                                                            key
+                                                          )
+                                                        }
+                                                      >
+                                                        <a
+                                                          style={{
+                                                            height:
+                                                              "max-content",
+                                                          }}
+                                                          onClick={(e) =>
+                                                            e.preventDefault()
+                                                          }
+                                                        >
                                                           <FontAwesomeIcon
                                                             icon={faGear}
                                                             size="xl"
@@ -1930,40 +2071,54 @@ const ProjectDetailDescription = () => {
                                                 )}
                                               </Col>
                                             </Row>
-                                            {editableRowId == workLogDetail.workLogId ? (
+                                            {editableRowId ==
+                                            workLogDetail.workLogId ? (
                                               <>
                                                 <Row>
                                                   <Col
                                                     md={2}
                                                     style={{ textAlign: "end" }}
                                                     className="d-flex gap-2 justify-content-end"
-                                                  >
-                                                  </Col>
+                                                  ></Col>
                                                   <Col
                                                     md={6}
                                                     style={{ textAlign: "end" }}
                                                     className="d-flex gap-2 justify-content-end"
                                                   >
-                                                    <p id={`timeErrorWorkLog${workLogDetail.workLogId}`} className="text-danger mt-2"></p>
+                                                    <p
+                                                      id={`timeErrorWorkLog${workLogDetail.workLogId}`}
+                                                      className="text-danger mt-2"
+                                                    ></p>
                                                   </Col>
                                                   <Col
                                                     md={4}
                                                     style={{ textAlign: "end" }}
                                                     className="d-flex gap-2 justify-content-end"
                                                   >
-                                                    <div className="btn btn-soft-danger"
-                                                      onClick={() => cancelUpdateWorkLog()}
+                                                    <div
+                                                      className="btn btn-soft-danger"
+                                                      onClick={() =>
+                                                        cancelUpdateWorkLog()
+                                                      }
                                                     >
                                                       Cancel
                                                     </div>
-                                                    <button className="btn btn-soft-blue "
+                                                    <button
+                                                      className="btn btn-soft-blue "
                                                       onClick={() => {
                                                         saveUpdateWorkLog();
                                                       }}
-                                                      disabled={loadingSaveWorkLog}
+                                                      disabled={
+                                                        loadingSaveWorkLog
+                                                      }
                                                     >
                                                       {loadingSaveWorkLog ? (
-                                                        <div style={{ width: "45px" }} className="d-flex align-items-center justify-content-center">
+                                                        <div
+                                                          style={{
+                                                            width: "45px",
+                                                          }}
+                                                          className="d-flex align-items-center justify-content-center"
+                                                        >
                                                           <HashLoader
                                                             size={20}
                                                             color={"white"}
@@ -1974,13 +2129,10 @@ const ProjectDetailDescription = () => {
                                                         "Save"
                                                       )}
                                                     </button>
-
                                                   </Col>
                                                 </Row>
                                               </>
-                                            ) : (
-                                              null
-                                            )}
+                                            ) : null}
                                           </div>
                                         </div>
                                       ))}

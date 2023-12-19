@@ -341,6 +341,13 @@ export default {
       getAllTransactionHistory: "/Transaction",
       getTransactionByCompanyIdAndPaging:
         "/Transaction/ByCompany?companyId=${companyId}&PageIndex=${PageIndex}&PageSize=${PageSize}&PayPalTransactionId=${PayPalTransactionId}&Amount=${Amount}&Status=${Status}",
+
+      getTransactionHistoryCreated:
+        "/Transaction?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=1",
+      getTransactionHistorySuccess:
+        "/Transaction?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=2",
+      getTransactionHistoryFailed:
+        "/Transaction?PageIndex=${PageIndex}&PageSize=${PageSize}&Status=3",
     },
     notification: {
       postUserDevice: "/UserDevice",
