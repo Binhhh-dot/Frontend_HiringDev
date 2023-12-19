@@ -812,6 +812,9 @@ const ContractList = () => {
                                                           : contractListAllNew.statusString ===
                                                             "Failed"
                                                           ? "badge bg-danger text-light fs-12"
+                                                          : contractListAllNew.statusString ===
+                                                            "Terminated"
+                                                          ? "badge bg-secondary text-light fs-12"
                                                           : ""
                                                       }
                                                     >
@@ -1641,6 +1644,9 @@ const ContractList = () => {
                                                           : contractListAllNew.statusString ===
                                                             "Failed"
                                                           ? "badge bg-danger text-light fs-12"
+                                                          : contractListAllNew.statusString ===
+                                                            "Terminated"
+                                                          ? "badge bg-secondary text-light fs-12"
                                                           : ""
                                                       }
                                                     >

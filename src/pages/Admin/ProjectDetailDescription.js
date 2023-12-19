@@ -96,6 +96,8 @@ const ProjectDetailDescription = () => {
   const [listWorklog, setListWorklog] = useState([]);
 
   //------------------------------------------------
+  const [iconKickDevVisible, setIconKickDevVisible] = useState(true);
+  //------------------------------------------------
   const [selectProjectId, setSelectProjectId] = useState(null);
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const openModalUpdateProject = () => {
@@ -264,8 +266,6 @@ const ProjectDetailDescription = () => {
   };
 
   //--------------------------------------------------------------------------------
-
-  //--------------------------------------------------------------------------------
   const [activeTab, setActiveTab] = useState("1");
   const tabChange = (tab) => {
     if (activeTab) {
@@ -369,6 +369,7 @@ const ProjectDetailDescription = () => {
       );
       console.log(response.data.data);
       console.log("Kick OK");
+      fetchGetDeveloperByProject();
     } catch (error) {
       console.error("Error fetching remove developer from project", error);
     }
@@ -404,11 +405,12 @@ const ProjectDetailDescription = () => {
   const ClosingProcess = async () => {
     let response;
     try {
-      response = projectServices.ClosingProcessProjectInManager(
+      response = await projectServices.ClosingProcessProjectInManager(
         state.projectId
       );
       console.log(response);
       fetchGetProjectDetailByProjectId();
+
       toast.success("Closing process project successfully");
     } catch (error) {
       console.error("Error clossing process project", error);
@@ -434,7 +436,7 @@ const ProjectDetailDescription = () => {
 
   //--------------------------------------------------------------------------------
   const [loadPayPeriod, setLoadPayPeriod] = useState(false);
-  const [payPeriodDetail, setPayPeriodDetail] = useState();
+  const [payPeriodDetail, setPayPeriodDetail] = useState(null);
   const [payRollDetail, setPayRollDetail] = useState([]);
   const [workLoglist, setWorkLoglist] = useState([]);
   const [listMonth, setListMonth] = useState([]);
@@ -1120,10 +1122,17 @@ const ProjectDetailDescription = () => {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu>
-                        {/* Nội dung của dropdown ở đây */}
-                        <Dropdown.Item onClick={() => openModalUpdateProject()}>
-                          Update Project
-                        </Dropdown.Item>
+                        {projectDetail.statusString ===
+                        "Closed" ? null : projectDetail.statusString ===
+                          "Completed" ? null : projectDetail.statusString ===
+                          "Closing process" ? null : (
+                          <Dropdown.Item
+                            onClick={() => openModalUpdateProject()}
+                          >
+                            Update Project
+                          </Dropdown.Item>
+                        )}
+
                         {closedProjectButtonVisible && (
                           <Dropdown.Item onClick={ClosingProcess}>
                             Closed Project
@@ -1384,7 +1393,26 @@ const ProjectDetailDescription = () => {
                                   lg={2}
                                   className="d-flex justify-content-center"
                                 >
-                                  <p className="mb-0 badge bg-blue text-light fs-13 ">
+                                  <p
+                                    className={
+                                      devInProjectDetail.hiredDevStatusString ===
+                                      "Working"
+                                        ? "badge bg-blue text-light fs-12"
+                                        : devInProjectDetail.hiredDevStatusString ===
+                                          "Completed"
+                                        ? "badge bg-success text-light fs-12"
+                                        : devInProjectDetail.hiredDevStatusString ===
+                                          "Terminated"
+                                        ? "badge bg-danger text-light fs-12"
+                                        : devInProjectDetail.hiredDevStatusString ===
+                                          "Closing process"
+                                        ? "badge bg-peru text-light fs-12"
+                                        : devInProjectDetail.hiredDevStatusString ===
+                                          "Project closed"
+                                        ? "badge bg-secondary text-light fs-12"
+                                        : ""
+                                    }
+                                  >
                                     {devInProjectDetail.hiredDevStatusString}
                                   </p>
                                 </Col>
@@ -1405,10 +1433,13 @@ const ProjectDetailDescription = () => {
                                           color: "#ACB4B6",
                                         }}
                                       >
-                                        <FontAwesomeIcon
-                                          icon={faUserMinus}
-                                          size="xl"
-                                        />
+                                        {devInProjectDetail.hiredDevStatusString !==
+                                        "Working" ? null : (
+                                          <FontAwesomeIcon
+                                            icon={faUserMinus}
+                                            size="xl"
+                                          />
+                                        )}
                                       </Dropdown.Toggle>
 
                                       <Dropdown.Menu>
@@ -1612,7 +1643,7 @@ const ProjectDetailDescription = () => {
                                     "job-box-dev-in-list-hiringRequest-for-dev card"
                                   }
                                 >
-                                  {payPeriodDetail !== null ? (
+                                  {payPeriodDetail ? (
                                     <div className="p-4">
                                       <Row className="align-items-center">
                                         <Col

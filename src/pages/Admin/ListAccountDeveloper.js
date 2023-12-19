@@ -69,7 +69,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 import SiderBarWebAdmin from "./SlideBar/SiderBarWebAdmin";
 import UpdateDeveloperAccountPopup from "./UpdateDeveloperAccountPopup/UpdateDeveloperAccountPopup";
@@ -98,7 +98,6 @@ const { Column, ColumnGroup } = Table;
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Search } = Input;
-
 
 const ListAccountDeveloper = () => {
   let developerDetail;
@@ -175,6 +174,7 @@ const ListAccountDeveloper = () => {
     try {
       const response = await userSerrvices.getListDeveloper();
       setDeveloper(response.data.data);
+      console.log(response.data.data);
       return response;
     } catch (error) {
       console.error("Error fetching user paging:", error);
@@ -470,13 +470,13 @@ const ListAccountDeveloper = () => {
           skillIds
         );
         console.log(response);
-        toast.success("Create account successfully!")
-        fetchDeveloperPaging();
+        toast.success("Create account successfully!");
+
         setVisibleModal1(false);
+        fetchDeveloperPaging();
       } catch (error) {
         console.error("Error create dev:", error);
-        toast.error("Create account fail!")
-
+        toast.error("Create account fail!");
       }
     } else {
     }
@@ -534,12 +534,10 @@ const ListAccountDeveloper = () => {
   const handleDeleteConfirm = async (userId) => {
     try {
       await userSerrvices.deleteDeveloper(userId);
-      toast.success("Account deleted successfully!")
-
+      toast.success("Account deleted successfully!");
     } catch (error) {
       console.error("Update failed:", error);
-      toast.error("Account deleted fails")
-
+      toast.error("Account deleted fails");
     }
   };
 
@@ -569,7 +567,6 @@ const ListAccountDeveloper = () => {
         <SiderBarWebAdmin choose={"menu-key/5"}></SiderBarWebAdmin>
         {/* <SiderBarWebAdmin choose={"menu-key/5"}></SiderBarWebAdmin> */}
         <Layout>
-
           <NavBarWebAdmin></NavBarWebAdmin>
 
           <div
@@ -588,7 +585,7 @@ const ListAccountDeveloper = () => {
                   margin: "0px 0px 0px 20px",
                   color: "black",
                   fontSize: "20px",
-                  fontWeight: "bold"
+                  fontWeight: "bold",
                 }}
               >
                 MANAGE DEVELOPER
@@ -688,8 +685,8 @@ const ListAccountDeveloper = () => {
                             text === "Available"
                               ? "badge text-bg-success"
                               : text === "Selected On Request"
-                                ? "badge text-bg-info"
-                                : "badge bg-warning text-light"
+                              ? "badge text-bg-info"
+                              : "badge bg-warning text-light"
                           }
                         >
                           {text}
@@ -715,16 +712,30 @@ const ListAccountDeveloper = () => {
                             />
                           </a>
                           <Switch
-                            checked={record.statusString === 'Active' && (switchStatusMap[record.userId] || true)}
+                            checked={
+                              record.statusString === "Active" &&
+                              (switchStatusMap[record.userId] || true)
+                            }
                             onChange={(checked, event) => {
                               event.stopPropagation();
 
                               handleDeleteClick(record.userId);
-                              setSwitchStatusMap((prevMap) => ({ ...prevMap, [record.userId]: checked }));
+                              setSwitchStatusMap((prevMap) => ({
+                                ...prevMap,
+                                [record.userId]: checked,
+                              }));
                             }}
-
                             size="small" // Set size to "small" for iOS-like appearance
-                            style={{ backgroundColor: record.userStatus === 'Active' ? '#4CD964' : '#D1D1D6', borderColor: record.userStatus === 'Active' ? '#4CD964' : '#D1D1D6' }}
+                            style={{
+                              backgroundColor:
+                                record.userStatus === "Active"
+                                  ? "#4CD964"
+                                  : "#D1D1D6",
+                              borderColor:
+                                record.userStatus === "Active"
+                                  ? "#4CD964"
+                                  : "#D1D1D6",
+                            }}
                           />
                         </Space>
                       )}
@@ -892,10 +903,10 @@ const ListAccountDeveloper = () => {
                         hRInfo.devStatusString === "On Working"
                           ? "badge bg-warning text-light"
                           : hRInfo.devStatusString === "Selected On Request"
-                            ? "badge bg-info text-light"
-                            : hRInfo.devStatusString === "Available"
-                              ? "badge bg-success text-light"
-                              : "badge text-bg-danger"
+                          ? "badge bg-info text-light"
+                          : hRInfo.devStatusString === "Available"
+                          ? "badge bg-success text-light"
+                          : "badge text-bg-danger"
                       }
                     >
                       {hRInfo.devStatusString}
@@ -908,8 +919,8 @@ const ListAccountDeveloper = () => {
                         hRInfo.userStatusString === "Active"
                           ? "badge  text-bg-success"
                           : hRInfo.userStatusString === "Selected On Request"
-                            ? "badge bg-warning text-light"
-                            : "badge text-bg-danger"
+                          ? "badge bg-warning text-light"
+                          : "badge text-bg-danger"
                       }
                     >
                       {hRInfo.userStatusString}
