@@ -14,6 +14,7 @@ import reportServices from "../../../services/report.services";
 import { Modal as AntdModal } from "antd";
 import img0 from "../../../assets/images/user/img-00.jpg";
 import transactionHistoryServices from "../../../services/transactionHistory.services";
+import { Skeleton } from 'antd';
 
 
 const TransactionVacancyList = (a) => {
@@ -25,7 +26,7 @@ const TransactionVacancyList = (a) => {
     const [selectReportDetail, setSelectReportDetail] = useState({});
     const [projectDetail, setProjectDetail] = useState({});
     const [devInterviewDetail, setDevInterviewDetail] = useState([]);
-
+    const [loading, setLoading] = useState(true);
     const [options, setOptions] = useState([]);
 
 
@@ -141,7 +142,9 @@ const TransactionVacancyList = (a) => {
             console.log(pageSize)
             setTotalPages(Math.ceil(response.data.paging.total / pageSize));
             console.log(totalPages)
+            setLoading(false)
         } catch (error) {
+            setLoading(false)
             console.error("Error fetching job vacancies:", error);
         }
     };
@@ -178,15 +181,20 @@ const TransactionVacancyList = (a) => {
     };
 
     useEffect(() => {
+        setLoading(true)
         fetchJobVacancies();
     }, [currentPage]);
 
     useEffect(() => {
+        setLoading(true)
+
         fetchJobVacancies();
     }, [statuses]);
 
 
     const onSearch = () => {
+        setLoading(true)
+
         setCurrentPage(1);
         fetchJobVacancies();
     };
@@ -436,188 +444,202 @@ const TransactionVacancyList = (a) => {
                         </Row>
                     </AntdModal>
                     <div>
-                        {jobVacancyList.length > 0 ? (
+                        {loading ? ( // Render Skeleton while loading is true
                             <>
-                                {jobVacancyList.map((jobVacancyListDetails, key) => (
-                                    <div
-                                        key={key}
-                                        className={
-                                            " card mt-4"
-                                        }
-                                        // to={`/projectdetailhr?Id=${jobVacancyListDetails.projectId}`}
-                                        onClick={() =>
-                                            midleSelect(jobVacancyListDetails)
-                                        }
-                                    >
-                                        <div className="p-4" style={{ color: "black" }}>
-                                            <Row className="align-items-center">
-                                                <Col md={1}>
-                                                    <div className="d-flex justify-content-center">
-                                                        <i
-                                                            className="uil uil-bill"
-                                                            style={{ fontSize: "50px" }}
-                                                        ></i>
-                                                    </div>
-                                                </Col>
-
-                                                <Col md={3}>
-                                                    <div>
-                                                        <h5 className="fs-18 mb-0">
-                                                            <Link
-                                                                to="#"
-                                                                className="text-dark"
-                                                            //   state={{
-                                                            //     reportId: reportListNew.reportId,
-                                                            //     developerId:
-                                                            //       reportListNew.developerId,
-                                                            //     projectId: reportListNew.projectId,
-                                                            //   }}
-                                                            >
-                                                                {
-                                                                    jobVacancyListDetails.companyName
-                                                                }
-                                                            </Link>
-                                                        </h5>
-                                                        <p className="text-muted fs-14 mb-0">
-                                                            {
-                                                                jobVacancyListDetails.payPalTransactionId
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                </Col>
-
-                                                <Col md={3}>
-                                                    <div className="d-flex flex-column gap-1 justify-content-center">
-                                                        <div>
-                                                            <p className="text-muted mb-0 fs-13">
-                                                                Project Name
-                                                            </p>
-                                                            <p
-                                                                className="mb-0 fs-17"
-                                                                style={{ fontWeight: "600" }}
-                                                            >
-                                                                {
-                                                                    jobVacancyListDetails.projectName
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-muted mb-0 fs-13">
-                                                                Project Code
-                                                            </p>
-                                                            <p
-                                                                className="mb-0 fs-17"
-                                                                style={{ fontWeight: "600" }}
-                                                            >
-                                                                {
-                                                                    jobVacancyListDetails.projectCode
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </Col>
-
-                                                <Col md={3}>
-                                                    <div className="d-flex flex-column gap-1 justify-content-center">
-                                                        <div>
-                                                            <p className="text-muted mb-0 fs-13">
-                                                                Pay For Month
-                                                            </p>
-                                                            <p
-                                                                className="mb-0 fs-17"
-                                                                style={{ fontWeight: "600" }}
-                                                            >
-                                                                {
-                                                                    jobVacancyListDetails.payForMonth
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-muted mb-0 fs-13">
-                                                                Payment Method
-                                                            </p>
-                                                            <p
-                                                                className="mb-0 fs-17"
-                                                                style={{ fontWeight: "600" }}
-                                                            >
-                                                                {
-                                                                    jobVacancyListDetails.paymentMethod
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </Col>
-
-                                                <Col
-                                                    md={2}
-                                                    className="d-flex justify-content-center"
-                                                >
-                                                    <div className="d-flex align-items-center">
-                                                        <span
-                                                            className={
-                                                                jobVacancyListDetails.statusString ===
-                                                                    "Pending"
-                                                                    ? "badge bg-warning text-light fs-12"
-                                                                    : jobVacancyListDetails.statusString ===
-                                                                        "Created"
-                                                                        ? "badge bg-blue text-light fs-12"
-                                                                        : jobVacancyListDetails.statusString ===
-                                                                            "Success"
-                                                                            ? "badge bg-newGreen text-light fs-12"
-                                                                            : jobVacancyListDetails.statusString ===
-                                                                                "Failed"
-                                                                                ? "badge bg-danger text-light fs-12"
-                                                                                : ""
-                                                            }
-                                                        >
-                                                            {jobVacancyListDetails.statusString}
-                                                        </span>
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        </div>
-
-                                    </div>
-                                ))}
+                                <Skeleton active />
+                                <Skeleton active />
+                                <Skeleton active />
+                                {/* Add more Skeleton components as needed */}
                             </>
-                        ) : (
-                            <Empty />
-                        )}
+                        ) :
+                            jobVacancyList.length > 0 ? (
+                                <>
+                                    {jobVacancyList.map((jobVacancyListDetails, key) => (
+                                        <div
+                                            key={key}
+                                            className={
+                                                " card mt-4"
+                                            }
+                                            // to={`/projectdetailhr?Id=${jobVacancyListDetails.projectId}`}
+                                            onClick={() =>
+                                                midleSelect(jobVacancyListDetails)
+                                            }
+                                        >
+                                            <div className="p-4" style={{ color: "black" }}>
+                                                <Row className="align-items-center">
+                                                    <Col md={1}>
+                                                        <div className="d-flex justify-content-center">
+                                                            <i
+                                                                className="uil uil-bill"
+                                                                style={{ fontSize: "50px" }}
+                                                            ></i>
+                                                        </div>
+                                                    </Col>
+
+                                                    <Col md={3}>
+                                                        <div>
+                                                            <h5 className="fs-18 mb-0">
+                                                                <Link
+                                                                    to="#"
+                                                                    className="text-dark"
+                                                                //   state={{
+                                                                //     reportId: reportListNew.reportId,
+                                                                //     developerId:
+                                                                //       reportListNew.developerId,
+                                                                //     projectId: reportListNew.projectId,
+                                                                //   }}
+                                                                >
+                                                                    {
+                                                                        jobVacancyListDetails.companyName
+                                                                    }
+                                                                </Link>
+                                                            </h5>
+                                                            <p className="text-muted fs-14 mb-0">
+                                                                {
+                                                                    jobVacancyListDetails.payPalTransactionId
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </Col>
+
+                                                    <Col md={3}>
+                                                        <div className="d-flex flex-column gap-1 justify-content-center">
+                                                            <div>
+                                                                <p className="text-muted mb-0 fs-13">
+                                                                    Project Name
+                                                                </p>
+                                                                <p
+                                                                    className="mb-0 fs-17"
+                                                                    style={{ fontWeight: "600" }}
+                                                                >
+                                                                    {
+                                                                        jobVacancyListDetails.projectName
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-muted mb-0 fs-13">
+                                                                    Project Code
+                                                                </p>
+                                                                <p
+                                                                    className="mb-0 fs-17"
+                                                                    style={{ fontWeight: "600" }}
+                                                                >
+                                                                    {
+                                                                        jobVacancyListDetails.projectCode
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </Col>
+
+                                                    <Col md={3}>
+                                                        <div className="d-flex flex-column gap-1 justify-content-center">
+                                                            <div>
+                                                                <p className="text-muted mb-0 fs-13">
+                                                                    Pay For Month
+                                                                </p>
+                                                                <p
+                                                                    className="mb-0 fs-17"
+                                                                    style={{ fontWeight: "600" }}
+                                                                >
+                                                                    {
+                                                                        jobVacancyListDetails.payForMonth
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-muted mb-0 fs-13">
+                                                                    Payment Method
+                                                                </p>
+                                                                <p
+                                                                    className="mb-0 fs-17"
+                                                                    style={{ fontWeight: "600" }}
+                                                                >
+                                                                    {
+                                                                        jobVacancyListDetails.paymentMethod
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </Col>
+
+                                                    <Col
+                                                        md={2}
+                                                        className="d-flex justify-content-center"
+                                                    >
+                                                        <div className="d-flex align-items-center">
+                                                            <span
+                                                                className={
+                                                                    jobVacancyListDetails.statusString ===
+                                                                        "Pending"
+                                                                        ? "badge bg-warning text-light fs-12"
+                                                                        : jobVacancyListDetails.statusString ===
+                                                                            "Created"
+                                                                            ? "badge bg-blue text-light fs-12"
+                                                                            : jobVacancyListDetails.statusString ===
+                                                                                "Success"
+                                                                                ? "badge bg-newGreen text-light fs-12"
+                                                                                : jobVacancyListDetails.statusString ===
+                                                                                    "Failed"
+                                                                                    ? "badge bg-danger text-light fs-12"
+                                                                                    : ""
+                                                                }
+                                                            >
+                                                                {jobVacancyListDetails.statusString}
+                                                            </span>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                            </div>
+
+                                        </div>
+                                    ))}
+                                </>
+                            ) : (
+                                <Empty />
+                            )}
                     </div>
 
-                    {totalPages > 1 && (
+                    {loading ? ( // Render Skeleton while loading is true
                         <>
-                            <Row>
-                                <Col lg={12} className="mt-4 pt-2">
-                                    <nav aria-label="Page navigation example">
-                                        <div className="pagination job-pagination mb-0 justify-content-center">
-                                            <li
-                                                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-                                            >
-                                                <div
-                                                    className="page-link"
 
-                                                    tabIndex="-1"
-                                                    onClick={handlePrevPage}
-                                                >
-                                                    <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                                </div>
-                                            </li>
-                                            {renderPageNumbers()}
-                                            <li
-                                                className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                                                    }`}
-                                            >
-                                                <div className="page-link" onClick={handleNextPage}>
-                                                    <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                                </div>
-                                            </li>
-                                        </div>
-                                    </nav>
-                                </Col>
-                            </Row>
+                            {/* Add more Skeleton components as needed */}
                         </>
-                    )}
+                    ) :
+                        totalPages > 1 && (
+                            <>
+                                <Row>
+                                    <Col lg={12} className="mt-4 pt-2">
+                                        <nav aria-label="Page navigation example">
+                                            <div className="pagination job-pagination mb-0 justify-content-center">
+                                                <li
+                                                    className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+                                                >
+                                                    <div
+                                                        className="page-link"
+
+                                                        tabIndex="-1"
+                                                        onClick={handlePrevPage}
+                                                    >
+                                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                                    </div>
+                                                </li>
+                                                {renderPageNumbers()}
+                                                <li
+                                                    className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                                        }`}
+                                                >
+                                                    <div className="page-link" onClick={handleNextPage}>
+                                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                                    </div>
+                                                </li>
+                                            </div>
+                                        </nav>
+                                    </Col>
+                                </Row>
+                            </>
+                        )}
 
                 </Col>
                 <Col lg={3}>

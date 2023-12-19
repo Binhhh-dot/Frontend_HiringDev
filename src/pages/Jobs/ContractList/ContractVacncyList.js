@@ -15,6 +15,7 @@ import { Modal as AntdModal } from "antd";
 import img0 from "../../../assets/images/user/img-00.jpg";
 import contractServices from "../../../services/contract.services";
 import { useNavigate } from "react-router-dom";
+import { Skeleton } from 'antd';
 
 const ContractVacncyList = (a) => {
     //Apply Now Model
@@ -25,7 +26,7 @@ const ContractVacncyList = (a) => {
     const [selectReportDetail, setSelectReportDetail] = useState({});
     const [projectDetail, setProjectDetail] = useState({});
     const [devInterviewDetail, setDevInterviewDetail] = useState([]);
-
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const [options, setOptions] = useState([]);
 
@@ -140,7 +141,9 @@ const ContractVacncyList = (a) => {
 
             setTotalPages(Math.ceil(response.data.paging.total / pageSize));
             console.log(totalPages)
+            setLoading(false)
         } catch (error) {
+            setLoading(false)
             console.error("Error fetching job vacancies:", error);
         }
     };
@@ -177,15 +180,18 @@ const ContractVacncyList = (a) => {
     };
 
     useEffect(() => {
+        setLoading(true)
         fetchJobVacancies();
     }, [currentPage]);
 
     useEffect(() => {
+        setLoading(true)
         fetchJobVacancies();
     }, [statuses]);
 
 
     const onSearch = () => {
+        setLoading(true)
         setCurrentPage(1);
         fetchJobVacancies();
     };
@@ -248,7 +254,14 @@ const ContractVacncyList = (a) => {
                         </Form>
                     </div>
                     <div>
-                        {jobVacancyList.length > 0 ? (
+                        {loading ? ( // Render Skeleton while loading is true
+                            <>
+                                <Skeleton active />
+                                <Skeleton active />
+                                <Skeleton active />
+                                {/* Add more Skeleton components as needed */}
+                            </>
+                        ) : jobVacancyList.length > 0 ? (
                             <>
                                 {jobVacancyList.map((jobVacancyListDetails, key) => (
                                     <div
@@ -385,8 +398,11 @@ const ContractVacncyList = (a) => {
                             <Empty />
                         )}
                     </div>
+                    {loading ? ( // Render Skeleton while loading is true
+                        <>
 
-                    {totalPages > 1 && (
+                        </>
+                    ) : totalPages > 1 && (
                         <>
                             <Row>
                                 <Col lg={12} className="mt-4 pt-2">

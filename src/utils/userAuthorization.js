@@ -3,7 +3,15 @@ const userAuthorization = (localStorageRole, linkPage) => {
         '/projectdetailhr',
         '/projectlist',
         '/hiringrequestlistincompanypartnerdetail',
-        '/laborSubleasingAgreement'
+        '/laborSubleasingAgreement',
+        '/notificationList',
+        '/reportList',
+        '/contractListHr',
+        '/transactionlist',
+        '/createproject',
+        '/createReport',
+        '/companydetails',
+        '/myprofile',
     ];
     const listPageManagerAccpet = [
         '/projectlistinmanager',

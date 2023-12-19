@@ -10,6 +10,7 @@ import projectServices from "../../../services/project.services";
 import projectTypeServices from "../../../services/projectType.services";
 import ProjectType from "../../Home/SubSection/ProjectType";
 import { Empty } from 'antd';
+import { Skeleton } from 'antd';
 
 const ProjectVacancyList = (a) => {
     //Apply Now Model
@@ -18,7 +19,7 @@ const ProjectVacancyList = (a) => {
     const [toggleFifth, setToggleFifth] = useState(false);
     const [toggleSecond, setToggleSecond] = useState(true);
     const [statuses, setStatuses] = useState(0);
-
+    const [loading, setLoading] = useState(true);
 
     const [options, setOptions] = useState([]);
 
@@ -139,12 +140,15 @@ const ProjectVacancyList = (a) => {
             console.log(pageSize)
             setTotalPages(Math.ceil(response.data.paging.total / pageSize));
             console.log(totalPages)
+            setLoading(false)
         } catch (error) {
+            setLoading(false)
             console.error("Error fetching job vacancies:", error);
         }
     };
 
     useEffect(() => {
+        setLoading(true)
         setCurrentPage(1);
         fetchJobVacancies();
     }, [statuses]);
@@ -159,16 +163,19 @@ const ProjectVacancyList = (a) => {
     };
 
     useEffect(() => {
+        setLoading(true)
         fetchJobVacancies();
     }, [currentPage]);
 
     useEffect(() => {
+        setLoading(true)
         setCurrentPage(1);
         fetchJobVacancies();
     }, [skill]);
 
 
     const onSearch = () => {
+        setLoading(true)
         setCurrentPage(1);
         fetchJobVacancies();
     };
@@ -236,136 +243,147 @@ const ProjectVacancyList = (a) => {
                         </Form>
                     </div>
                     <div>
-                        {jobVacancyList.length > 0 ? (
+                        {loading ? ( // Render Skeleton while loading is true
                             <>
-                                {jobVacancyList.map((jobVacancyListDetails, key) => (
-                                    <Link
-                                        key={key}
-                                        className={
-                                            "job-box card mt-4"
-                                        }
-                                        to={`/projectdetailhr?Id=${jobVacancyListDetails.projectId}`}
-
-                                    >
-                                        <div className="p-4">
-                                            <Row className="align-items-center">
-                                                <Col md={2}>
-                                                    <div>
-                                                        <div >
-                                                            <img
-                                                                style={{
-                                                                    width: "80px",
-                                                                    height: "80px",
-                                                                }}
-                                                                src={jobVacancyListDetails.companyImage}
-                                                                alt=""
-                                                                className="img-fluid rounded-3 img-avt-hiring-request"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </Col>
-
-                                                <Col md={3} className="px-0">
-                                                    <div>
-                                                        <h5 className="fs-18 mb-0">
-                                                            <Link
-                                                                to={`/projectdetailhr?Id=${jobVacancyListDetails.projectId}`}
-                                                                className="text-dark"
-                                                            >
-                                                                {jobVacancyListDetails.projectName}
-                                                            </Link>
-                                                        </h5>
-                                                        <p className="text-muted fs-14 mb-0">
-                                                            {jobVacancyListDetails.projectCode}
-                                                        </p>
-                                                    </div>
-                                                </Col>
-
-                                                <Col md={2}>
-                                                    <div className="d-flex mb-2">
-                                                        <div className="flex-shrink-0">
-                                                            <i className="uil uil-user-check text-primary me-1"></i>
-                                                        </div>
-                                                        <p className="text-muted mb-0">
-                                                            {jobVacancyListDetails.numberOfDev}
-                                                        </p>
-                                                    </div>
-                                                </Col>
-
-                                                <Col md={3}>
-                                                    <div className="d-flex mb-0">
-                                                        <div className="flex-shrink-0">
-                                                            <i className="uil uil-clock-three text-primary me-1"></i>
-                                                        </div>
-                                                        <p className="text-muted mb-0">
-                                                            {" "}
-                                                            {jobVacancyListDetails.postedTime}
-                                                        </p>
-                                                    </div>
-                                                </Col>
-
-                                                <Col md={2}>
-                                                    <div>
-                                                        <span
-                                                            className={
-                                                                jobVacancyListDetails.statusString === "Preparing"
-                                                                    ? "badge bg-warning text-light fs-12"
-                                                                    : jobVacancyListDetails.statusString === "In process"
-                                                                        ? "badge bg-blue text-light fs-12"
-                                                                        : jobVacancyListDetails.statusString === "Closed"
-                                                                            ? "badge bg-teal text-light fs-12"
-                                                                            : jobVacancyListDetails.statusString === "Closing process"
-                                                                                ? "badge bg-teal text-light fs-12"
-                                                                                : ""
-                                                            }
-                                                        >
-                                                            {jobVacancyListDetails.statusString}
-                                                        </span>
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        </div>
-                                    </Link>
-                                ))}
+                                <Skeleton active />
+                                <Skeleton active />
+                                <Skeleton active />
                             </>
-                        ) : (
-                            <Empty />
-                        )}
-                    </div>
+                        ) :
+                            jobVacancyList.length > 0 ? (
+                                <>
+                                    {jobVacancyList.map((jobVacancyListDetails, key) => (
+                                        <Link
+                                            key={key}
+                                            className={
+                                                "job-box card mt-4"
+                                            }
+                                            to={`/projectdetailhr?Id=${jobVacancyListDetails.projectId}`}
 
-                    {totalPages > 1 && (
+                                        >
+                                            <div className="p-4">
+                                                <Row className="align-items-center">
+                                                    <Col md={2}>
+                                                        <div>
+                                                            <div >
+                                                                <img
+                                                                    style={{
+                                                                        width: "80px",
+                                                                        height: "80px",
+                                                                    }}
+                                                                    src={jobVacancyListDetails.companyImage}
+                                                                    alt=""
+                                                                    className="img-fluid rounded-3 img-avt-hiring-request"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </Col>
+
+                                                    <Col md={3} className="px-0">
+                                                        <div>
+                                                            <h5 className="fs-18 mb-0">
+                                                                <Link
+                                                                    to={`/projectdetailhr?Id=${jobVacancyListDetails.projectId}`}
+                                                                    className="text-dark"
+                                                                >
+                                                                    {jobVacancyListDetails.projectName}
+                                                                </Link>
+                                                            </h5>
+                                                            <p className="text-muted fs-14 mb-0">
+                                                                {jobVacancyListDetails.projectCode}
+                                                            </p>
+                                                        </div>
+                                                    </Col>
+
+                                                    <Col md={2}>
+                                                        <div className="d-flex mb-2">
+                                                            <div className="flex-shrink-0">
+                                                                <i className="uil uil-user-check text-primary me-1"></i>
+                                                            </div>
+                                                            <p className="text-muted mb-0">
+                                                                {jobVacancyListDetails.numberOfDev}
+                                                            </p>
+                                                        </div>
+                                                    </Col>
+
+                                                    <Col md={3}>
+                                                        <div className="d-flex mb-0">
+                                                            <div className="flex-shrink-0">
+                                                                <i className="uil uil-clock-three text-primary me-1"></i>
+                                                            </div>
+                                                            <p className="text-muted mb-0">
+                                                                {" "}
+                                                                {jobVacancyListDetails.postedTime}
+                                                            </p>
+                                                        </div>
+                                                    </Col>
+
+                                                    <Col md={2}>
+                                                        <div>
+                                                            <span
+                                                                className={
+                                                                    jobVacancyListDetails.statusString === "Preparing"
+                                                                        ? "badge bg-warning text-light fs-12"
+                                                                        : jobVacancyListDetails.statusString === "In process"
+                                                                            ? "badge bg-blue text-light fs-12"
+                                                                            : jobVacancyListDetails.statusString === "Closed"
+                                                                                ? "badge bg-teal text-light fs-12"
+                                                                                : jobVacancyListDetails.statusString === "Closing process"
+                                                                                    ? "badge bg-teal text-light fs-12"
+                                                                                    : ""
+                                                                }
+                                                            >
+                                                                {jobVacancyListDetails.statusString}
+                                                            </span>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </>
+                            ) : (
+                                <Empty />
+                            )}
+                    </div>
+                    {loading ? ( // Render Skeleton while loading is true
                         <>
-                            <Row>
-                                <Col lg={12} className="mt-4 pt-2">
-                                    <nav aria-label="Page navigation example">
-                                        <div className="pagination job-pagination mb-0 justify-content-center">
-                                            <li
-                                                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-                                            >
-                                                <Link
-                                                    className="page-link"
-                                                    to="#"
-                                                    tabIndex="-1"
-                                                    onClick={handlePrevPage}
-                                                >
-                                                    <i className="mdi mdi-chevron-double-left fs-15"></i>
-                                                </Link>
-                                            </li>
-                                            {renderPageNumbers()}
-                                            <li
-                                                className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                                                    }`}
-                                            >
-                                                <Link className="page-link" to="#" onClick={handleNextPage}>
-                                                    <i className="mdi mdi-chevron-double-right fs-15"></i>
-                                                </Link>
-                                            </li>
-                                        </div>
-                                    </nav>
-                                </Col>
-                            </Row>
+
                         </>
-                    )}
+                    ) :
+                        totalPages > 1 && (
+                            <>
+                                <Row>
+                                    <Col lg={12} className="mt-4 pt-2">
+                                        <nav aria-label="Page navigation example">
+                                            <div className="pagination job-pagination mb-0 justify-content-center">
+                                                <li
+                                                    className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+                                                >
+                                                    <Link
+                                                        className="page-link"
+                                                        to="#"
+                                                        tabIndex="-1"
+                                                        onClick={handlePrevPage}
+                                                    >
+                                                        <i className="mdi mdi-chevron-double-left fs-15"></i>
+                                                    </Link>
+                                                </li>
+                                                {renderPageNumbers()}
+                                                <li
+                                                    className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                                        }`}
+                                                >
+                                                    <Link className="page-link" to="#" onClick={handleNextPage}>
+                                                        <i className="mdi mdi-chevron-double-right fs-15"></i>
+                                                    </Link>
+                                                </li>
+                                            </div>
+                                        </nav>
+                                    </Col>
+                                </Row>
+                            </>
+                        )}
 
                 </Col>
                 <Col lg={3}>

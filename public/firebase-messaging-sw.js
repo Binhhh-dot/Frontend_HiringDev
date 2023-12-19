@@ -22,17 +22,16 @@ firebase.initializeApp(firebaseConfig)
 // eslint-disable-next-line no-undef
 const messaging = firebase.messaging()
 
-messaging.onBackgroundMessage(function (payload) {
-    console.log('Received background message ', payload)
 
-    const notificationTitle = payload.notification.title
+messaging.onBackgroundMessage(function (payload) {
+    console.log('Received background message ', payload);
+
+    const notificationTitle = payload.notification.title;
     const notificationOptions = {
         body: payload.notification.body,
-    }
+    };
 
-    // eslint-disable-next-line no-restricted-globals
-    return self.registration.showNotification(
-        notificationTitle,
-        notificationOptions
-    )
-})
+    // Gửi thông điệp đến các thành phần khác của ứng dụng
+    const channel = new BroadcastChannel('notificationChannel');
+    channel.postMessage({ title: notificationTitle, options: notificationOptions });
+});

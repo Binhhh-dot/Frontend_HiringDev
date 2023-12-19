@@ -1612,7 +1612,7 @@ const ProjectDetailDescription = () => {
                                     "job-box-dev-in-list-hiringRequest-for-dev card"
                                   }
                                 >
-                                  {listPeriod !== null ? (
+                                  {payPeriodDetail !== null ? (
                                     <div className="p-4">
                                       <Row className="align-items-center">
                                         <Col
@@ -1621,7 +1621,7 @@ const ProjectDetailDescription = () => {
                                         >
                                           <div>
                                             <span className="mb-0">
-                                              {listPeriod.payPeriodCode}
+                                              {payPeriodDetail.payPeriodCode}
                                             </span>
                                           </div>
                                         </Col>
@@ -1632,7 +1632,7 @@ const ProjectDetailDescription = () => {
                                         >
                                           <div>
                                             <p className="mb-0">
-                                              {listPeriod.startDateMMM}
+                                              {payPeriodDetail.startDateMMM}
                                             </p>
                                           </div>
                                         </Col>
@@ -1643,7 +1643,7 @@ const ProjectDetailDescription = () => {
                                         >
                                           <div>
                                             <p className="mb-0">
-                                              {listPeriod.endDateMMM}
+                                              {payPeriodDetail.endDateMMM}
                                             </p>
                                           </div>
                                         </Col>
@@ -1653,7 +1653,7 @@ const ProjectDetailDescription = () => {
                                           style={{ textAlign: "center" }}
                                         >
                                           <p className="mb-0">
-                                            {listPeriod.totalAmount}
+                                            {payPeriodDetail.totalAmount}
                                           </p>
                                         </Col>
 
@@ -1661,7 +1661,7 @@ const ProjectDetailDescription = () => {
                                           md={2}
                                           style={{ textAlign: "center" }}
                                         >
-                                          {listPeriod.createdAt}
+                                          {payPeriodDetail.createdAt}
                                         </Col>
 
                                         <Col
@@ -1671,22 +1671,22 @@ const ProjectDetailDescription = () => {
                                           <div>
                                             <span
                                               className={
-                                                listPeriod.statusString ===
+                                                payPeriodDetail.statusString ===
                                                 "Created"
                                                   ? "badge bg-blue text-light fs-12"
-                                                  : listPeriod.statusString ===
+                                                  : payPeriodDetail.statusString ===
                                                     "cancelled"
                                                   ? "badge bg-danger text-light fs-12"
-                                                  : listPeriod.statusString ===
+                                                  : payPeriodDetail.statusString ===
                                                     "Inprogress"
                                                   ? "badge bg-primary text-light fs-12"
-                                                  : listPeriod.statusString ===
+                                                  : payPeriodDetail.statusString ===
                                                     "completed"
                                                   ? "badge bg-primary text-light fs-12"
                                                   : ""
                                               }
                                             >
-                                              {listPeriod.statusString}
+                                              {payPeriodDetail.statusString}
                                             </span>
                                           </div>
                                         </Col>
@@ -1870,7 +1870,7 @@ const ProjectDetailDescription = () => {
                                             <>
                                               <DropdownAntd
                                                 trigger={["click"]}
-                                                menu={{ items: profileItems2 }}
+                                                menu={{ items: profileItems3 }}
                                                 onClick={() =>
                                                   setPayRollEdit(
                                                     payRollDetailNew.paySlipId,
@@ -1969,15 +1969,13 @@ const ProjectDetailDescription = () => {
                                               backgroundColor: "#FFFFFF",
                                             }}
                                           >
-                                            <Row>
-                                              <Col
-                                                md={2}
-                                                className="d-flex justify-content-center align-items-center"
+                                            <div className="d-flex flex-row justify-content-between align-items-center ">
+                                              <div
                                                 id={`time-In2-${workLogDetail.workLogId}`}
                                               >
                                                 {workLogDetail.workDateMMM}
-                                              </Col>
-                                              <Col md={2}>
+                                              </div>
+                                              <div>
                                                 <div>
                                                   <input
                                                     type="time"
@@ -1989,8 +1987,8 @@ const ProjectDetailDescription = () => {
                                                     }
                                                   />
                                                 </div>
-                                              </Col>
-                                              <Col md={2}>
+                                              </div>
+                                              <div>
                                                 <div>
                                                   <input
                                                     type="time"
@@ -2002,16 +2000,15 @@ const ProjectDetailDescription = () => {
                                                     }
                                                   />
                                                 </div>
-                                              </Col>
-                                              <Col
-                                                md={2}
+                                              </div>
+                                              <div
+                                                md={1}
                                                 className="d-flex justify-content-center align-items-center"
                                                 id={`hourInDay${workLogDetail.workLogId}`}
                                               >
-                                                Hours in day:{" "}
                                                 {workLogDetail.hourWorkInDay}
-                                              </Col>
-                                              <Col md={2}>
+                                              </div>
+                                              <div>
                                                 <Select
                                                   options={optionsStatus}
                                                   name="choices-single-categories"
@@ -2029,8 +2026,8 @@ const ProjectDetailDescription = () => {
                                                     workLogDetail.workLogId
                                                   }
                                                 />
-                                              </Col>
-                                              <Col
+                                              </div>
+                                              <div
                                                 md={1}
                                                 className="d-flex justify-content-center align-items-center"
                                               >
@@ -2069,8 +2066,8 @@ const ProjectDetailDescription = () => {
                                                     )}
                                                   </>
                                                 )}
-                                              </Col>
-                                            </Row>
+                                              </div>
+                                            </div>
                                             {editableRowId ==
                                             workLogDetail.workLogId ? (
                                               <>

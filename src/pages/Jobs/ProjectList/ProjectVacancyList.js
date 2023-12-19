@@ -15,6 +15,8 @@ import jobImage5 from "../../../assets/images/featured-job/img-05.png";
 import jobImage6 from "../../../assets/images/featured-job/img-06.png";
 import jobImage7 from "../../../assets/images/featured-job/img-07.png";
 import projectServices from "../../../services/project.services";
+import { Skeleton } from 'antd';
+
 
 const ProjectVacancyList = () => {
   //Apply Now Model
@@ -24,6 +26,7 @@ const ProjectVacancyList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [skill, setSkill] = useState([]);
+
   const pageSize = 5;
   const handlePageClick = (page) => {
     setCurrentPage(page);

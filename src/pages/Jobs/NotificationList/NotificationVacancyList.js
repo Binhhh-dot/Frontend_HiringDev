@@ -29,32 +29,36 @@ import {
     faCircle,
     faMobileScreen
 } from "@fortawesome/free-solid-svg-icons";
+import { Skeleton } from 'antd';
+
 
 const NotificationVacancyList = (a) => {
     //Apply Now Model
     const [jobVacancyList, setJobVacancyList] = useState([]);
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(true);
     const [options, setOptions] = useState([]);
+
+
 
 
     const fetchJobVacancies = async () => {
         let response;
         const userId = localStorage.getItem("userId");
         try {
-            response = await notificationServices.getListNotificationByUserId(userId)
-                ;
+            response = await notificationServices.getListNotificationByUserId(userId);
             setJobVacancyList(response.data.data);
+            setLoading(false); // Set loading to false after data is fetched
         } catch (error) {
             console.error("Error fetching job vacancies:", error);
+            setLoading(false); // Set loading to false after data is fetched
+
         }
     };
-
-
     useEffect(() => {
+
         fetchJobVacancies();
     }, []);
-
 
 
     //Set initial state  for showFulSkill using object id
@@ -104,7 +108,14 @@ const NotificationVacancyList = (a) => {
             <Row>
                 <Col lg={12}>
                     <div>
-                        {jobVacancyList.length > 0 ? (
+                        {loading ? ( // Render Skeleton while loading is true
+                            <>
+                                <Skeleton active />
+                                <Skeleton active />
+                                <Skeleton active />
+                                {/* Add more Skeleton components as needed */}
+                            </>
+                        ) : jobVacancyList.length > 0 ? (
                             <>
                                 {jobVacancyList.map((jobVacancyListDetails, key) => (
                                     <div
@@ -112,7 +123,6 @@ const NotificationVacancyList = (a) => {
                                         className={
                                             " card mt-4"
                                         }
-                                        // to={`/projectdetailhr?Id=${jobVacancyListDetails.projectId}`}
                                         onClick={() => handleNoti(jobVacancyListDetails)}
                                     >
                                         <div className="p-4" style={{ color: "black" }}>
