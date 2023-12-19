@@ -100,7 +100,6 @@ import typeService from "../../../services/type.service";
 import levelService from "../../../services/level.service";
 import { Input as InputAntd } from 'antd';
 import dashboardServices from '../../../services/dashboard.services';
-
 dayjs.extend(customParseFormat);
 
 const ProjectDetailDesciption = () => {
@@ -1499,8 +1498,8 @@ const ProjectDetailDesciption = () => {
       if (response.status !== 200) {
         throw new Error('Something went wrong while downloading the file');
       }
+      console.log(response)
       const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
       const downloadLink = document.createElement('a');
       downloadLink.href = window.URL.createObjectURL(blob);
       downloadLink.setAttribute('download', filename);
@@ -2083,19 +2082,21 @@ const ProjectDetailDesciption = () => {
                                               <i className="mdi mdi-eye"></i>
                                             </div>
                                           </div>
-                                          {hiringRequestDetail.statusString != "Closed" && hiringRequestDetail.statusString != "Closing process" && (
-                                            <>
-                                              <DropdownAntd trigger={['click']}
-                                                onClick={() =>
-                                                  setIdDeveloperReport(candidategridDetailsNew)
-                                                }
-                                                menu={{ items: profileItems4 }}>
-                                                <FontAwesomeIcon icon={faEllipsisVertical}
-                                                  style={{ fontSize: "24px", color: 'gray', cursor: "pointer" }}
-                                                />
-                                              </DropdownAntd>
-                                            </>
-                                          )}
+                                          {hiringRequestDetail.statusString != "Closed" && hiringRequestDetail.statusString != "Closing process"
+                                            && candidategridDetailsNew.hiredDevStatusString != "Terminated"
+                                            && (
+                                              <>
+                                                <DropdownAntd trigger={['click']}
+                                                  onClick={() =>
+                                                    setIdDeveloperReport(candidategridDetailsNew)
+                                                  }
+                                                  menu={{ items: profileItems4 }}>
+                                                  <FontAwesomeIcon icon={faEllipsisVertical}
+                                                    style={{ fontSize: "24px", color: 'gray', cursor: "pointer" }}
+                                                  />
+                                                </DropdownAntd>
+                                              </>
+                                            )}
 
                                         </div>
                                       </div>

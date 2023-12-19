@@ -2,12 +2,16 @@ import React, { useState, useEffect } from "react";
 import hiringrequestService from "../../../services/hiringrequest.service";
 import { Row, Col, Card, CardBody, Modal, ModalBody, Button } from "reactstrap";
 import userImage0 from "../../../assets/images/user/img-00.jpg";
+import educationServices from "../../../services/education.services";
+import professionalExperienceServices from "../../../services/professionalExperience.services";
 
 const DeveloperDetailInCompanyPopup = (
   { isModalOpen, closeModal, devId },
   ...props
 ) => {
   const [developerInfo, setDeveloperInfo] = useState(null);
+  const [educationInfo, setEducationInfo] = useState([]);
+  const [professInfo, setProfessInfo] = useState([]);
   const fetchGetDeveloperDetailInManager = async () => {
     let response;
     try {
@@ -22,8 +26,40 @@ const DeveloperDetailInCompanyPopup = (
     }
   };
 
+  const fetchGetEducationDev = async () => {
+    let response;
+    try {
+      response = await educationServices.getEducationByDeveloperId(devId);
+      console.log(response.data.data);
+      setEducationInfo(response.data.data);
+    } catch (error) {
+      console.error(
+        "Error fetching Developer Detail In Manager Popup vacancies:",
+        error
+      );
+    }
+  };
+
+  const fetchGetProfessDev = async () => {
+    let response;
+    try {
+      response = await professionalExperienceServices.getProfessionalExperience(devId);
+      console.log(response.data.data);
+      setProfessInfo(response.data.data);
+    } catch (error) {
+      console.error(
+        "Error fetching Developer Detail In Manager Popup vacancies:",
+        error
+      );
+    }
+  };
+
+
+
   useEffect(() => {
     fetchGetDeveloperDetailInManager();
+    fetchGetEducationDev();
+    fetchGetProfessDev();
   }, [isModalOpen, devId]);
 
   return (
@@ -55,7 +91,7 @@ const DeveloperDetailInCompanyPopup = (
                             className="avatar-lg rounded-circle"
                           />
                           <h6 className="fs-18 mb-0 mt-4">
-                            {developerInfo.codeName}
+                            {developerInfo.firstName} {developerInfo.lastName}
                           </h6>
                         </div>
                       </CardBody>
@@ -64,6 +100,16 @@ const DeveloperDetailInCompanyPopup = (
                           Profile Overview
                         </h6>
                         <ul className="list-unstyled mb-0">
+                          <li>
+                            <div className="d-flex">
+                              <label className="text-dark">Code</label>
+                              <div>
+                                <p className="text-muted mb-0">
+                                  {developerInfo.codeName}
+                                </p>
+                              </div>
+                            </div>
+                          </li>
                           <li>
                             <div className="d-flex">
                               <label className="text-dark">Gender</label>
@@ -154,111 +200,64 @@ const DeveloperDetailInCompanyPopup = (
                             Summary
                           </h6>
                           <p className="text-muted mb-2">
-                            Very well thought out and articulate communication.
-                            Clear milestones, deadlines and fast work. Patience.
-                            Infinite patience. No shortcuts.
+                            {developerInfo.summary}
                           </p>
                         </div>
                         <div className="candidate-education-details mt-3 pt-3">
                           <h6 className="fs-17 fw-bold mb-0">Education</h6>
-                          <div className="candidate-education-content mt-4 d-flex">
-                            <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                              {" "}
-                              B{" "}
+                          {educationInfo.map((jobVacancy, key) => (
+                            <div className="candidate-education-content mt-4 d-flex" key={key}>
+                              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
+                                {" "}
+                                {jobVacancy.majorName && (
+                                  <>
+                                    {jobVacancy.majorName.charAt(0)}{" "}
+                                  </>
+                                )}
+                              </div>
+                              <div className="ms-2">
+                                <h6 className="fs-16 mb-1">
+                                  {jobVacancy.majorName}
+                                </h6>
+                                <p className="mb-2 text-muted">
+                                  {jobVacancy.schoolName} -({jobVacancy.startDateMMM} - {jobVacancy.endDateMMM})
+                                </p>
+                                <p className="text-muted">
+                                  {jobVacancy.description}
+                                </p>
+                              </div>
                             </div>
-                            <div className="ms-2">
-                              <h6 className="fs-16 mb-1">
-                                BCA - Bachelor of Computer Applications
-                              </h6>
-                              <p className="mb-2 text-muted">
-                                International University - (2004 - 2010)
-                              </p>
-                              <p className="text-muted">
-                                There are many variations of passages of
-                                available, but the majority alteration in some
-                                form.
-                              </p>
-                            </div>
-                          </div>
-                          <div className="candidate-education-content mt-4 d-flex">
-                            <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                              {" "}
-                              M{" "}
-                            </div>
-                            <div className="ms-2">
-                              <h6 className="fs-16 mb-1">
-                                MCA - Master of Computer Application
-                              </h6>
-                              <p className="mb-2 text-muted">
-                                International University - (2010 - 2012)
-                              </p>
-                              <p className="text-muted">
-                                There are many variations of passages of
-                                available, but the majority alteration in some
-                                form.
-                              </p>
-                            </div>
-                          </div>
-                          <div className="candidate-education-content mt-4 d-flex">
-                            <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                              {" "}
-                              D{" "}
-                            </div>
-                            <div className="ms-2">
-                              <h6 className="fs-16 mb-1">
-                                Design Communication Visual
-                              </h6>
-                              <p className="text-muted mb-2">
-                                International University - (2012-2015)
-                              </p>
-                              <p className="text-muted">
-                                There are many variations of passages of
-                                available, but the majority alteration in some
-                                form.
-                              </p>
-                            </div>
-                          </div>
+                          ))}
+
                         </div>
                         <div className="candidate-education-details mt-3 pt-3">
                           <h6 className="fs-17 fw-bold mb-0">
                             Professional Experience
                           </h6>
-                          <div className="candidate-education-content mt-4 d-flex">
-                            <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                              {" "}
-                              W{" "}
+                          {professInfo.map((jobVacancy, key) => (
+                            <div className="candidate-education-content mt-4 d-flex" key={key}>
+                              <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
+                                {" "}
+                                {jobVacancy.jobName && (
+                                  <>
+                                    {jobVacancy.jobName.charAt(0)}{" "}
+                                  </>
+                                )}
+                              </div>
+                              <div className="ms-2">
+                                <h6 className="fs-16 mb-1">
+                                  {jobVacancy.jobName}
+                                </h6>
+                                <p className="mb-2 text-muted">
+                                  {jobVacancy.companyName} -({jobVacancy.startDateMMM} - {jobVacancy.endDateMMM})
+                                </p>
+                                <p className="text-muted">
+                                  {jobVacancy.description}
+                                </p>
+                              </div>
                             </div>
-                            <div className="ms-2">
-                              <h6 className="fs-16 mb-1">
-                                Web Design & Development Team Leader
-                              </h6>
-                              <p className="mb-2 text-muted">
-                                Creative Agency - (2013 - 2016)
-                              </p>
-                              <p className="text-muted">
-                                There are many variations of passages of
-                                available, but the majority alteration in some
-                                form.
-                              </p>
-                            </div>
-                          </div>
-                          <div className="candidate-education-content mt-4 d-flex">
-                            <div className="circle flex-shrink-0 bg-primary-subtle text-primary">
-                              {" "}
-                              P{" "}
-                            </div>
-                            <div className="ms-2">
-                              <h6 className="fs-16 mb-1">Project Manager</h6>
-                              <p className="mb-2 text-muted">
-                                WeHire Technology Pvt.Ltd - (Pressent)
-                              </p>
-                              <p className="text-muted mb-0">
-                                There are many variations of passages of
-                                available, but the majority alteration in some
-                                form.
-                              </p>
-                            </div>
-                          </div>
+                          ))}
+
                         </div>
                       </CardBody>
                     </Card>

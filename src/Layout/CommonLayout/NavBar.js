@@ -239,6 +239,10 @@ const NavBar = (props) => {
         const respone = await notificationServices.getListNotificationByUserId(userId);
         console.log(respone)
         setListNotification(respone.data.data)
+        if (firstNoti) {
+          toast.info(respone.data.data[0].content);
+        }
+        setFirstNoti(false)
       } catch (error) {
         console.log(error)
       }
@@ -266,12 +270,9 @@ const NavBar = (props) => {
 
 
   useEffect(() => {
-    if (firstNoti) {
-      toast.info("You have new notification");
-    }
     fetchListNotification();
     fetchCountNotification();
-    setFirstNoti(false)
+
   }, [notificationFb])
 
 
@@ -367,7 +368,7 @@ const NavBar = (props) => {
                   role="button"
                 // onClick={() => setCompany(!company)}
                 >
-                  Company <div className="arrow-down"></div>
+                  Page <div className="arrow-down"></div>
                 </NavLink>
                 <ul
                   className={classname("dropdown-menu dropdown-menu-center", {
@@ -376,37 +377,37 @@ const NavBar = (props) => {
                   aria-labelledby="jobsdropdown"
                 >
                   <li>
-                    <Link className="dropdown-item" to="/aboutus">
-                      About Us
+
+                    <Link
+                      className="dropdown-item"
+                      to="/reportList"
+                    >
+                      Report List
                     </Link>
+
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/services">
-                      Services
+                    <Link
+                      className="dropdown-item"
+                      to="/contractListHr"
+                    >
+                      Contract List
                     </Link>
+
+
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/team">
-                      Team
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/pricing">
-                      Pricing
-                    </Link>
-                  </li>
-                  <Link className="dropdown-item" to="/privacyandpolicy">
-                    Priacy & Policy
-                  </Link>
-                  <li>
-                    <Link className="dropdown-item" to="/faqs">
-                      Faqs
+                    <Link
+                      className="dropdown-item"
+                      to="/transactionlist"
+                    >
+                      Transaction List
                     </Link>
                   </li>
                 </ul>
               </NavItem>
 
-              {(role === "HR") && (
+              {/* {(role === "HR") && (
                 <>
                   <li className="nav-item dropdown dropdown-hover">
                     <Link
@@ -548,14 +549,19 @@ const NavBar = (props) => {
                     </div>
                   </li>
                 </>
-              )}
-
+              )} */}
+              <NavItem>
+                <Link className="nav-link" to="/projectlist">
+                  project
+                </Link>
+              </NavItem>
 
               <NavItem>
                 <Link className="nav-link" to="/contact">
                   Contact
                 </Link>
               </NavItem>
+
             </ul>
           </Collapse>
 

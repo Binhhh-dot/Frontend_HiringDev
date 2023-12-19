@@ -35,6 +35,7 @@ import userImage0 from "../../../assets/images/user/img-00.jpg";
 import JobDetailImage from "../../../assets/images/job-detail.jpg";
 import JobImage10 from "../../../assets/images/featured-job/img-10.png";
 import { FaEye } from "react-icons/fa";
+import { Progress } from "antd";
 
 import "./index.css";
 import developerServices from "../../../services/developer.services";
@@ -568,6 +569,11 @@ const HiringRequestDetails = () => {
           averagedPercentage: dev.averagedPercentage.toFixed(2),
           selectedDevStatus: dev.hiredDeveloperStatus,
           interviewRound: dev.interviewRound,
+          typeMatching: dev.typeMatching,
+          levelMatching: dev.levelMatching,
+          salaryPerDevPercentage: dev.salaryPerDevPercentage,
+          skillPercentage: dev.skillPercentage,
+          yearOfExperience: dev.yearOfExperience
         };
       });
       setCandidategridDetails(candidategridDetails);
@@ -1340,6 +1346,17 @@ const HiringRequestDetails = () => {
     setIsModalCreateOpen(true);
   };
 
+  const getBarColor = (progress) => {
+    if (progress <= 30) {
+      return "#fe3839";
+    } else if (progress <= 50) {
+      return "#ffb302";
+    } else if (progress <= 80) {
+      return "#fbe83a";
+    } else {
+      return "#57f000";
+    }
+  };
 
   return (
     <React.Fragment>
@@ -2339,54 +2356,78 @@ const HiringRequestDetails = () => {
                                 </div>
                               </div>
 
-                              <ul className="list-inline d-flex justify-content-between align-items-center">
-                                <li>
-                                  <div className="d-flex flex-wrap align-items-start gap-1">
-                                    {candidategridDetailsNew.skills &&
-                                      Array.isArray(
-                                        candidategridDetailsNew.skills
-                                      ) &&
-                                      candidategridDetailsNew.skills
-                                        .slice(0, 3)
-                                        .map((skill, skillIndex) => (
-                                          <span
-                                            key={skillIndex}
-                                            className="badge bg-success-subtle text-success fs-14 mt-1"
-                                          >
-                                            {skill}
-                                          </span>
-                                        ))}
-                                    {candidategridDetailsNew.skills &&
-                                      Array.isArray(
-                                        candidategridDetailsNew.skills
-                                      ) &&
-                                      candidategridDetailsNew.skills.length > 3 && (
-                                        <span className="badge bg-success-subtle text-success fs-14 mt-1">
-                                          ...
-                                        </span>
-                                      )}
+
+
+                              <div className="d-flex flex-column gap-1 mb-3">
+                                <div className=" d-flex row align-items-center ">
+                                  <span className=" fs-14 col-lg-3 " style={{ paddingRight: "0px" }}>Type</span>
+                                  <div className=" checkbox-wrapper-type col-lg-5" style={{ paddingLeft: "0px" }}>
+                                    <div class="round ">
+                                      <input
+                                        type="checkbox"
+                                        id="checkbox-type"
+                                        checked={candidategridDetailsNew.typeMatching}
+                                      />
+                                      <label htmlFor="checkbox-type"></label>
+                                    </div>
                                   </div>
-                                </li>
-                              </ul>
-                              <div className="border rounded mb-4">
-                                <div className="row g-0">
-                                  <Col lg={6}>
-                                    <div className="border-end px-3 py-2">
-                                      <p className="text-muted mb-0">
-                                        Exp. : {candidategridDetailsNew.experience}
-                                      </p>
+                                </div>
+                                <div className=" d-flex row align-items-center ">
+                                  <span className=" fs-14 col-lg-3 " style={{ paddingRight: "0px" }}>Level</span>
+                                  <div className=" checkbox-wrapper-level col-lg-5" style={{ paddingLeft: "0px" }}>
+                                    <div class="round ">
+                                      <input
+                                        type="checkbox"
+                                        id="checkbox-level"
+                                        checked={candidategridDetailsNew.levelMatching}
+                                      />
+                                      <label htmlFor="checkbox-type"></label>
                                     </div>
-                                  </Col>
-                                  <Col lg={6}>
-                                    <div className="px-3 py-2">
-                                      <p className="text-muted mb-0">
-                                        {candidategridDetailsNew.jobType}
-                                      </p>
-                                    </div>
-                                  </Col>
+                                  </div>
+                                </div>
+
+                                <div className="d-flex row align-items-center ">
+                                  <span className=" fs-14 col-lg-3 " style={{ paddingRight: "0px" }}>Salary</span>
+
+                                  <div className="col-lg-5" style={{ paddingLeft: "0px" }}>
+                                    <Space size={30} wrap>
+                                      <Progress
+                                        steps={5}
+                                        percent={
+                                          candidategridDetailsNew.salaryPerDevPercentage
+                                        }
+                                        strokeColor={getBarColor(
+                                          candidategridDetailsNew.salaryPerDevPercentage
+                                        )}
+                                      />
+                                    </Space>
+                                  </div>
+                                </div>
+                                <div className="d-flex row align-items-center ">
+                                  <span className=" fs-14 col-lg-3 " style={{ paddingRight: "0px" }}>Skill</span>
+
+                                  <div className="col-lg-5" style={{ paddingLeft: "0px" }}>
+                                    <Space size={30} wrap>
+                                      <Progress
+                                        steps={5}
+                                        percent={
+                                          candidategridDetailsNew.skillPercentage
+                                        }
+                                        strokeColor={getBarColor(
+                                          candidategridDetailsNew.skillPercentage
+                                        )}
+                                      />
+                                    </Space>
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <span>
+                                    Experience:{" "}
+                                    {candidategridDetailsNew.yearOfExperience} years
+                                  </span>
                                 </div>
                               </div>
-                              <p className="text-muted"></p>
 
                               <div
                                 className="border border-2 p-3"
@@ -2636,7 +2677,37 @@ const HiringRequestDetails = () => {
                               <div className="favorite-icon">
                                 <span
                                   className={
-                                    "badge bg-success-subtle text-success fs-13 mt-1 mx-1"
+                                    jobVacancy2Details.statusString ===
+                                      "Rejected"
+                                      ? "badge bg-danger text-light mb-2"
+                                      : jobVacancy2Details.statusString ===
+                                        "Contract Failed"
+                                        ? "badge bg-danger text-light mb-2"
+                                        : jobVacancy2Details.statusString ===
+                                          "Approved"
+                                          ? "badge bg-blue text-light mb-2"
+                                          : jobVacancy2Details.statusString ===
+                                            "Under Consideration"
+                                            ? "badge bg-warning text-light mb-2"
+                                            : jobVacancy2Details.statusString ===
+                                              "Waiting Approval"
+                                              ? "badge bg-warning text-light mb-2"
+                                              : jobVacancy2Details.statusString ===
+                                                "Interview Scheduled"
+                                                ? "badge bg-blue text-light mb-2"
+                                                : jobVacancy2Details.statusString ===
+                                                  "Completed"
+                                                  ? "badge bg-primary text-light mb-2"
+                                                  : jobVacancy2Details.statusString ===
+                                                    "Waiting Interview"
+                                                    ? "badge bg-warning text-light mb-2"
+                                                    : jobVacancy2Details.statusString ===
+                                                      "Terminated"
+                                                      ? "badge bg-danger text-light mb-2"
+                                                      : jobVacancy2Details.statusString ===
+                                                        "Cancelled"
+                                                        ? "badge  bg-teal text-light mb-2"
+                                                        : ""
                                   }
                                 >
                                   {jobVacancy2Details.statusString}
