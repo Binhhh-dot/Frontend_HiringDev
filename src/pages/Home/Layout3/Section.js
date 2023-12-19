@@ -15,7 +15,7 @@ const Section = () => {
   const navigate = useNavigate();
 
   const linkToListJob = () => {
-    navigate("/projectlist")
+    navigate("/createproject")
   };
   return (
     <React.Fragment>

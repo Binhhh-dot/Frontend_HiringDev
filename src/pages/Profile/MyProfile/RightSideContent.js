@@ -167,9 +167,7 @@ const RightSideContent = () => {
         setIsUpdateMode(!isUpdateMode);
         // Handle the response (you can show a success message or redirect to another page)
 
-        const responseUser = await axios.get(
-          `https://wehireapi.azurewebsites.net/api/User/${userId}`
-        );
+        const responseUser = await userSerrvices.getUserById(userId);
         const userData = responseUser.data;
         localStorage.setItem("companyId", userData.data.companyId);
         toast.success("Update company sucessfully")

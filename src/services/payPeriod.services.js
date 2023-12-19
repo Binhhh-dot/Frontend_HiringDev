@@ -6,7 +6,7 @@ const exportToExcel = async (projectId, inputDate) => {
     const config = {
         responseType: 'blob'
     };
-    const response = await axiosLocalHost.sendAuthorizedRequest(serviceUrl, 'GET', null, config);
+    const response = await axiosLocalHost.normalRequest.get(serviceUrl, config);
     return response
 }
 
