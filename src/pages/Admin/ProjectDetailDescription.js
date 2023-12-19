@@ -451,7 +451,7 @@ const ProjectDetailDescription = () => {
 
   //--------------------------------------------------------------------------------
   const [loadPayPeriod, setLoadPayPeriod] = useState(false);
-  const [payPeriodDetail, setPayPeriodDetail] = useState();
+  const [payPeriodDetail, setPayPeriodDetail] = useState(null);
   const [payRollDetail, setPayRollDetail] = useState([]);
   const [workLoglist, setWorkLoglist] = useState([]);
   const [listMonth, setListMonth] = useState([]);
@@ -1557,7 +1557,7 @@ const ProjectDetailDescription = () => {
                                     "job-box-dev-in-list-hiringRequest-for-dev card"
                                   }
                                 >
-                                  {payPeriodDetail !== null ? (
+                                  {payPeriodDetail ? (
                                     <div className="p-4">
                                       <Row className="align-items-center">
                                         <Col

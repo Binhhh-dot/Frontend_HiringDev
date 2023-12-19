@@ -239,6 +239,10 @@ const NavBar = (props) => {
         const respone = await notificationServices.getListNotificationByUserId(userId);
         console.log(respone)
         setListNotification(respone.data.data)
+        if (firstNoti) {
+          toast.info(respone.data.data[0].content);
+        }
+        setFirstNoti(false)
       } catch (error) {
         console.log(error)
       }
@@ -266,12 +270,9 @@ const NavBar = (props) => {
 
 
   useEffect(() => {
-    if (firstNoti) {
-      toast.info("You have new notification");
-    }
     fetchListNotification();
     fetchCountNotification();
-    setFirstNoti(false)
+
   }, [notificationFb])
 
 
