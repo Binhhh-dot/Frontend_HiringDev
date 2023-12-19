@@ -112,7 +112,7 @@ const UpdateProfileAdmin = () => {
             console.log(formData);
             try {
                 // Make API request
-                const response = await userSerrvices.updateAdmin(formData, userId);
+                const response = await userSerrvices.updateManager(formData, userId);
                 console.log(response);
                 // Handle the response (you can show a success message or redirect to another page)
                 toast.success("Update successfully");

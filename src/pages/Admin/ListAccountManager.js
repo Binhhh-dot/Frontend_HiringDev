@@ -669,7 +669,7 @@ const ListAccountManager = () => {
               >
                 <Input />
               </Form.Item>
-              {/* <Form.Item
+              <Form.Item
                 name="dateOfBirth"
                 label="Birth"
                 rules={[
@@ -680,8 +680,7 @@ const ListAccountManager = () => {
                 ]}
               >
                 <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
-              </Form.Item> */}
-              {/* Add other form fields here */}
+              </Form.Item>
               <Form.Item style={{ textAlign: "center" }}>
                 <Button
                   type="primary"
