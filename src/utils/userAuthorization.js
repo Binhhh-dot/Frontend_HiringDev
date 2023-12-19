@@ -28,7 +28,9 @@ const userAuthorization = (localStorageRole, linkPage) => {
         '/listcompanyPartner',
         '/manageSkill',
         '/manageType',
-        '/manageLevel'
+        '/manageLevel',
+        '/dashboard',
+        '/profileadmin'
     ]
 
     const listPageStaffAccper = [
