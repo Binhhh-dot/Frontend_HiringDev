@@ -672,16 +672,8 @@ const NavBar = (props) => {
                   aria-labelledby="userdropdown"
                   end
                 >
-                  <li>
-                    <Link className="dropdown-item" to="/managejobs">
-                      Manage Jobs
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/bookmarkjobs">
-                      Bookmarks Jobs
-                    </Link>
-                  </li>
+
+
                   <li>
                     <Link className="dropdown-item" to="/myprofile">
                       My Profile
