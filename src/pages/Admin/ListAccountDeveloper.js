@@ -189,7 +189,6 @@ const ListAccountDeveloper = () => {
 
   //Create Dev
 
-  document.title = "Create Developer Account";
 
   const [options, setOptions] = useState([]);
   const [options2, setOptions2] = useState([]);

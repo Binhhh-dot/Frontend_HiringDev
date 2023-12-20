@@ -9,7 +9,7 @@ import userAuthorization from "../../../utils/userAuthorization";
 //import Pagination from "../JobList2/Pagination";
 
 const HiringRequestListInCompanyPartnerDetail = () => {
-  document.title = "Hiring Request List In Company Partner Detail";
+  document.title = "Hiring Request Detail";
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoad, setIdLoad] = useState(false);

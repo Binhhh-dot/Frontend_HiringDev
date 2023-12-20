@@ -22,7 +22,7 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  document.title = "Sign In | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Sign In | WeHire";
   const [loadingSignIn, setLoadingSignIn] = useState(false);
   const [devicetoken, setDevicetoken] = useState();
 

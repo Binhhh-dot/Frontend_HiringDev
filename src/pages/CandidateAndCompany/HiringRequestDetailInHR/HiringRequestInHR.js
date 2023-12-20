@@ -6,8 +6,7 @@ import Section from "./Section";
 import Pagination from "../../Jobs/JobList2/Pagination";
 
 const HiringRequestInHR = () => {
-  document.title =
-    "Candidate List | WeHire - Job Listing Template | Themesdesign";
+  
   return (
     <React.Fragment>
       <Section />

@@ -14,7 +14,7 @@ const Callback = () => {
     const [loading, setLoading] = useState(true);
     // const history = useHistory();
     const location = useLocation();
-    document.title = "Sign Out | WeHire - Job Listing Template | Themesdesign";
+    document.title = " WeHire - ";
     console.log(process.env.SERVICE_URL);
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);

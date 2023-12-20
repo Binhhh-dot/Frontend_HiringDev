@@ -30,7 +30,7 @@ import PageThree from "./PageThree";
 import MultiStepProgressBar from "./MultiStepProgressBar";
 
 const CreateProject = () => {
-  document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Create Project| WeHire";
   const [selectedOptions2, setSelectedOptions2] = useState([]);
   const [selectedOptions3, setSelectedOptions3] = useState([]);
   const [loading, setLoading] = useState(false);

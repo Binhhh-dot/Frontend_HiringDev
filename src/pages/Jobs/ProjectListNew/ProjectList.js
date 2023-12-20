@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ProjectVacancyList from "./ProjectVacancyList";
 
 const ProjectList = () => {
-  document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Project List | WeHire";
   const navigate = useNavigate();
   return (
     <React.Fragment>

@@ -10,7 +10,7 @@ import DeveloperDetailInCompanyPopup from "../../Home/SubSection/DeveloperDetail
 import { useNavigate } from "react-router-dom";
 
 const DetailInterview = () => {
-  document.title = "Job Details | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Interiview Details | WeHire";
   const [listDevId, setListDevid] = useState([]);
   const { state } = useLocation();
   const [developerInfo, setDeveloperInfo] = useState([]);

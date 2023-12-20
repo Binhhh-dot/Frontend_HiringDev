@@ -3,7 +3,7 @@ import Home from "../Home";
 import Section from "../Layout3/Section";
 
 const Layout3 = () => {
-  document.title = "Home | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Home | WeHire";
   return (
     <React.Fragment>
       <Section />

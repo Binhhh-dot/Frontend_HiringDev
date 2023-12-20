@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Section from "./Section";
 
 const HiringRequestDetails = () => {
-  document.title = "Job Details | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Hiring Request Details | WeHire ";
 
   const navigate = useNavigate();
   useEffect(() => {

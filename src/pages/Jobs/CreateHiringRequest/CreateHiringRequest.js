@@ -15,7 +15,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import companyServices from "../../../services/company.services";
 
 const CreateHiringRequest = () => {
-  document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Create Hiring request | WeHire ";
   let hiringRequestSaved;
   const location = useLocation();
   const [options, setOptions] = useState([]);

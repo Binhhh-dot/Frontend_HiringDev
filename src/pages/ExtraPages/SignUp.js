@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
-  document.title = "Sign Up | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Sign Up | WeHire";
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({

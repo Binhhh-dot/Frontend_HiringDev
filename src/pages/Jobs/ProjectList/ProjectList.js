@@ -7,7 +7,7 @@ import Sidebar from "./Sidebar";
 import userAuthorization from "../../../utils/userAuthorization";
 
 const ProjectList = () => {
-  document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Project List | WeHire";
 
   const navigate = useNavigate();
   const location = useLocation();

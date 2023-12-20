@@ -19,7 +19,7 @@ import userSerrvices from "../../services/user.serrvices";
 
 
 const SignCompany = () => {
-    document.title = "Sign Up | WeHire - Job Listing Template | Themesdesign";
+    document.title = "Sign Company | WeHire ";
     const navigate = useNavigate();
     const [avatar2, setAvatar2] = useState();
     const [userImage3, setUserImage3] = useState(null);

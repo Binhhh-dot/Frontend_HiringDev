@@ -47,7 +47,6 @@ const SignOut = () => {
     }
   };
   useEffect(() => {
-    document.title = "Sign Out | WeHire - Job Listing Template | Themesdesign";
     clearData();
     sendMessageToParent();
   }, []);

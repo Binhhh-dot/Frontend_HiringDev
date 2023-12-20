@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { RingLoader, HashLoader } from "react-spinners";
 
 const CreateInterview = () => {
-  document.title = "Job Details | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Create Interview | WeHire";
   const [listDevId, setListDevid] = useState([]);
   const { state } = useLocation();
   const location = useLocation();

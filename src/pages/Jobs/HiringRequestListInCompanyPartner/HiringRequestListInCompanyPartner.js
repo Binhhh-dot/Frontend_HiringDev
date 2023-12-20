@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
 const HiringRequestListInCompanyPartner = () => {
-  document.title = "Job List | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Hiring Request List | WeHire ";
   const navigate = useNavigate();
   useEffect(() => {
     const role = localStorage.getItem("role");

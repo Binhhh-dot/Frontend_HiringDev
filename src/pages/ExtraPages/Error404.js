@@ -6,7 +6,7 @@ import { Col, Container, Row } from "reactstrap";
 import Error404Image from "../../assets/images/404.png";
 
 const Error404 = () => {
-  document.title = "Error 404 | WeHire - Job Listing Template | Themesdesign";
+  document.title = "Error 404 | WeHire ";
   return (
     <React.Fragment>
       <div>
