@@ -133,7 +133,7 @@ const PageThree = ({ onButtonClick, projectName, selectedOptions, startday, endd
             const startDateValue = new Date(startday);
             const endDateValue = new Date(endday);
             if (!value) {
-                setJobDescriptionError("Enter job description");
+                setJobDescriptionError("Enter project description");
                 check = false;
             } else {
                 setJobDescriptionError(null);
@@ -311,7 +311,6 @@ const PageThree = ({ onButtonClick, projectName, selectedOptions, startday, endd
                                     //     "a11ychecker advcode advlist advtable anchor autolink autoresize autosave casechange charmap checklist code codesample directionality  emoticons export  formatpainter fullscreen importcss  insertdatetime link linkchecker lists media mediaembed mentions  nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table  template tinydrive tinymcespellchecker  visualblocks visualchars wordcount",
                                     //
                                 }}
-
                             />
                             {jobDescriptionError && (
                                 <p className="text-danger mt-2">

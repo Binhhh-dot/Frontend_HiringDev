@@ -12,10 +12,10 @@ const CompanyDetails = () => {
       <Section />
       <section className="section">
         <Container>
-          <Row>
-            <LeftSideContent />
-            <RightSideContent />
-          </Row>
+          {/* <Row> */}
+          <LeftSideContent />
+          {/* <RightSideContent /> */}
+          {/* </Row> */}
         </Container>
       </section>
     </React.Fragment>
