@@ -139,7 +139,7 @@ const updateImage = async (formData, projectId) => {
     },
   };
   console.log(serviceUrl);
-  const response = await axiosLocalHost.normalRequest.sendAuthorizedRequest(
+  const response = await axiosLocalHost.sendAuthorizedRequest(
     serviceUrl,
     "PUT",
     formData,
