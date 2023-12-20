@@ -15,6 +15,8 @@ import companyServices from "../../services/company.services";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { HashLoader } from "react-spinners";
+import userSerrvices from "../../services/user.serrvices";
+
 
 const SignCompany = () => {
     document.title = "Sign Up | WeHire - Job Listing Template | Themesdesign";
@@ -148,7 +150,7 @@ const SignCompany = () => {
                     const response = await companyServices.createCompany(formData2);
                     // Handle the response (you can show a success message or redirect to another page)
                     console.log('API Response:', response.data);
-                    const responseUser = await axios.get(`https://wehireapi.azurewebsites.net/api/User/${userId}`);
+                    const responseUser = await userSerrvices.getUserById(userId);
                     const userData = responseUser.data;
                     localStorage.setItem('companyId', userData.data.companyId);
                     toast.success("Create company info sucessfully! Welcome to WeHire")
